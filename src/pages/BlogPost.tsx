@@ -1,58 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { supabase } from '../lib/supabase';
-import type { BlogPost } from '../types/blog';
 import { Helmet } from 'react-helmet-async';
 import ReactMarkdown from 'react-markdown';
 
-const BlogPostPage = () => {
-  const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
-  const [post, setPost] = useState<BlogPost | null>(null);
-  const [loading, setLoading] = useState(true);
+const BlogPost = () => {
+  const { slug } = useParams();
 
-  useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('blog_posts')
-          .select('*')
-          .eq('slug', slug)
-          .eq('published', true)
-          .single();
+  // Temporary mock data until Strapi integration
+  const post = {
+    title: 'Car Maintenance Tips for Summer',
+    meta_title: 'Essential Car Maintenance Tips for Summer | GaadiMech',
+    meta_description: 'Learn how to keep your car running smoothly during hot summer months with these essential maintenance tips from GaadiMech experts.',
+    excerpt: 'Keep your car running smoothly during the hot summer months...',
+    content: `
+# Car Maintenance Tips for Summer
 
-        if (error) throw error;
-        if (!data) {
-          navigate('/blog');
-          return;
-        }
-        
-        setPost(data);
-      } catch (error) {
-        console.error('Error fetching blog post:', error);
-        navigate('/blog');
-      } finally {
-        setLoading(false);
-      }
-    };
+Summer can be tough on your vehicle. Here are some essential tips to keep your car running smoothly:
 
-    if (slug) {
-      fetchPost();
-    }
-  }, [slug, navigate]);
+## 1. Check Your Cooling System
+- Monitor coolant levels
+- Inspect hoses for leaks
+- Test the radiator fan
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7200]"></div>
-      </div>
-    );
-  }
+## 2. Maintain Proper Tire Pressure
+Hot roads can cause tire pressure to increase. Check your tire pressure regularly.
 
-  if (!post) {
-    return null;
-  }
+## 3. Test Your AC System
+Make sure your air conditioning is working efficiently before the peak summer heat.
+    `,
+    image_url: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3',
+    published_at: '2024-03-15'
+  };
 
   return (
     <motion.div
@@ -68,7 +47,7 @@ const BlogPostPage = () => {
         <meta property="og:title" content={post.meta_title || post.title} />
         <meta property="og:description" content={post.meta_description || post.excerpt} />
         {post.image_url && <meta property="og:image" content={post.image_url} />}
-        <link rel="canonical" href={`https://gaadimech.com/blog/${post.slug}`} />
+        <link rel="canonical" href={`https://gaadimech.com/blog/${slug}`} />
       </Helmet>
 
       <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -100,4 +79,4 @@ const BlogPostPage = () => {
   );
 };
 
-export default BlogPostPage;
+export default BlogPost;

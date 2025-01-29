@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -9,31 +8,18 @@ const Contact = () => {
     phone: '',
     message: ''
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
-    setSuccess(false);
+    setStatus('loading');
     
-    try {
-      const { error: supabaseError } = await supabase
-        .from('contact_leads')
-        .insert([formData]);
-
-      if (supabaseError) throw supabaseError;
-
+    // TODO: Implement form submission to Strapi
+    // For now, just simulate success
+    setTimeout(() => {
+      setStatus('success');
       setFormData({ name: '', email: '', phone: '', message: '' });
-      setSuccess(true);
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      setError('There was an error submitting the form. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
+    }, 1000);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -61,16 +47,16 @@ const Contact = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
           <div className="bg-white p-6 md:p-8 rounded-lg shadow-md">
-            {success ? (
+            {status === 'success' ? (
               <div className="bg-green-50 text-green-600 p-4 rounded-md text-center">
                 <p className="text-lg font-semibold">Thank you for contacting us!</p>
                 <p>We will get back to you soon.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
-                {error && (
+                {status === 'error' && (
                   <div className="bg-red-50 text-red-600 p-3 rounded-md">
-                    {error}
+                    {status}
                   </div>
                 )}
                 <div>
@@ -119,10 +105,10 @@ const Contact = () => {
                 </div>
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={status === 'loading'}
                   className="w-full bg-[#FF7200] text-white px-6 py-3 rounded-md hover:bg-[#0e5aa8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                  {status === 'loading' ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
             )}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { IMAGES } from '../assets/images';
 
 const ComingSoon = () => {
   return (
@@ -21,17 +22,17 @@ const ComingSoon = () => {
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            src="https://i.ibb.co/BKyT0xg/App-Store.webp"
+            src={IMAGES.APP_STORE_BADGE}
             alt="Download on App Store"
-            className="h-20 md:h-24 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+            className="h-12 md:h-16 w-auto cursor-pointer hover:opacity-80 transition-opacity"
           />
           <motion.img
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            src="https://i.imgur.com/FHCeKeD.png"
+            src={IMAGES.PLAY_STORE_BADGE}
             alt="Get it on Google Play"
-            className="h-20 md:h-24 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+            className="h-12 md:h-16 w-auto cursor-pointer hover:opacity-80 transition-opacity"
           />
         </div>
       </div>

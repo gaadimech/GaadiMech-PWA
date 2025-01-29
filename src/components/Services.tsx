@@ -1,43 +1,53 @@
 import React from 'react';
+import { 
+  Settings, 
+  Wind, 
+  Droplets, 
+  Paintbrush, 
+  Battery, 
+  Square, 
+  Car, 
+  Disc 
+} from 'lucide-react';
 
 const services = [
   {
-    image: 'https://i.ibb.co/t4HmbHZ/Group.png',
+    icon: Settings,
     title: 'Periodic Service',
     description: 'Regular maintenance and servicing'
   },
   {
-    image: 'https://i.ibb.co/dtZj35M/Group-3.png',
+    icon: Wind,
     title: 'AC Service',
     description: 'Professional car AC repair and maintenance'
   },
   {
-    image: 'https://i.ibb.co/54mCj9R/Group-1.png',
+    icon: Droplets,
     title: 'Car Spa & Cleaning',
     description: 'Professional car cleaning services'
   },
   {
-    image: 'https://i.ibb.co/RNTXGpd/Group-2.png',
+    icon: Paintbrush,
     title: 'Denting & Painting',
     description: 'Expert dent removal and painting services'
   },
   {
-    image: 'https://i.ibb.co/ZXCWCRC/Group-4.png',
+    icon: Battery,
     title: 'Battery Service',
     description: 'Battery check, repair and replacement'
   },
   {
-    image: 'https://i.ibb.co/3zcSYzf/Frame.png',
+    icon: Square,
     title: 'Windshield Service',
     description: 'Windshield repair and replacement'
   },
   {
-    image: 'https://i.ibb.co/MpG0nBb/Layer-1.png',
+    icon: Car,
     title: 'Car Detailing',
     description: 'Professional car detailing services'
   },
   {
-    image: 'https://i.ibb.co/hMSWCJB/Layer-x0020-1-1.png',
+    icon: Disc,
     title: 'Tyre Service',
     description: 'Tyre maintenance and replacement'
   }
@@ -58,11 +68,10 @@ const Services = () => {
               className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow flex flex-col items-center text-center group cursor-pointer"
             >
               <div className="mb-4 w-16 h-16 md:w-20 md:h-20 flex items-center justify-center">
-                <img
-                  src={service.image}
-                  alt={service.title}
-                  className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
-                />
+                {React.createElement(service.icon, {
+                  size: 48,
+                  className: "text-[#FF7200] group-hover:scale-110 transition-transform duration-300"
+                })}
               </div>
               <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2">{service.title}</h3>
               <p className="hidden md:block text-sm text-gray-600">{service.description}</p>
