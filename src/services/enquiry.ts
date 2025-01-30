@@ -3,12 +3,14 @@ import type { EnquiryFormData, EnquiryResponse, ServiceTypeResponse } from '../t
 
 export const enquiryService = {
   async submit(formData: EnquiryFormData): Promise<EnquiryResponse> {
-    return apiClient.post<EnquiryResponse>('/api/enquiries', {
+    const response = await apiClient.post<EnquiryResponse>('/enquiries', {
       data: formData,
     });
+    return response.data;
   },
 
   async getServiceTypes(): Promise<ServiceTypeResponse> {
-    return apiClient.get<ServiceTypeResponse>('/api/service-types');
+    const response = await apiClient.get<ServiceTypeResponse>('/service-types');
+    return response.data;
   },
 }; 

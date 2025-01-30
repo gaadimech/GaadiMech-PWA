@@ -5,10 +5,9 @@ export const blogService = {
   async getAllPosts() {
     try {
       const response = await apiClient.get<StrapiResponse<BlogPostAttributes>>(
-        '/api/articles?populate=*'
+        '/articles?populate=*'
       );
-      console.log('Raw API response:', response);
-      return response;
+      return response.data;
     } catch (error) {
       console.error('Service error:', error);
       throw error;
@@ -18,14 +17,12 @@ export const blogService = {
   async getPostBySlug(slug: string) {
     try {
       const response = await apiClient.get<StrapiResponse<BlogPostAttributes>>(
-        `/api/articles?filters[slug][$eq]=${slug}&populate=*`
+        `/articles?filters[slug][$eq]=${slug}&populate=*`
       );
-      console.log('Raw API response for slug:', response);
-      
-      if (!response.data || response.data.length === 0) {
+      if (!response.data.data || response.data.data.length === 0) {
         throw new Error('Post not found');
       }
-      return response.data[0];
+      return response.data.data[0];
     } catch (error) {
       console.error('Service error:', error);
       throw error;
