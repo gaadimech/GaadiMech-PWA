@@ -1,37 +1,88 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import ReactMarkdown from 'react-markdown';
+import { blogService } from '../services/blog';
+import type { BlogPostAttributes } from '../types/blog';
+import env from '../utils/env';
 
 const BlogPost = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
+  const [post, setPost] = useState<{ id: number; attributes: BlogPostAttributes } | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Temporary mock data until Strapi integration
-  const post = {
-    title: 'Car Maintenance Tips for Summer',
-    meta_title: 'Essential Car Maintenance Tips for Summer | GaadiMech',
-    meta_description: 'Learn how to keep your car running smoothly during hot summer months with these essential maintenance tips from GaadiMech experts.',
-    excerpt: 'Keep your car running smoothly during the hot summer months...',
-    content: `
-# Car Maintenance Tips for Summer
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        if (!slug) throw new Error('Post not found');
+        const response = await blogService.getPostBySlug(slug);
+        
+        // Ensure the response has the expected structure
+        if (response && response.id && response.attributes) {
+          setPost(response);
+        } else {
+          console.error('Invalid post data:', response);
+          throw new Error('Invalid post data structure');
+        }
+      } catch (err) {
+        console.error('Error details:', err);
+        setError('Failed to load blog post');
+        setTimeout(() => navigate('/blog'), 2000);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-Summer can be tough on your vehicle. Here are some essential tips to keep your car running smoothly:
+    fetchPost();
+  }, [slug, navigate]);
 
-## 1. Check Your Cooling System
-- Monitor coolant levels
-- Inspect hoses for leaks
-- Test the radiator fan
-
-## 2. Maintain Proper Tire Pressure
-Hot roads can cause tire pressure to increase. Check your tire pressure regularly.
-
-## 3. Test Your AC System
-Make sure your air conditioning is working efficiently before the peak summer heat.
-    `,
-    image_url: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3',
-    published_at: '2024-03-15'
+  const getImageUrl = (attributes: BlogPostAttributes) => {
+    try {
+      // Add defensive checks
+      if (!attributes) return null;
+      if (!attributes.featuredImage) return null;
+      
+      // Log the structure to debug
+      console.log('Featured Image:', attributes.featuredImage);
+      
+      // Check if formats exists
+      if (attributes.featuredImage.formats && attributes.featuredImage.formats.large) {
+        return env.getImageUrl(attributes.featuredImage.formats.large.url);
+      }
+      
+      // Fallback to original url
+      if (attributes.featuredImage.url) {
+        return env.getImageUrl(attributes.featuredImage.url);
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error in getImageUrl:', error);
+      return null;
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="pt-20 flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#FF7200]"></div>
+      </div>
+    );
+  }
+
+  if (error || !post || !post.attributes) {
+    return (
+      <div className="pt-20 flex justify-center items-center min-h-screen text-red-600">
+        {error || 'Post not found'}
+      </div>
+    );
+  }
+
+  const { attributes } = post;
+  const imageUrl = getImageUrl(attributes);
 
   return (
     <motion.div
@@ -42,37 +93,52 @@ Make sure your air conditioning is working efficiently before the peak summer he
       className="pt-20"
     >
       <Helmet>
-        <title>{post.meta_title || post.title} - GaadiMech Blog</title>
-        <meta name="description" content={post.meta_description || post.excerpt} />
-        <meta property="og:title" content={post.meta_title || post.title} />
-        <meta property="og:description" content={post.meta_description || post.excerpt} />
-        {post.image_url && <meta property="og:image" content={post.image_url} />}
+        <title>{attributes.seo?.metaTitle || attributes.title} - GaadiMech Blog</title>
+        <meta 
+          name="description" 
+          content={attributes.seo?.metaDescription || attributes.excerpt} 
+        />
+        <meta 
+          property="og:title" 
+          content={attributes.seo?.metaTitle || attributes.title} 
+        />
+        <meta 
+          property="og:description" 
+          content={attributes.seo?.metaDescription || attributes.excerpt} 
+        />
+        {attributes.seo?.metaImage && (
+          <meta 
+            property="og:image" 
+            content={`${env.STRAPI_URL}${attributes.seo.metaImage.url}`} 
+          />
+        )}
+        <meta name="robots" content={attributes.seo?.metaRobots || 'index,follow'} />
         <link rel="canonical" href={`https://gaadimech.com/blog/${slug}`} />
       </Helmet>
 
       <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        {post.image_url && (
+        {imageUrl && (
           <img
-            src={post.image_url}
-            alt={post.title}
+            src={imageUrl}
+            alt={attributes.title}
             className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg mb-8"
           />
         )}
         
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-          {post.title}
+          {attributes.title}
         </h1>
         
         <div className="text-gray-600 mb-8">
-          Published on {new Date(post.published_at).toLocaleDateString('en-US', {
+          Published on {new Date(attributes.publishedAt).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
           })}
         </div>
 
-        <div className="prose prose-lg max-w-none">
-          <ReactMarkdown>{post.content}</ReactMarkdown>
+        <div className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-a:text-[#FF7200] hover:prose-a:text-[#cc5b00]">
+          <ReactMarkdown>{attributes.content}</ReactMarkdown>
         </div>
       </article>
     </motion.div>
