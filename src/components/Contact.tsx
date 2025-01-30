@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail } from 'lucide-react';
+import { submitContactForm } from '../services/contact';
+
+interface FormErrors {
+  name?: string;
+  email?: string;
+  phone?: string;
+  message?: string;
+}
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -9,21 +17,91 @@ const Contact = () => {
     message: ''
   });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
+  const [isSubmitAttempted, setIsSubmitAttempted] = useState(false);
+
+  const validateForm = (): FormErrors => {
+    const newErrors: FormErrors = {};
+
+    // Name validation
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = 'Name must be at least 2 characters';
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    // Phone validation - Indian phone number
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    } else if (!phoneRegex.test(formData.phone)) {
+      newErrors.phone = 'Please enter a valid 10-digit Indian phone number';
+    }
+
+    // Message validation
+    if (!formData.message.trim()) {
+      newErrors.message = 'Message is required';
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'Message must be at least 10 characters';
+    }
+
+    return newErrors;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus('loading');
+    setIsSubmitAttempted(true);
     
-    // TODO: Implement form submission to Strapi
-    // For now, just simulate success
-    setTimeout(() => {
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setStatus('loading');
+    setErrorMessage('');
+    
+    try {
+      await submitContactForm(formData);
       setStatus('success');
       setFormData({ name: '', email: '', phone: '', message: '' });
-    }, 1000);
+      setTouchedFields({});
+      setIsSubmitAttempted(false);
+    } catch (error) {
+      setStatus('error');
+      const message = (error as any)?.response?.data?.error?.message || 'Something went wrong. Please try again.';
+      setErrorMessage(message);
+      console.error('Contact form submission error:', message);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id } = e.target;
+    setTouchedFields(prev => ({ ...prev, [id]: true }));
+    
+    // Only validate this field if it's been touched or form submission was attempted
+    if (touchedFields[id] || isSubmitAttempted) {
+      const newErrors = validateForm();
+      setErrors(prev => ({
+        ...prev,
+        [id]: newErrors[id as keyof FormErrors]
+      }));
+    }
   };
 
   const handleLocationClick = () => {
@@ -36,6 +114,10 @@ const Contact = () => {
 
   const handleEmailClick = () => {
     window.location.href = 'mailto:contact@gaadimech.com';
+  };
+
+  const shouldShowError = (fieldName: keyof FormErrors) => {
+    return (touchedFields[fieldName] || isSubmitAttempted) && errors[fieldName];
   };
 
   return (
@@ -56,53 +138,89 @@ const Contact = () => {
               <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
                 {status === 'error' && (
                   <div className="bg-red-50 text-red-600 p-3 rounded-md">
-                    {status}
+                    {errorMessage}
                   </div>
                 )}
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                    Name *
+                  </label>
                   <input
                     type="text"
                     id="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200]"
+                    onBlur={handleBlur}
+                    className={`w-full rounded-md shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200] ${
+                      shouldShowError('name') ? 'border-red-300' : 'border-gray-300'
+                    }`}
                     required
                   />
+                  {shouldShowError('name') && (
+                    <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+                  )}
                 </div>
+
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    Email *
+                  </label>
                   <input
                     type="email"
                     id="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200]"
+                    onBlur={handleBlur}
+                    className={`w-full rounded-md shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200] ${
+                      shouldShowError('email') ? 'border-red-300' : 'border-gray-300'
+                    }`}
                     required
                   />
+                  {shouldShowError('email') && (
+                    <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                  )}
                 </div>
+
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                    Phone *
+                  </label>
                   <input
                     type="tel"
                     id="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200]"
+                    onBlur={handleBlur}
+                    className={`w-full rounded-md shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200] ${
+                      shouldShowError('phone') ? 'border-red-300' : 'border-gray-300'
+                    }`}
                     required
                   />
+                  {shouldShowError('phone') && (
+                    <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
+                  )}
                 </div>
+
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Message *</label>
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                    Message *
+                  </label>
                   <textarea
                     id="message"
                     value={formData.message}
                     onChange={handleChange}
+                    onBlur={handleBlur}
                     rows={4}
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200]"
+                    className={`w-full rounded-md shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200] ${
+                      shouldShowError('message') ? 'border-red-300' : 'border-gray-300'
+                    }`}
                     required
                   ></textarea>
+                  {shouldShowError('message') && (
+                    <p className="mt-1 text-sm text-red-600">{errors.message}</p>
+                  )}
                 </div>
+
                 <button
                   type="submit"
                   disabled={status === 'loading'}
