@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Calendar, User, Phone, Car } from 'lucide-react';
+import { X, Calendar, User, Phone, Car, MessageSquare } from 'lucide-react';
+import { enquiryService } from '../services/enquiry';
+import type { EnquiryFormData } from '../types/enquiry';
 
 interface CustomerFormProps {
   isOpen: boolean;
@@ -9,35 +11,80 @@ interface CustomerFormProps {
 }
 
 const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose }) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<EnquiryFormData>({
     name: '',
-    mobile: '',
-    car: '',
-    preferred_date: '',
-    service_type: 'general'
+    mobileNumber: '',
+    carModel: '',
+    preferredDate: '',
+    message: ''
   });
+  
+  const [errors, setErrors] = useState<Partial<EnquiryFormData>>({});
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const validateForm = (): boolean => {
+    const newErrors: Partial<EnquiryFormData> = {};
+    
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    }
+    
+    if (!formData.mobileNumber.trim()) {
+      newErrors.mobileNumber = 'Mobile number is required';
+    } else if (!/^[6-9]\d{9}$/.test(formData.mobileNumber)) {
+      newErrors.mobileNumber = 'Please enter a valid 10-digit mobile number';
+    }
+    
+    if (!formData.carModel.trim()) {
+      newErrors.carModel = 'Car model is required';
+    }
+    
+    if (!formData.preferredDate) {
+      newErrors.preferredDate = 'Preferred date is required';
+    }
+    
+    if (!formData.message.trim()) {
+      newErrors.message = 'Please provide a brief message';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus('loading');
+    
+    if (!validateForm()) {
+      return;
+    }
 
-    // TODO: Implement form submission to Strapi
-    // For now, just simulate success
-    setTimeout(() => {
+    setStatus('loading');
+    setErrorMessage('');
+
+    try {
+      await enquiryService.submit(formData);
       setStatus('success');
       setFormData({
         name: '',
-        mobile: '',
-        car: '',
-        preferred_date: '',
-        service_type: 'general'
+        mobileNumber: '',
+        carModel: '',
+        preferredDate: '',
+        message: ''
       });
-    }, 1000);
+    } catch (error) {
+      setStatus('error');
+      setErrorMessage(error instanceof Error ? error.message : 'An error occurred. Please try again.');
+    }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
+    // Clear error when user starts typing
+    if (errors[id as keyof EnquiryFormData]) {
+      setErrors(prev => ({ ...prev, [id]: undefined }));
+    }
   };
 
   return (
@@ -87,7 +134,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose }) => {
 
             {status === 'error' && (
               <div className="bg-red-50 text-red-600 p-3 rounded-md mb-4">
-                An error occurred. Please try again.
+                {errorMessage}
               </div>
             )}
 
@@ -101,67 +148,95 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose }) => {
                   <input
                     type="text"
                     id="name"
-                    required
                     value={formData.name}
                     onChange={handleChange}
-                    className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200]"
+                    className={`pl-10 block w-full rounded-md shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200] ${
+                      errors.name ? 'border-red-300' : 'border-gray-300'
+                    }`}
                     placeholder="John Doe"
                   />
                 </div>
+                {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
               </div>
 
               <div className="relative">
-                <label htmlFor="mobile" className="block text-sm font-medium text-gray-700">Mobile Number *</label>
+                <label htmlFor="mobileNumber" className="block text-sm font-medium text-gray-700">Mobile Number *</label>
                 <div className="mt-1 relative rounded-md shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Phone className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
                     type="tel"
-                    id="mobile"
-                    required
-                    value={formData.mobile}
+                    id="mobileNumber"
+                    value={formData.mobileNumber}
                     onChange={handleChange}
-                    className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200]"
-                    placeholder="+91 98765 43210"
+                    className={`pl-10 block w-full rounded-md shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200] ${
+                      errors.mobileNumber ? 'border-red-300' : 'border-gray-300'
+                    }`}
+                    placeholder="9876543210"
                   />
                 </div>
+                {errors.mobileNumber && <p className="mt-1 text-sm text-red-600">{errors.mobileNumber}</p>}
               </div>
 
               <div className="relative">
-                <label htmlFor="car" className="block text-sm font-medium text-gray-700">Car Model *</label>
+                <label htmlFor="carModel" className="block text-sm font-medium text-gray-700">Car Model *</label>
                 <div className="mt-1 relative rounded-md shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Car className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
                     type="text"
-                    id="car"
-                    required
-                    value={formData.car}
+                    id="carModel"
+                    value={formData.carModel}
                     onChange={handleChange}
-                    className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200]"
+                    className={`pl-10 block w-full rounded-md shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200] ${
+                      errors.carModel ? 'border-red-300' : 'border-gray-300'
+                    }`}
                     placeholder="e.g., Honda City 2020"
                   />
                 </div>
+                {errors.carModel && <p className="mt-1 text-sm text-red-600">{errors.carModel}</p>}
               </div>
 
               <div className="relative">
-                <label htmlFor="preferred_date" className="block text-sm font-medium text-gray-700">Preferred Date *</label>
+                <label htmlFor="preferredDate" className="block text-sm font-medium text-gray-700">Preferred Date *</label>
                 <div className="mt-1 relative rounded-md shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Calendar className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
                     type="date"
-                    id="preferred_date"
-                    required
-                    value={formData.preferred_date}
+                    id="preferredDate"
+                    value={formData.preferredDate}
                     onChange={handleChange}
                     min={new Date().toISOString().split('T')[0]}
-                    className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200]"
+                    className={`pl-10 block w-full rounded-md shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200] ${
+                      errors.preferredDate ? 'border-red-300' : 'border-gray-300'
+                    }`}
                   />
                 </div>
+                {errors.preferredDate && <p className="mt-1 text-sm text-red-600">{errors.preferredDate}</p>}
+              </div>
+
+              <div className="relative">
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700">Message *</label>
+                <div className="mt-1 relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <MessageSquare className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <textarea
+                    id="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    rows={3}
+                    className={`pl-10 block w-full rounded-md shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200] ${
+                      errors.message ? 'border-red-300' : 'border-gray-300'
+                    }`}
+                    placeholder="Please describe your service requirements..."
+                  />
+                </div>
+                {errors.message && <p className="mt-1 text-sm text-red-600">{errors.message}</p>}
               </div>
 
               <button

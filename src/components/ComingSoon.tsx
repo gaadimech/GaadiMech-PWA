@@ -1,8 +1,17 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { IMAGES } from '../assets/images';
 
 const ComingSoon = () => {
+  const handleAppStoreClick = () => {
+    // Replace with actual App Store link when available
+    window.open('#', '_blank');
+  };
+
+  const handlePlayStoreClick = () => {
+    // Replace with actual Play Store link when available
+    window.open('#', '_blank');
+  };
+
   return (
     <section className="py-12 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,6 +34,9 @@ const ComingSoon = () => {
             src={IMAGES.APP_STORE_BADGE}
             alt="Download on App Store"
             className="h-12 md:h-16 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={handleAppStoreClick}
+            role="button"
+            tabIndex={0}
           />
           <motion.img
             initial={{ opacity: 0, x: 50 }}
@@ -33,6 +45,9 @@ const ComingSoon = () => {
             src={IMAGES.PLAY_STORE_BADGE}
             alt="Get it on Google Play"
             className="h-12 md:h-16 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={handlePlayStoreClick}
+            role="button"
+            tabIndex={0}
           />
         </div>
       </div>

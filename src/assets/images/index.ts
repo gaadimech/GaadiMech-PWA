@@ -1,7 +1,7 @@
 // Local image paths (all images will be stored in public directory)
 export const IMAGES = {
   // App store badges stored locally instead of external URLs
-  APP_STORE_BADGE: '/images/app-store-badge.svg',
+  APP_STORE_BADGE: '/images/app-store-badge.png',
   PLAY_STORE_BADGE: '/images/play-store-badge.png',
   
   // About section
