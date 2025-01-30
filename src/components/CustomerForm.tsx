@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Calendar, User, Phone, Car } from 'lucide-react';
+import { X, Calendar, User, Phone, Car, Wrench } from 'lucide-react';
 import { enquiryService } from '../services/enquiry';
-import type { EnquiryFormData } from '../types/enquiry';
+import type { EnquiryFormData, ServiceType } from '../types/enquiry';
 
 interface CustomerFormProps {
   isOpen: boolean;
@@ -16,12 +16,14 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose }) => {
     mobileNumber: '',
     carModel: '',
     preferredDate: '',
-    message: ''
+    message: '',
+    serviceType: undefined
   });
   
   const [errors, setErrors] = useState<Partial<EnquiryFormData>>({});
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [serviceTypes, setServiceTypes] = useState<ServiceType[]>([]);
 
   const validateForm = (): boolean => {
     const newErrors: Partial<EnquiryFormData> = {};
@@ -66,7 +68,8 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose }) => {
         mobileNumber: '',
         carModel: '',
         preferredDate: '',
-        message: ''
+        message: '',
+        serviceType: undefined
       });
     } catch (error) {
       setStatus('error');
@@ -74,7 +77,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
     setFormData(prev => ({ ...prev, [id]: value }));
     // Clear error when user starts typing
@@ -103,6 +106,25 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose }) => {
       const today = new Date().toISOString().split('T')[0];
       setFormData(prev => ({ ...prev, preferredDate: today }));
     }
+  }, []);
+
+  useEffect(() => {
+    const fetchServiceTypes = async () => {
+      try {
+        const response = await enquiryService.getServiceTypes();
+        setServiceTypes(response.data);
+        
+        // Set default service type if available
+        if (response.data.length > 0) {
+          const defaultService = response.data.find(st => st.isDefault) || response.data[0];
+          setFormData(prev => ({ ...prev, serviceType: defaultService.id }));
+        }
+      } catch (error) {
+        console.error('Failed to fetch service types:', error);
+      }
+    };
+
+    fetchServiceTypes();
   }, []);
 
   return (
@@ -238,6 +260,45 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose }) => {
                   />
                 </div>
                 {errors.preferredDate && <p className="mt-1 text-sm text-red-600">{errors.preferredDate}</p>}
+              </div>
+
+              <div className="relative">
+                <label htmlFor="serviceType" className="block text-sm font-medium text-gray-700">
+                  Service Type *
+                </label>
+                <div className="mt-1 relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Wrench className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <select
+                    id="serviceType"
+                    value={formData.serviceType || ''}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setFormData(prev => ({
+                        ...prev,
+                        serviceType: value ? Number(value) : undefined
+                      }));
+                    }}
+                    className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200] appearance-none bg-white"
+                  >
+                    <option value="" disabled>Select a service type</option>
+                    {serviceTypes.map((type) => (
+                      <option 
+                        key={type.id} 
+                        value={type.id}
+                        className="py-2"
+                      >
+                        {type.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
               </div>
 
               <button
