@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Calendar, User, Phone, Car, MessageSquare } from 'lucide-react';
+import { X, Calendar, User, Phone, Car } from 'lucide-react';
 import { enquiryService } from '../services/enquiry';
 import type { EnquiryFormData } from '../types/enquiry';
 
@@ -43,10 +43,6 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose }) => {
     if (!formData.preferredDate) {
       newErrors.preferredDate = 'Preferred date is required';
     }
-    
-    if (!formData.message.trim()) {
-      newErrors.message = 'Please provide a brief message';
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -86,6 +82,28 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose }) => {
       setErrors(prev => ({ ...prev, [id]: undefined }));
     }
   };
+
+  const getRelativeDateString = (dateStr: string): string => {
+    if (!dateStr) return '';
+    
+    const date = new Date(dateStr);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const diffTime = date.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Tomorrow';
+    return `${diffDays} days from Today`;
+  };
+
+  useEffect(() => {
+    if (!formData.preferredDate) {
+      const today = new Date().toISOString().split('T')[0];
+      setFormData(prev => ({ ...prev, preferredDate: today }));
+    }
+  }, []);
 
   return (
     <Modal
@@ -153,7 +171,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose }) => {
                     className={`pl-10 block w-full rounded-md shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200] ${
                       errors.name ? 'border-red-300' : 'border-gray-300'
                     }`}
-                    placeholder="John Doe"
+                    placeholder="Akash Sharma"
                   />
                 </div>
                 {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
@@ -200,7 +218,9 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose }) => {
               </div>
 
               <div className="relative">
-                <label htmlFor="preferredDate" className="block text-sm font-medium text-gray-700">Preferred Date *</label>
+                <label htmlFor="preferredDate" className="block text-sm font-medium text-gray-700">
+                  Preferred Date * {formData.preferredDate && <span className="text-gray-500 ml-2">({getRelativeDateString(formData.preferredDate)})</span>}
+                </label>
                 <div className="mt-1 relative rounded-md shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Calendar className="h-5 w-5 text-gray-400" />
@@ -211,32 +231,13 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose }) => {
                     value={formData.preferredDate}
                     onChange={handleChange}
                     min={new Date().toISOString().split('T')[0]}
+                    max={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
                     className={`pl-10 block w-full rounded-md shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200] ${
                       errors.preferredDate ? 'border-red-300' : 'border-gray-300'
                     }`}
                   />
                 </div>
                 {errors.preferredDate && <p className="mt-1 text-sm text-red-600">{errors.preferredDate}</p>}
-              </div>
-
-              <div className="relative">
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700">Message *</label>
-                <div className="mt-1 relative rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <MessageSquare className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <textarea
-                    id="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    rows={3}
-                    className={`pl-10 block w-full rounded-md shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200] ${
-                      errors.message ? 'border-red-300' : 'border-gray-300'
-                    }`}
-                    placeholder="Please describe your service requirements..."
-                  />
-                </div>
-                {errors.message && <p className="mt-1 text-sm text-red-600">{errors.message}</p>}
               </div>
 
               <button
