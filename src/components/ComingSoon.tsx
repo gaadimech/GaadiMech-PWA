@@ -26,14 +26,14 @@ const ComingSoon = () => {
           </motion.h2>
           <p className="text-xl text-gray-600">Get ready for the GaadiMech Mobile App</p>
         </div>
-        <div className="flex flex-col md:flex-row justify-center items-center gap-8 max-w-2xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 max-w-2xl mx-auto">
           <motion.img
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             src={IMAGES.APP_STORE_BADGE}
             alt="Download on App Store"
-            className="h-12 md:h-16 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+            className="h-8 md:h-10 w-auto cursor-pointer hover:opacity-80 transition-opacity"
             onClick={handleAppStoreClick}
             role="button"
             tabIndex={0}

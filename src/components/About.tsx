@@ -1,6 +1,4 @@
-import React from 'react';
 import { CheckCircle } from 'lucide-react';
-import { IMAGES } from '../assets/images';
 
 const About = () => {
   return (
@@ -9,9 +7,9 @@ const About = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
           <div className="order-2 md:order-1">
             <img
-              src={IMAGES.ABOUT_IMAGE}
+              src="https://i.ibb.co/k1H7j7b/App-Frame.jpg"
               alt="GaadiMech Car Service"
-              className="hidden md:block rounded-lg shadow-xl w-full h-auto max-w-md mx-auto"
+              className="hidden md:block rounded-lg shadow-xl object-cover mx-auto h-[40em]"
             />
           </div>
           <div className="order-1 md:order-2">

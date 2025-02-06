@@ -5,7 +5,7 @@ export const IMAGES = {
   PLAY_STORE_BADGE: '/images/play-store-badge.png',
   
   // About section
-  ABOUT_IMAGE: '/images/about-car-service.jpg',
+  ABOUT_IMAGE: '/images/gaadimech-about.svg',
   
   // Company logo
   LOGO: '/images/logo.png'
