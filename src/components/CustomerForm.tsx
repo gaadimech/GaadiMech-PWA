@@ -89,12 +89,14 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose }) => {
   const getRelativeDateString = (dateStr: string): string => {
     if (!dateStr) return '';
     
-    const date = new Date(dateStr);
+    // Create dates using the date string in local timezone
+    const date = new Date(dateStr + 'T00:00:00');
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
+    // Calculate difference in days
     const diffTime = date.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     
     if (diffDays === 0) return 'Today';
     if (diffDays === 1) return 'Tomorrow';
@@ -103,8 +105,14 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (!formData.preferredDate) {
-      const today = new Date().toISOString().split('T')[0];
-      setFormData(prev => ({ ...prev, preferredDate: today }));
+      // Get today's date in YYYY-MM-DD format in local timezone
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const todayStr = `${yyyy}-${mm}-${dd}`;
+      
+      setFormData(prev => ({ ...prev, preferredDate: todayStr }));
     }
   }, []);
 
