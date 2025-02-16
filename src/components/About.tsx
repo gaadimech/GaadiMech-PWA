@@ -1,3 +1,4 @@
+import React from 'react';
 import { CheckCircle } from 'lucide-react';
 
 const About = () => {
@@ -8,8 +9,8 @@ const About = () => {
           <div className="order-2 md:order-1">
             <img
               src="https://i.ibb.co/k1H7j7b/App-Frame.jpg"
-              alt="GaadiMech Car Service"
-              className="hidden md:block rounded-lg shadow-xl object-cover mx-auto h-[40em]"
+              alt="GaadiMech App Interface"
+              className="hidden md:block rounded-lg shadow-xl w-full h-auto max-w-md mx-auto"
             />
           </div>
           <div className="order-1 md:order-2">

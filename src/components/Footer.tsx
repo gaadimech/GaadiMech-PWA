@@ -1,7 +1,14 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Facebook, Instagram, Youtube, Mail } from 'lucide-react';
 
 const Footer = () => {
+  const location = useLocation();
+
+  const handleLinkClick = () => {
+    window.scrollTo(0, 0);
+  };
+
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -15,19 +22,18 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              <li><a href="#home" className="text-gray-400 hover:text-[#FF7200]">Home</a></li>
-              <li><a href="#services" className="text-gray-400 hover:text-[#FF7200]">Services</a></li>
-              <li><a href="#about" className="text-gray-400 hover:text-[#FF7200]">About</a></li>
-              <li><a href="#contact" className="text-gray-400 hover:text-[#FF7200]">Contact</a></li>
+              <li><Link to="/" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Home</Link></li>
+              <li><Link to="/services" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Services</Link></li>
+              <li><Link to="/about" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">About</Link></li>
+              <li><Link to="/contact" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Contact</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-lg font-semibold mb-4">Services</h4>
+            <h4 className="text-lg font-semibold mb-4">Legal</h4>
             <ul className="space-y-2">
-              <li className="text-gray-400">General Repair</li>
-              <li className="text-gray-400">AC Service</li>
-              <li className="text-gray-400">Denting & Painting</li>
-              <li className="text-gray-400">Emergency Service</li>
+              <li><Link to="/privacy-policy" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Privacy Policy</Link></li>
+              <li><Link to="/terms" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Terms & Conditions</Link></li>
+              <li><Link to="/refund-policy" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Refund Policy</Link></li>
             </ul>
           </div>
           <div>

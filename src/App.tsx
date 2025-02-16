@@ -10,9 +10,26 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
+import Careers from './pages/Careers';
+import ExpressService from './pages/Express';
 import Footer from './components/Footer';
 import CustomerForm from './components/CustomerForm';
 import WhatsAppButton from './components/WhatsAppButton';
+
+// Service Pages
+import PeriodicService from './pages/services/PeriodicService';
+import ACService from './pages/services/ACService';
+import CarSpaService from './pages/services/CarSpaService';
+import DentingService from './pages/services/DentingService';
+import BatteryService from './pages/services/BatteryService';
+import WindshieldService from './pages/services/WindshieldService';
+import DetailingService from './pages/services/DetailingService';
+import TyreService from './pages/services/TyreService';
+
+// Legal Pages
+import PrivacyPolicy from './pages/legal/PrivacyPolicy';
+import Terms from './pages/legal/Terms';
+import RefundPolicy from './pages/legal/RefundPolicy';
 
 Modal.setAppElement('#root');
 
@@ -40,6 +57,23 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/careers" element={<Careers />} />
+              <Route path="/express" element={<ExpressService />} />
+              
+              {/* Service Routes */}
+              <Route path="/services/periodic" element={<PeriodicService />} />
+              <Route path="/services/ac" element={<ACService />} />
+              <Route path="/services/car-spa" element={<CarSpaService />} />
+              <Route path="/services/denting" element={<DentingService />} />
+              <Route path="/services/battery" element={<BatteryService />} />
+              <Route path="/services/windshield" element={<WindshieldService />} />
+              <Route path="/services/detailing" element={<DetailingService />} />
+              <Route path="/services/tyre" element={<TyreService />} />
+              
+              {/* Legal Routes */}
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/refund-policy" element={<RefundPolicy />} />
             </Routes>
           </AnimatePresence>
           <Footer />
