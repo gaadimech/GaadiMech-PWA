@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Car, PenTool as Tool, Phone, CheckCircle, ArrowRight, Share2, Gift, Wrench, Sparkles, Timer, Calendar, Image } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
-import { expressService } from '../services/express';
+import { expressService } from '../services/expressService';
 
 const serviceComparison = [
   {
@@ -123,10 +123,7 @@ const ExpressService = () => {
 
     try {
       await expressService.submitLead({
-        name: 'Express Lead',
         mobileNumber: mobile,
-        carModel: 'To be updated',
-        preferredDate: new Date().toISOString().split('T')[0],
         serviceType: 'express'
       });
 
