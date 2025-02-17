@@ -116,12 +116,25 @@ const ExpressService = () => {
   const [mobile, setMobile] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
   const [currentImage, setCurrentImage] = useState(0);
   const [isCustomerFormOpen, setIsCustomerFormOpen] = useState(false);
   const [selectedServiceType, setSelectedServiceType] = useState<number | undefined>();
 
+  const validateMobile = (number: string) => {
+    const mobileRegex = /^[6-9]\d{9}$/;
+    return mobileRegex.test(number);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+
+    if (!validateMobile(mobile)) {
+      setError('Please enter a valid 10-digit mobile number');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -134,6 +147,7 @@ const ExpressService = () => {
       setMobile('');
     } catch (error) {
       console.error('Error submitting form:', error);
+      setError('Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -194,22 +208,29 @@ const ExpressService = () => {
                   <p className="font-semibold">Thanks! We'll call you right back.</p>
                 </div>
               ) : (
-                <div className="flex gap-2">
-                  <input
-                    type="tel"
-                    value={mobile}
-                    onChange={(e) => setMobile(e.target.value)}
-                    placeholder="Enter your mobile number"
-                    className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#FF7200] focus:border-transparent"
-                    required
-                  />
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="bg-[#FF7200] text-white px-6 py-3 rounded-lg hover:bg-[#0e5aa8] transition-colors disabled:opacity-50"
-                  >
-                    {isSubmitting ? 'Submitting...' : 'Get Instant Callback'}
-                  </button>
+                <div className="flex flex-col gap-2">
+                  <div className="flex gap-2">
+                    <input
+                      type="tel"
+                      value={mobile}
+                      onChange={(e) => setMobile(e.target.value)}
+                      placeholder="Enter your mobile number"
+                      className={`flex-1 px-4 py-3 rounded-lg border ${
+                        error ? 'border-red-500' : 'border-gray-300'
+                      } focus:ring-2 focus:ring-[#FF7200] focus:border-transparent`}
+                      required
+                    />
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="bg-[#FF7200] text-white px-6 py-3 rounded-lg hover:bg-[#0e5aa8] transition-colors disabled:opacity-50"
+                    >
+                      {isSubmitting ? 'Submitting...' : 'Get Instant Callback'}
+                    </button>
+                  </div>
+                  {error && (
+                    <p className="text-red-500 text-sm mt-1">{error}</p>
+                  )}
                 </div>
               )}
             </motion.form>
