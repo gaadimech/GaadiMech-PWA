@@ -42,7 +42,6 @@ export default defineConfig({
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
           ui: ['lucide-react', 'framer-motion', 'react-modal'],
-          forms: ['react-hook-form', '@hookform/resolvers'],
           markdown: ['react-markdown']
         }
       }
