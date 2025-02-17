@@ -8,9 +8,10 @@ import type { EnquiryFormData, ServiceType } from '../types/enquiry';
 interface CustomerFormProps {
   isOpen: boolean;
   onClose: () => void;
+  defaultServiceType?: number;
 }
 
-const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose }) => {
+const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultServiceType }) => {
   const [formData, setFormData] = useState<EnquiryFormData>({
     name: '',
     mobileNumber: '',
@@ -134,6 +135,15 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose }) => {
 
     fetchServiceTypes();
   }, []);
+
+  useEffect(() => {
+    if (isOpen && defaultServiceType) {
+      setFormData(prev => ({
+        ...prev,
+        serviceType: defaultServiceType
+      }));
+    }
+  }, [isOpen, defaultServiceType]);
 
   return (
     <Modal

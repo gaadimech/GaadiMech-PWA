@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Clock, Car, PenTool as Tool, Phone, CheckCircle, ArrowRight, Share2, Gift, Wrench, Sparkles, Timer, Calendar, Image } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { expressService } from '../services/expressService';
+import CustomerForm from '../components/CustomerForm';
 
 const serviceComparison = [
   {
@@ -116,6 +117,8 @@ const ExpressService = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
+  const [isCustomerFormOpen, setIsCustomerFormOpen] = useState(false);
+  const [selectedServiceType, setSelectedServiceType] = useState<number | undefined>();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -371,23 +374,45 @@ const ExpressService = () => {
                   ))}
                 </div>
 
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => {
-                    document.getElementById('mobile-input')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className={`w-full py-3 rounded-md transition-colors flex items-center justify-center gap-2 ${service.highlight
-                      ? 'bg-[#FF7200] text-white hover:bg-[#0e5aa8]'
-                      : 'border-2 border-[#FF7200] text-[#FF7200] hover:bg-[#FF7200] hover:text-white'
-                    }`}
-                >
-                  <Calendar className="w-5 h-5" />
-                  Schedule Service
-                </motion.button>
+                {service.name === "Basic Periodic Service" ? (
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      setSelectedServiceType(1);
+                      setIsCustomerFormOpen(true);
+                    }}
+                    className="w-full py-3 rounded-md transition-colors flex items-center justify-center gap-2 border-2 border-[#FF7200] text-[#FF7200] hover:bg-[#FF7200] hover:text-white"
+                  >
+                    <Calendar className="w-5 h-5" />
+                    Schedule Service
+                  </motion.button>
+                ) : (
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      setSelectedServiceType(7);
+                      setIsCustomerFormOpen(true);
+                    }}
+                    className="w-full py-3 rounded-md transition-colors flex items-center justify-center gap-2 bg-[#FF7200] text-white hover:bg-[#0e5aa8]"
+                  >
+                    <Calendar className="w-5 h-5" />
+                    Schedule Service
+                  </motion.button>
+                )}
               </motion.div>
             ))}
           </div>
+
+          <CustomerForm 
+            isOpen={isCustomerFormOpen}
+            onClose={() => {
+              setIsCustomerFormOpen(false);
+              setSelectedServiceType(undefined);
+            }}
+            defaultServiceType={selectedServiceType}
+          />
         </div>
       </section>
 
