@@ -16,7 +16,7 @@ const features = [
 
 const PeriodicService = () => {
   const handleBookNow = () => {
-    window.open('https://wa.me/917300042410', '_blank');
+    window.open('https://wa.me/917300042410?text=Hi%2C%20I%27d%20like%20to%20book%20a%20Periodic%20Service.', '_blank');
   };
 
   return (
