@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Clock, Car, PenTool as Tool, Phone, CheckCircle, ArrowRight, Share2, Gift, Wrench, Sparkles, Timer, Calendar, Image } from 'lucide-react';
+import { Clock, Car, PenTool as Tool, Phone, CheckCircle, ArrowRight, Share2, Gift, Wrench, Sparkles, Timer, Calendar, Image, MessageSquare } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { expressService } from '../services/expressService';
 import CustomerForm from '../components/CustomerForm';
@@ -457,17 +457,17 @@ const ExpressService = () => {
           <p className="text-xl text-gray-600 mb-8">
             Book your 90-minute express service now and experience the future of car care.
           </p>
-          <motion.button
+          <motion.a
+            href="https://api.whatsapp.com/send/?phone=917300042410&text=Hi%2C%20I%27d%20like%20to%20book%20an%20Express%20Service."
+            target="_blank"
+            rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              document.getElementById('mobile-input')?.scrollIntoView({ behavior: 'smooth' });
-            }}
-            className="bg-[#FF7200] text-white px-8 py-3 rounded-md hover:bg-[#0e5aa8] transition-colors inline-flex items-center"
+            className="bg-[#FF7200] hover:bg-[#25D366] text-white px-8 py-3 rounded-md transition-colors inline-flex items-center gap-2"
           >
-            Schedule Your Express Service
-            <ArrowRight className="ml-2" size={20} />
-          </motion.button>
+            <MessageSquare className="w-5 h-5" />
+            Connect on WhatsApp
+          </motion.a>
         </div>
       </section>
     </motion.div>
