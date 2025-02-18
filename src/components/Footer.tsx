@@ -12,11 +12,17 @@ const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+          <div className="md:col-span-2">
             <h3 className="text-2xl font-bold text-[#FF7200] mb-4">GaadiMech</h3>
+            <p className="text-gray-400 mb-4">
+              Looking for a reliable car service near you? GaadiMech is your trusted car repair partner, 
+              bringing professional auto mechanics right to your doorstep. We offer comprehensive car repair 
+              and maintenance services across major cities in India, making quality car care accessible and convenient.
+            </p>
             <p className="text-gray-400">
-              Your trusted partner for professional car repair and maintenance services.
+              From routine maintenance to complex repairs, our certified car mechanics ensure your vehicle 
+              gets the expert care it deserves, wherever you are.
             </p>
           </div>
           <div>
@@ -29,15 +35,24 @@ const Footer = () => {
             </ul>
           </div>
           <div>
+            <h4 className="text-lg font-semibold mb-4">Our Services</h4>
+            <ul className="space-y-2">
+              <li><Link to="/services#periodic-maintenance" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Periodic Maintenance</Link></li>
+              <li><Link to="/services#car-ac-service" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Car AC Service</Link></li>
+              <li><Link to="/services#car-denting-painting" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Denting & Painting</Link></li>
+              <li><Link to="/services#car-detailing" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Car Detailing</Link></li>
+              <li><Link to="/services#car-inspection" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Car Inspection</Link></li>
+              <li><Link to="/services#wheel-care" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Wheel Care</Link></li>
+            </ul>
+          </div>
+          <div>
             <h4 className="text-lg font-semibold mb-4">Legal</h4>
             <ul className="space-y-2">
               <li><Link to="/privacy-policy" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Privacy Policy</Link></li>
               <li><Link to="/terms" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Terms & Conditions</Link></li>
               <li><Link to="/refund-policy" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Refund Policy</Link></li>
             </ul>
-          </div>
-          <div>
-            <h4 className="text-lg font-semibold mb-4">Connect With Us</h4>
+            <h4 className="text-lg font-semibold mb-4 mt-6">Connect With Us</h4>
             <div className="flex space-x-4">
               <a 
                 href="https://www.facebook.com/GaadiMech.India/" 
