@@ -16,7 +16,7 @@ import Footer from './components/Footer';
 import CustomerForm from './components/CustomerForm';
 import WhatsAppButton from './components/WhatsAppButton';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
-
+import { useAmplitudeAnalytics } from './hooks/useAmplitudeAnalytics';
 // Service Pages
 import PeriodicService from './pages/services/PeriodicService';
 import ACService from './pages/services/ACService';
