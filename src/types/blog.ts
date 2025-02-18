@@ -49,37 +49,21 @@ interface BlogSEO {
 }
 
 export interface BlogPostAttributes {
-  documentId: string;
+  id?: number;
   title: string;
   slug: string;
   content: string;
-  excerpt: string;
+  excerpt?: string;
   createdAt: string;
   updatedAt: string;
-  publishedAt: string | null;
+  publishedAt: string;
   featuredImage: {
-    id: number;
-    documentId: string;
-    name: string;
-    alternativeText: string | null;
-    caption: string | null;
-    width: number;
-    height: number;
-    formats: {
-      large?: {
+    data: {
+      attributes: {
         url: string;
-      };
-      medium?: {
-        url: string;
-      };
-      small?: {
-        url: string;
-      };
-      thumbnail?: {
-        url: string;
-      };
-    };
-    url: string;
+        // other image attributes...
+      }
+    }
   } | null;
   seo: {
     id: number;

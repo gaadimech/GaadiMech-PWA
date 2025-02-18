@@ -2,20 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { blogService } from '../services/blog';
-import type { BlogPost, BlogPostAttributes } from '../types/blog';
+import type { BlogPostAttributes } from '../types/blog';
 import { Helmet } from 'react-helmet-async';
 
 const Blog = () => {
   const [posts, setPosts] = useState<BlogPostAttributes[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await blogService.getAllPosts();
-        setPosts(response.data.map(post => post.attributes));
+        setLoading(true);
+        const posts = await blogService.getAllPosts();
+        setPosts(posts);
+        setError(null);
       } catch (error) {
         console.error('Error fetching blog posts:', error);
+        setError('Failed to load blog posts. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -45,6 +49,10 @@ const Blog = () => {
           <div className="flex justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7200]"></div>
           </div>
+        ) : error ? (
+          <div className="text-center text-red-600 py-8">{error}</div>
+        ) : posts.length === 0 ? (
+          <div className="text-center text-gray-600 py-8">No blog posts available.</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.map((post) => (
@@ -55,23 +63,34 @@ const Blog = () => {
                 transition={{ duration: 0.5 }}
                 className="bg-white rounded-lg shadow-md overflow-hidden"
               >
-                {post.image_url && (
+                {post?.featuredImage?.url ? (
                   <img
-                    src={post.image_url}
-                    alt={post.title}
+                    src={post.featuredImage.url}
+                    alt={post.title || 'Blog post image'}
                     className="w-full h-48 object-cover"
                   />
+                ) : (
+                  <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
+                    <span className="text-gray-400">No image available</span>
+                  </div>
                 )}
                 <div className="p-6">
                   <p className="text-sm text-gray-500 mb-2">
-                    {new Date(post.published_at).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
+                    {post.publishedAt ? 
+                      new Date(post.publishedAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      }) 
+                      : 'Date not available'
+                    }
                   </p>
-                  <h2 className="text-xl font-semibold text-gray-900 mb-2">{post.title}</h2>
-                  <p className="text-gray-600 mb-4">{post.excerpt}</p>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                    {post.title || 'Untitled Post'}
+                  </h2>
+                  <p className="text-gray-600 mb-4">
+                    {post.excerpt || 'No excerpt available'}
+                  </p>
                   <Link 
                     to={`/blog/${post.slug}`}
                     className="text-[#FF7200] font-semibold hover:text-[#0e5aa8] transition-colors"
