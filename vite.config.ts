@@ -55,6 +55,13 @@ export default defineConfig({
         drop_debugger: true
       }
     },
-    sourcemap: false
+    sourcemap: false,
+    assetsInlineLimit: 4096,
+    modulePreload: {
+      polyfill: true
+    }
+  },
+  server: {
+    compression: true
   }
 });

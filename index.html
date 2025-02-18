@@ -41,6 +41,47 @@
     <!-- Theme Color -->
     <meta name="theme-color" content="#FF7200">
 
+    <!-- Initial Loading Style -->
+    <style>
+      /* Immediate hiding of tracking elements */
+      .fb-pixel-image,
+      .meta-pixel-container,
+      noscript img {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+      }
+
+      #root {
+        opacity: 0;
+        transition: opacity 0.3s ease-in;
+      }
+      #root.loaded {
+        opacity: 1;
+      }
+      .loading-spinner {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50px;
+        height: 50px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #FF7200;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+      }
+    </style>
+
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XEJZTT0EZL"></script>
     <script>
@@ -110,48 +151,43 @@
       }
     </script>
 
-    <!-- Hidden SEO Content -->
-    <div style="display: none" aria-hidden="true">
-      <h1>Best Car Repair Services in Jaipur</h1>
-      <h2>Professional Car Mechanics Near You</h2>
-      <p>
-        Looking for reliable car repair services in Jaipur? GaadiMech provides expert car mechanics,
-        professional car service, and emergency car repair near you. Our services include
-        car AC repair, denting & painting, towing service, and complete car maintenance solutions.
-        Find the best car mechanic shop near you with our network of certified automotive experts.
-      </p>
-      <ul>
-        <li>24/7 Emergency Car Repair Services in Jaipur</li>
-        <li>Professional Car AC Service & Repair</li>
-        <li>Expert Denting & Painting Solutions</li>
-        <li>Complete Car Maintenance Services</li>
-        <li>Certified Car Mechanics</li>
-        <li>Affordable Car Repair Solutions</li>
-      </ul>
-    </div>
+    <!-- Add these near the top of head -->
+    <link rel="preconnect" href="https://i.ibb.co">
+    <link rel="preconnect" href="https://assets.zyrosite.com">
+    <link rel="dns-prefetch" href="//maps.app.goo.gl">
+    <link rel="dns-prefetch" href="//wa.me">
+    
+    <!-- Preload critical fonts if you're using any -->
+    <link rel="preload" as="font" href="/fonts/your-font.woff2" type="font/woff2" crossorigin>
+    
+    <!-- Preload critical images -->
+    <link rel="preload" as="image" href="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=186,fit=crop,q=95/Y4Lpj7xVzXTezB99/gaadimech-no-background-m6LwGQnga1sp6V1n.png">
   </head>
   <body>
+    <div class="loading-spinner"></div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
     <!-- Meta Pixel Code -->
     <script>
-      !function(f,b,e,v,n,t,s) {
-        if(f.fbq)return;
-        n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];
-        t=b.createElement(e);t.async=!0;t.src=v;
-        s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)
-      }(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '676578768042046');
-      fbq('track', 'PageView');
+      window.addEventListener('load', function() {
+        !function(f,b,e,v,n,t,s) {
+          if(f.fbq)return;
+          n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];
+          t=b.createElement(e);t.async=!0;t.src=v;
+          s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)
+        }(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '676578768042046');
+        fbq('track', 'PageView');
+      });
     </script>
     <noscript>
-      <img height="1" width="1" style="display:none" 
+      <img class="fb-pixel-image" 
         src="https://www.facebook.com/tr?id=676578768042046&ev=PageView&noscript=1"
         alt="fb pixel"
       />
     </noscript>
     <!-- End Meta Pixel Code -->
-
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

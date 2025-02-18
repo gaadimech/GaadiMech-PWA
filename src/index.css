@@ -13,3 +13,17 @@ body {
 input, textarea {
   @apply border rounded-md px-4 py-2;
 }
+
+.hidden-seo-content {
+  display: none;
+}
+
+.fb-pixel-image {
+  height: 1px;
+  width: 1px;
+  display: none;
+}
+
+.meta-pixel-container {
+  display: none;
+}

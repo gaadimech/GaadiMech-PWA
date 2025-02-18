@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Modal from 'react-modal';
@@ -14,7 +14,6 @@ import Careers from './pages/Careers';
 import ExpressService from './pages/Express';
 import Footer from './components/Footer';
 import CustomerForm from './components/CustomerForm';
-import WhatsAppButton from './components/WhatsAppButton';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 import { useAmplitudeAnalytics } from './hooks/useAmplitudeAnalytics';
 // Service Pages
@@ -26,6 +25,7 @@ import BatteryService from './pages/services/BatteryService';
 import WindshieldService from './pages/services/WindshieldService';
 import DetailingService from './pages/services/DetailingService';
 import TyreService from './pages/services/TyreService';
+import SEOContent from './components/SEOContent';
 
 // Legal Pages
 import PrivacyPolicy from './pages/legal/PrivacyPolicy';
@@ -40,7 +40,9 @@ const AnalyticsWrapper: React.FC<{ children: React.ReactNode }> = ({ children })
   return <>{children}</>;
 };
 
-function App() {
+const WhatsAppButton = lazy(() => import('./components/WhatsAppButton'));
+
+const App = () => {
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
@@ -51,9 +53,24 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    // Add loaded class to root element after initial render
+    const root = document.getElementById('root');
+    if (root) {
+      root.classList.add('loaded');
+    }
+    
+    // Remove loading spinner
+    const spinner = document.querySelector('.loading-spinner');
+    if (spinner) {
+      spinner.remove();
+    }
+  }, []);
+
   return (
     <HelmetProvider>
       <Router>
+        <SEOContent />
         <AnalyticsWrapper>
           <div className="min-h-screen bg-white">
             <Navbar />
@@ -86,12 +103,14 @@ function App() {
             </AnimatePresence>
             <Footer />
             <CustomerForm isOpen={showForm} onClose={() => setShowForm(false)} />
-            <WhatsAppButton />
+            <Suspense fallback={<div>Loading...</div>}>
+              <WhatsAppButton />
+            </Suspense>
           </div>
         </AnalyticsWrapper>
       </Router>
     </HelmetProvider>
   );
-}
+};
 
 export default App;
