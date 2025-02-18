@@ -16,6 +16,7 @@ import Footer from './components/Footer';
 import CustomerForm from './components/CustomerForm';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 import { useAmplitudeAnalytics } from './hooks/useAmplitudeAnalytics';
+import { useAnalytics } from './hooks/useAnalytics';
 // Service Pages
 import PeriodicService from './pages/services/PeriodicService';
 import ACService from './pages/services/ACService';
@@ -45,6 +46,8 @@ const WhatsAppButton = lazy(() => import('./components/WhatsAppButton'));
 const App = () => {
   const [showForm, setShowForm] = useState(false);
 
+  useAnalytics();
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowForm(true);
@@ -54,13 +57,11 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    // Add loaded class to root element after initial render
+    // Remove loading spinner and show content
     const root = document.getElementById('root');
     if (root) {
       root.classList.add('loaded');
     }
-    
-    // Remove loading spinner
     const spinner = document.querySelector('.loading-spinner');
     if (spinner) {
       spinner.remove();

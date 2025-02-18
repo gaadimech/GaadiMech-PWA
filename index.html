@@ -41,6 +41,14 @@
     <!-- Theme Color -->
     <meta name="theme-color" content="#FF7200">
 
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-XEJZTT0EZL');</script>
+    <!-- End Google Tag Manager -->
+
     <!-- Initial Loading Style -->
     <style>
       /* Immediate hiding of tracking elements */
@@ -82,16 +90,26 @@
       }
     </style>
 
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XEJZTT0EZL"></script>
+    <!-- Deferred Analytics Loading -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XEJZTT0EZL');
+      window.addEventListener('load', function() {
+        // Load Amplitude Analytics
+        const ampScript = document.createElement('script');
+        ampScript.src = 'https://cdn.amplitude.com/libs/analytics-browser-2.11.1-min.js.gz';
+        ampScript.onload = function() {
+          const replayScript = document.createElement('script');
+          replayScript.src = 'https://cdn.amplitude.com/libs/plugin-session-replay-browser-1.8.0-min.js.gz';
+          replayScript.onload = function() {
+            window.amplitude.add(window.sessionReplay.plugin({sampleRate: 1}));
+            window.amplitude.init('8dc30aa09f2412ae9870cb90fe0017bf', {
+              autocapture: {elementInteractions: true}
+            });
+          };
+          document.head.appendChild(replayScript);
+        };
+        document.head.appendChild(ampScript);
+      });
     </script>
-    <!-- Amplitude Analytics -->  
-    <script src="https://cdn.amplitude.com/libs/analytics-browser-2.11.1-min.js.gz"></script><script src="https://cdn.amplitude.com/libs/plugin-session-replay-browser-1.8.0-min.js.gz"></script><script>window.amplitude.add(window.sessionReplay.plugin({sampleRate: 1}));window.amplitude.init('8dc30aa09f2412ae9870cb90fe0017bf', {"autocapture":{"elementInteractions":true}});</script>
 
     <!-- Preload Critical Resources -->
     <link rel="preload" as="image" href="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=186,fit=crop,q=95/Y4Lpj7xVzXTezB99/gaadimech-no-background-m6LwGQnga1sp6V1n.png">
@@ -164,6 +182,11 @@
     <link rel="preload" as="image" href="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=186,fit=crop,q=95/Y4Lpj7xVzXTezB99/gaadimech-no-background-m6LwGQnga1sp6V1n.png">
   </head>
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XEJZTT0EZL"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
     <div class="loading-spinner"></div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
@@ -189,5 +212,7 @@
       />
     </noscript>
     <!-- End Meta Pixel Code -->
+
+    <script src="your-script.js" defer></script>
   </body>
 </html>

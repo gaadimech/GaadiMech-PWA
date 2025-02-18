@@ -62,11 +62,8 @@ const Hero = () => {
               alt="Professional mechanic working on a car"
               className="rounded-lg shadow-xl w-full max-w-2xl mx-auto hover:opacity-90 transition-opacity"
               loading="lazy"
-              srcset="
-                https://i.ibb.co/R3QpgRT/image-400.webp 400w,
-                https://i.ibb.co/R3QpgRT/image-800.webp 800w,
-                https://i.ibb.co/R3QpgRT/image-1200.webp 1200w"
-              sizes="(max-width: 768px) 100vw, 50vw"
+              width="800"
+              height="600"
             />
             <div className="absolute -bottom-6 -left-6 bg-white p-4 md:p-6 rounded-lg shadow-lg w-auto">
               <div className="flex items-center gap-4">

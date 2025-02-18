@@ -8,18 +8,13 @@ import ComingSoon from '../components/ComingSoon';
 
 const Home = () => {
   return (
-    <motion.main
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <main>
       <Hero />
       <Services />
       <About />
       <ComingSoon />
       <Contact />
-    </motion.main>
+    </main>
   );
 };
 

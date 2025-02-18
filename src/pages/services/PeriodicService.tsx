@@ -39,6 +39,7 @@ const PeriodicService = () => {
               src="https://i.ibb.co/t4HmbHZ/Group.png"
               alt="Periodic Service"
               className="w-24 h-24 object-contain"
+              loading="lazy"
             />
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Periodic Car Service</h1>
