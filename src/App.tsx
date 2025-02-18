@@ -15,6 +15,7 @@ import ExpressService from './pages/Express';
 import Footer from './components/Footer';
 import CustomerForm from './components/CustomerForm';
 import WhatsAppButton from './components/WhatsAppButton';
+import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 
 // Service Pages
 import PeriodicService from './pages/services/PeriodicService';
@@ -33,6 +34,12 @@ import RefundPolicy from './pages/legal/RefundPolicy';
 
 Modal.setAppElement('#root');
 
+// Create a new component to use the hook
+const AnalyticsWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  useGoogleAnalytics();
+  return <>{children}</>;
+};
+
 function App() {
   const [showForm, setShowForm] = useState(false);
 
@@ -47,39 +54,41 @@ function App() {
   return (
     <HelmetProvider>
       <Router>
-        <div className="min-h-screen bg-white">
-          <Navbar />
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:slug" element={<BlogPost />} />
-              <Route path="/careers" element={<Careers />} />
-              <Route path="/express" element={<ExpressService />} />
-              
-              {/* Service Routes */}
-              <Route path="/services/periodic" element={<PeriodicService />} />
-              <Route path="/services/ac" element={<ACService />} />
-              <Route path="/services/car-spa" element={<CarSpaService />} />
-              <Route path="/services/denting" element={<DentingService />} />
-              <Route path="/services/battery" element={<BatteryService />} />
-              <Route path="/services/windshield" element={<WindshieldService />} />
-              <Route path="/services/detailing" element={<DetailingService />} />
-              <Route path="/services/tyre" element={<TyreService />} />
-              
-              {/* Legal Routes */}
-              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/refund-policy" element={<RefundPolicy />} />
-            </Routes>
-          </AnimatePresence>
-          <Footer />
-          <CustomerForm isOpen={showForm} onClose={() => setShowForm(false)} />
-          <WhatsAppButton />
-        </div>
+        <AnalyticsWrapper>
+          <div className="min-h-screen bg-white">
+            <Navbar />
+            <AnimatePresence mode="wait">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
+                <Route path="/careers" element={<Careers />} />
+                <Route path="/express" element={<ExpressService />} />
+                
+                {/* Service Routes */}
+                <Route path="/services/periodic" element={<PeriodicService />} />
+                <Route path="/services/ac" element={<ACService />} />
+                <Route path="/services/car-spa" element={<CarSpaService />} />
+                <Route path="/services/denting" element={<DentingService />} />
+                <Route path="/services/battery" element={<BatteryService />} />
+                <Route path="/services/windshield" element={<WindshieldService />} />
+                <Route path="/services/detailing" element={<DetailingService />} />
+                <Route path="/services/tyre" element={<TyreService />} />
+                
+                {/* Legal Routes */}
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/refund-policy" element={<RefundPolicy />} />
+              </Routes>
+            </AnimatePresence>
+            <Footer />
+            <CustomerForm isOpen={showForm} onClose={() => setShowForm(false)} />
+            <WhatsAppButton />
+          </div>
+        </AnalyticsWrapper>
       </Router>
     </HelmetProvider>
   );
