@@ -58,11 +58,11 @@ const Navbar = () => {
               Express
             </Link>
             <Link
-              to="/about"
+              to="/contact"
               onClick={handleLinkClick}
-              className={`text-gray-700 hover:text-[#FF7200] ${location.pathname === '/about' ? 'text-[#FF7200]' : ''}`}
+              className={`text-gray-700 hover:text-[#FF7200] ${location.pathname === '/contact' ? 'text-[#FF7200]' : ''}`}
             >
-              About
+              Contact
             </Link>
             <Link
               to="/blog"
@@ -72,18 +72,18 @@ const Navbar = () => {
               Blog
             </Link>
             <Link
+              to="/about"
+              onClick={handleLinkClick}
+              className={`text-gray-700 hover:text-[#FF7200] ${location.pathname === '/about' ? 'text-[#FF7200]' : ''}`}
+            >
+              About
+            </Link>
+            <Link
               to="/careers"
               onClick={handleLinkClick}
               className={`text-gray-700 hover:text-[#FF7200] ${location.pathname === '/careers' ? 'text-[#FF7200]' : ''}`}
             >
               Careers
-            </Link>
-            <Link
-              to="/contact"
-              onClick={handleLinkClick}
-              className={`text-gray-700 hover:text-[#FF7200] ${location.pathname === '/contact' ? 'text-[#FF7200]' : ''}`}
-            >
-              Contact
             </Link>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -131,11 +131,11 @@ const Navbar = () => {
               Express
             </Link>
             <Link 
-              to="/about" 
+              to="/contact" 
               onClick={handleLinkClick}
               className="block px-3 py-2 text-gray-700 hover:text-[#FF7200]"
             >
-              About
+              Contact
             </Link>
             <Link 
               to="/blog" 
@@ -145,18 +145,18 @@ const Navbar = () => {
               Blog
             </Link>
             <Link 
+              to="/about" 
+              onClick={handleLinkClick}
+              className="block px-3 py-2 text-gray-700 hover:text-[#FF7200]"
+            >
+              About
+            </Link>
+            <Link 
               to="/careers" 
               onClick={handleLinkClick}
               className="block px-3 py-2 text-gray-700 hover:text-[#FF7200]"
             >
               Careers
-            </Link>
-            <Link 
-              to="/contact" 
-              onClick={handleLinkClick}
-              className="block px-3 py-2 text-gray-700 hover:text-[#FF7200]"
-            >
-              Contact
             </Link>
             <button
               onClick={handleBookNow}
