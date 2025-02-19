@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, ArrowRight } from 'lucide-react';
+import { CheckCircle, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
+import ReviewCarousel from '../../components/ReviewCarousel';
+import { getReviewsByService } from '../../data/reviews';
 
 const features = [
   "Comprehensive vehicle inspection",
@@ -15,6 +17,8 @@ const features = [
 ];
 
 const PeriodicService = () => {
+  const serviceReviews = getReviewsByService('periodic');
+
   const handleBookNow = () => {
     window.open('https://wa.me/917300042410?text=Hi%2C%20I%27d%20like%20to%20book%20a%20Periodic%20Service.', '_blank');
   };
@@ -113,6 +117,9 @@ const PeriodicService = () => {
             </div>
           </div>
         </div>
+
+        <ReviewCarousel reviews={serviceReviews} />
+
       </div>
     </motion.div>
   );

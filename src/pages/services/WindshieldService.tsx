@@ -2,6 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, ArrowRight } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
+import ReviewCarousel from '../../components/ReviewCarousel';
+import { getReviewsByService } from '../../data/reviews';
 
 const features = [
   "Crack repair",
@@ -18,6 +20,8 @@ const WindshieldService = () => {
   const handleBookNow = () => {
     window.open('https://wa.me/917300042410?text=Hi%2C%20I%27d%20like%20to%20book%20Windshield%20Service.', '_blank');
   };
+
+  const serviceReviews = getReviewsByService('windshield_replacement');
 
   return (
     <motion.div
@@ -86,6 +90,8 @@ const WindshieldService = () => {
             </div>
           </div>
         </div>
+
+        <ReviewCarousel reviews={serviceReviews} />
       </div>
     </motion.div>
   );

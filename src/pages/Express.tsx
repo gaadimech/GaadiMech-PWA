@@ -4,6 +4,8 @@ import { Clock, Car, PenTool as Tool, Phone, CheckCircle, ArrowRight, Share2, Gi
 import { Helmet } from 'react-helmet-async';
 import { expressService } from '../services/expressService';
 import CustomerForm from '../components/CustomerForm';
+import ReviewCarousel from '../components/ReviewCarousel';
+import { getReviewsByService } from '../data/reviews';
 
 const serviceComparison = [
   {
@@ -120,6 +122,7 @@ const ExpressService = () => {
   const [currentImage, setCurrentImage] = useState(0);
   const [isCustomerFormOpen, setIsCustomerFormOpen] = useState(false);
   const [selectedServiceType, setSelectedServiceType] = useState<number | undefined>();
+  const serviceReviews = getReviewsByService('express');
 
   const validateMobile = (number: string) => {
     const mobileRegex = /^[6-9]\d{9}$/;
@@ -489,6 +492,12 @@ const ExpressService = () => {
             <MessageSquare className="w-5 h-5" />
             Connect on WhatsApp
           </motion.a>
+        </div>
+      </section>
+
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ReviewCarousel reviews={serviceReviews} />
         </div>
       </section>
     </motion.div>

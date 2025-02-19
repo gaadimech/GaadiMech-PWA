@@ -2,6 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, ArrowRight } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
+import ReviewCarousel from '../../components/ReviewCarousel';
+import { getReviewsByService } from '../../data/reviews';
 
 const features = [
   "Exterior wash and wax",
@@ -18,6 +20,8 @@ const CarSpaService = () => {
   const handleBookNow = () => {
     window.open('https://wa.me/917300042410?text=Hi%2C%20I%27d%20like%20to%20book%20Car%20Spa%20Service.', '_blank');
   };
+
+  const serviceReviews = getReviewsByService('car_spa');
 
   return (
     <motion.div
@@ -86,6 +90,8 @@ const CarSpaService = () => {
             </div>
           </div>
         </div>
+
+        <ReviewCarousel reviews={serviceReviews} />
       </div>
     </motion.div>
   );
