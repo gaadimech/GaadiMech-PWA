@@ -17,6 +17,7 @@ import CustomerForm from './components/CustomerForm';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 import { useAmplitudeAnalytics } from './hooks/useAmplitudeAnalytics';
 import { useAnalytics } from './hooks/useAnalytics';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/react";
 // Service Pages
 import PeriodicService from './pages/services/PeriodicService';
