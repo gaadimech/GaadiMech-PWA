@@ -267,27 +267,22 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
                 {errors.carModel && <p className="mt-1 text-sm text-red-600">{errors.carModel}</p>}
               </div>
 
-              <div className="relative">
-                <label htmlFor="preferredDate" className="block text-sm font-medium text-gray-700">
-                  Preferred Date * {formData.preferredDate && <span className="text-gray-500 ml-2">({getRelativeDateString(formData.preferredDate)})</span>}
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-medium mb-2 flex items-center justify-between">
+                  <span>Preferred Date *</span>
+                  <span className="text-sm text-gray-500">(Today)</span>
                 </label>
-                <div className="mt-1 relative rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Calendar className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    type="date"
-                    id="preferredDate"
-                    value={formData.preferredDate}
-                    onChange={handleChange}
-                    min={new Date().toISOString().split('T')[0]}
-                    max={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
-                    className={`pl-10 block w-full rounded-md shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200] ${
-                      errors.preferredDate ? 'border-red-300' : 'border-gray-300'
-                    }`}
-                  />
-                </div>
-                {errors.preferredDate && <p className="mt-1 text-sm text-red-600">{errors.preferredDate}</p>}
+                <input
+                  type="date"
+                  min={new Date().toISOString().split('T')[0]}
+                  value={formData.preferredDate}
+                  onChange={(e) => {
+                    const date = e.target.value;
+                    setFormData(prev => ({ ...prev, preferredDate: date }));
+                  }}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  required
+                />
               </div>
 
               <div className="relative">
