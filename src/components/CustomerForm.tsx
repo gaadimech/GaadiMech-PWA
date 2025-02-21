@@ -89,7 +89,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
   };
 
   const getRelativeDateString = (dateStr: string): string => {
-    if (!dateStr) return '';
+    if (!dateStr) return '(Today)';
     
     // Create dates using the date string in local timezone
     const date = new Date(dateStr + 'T00:00:00');
@@ -100,9 +100,9 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
     const diffTime = date.getTime() - today.getTime();
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     
-    if (diffDays === 0) return 'Today';
-    if (diffDays === 1) return 'Tomorrow';
-    return `${diffDays} days from Today`;
+    if (diffDays === 0) return '(Today)';
+    if (diffDays === 1) return '(Tomorrow)';
+    return `(${diffDays} days to go)`;
   };
 
   useEffect(() => {
@@ -274,7 +274,9 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-medium mb-2 flex items-center justify-between">
                   <span>Preferred Date *</span>
-                  <span className="text-sm text-gray-500">(Today)</span>
+                  <span className="text-sm text-gray-500">
+                    {getRelativeDateString(formData.preferredDate)}
+                  </span>
                 </label>
                 <input
                   type="date"
