@@ -127,8 +127,14 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
         
         // Set default service type if available
         if (response.data.length > 0) {
-          const defaultService = response.data.find(st => st.isDefault) || response.data[0];
-          setFormData(prev => ({ ...prev, serviceType: defaultService.id }));
+          // If defaultServiceType prop is provided, use that
+          if (defaultServiceType) {
+            setFormData(prev => ({ ...prev, serviceType: defaultServiceType }));
+          } else {
+            // Otherwise use the default from the service types
+            const defaultService = response.data.find(st => st.isDefault) || response.data[0];
+            setFormData(prev => ({ ...prev, serviceType: defaultService.id }));
+          }
         }
       } catch (error) {
         console.error('Failed to fetch service types:', error);
@@ -137,15 +143,9 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
       }
     };
 
-    fetchServiceTypes();
-  }, []);
-
-  useEffect(() => {
-    if (isOpen && defaultServiceType) {
-      setFormData(prev => ({
-        ...prev,
-        serviceType: defaultServiceType
-      }));
+    // Fetch service types when the form opens
+    if (isOpen) {
+      fetchServiceTypes();
     }
   }, [isOpen, defaultServiceType]);
 
