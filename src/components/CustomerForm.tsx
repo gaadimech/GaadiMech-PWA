@@ -25,6 +25,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [serviceTypes, setServiceTypes] = useState<ServiceType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const validateForm = (): boolean => {
     const newErrors: Partial<EnquiryFormData> = {};
@@ -119,6 +120,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
 
   useEffect(() => {
     const fetchServiceTypes = async () => {
+      setIsLoading(true);
       try {
         const response = await enquiryService.getServiceTypes();
         setServiceTypes(response.data);
@@ -130,6 +132,8 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
         }
       } catch (error) {
         console.error('Failed to fetch service types:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -303,18 +307,27 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
                         serviceType: value ? Number(value) : undefined
                       }));
                     }}
-                    className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200] appearance-none bg-white"
+                    className={`pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#FF7200] focus:ring-[#FF7200] appearance-none bg-white ${
+                      isLoading ? 'opacity-50' : ''
+                    }`}
+                    disabled={isLoading}
                   >
-                    <option value="" disabled>Select a service type</option>
-                    {serviceTypes.map((type) => (
-                      <option 
-                        key={type.id} 
-                        value={type.id}
-                        className="py-2"
-                      >
-                        {type.name}
-                      </option>
-                    ))}
+                    {isLoading ? (
+                      <option value="">Loading service types...</option>
+                    ) : (
+                      <>
+                        <option value="" disabled>Select a service type</option>
+                        {serviceTypes.map((type) => (
+                          <option 
+                            key={type.id} 
+                            value={type.id}
+                            className="py-2"
+                          >
+                            {type.name}
+                          </option>
+                        ))}
+                      </>
+                    )}
                   </select>
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                     <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
