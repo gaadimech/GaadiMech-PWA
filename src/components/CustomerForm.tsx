@@ -149,8 +149,18 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      className="relative bg-white rounded-lg shadow-xl max-w-md mx-auto mt-20 p-6"
-      overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
+      className="relative bg-white rounded-lg shadow-xl max-w-md mx-auto mt-0 p-6 w-[95%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+      overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+      style={{
+        content: {
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          maxHeight: '90vh',
+          overflow: 'auto'
+        }
+      }}
     >
       <AnimatePresence>
         {status === 'success' ? (
