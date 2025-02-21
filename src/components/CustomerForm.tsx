@@ -26,6 +26,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
   const [errorMessage, setErrorMessage] = useState('');
   const [serviceTypes, setServiceTypes] = useState<ServiceType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasAttemptedLoad, setHasAttemptedLoad] = useState(false);
 
   const validateForm = (): boolean => {
     const newErrors: Partial<EnquiryFormData> = {};
@@ -120,6 +121,8 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
 
   useEffect(() => {
     const fetchServiceTypes = async () => {
+      if (!isOpen || hasAttemptedLoad) return; // Don't fetch if form is closed or we've already attempted
+
       setIsLoading(true);
       try {
         const response = await enquiryService.getServiceTypes();
@@ -127,11 +130,9 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
         
         // Set default service type if available
         if (response.data.length > 0) {
-          // If defaultServiceType prop is provided, use that
           if (defaultServiceType) {
             setFormData(prev => ({ ...prev, serviceType: defaultServiceType }));
           } else {
-            // Otherwise use the default from the service types
             const defaultService = response.data.find(st => st.isDefault) || response.data[0];
             setFormData(prev => ({ ...prev, serviceType: defaultService.id }));
           }
@@ -140,14 +141,24 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
         console.error('Failed to fetch service types:', error);
       } finally {
         setIsLoading(false);
+        setHasAttemptedLoad(true);
       }
     };
 
-    // Fetch service types when the form opens
-    if (isOpen) {
-      fetchServiceTypes();
+    fetchServiceTypes();
+  }, [isOpen, defaultServiceType, hasAttemptedLoad]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setHasAttemptedLoad(false);
+      setIsLoading(true);
+      setServiceTypes([]);
+      setFormData(prev => ({
+        ...prev,
+        serviceType: undefined
+      }));
     }
-  }, [isOpen, defaultServiceType]);
+  }, [isOpen]);
 
   return (
     <Modal
@@ -167,7 +178,16 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
       }}
     >
       <AnimatePresence>
-        {status === 'success' ? (
+        {isLoading ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex justify-center items-center h-32"
+          >
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF7200]"></div>
+          </motion.div>
+        ) : status === 'success' ? (
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
