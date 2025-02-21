@@ -17,6 +17,7 @@ import CustomerForm from './components/CustomerForm';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 import { useAmplitudeAnalytics } from './hooks/useAmplitudeAnalytics';
 import { useAnalytics } from './hooks/useAnalytics';
+import { Analytics } from "@vercel/analytics/react";
 // Service Pages
 import PeriodicService from './pages/services/PeriodicService';
 import ACService from './pages/services/ACService';
@@ -109,6 +110,7 @@ const App = () => {
             </Suspense>
           </div>
         </AnalyticsWrapper>
+        <Analytics />
       </Router>
     </HelmetProvider>
   );
