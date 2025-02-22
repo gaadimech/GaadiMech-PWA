@@ -58,27 +58,6 @@ const Navbar = () => {
               Express
             </Link>
             <Link
-              to="/contact"
-              onClick={handleLinkClick}
-              className={`text-gray-700 hover:text-[#FF7200] ${location.pathname === '/contact' ? 'text-[#FF7200]' : ''}`}
-            >
-              Contact
-            </Link>
-            <Link
-              to="/blog"
-              onClick={handleLinkClick}
-              className={`text-gray-700 hover:text-[#FF7200] ${location.pathname === '/blog' ? 'text-[#FF7200]' : ''}`}
-            >
-              Blog
-            </Link>
-            <Link
-              to="/about"
-              onClick={handleLinkClick}
-              className={`text-gray-700 hover:text-[#FF7200] ${location.pathname === '/about' ? 'text-[#FF7200]' : ''}`}
-            >
-              About
-            </Link>
-            <Link
               to="/careers"
               onClick={handleLinkClick}
               className={`text-gray-700 hover:text-[#FF7200] ${location.pathname === '/careers' ? 'text-[#FF7200]' : ''}`}
@@ -129,27 +108,6 @@ const Navbar = () => {
               className="block px-3 py-2 text-gray-700 hover:text-[#FF7200]"
             >
               Express
-            </Link>
-            <Link 
-              to="/contact" 
-              onClick={handleLinkClick}
-              className="block px-3 py-2 text-gray-700 hover:text-[#FF7200]"
-            >
-              Contact
-            </Link>
-            <Link 
-              to="/blog" 
-              onClick={handleLinkClick}
-              className="block px-3 py-2 text-gray-700 hover:text-[#FF7200]"
-            >
-              Blog
-            </Link>
-            <Link 
-              to="/about" 
-              onClick={handleLinkClick}
-              className="block px-3 py-2 text-gray-700 hover:text-[#FF7200]"
-            >
-              About
             </Link>
             <Link 
               to="/careers" 
