@@ -82,9 +82,9 @@ const DentingService = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleBookNow}
-                className="w-full bg-[#FF7200] text-white px-6 py-3 rounded-md hover:bg-[#0e5aa8] transition-colors flex items-center justify-center"
+                className="w-full bg-[#FF7200] text-white px-6 py-3 rounded-md hover:bg-[#25D366] transition-colors flex items-center justify-center"
               >
-                Schedule Service
+                Book Now!
                 <ArrowRight className="ml-2" size={20} />
               </motion.button>
             </div>
