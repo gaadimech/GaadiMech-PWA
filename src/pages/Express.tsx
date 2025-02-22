@@ -431,7 +431,7 @@ const ExpressService = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => {
-                      setSelectedServiceType(7);
+                      setSelectedServiceType(4);
                       setIsCustomerFormOpen(true);
                     }}
                     className="w-full py-3 rounded-md transition-colors flex items-center justify-center gap-2 bg-[#FF7200] text-white hover:bg-[#0e5aa8]"
