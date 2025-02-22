@@ -34,7 +34,8 @@ export default defineConfig({
     })
   ],
   optimizeDeps: {
-    exclude: ['lucide-react']
+    exclude: ['lucide-react'],
+    include: ['react-icons']
   },
   build: {
     rollupOptions: {
