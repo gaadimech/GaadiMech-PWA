@@ -44,7 +44,15 @@
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-XEJZTT0EZL');</script>
-    <!-- End Google Tag Manager -->
+
+    <!-- Add GA4 script right after GTM script -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XEJZTT0EZL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XEJZTT0EZL');
+    </script>
 
     <!-- Initial Loading Style -->
     <style>
