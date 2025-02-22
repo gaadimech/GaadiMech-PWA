@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Car, PenTool as Tool, Phone, CheckCircle, ArrowRight, Share2, Gift, Wrench, Sparkles, Timer, Calendar, Image, MessageSquare } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
@@ -6,6 +6,7 @@ import { expressService } from '../services/expressService';
 import CustomerForm from '../components/CustomerForm';
 import ReviewCarousel from '../components/ReviewCarousel';
 import { getReviewsByService } from '../data/reviews';
+import { enquiryService } from '../services/enquiry';
 
 const serviceComparison = [
   {
@@ -122,6 +123,7 @@ const ExpressService = () => {
   const [currentImage, setCurrentImage] = useState(0);
   const [isCustomerFormOpen, setIsCustomerFormOpen] = useState(false);
   const [selectedServiceType, setSelectedServiceType] = useState<number | undefined>();
+  const [serviceTypesLoaded, setServiceTypesLoaded] = useState(false);
   const serviceReviews = getReviewsByService('express');
 
   const validateMobile = (number: string) => {
@@ -156,11 +158,24 @@ const ExpressService = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const timer = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % carouselImages.length);
     }, 5000);
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const checkServiceTypes = async () => {
+      try {
+        const response = await enquiryService.getServiceTypes();
+        setServiceTypesLoaded(response.data.length > 0);
+      } catch (error) {
+        console.error('Failed to check service types:', error);
+      }
+    };
+    
+    checkServiceTypes();
   }, []);
 
   return (
@@ -429,14 +444,16 @@ const ExpressService = () => {
             ))}
           </div>
 
-          <CustomerForm 
-            isOpen={isCustomerFormOpen}
-            onClose={() => {
-              setIsCustomerFormOpen(false);
-              setSelectedServiceType(undefined);
-            }}
-            defaultServiceType={selectedServiceType}
-          />
+          {serviceTypesLoaded && (
+            <CustomerForm 
+              isOpen={isCustomerFormOpen}
+              onClose={() => {
+                setIsCustomerFormOpen(false);
+                setSelectedServiceType(undefined);
+              }}
+              defaultServiceType={selectedServiceType}
+            />
+          )}
         </div>
       </section>
 

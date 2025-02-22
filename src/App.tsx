@@ -15,9 +15,7 @@ import ExpressService from './pages/Express';
 import Footer from './components/Footer';
 import CustomerForm from './components/CustomerForm';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
-import { useAmplitudeAnalytics } from './hooks/useAmplitudeAnalytics';
 import { useAnalytics } from './hooks/useAnalytics';
-import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/react";
 // Service Pages
 import PeriodicService from './pages/services/PeriodicService';
@@ -29,6 +27,7 @@ import WindshieldService from './pages/services/WindshieldService';
 import DetailingService from './pages/services/DetailingService';
 import TyreService from './pages/services/TyreService';
 import SEOContent from './components/SEOContent';
+import { enquiryService } from './services/enquiry';
 
 // Legal Pages
 import PrivacyPolicy from './pages/legal/PrivacyPolicy';
@@ -47,15 +46,29 @@ const WhatsAppButton = lazy(() => import('./components/WhatsAppButton'));
 
 const App = () => {
   const [showForm, setShowForm] = useState(false);
+  const [isFormDataLoaded, setIsFormDataLoaded] = useState(false);
 
   useAnalytics();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowForm(true);
-    }, 1000);
+    // First fetch the service types
+    const fetchInitialData = async () => {
+      try {
+        const response = await enquiryService.getServiceTypes();
+        if (response.data.length > 0) {
+          setIsFormDataLoaded(true);
+          // Only show form after data is loaded
+          const timer = setTimeout(() => {
+            setShowForm(true);
+          }, 1000);
+          return () => clearTimeout(timer);
+        }
+      } catch (error) {
+        console.error('Failed to fetch initial data:', error);
+      }
+    };
 
-    return () => clearTimeout(timer);
+    fetchInitialData();
   }, []);
 
   useEffect(() => {
@@ -105,7 +118,12 @@ const App = () => {
               </Routes>
             </AnimatePresence>
             <Footer />
-            <CustomerForm isOpen={showForm} onClose={() => setShowForm(false)} />
+            {isFormDataLoaded && (
+              <CustomerForm 
+                isOpen={showForm} 
+                onClose={() => setShowForm(false)} 
+              />
+            )}
             <Suspense fallback={<div>Loading...</div>}>
               <WhatsAppButton />
             </Suspense>
