@@ -21,7 +21,7 @@ const services = [
       </motion.div>
     ),
     title: 'Express Service',
-    description: 'Get your car serviced in 90 minutes',
+    description: 'Get your car serviced in 90 Minutes or Less — Time is Money!',
     highlight: true,
     link: '/express',
     featured: true
@@ -130,7 +130,7 @@ const Services = () => {
                   <div className="flex flex-wrap gap-4 justify-center md:justify-start">
                     <div className="flex items-center text-gray-700">
                       <Clock className="w-5 h-5 mr-2 text-[#FF7200]" />
-                      <span>90-Minute Service</span>
+                      <span className="font-bold">90-Minute Service</span>
                     </div>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
@@ -138,7 +138,7 @@ const Services = () => {
                       className="bg-[#FF7200] text-white px-6 py-2 rounded-md hover:bg-[#0e5aa8] transition-colors flex items-center gap-2"
                     >
                       <Calendar className="w-5 h-5" />
-                      Book Your Slot
+                      Schedule Slot Now
                     </motion.button>
                   </div>
                 </div>
