@@ -4,6 +4,7 @@ import { Clock, Car, PenTool as Tool, Phone, CheckCircle, ArrowRight, Share2, Gi
 import { Helmet } from 'react-helmet-async';
 import { expressService } from '../services/expressService';
 import CustomerForm from '../components/CustomerForm';
+import TimeSlotModal from '../components/TimeSlotModal';
 import ReviewCarousel from '../components/ReviewCarousel';
 import { getReviewsByService } from '../data/reviews';
 import { enquiryService } from '../services/enquiry';
@@ -122,8 +123,10 @@ const ExpressService = () => {
   const [error, setError] = useState('');
   const [currentImage, setCurrentImage] = useState(0);
   const [isCustomerFormOpen, setIsCustomerFormOpen] = useState(false);
+  const [isTimeSlotModalOpen, setIsTimeSlotModalOpen] = useState(false);
   const [selectedServiceType, setSelectedServiceType] = useState<number | undefined>();
   const [serviceTypesLoaded, setServiceTypesLoaded] = useState(false);
+  const [currentLeadId, setCurrentLeadId] = useState<number | null>(null);
   const serviceReviews = getReviewsByService('express');
 
   const validateMobile = (number: string) => {
@@ -140,22 +143,86 @@ const ExpressService = () => {
       return;
     }
 
+    // Default to "Express Service" (ID: 4) if no service type is selected
+    const serviceType = selectedServiceType || 4;
+    
+    // Get the service name based on the ID
+    let serviceTypeName = "Express Service"; // Default name
+    
+    // If we have loaded service types, find the matching name
+    if (serviceTypesLoaded) {
+      try {
+        const response = await enquiryService.getServiceTypes();
+        const serviceTypeObj = response.data.find(type => type.id === serviceType);
+        if (serviceTypeObj) {
+          serviceTypeName = serviceTypeObj.name;
+        }
+      } catch (error) {
+        console.error('Error fetching service types:', error);
+      }
+    }
+
     setIsSubmitting(true);
 
     try {
-      await expressService.submitLead({
+      // Submit the mobile number with the service type name instead of ID
+      const response = await expressService.submitLead({
         mobileNumber: mobile,
-        serviceType: 'express'
+        serviceType: serviceTypeName // Send the name instead of ID
       });
 
+      // Store the lead ID for potential updates
+      setCurrentLeadId(response.data.id);
+      
+      // Open the time slot modal
+      setIsTimeSlotModalOpen(true);
+      
+      // Show success message for mobile number submission
       setSuccess(true);
-      setMobile('');
     } catch (error) {
       console.error('Error submitting form:', error);
       setError('Something went wrong. Please try again.');
+      setSuccess(false);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleTimeSlotSubmit = async (date: string, timeSlot: string) => {
+    if (!currentLeadId) {
+      console.error('No lead ID available');
+      return;
+    }
+
+    try {
+      console.log('Updating lead with date and time slot:', { id: currentLeadId, date, timeSlot });
+      
+      // Update the lead with the selected date and time slot
+      await expressService.updateLead(currentLeadId, {
+        serviceDate: date,
+        timeSlot: timeSlot
+      });
+
+      // Close the time slot modal
+      setIsTimeSlotModalOpen(false);
+      
+      // Reset the form
+      setMobile('');
+      
+      // Show success message
+      alert('Booking confirmed! We will contact you shortly.');
+    } catch (error) {
+      console.error('Error updating lead with time slot:', error);
+      alert('Sorry, there was an error confirming your booking. Please try again or contact us directly.');
+    }
+  };
+
+  const handleTimeSlotModalClose = () => {
+    // Close the modal without updating the lead
+    setIsTimeSlotModalOpen(false);
+    
+    // Reset the form
+    setMobile('');
   };
 
   useEffect(() => {
@@ -255,6 +322,14 @@ const ExpressService = () => {
           </div>
         </div>
       </section>
+
+      {/* Time Slot Modal */}
+      <TimeSlotModal
+        isOpen={isTimeSlotModalOpen}
+        onClose={handleTimeSlotModalClose}
+        onSubmit={handleTimeSlotSubmit}
+        mobileNumber={mobile}
+      />
 
       {/* How It Works */}
       <section className="py-20 bg-gray-50">
@@ -398,9 +473,6 @@ const ExpressService = () => {
                       {service.time}
                     </p>
                   </div>
-                  <p className="text-3xl font-bold text-gray-900">
-                    {service.price}
-                  </p>
                 </div>
 
                 <div className="space-y-4 mb-8">
