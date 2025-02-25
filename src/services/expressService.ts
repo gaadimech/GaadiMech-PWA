@@ -3,10 +3,15 @@ import type { ExpressServiceFormData, ExpressServiceResponse } from '../types/ex
 
 export const expressService = {
   submitLead: async (data: ExpressServiceFormData): Promise<ExpressServiceResponse> => {
-    const response = await apiClient.post<ExpressServiceResponse>('/express-services', {
-      data,
-    });
-    return response.data;
+    try {
+      const response = await apiClient.post<ExpressServiceResponse>('/express-services', {
+        data,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('API Error details:', error);
+      throw error;
+    }
   },
   
   updateLead: async (id: number, data: Partial<ExpressServiceFormData>): Promise<ExpressServiceResponse> => {

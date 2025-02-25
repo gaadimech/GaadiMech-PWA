@@ -146,39 +146,44 @@ const ExpressService = () => {
     // Default to "Express Service" (ID: 4) if no service type is selected
     const serviceType = selectedServiceType || 4;
     
-    // Get the service name based on the ID
-    let serviceTypeName = "Express Service"; // Default name
+    // Default service name - use this if we can't fetch the actual name
+    let serviceTypeName = "Express Service";
     
-    // If we have loaded service types, find the matching name
-    if (serviceTypesLoaded) {
-      try {
-        const response = await enquiryService.getServiceTypes();
-        const serviceTypeObj = response.data.find(type => type.id === serviceType);
-        if (serviceTypeObj) {
-          serviceTypeName = serviceTypeObj.name;
-        }
-      } catch (error) {
-        console.error('Error fetching service types:', error);
-      }
-    }
-
     setIsSubmitting(true);
 
     try {
-      // Submit the mobile number with the service type name instead of ID
+      // Try to get the service name if service types are loaded
+      if (serviceTypesLoaded) {
+        try {
+          const response = await enquiryService.getServiceTypes();
+          const serviceTypeObj = response.data.find(type => type.id === serviceType);
+          if (serviceTypeObj && serviceTypeObj.name) {
+            serviceTypeName = serviceTypeObj.name;
+          }
+        } catch (error) {
+          console.error('Error fetching service types:', error);
+          // Continue with default name if there's an error
+        }
+      }
+
+      // Submit the mobile number with the service type name
       const response = await expressService.submitLead({
         mobileNumber: mobile,
-        serviceType: serviceTypeName // Send the name instead of ID
+        serviceType: serviceTypeName
       });
 
       // Store the lead ID for potential updates
-      setCurrentLeadId(response.data.id);
-      
-      // Open the time slot modal
-      setIsTimeSlotModalOpen(true);
-      
-      // Show success message for mobile number submission
-      setSuccess(true);
+      if (response && response.data && response.data.id) {
+        setCurrentLeadId(response.data.id);
+        
+        // Open the time slot modal
+        setIsTimeSlotModalOpen(true);
+        
+        // Show success message for mobile number submission
+        setSuccess(true);
+      } else {
+        throw new Error('Invalid response format');
+      }
     } catch (error) {
       console.error('Error submitting form:', error);
       setError('Something went wrong. Please try again.');
@@ -191,6 +196,8 @@ const ExpressService = () => {
   const handleTimeSlotSubmit = async (date: string, timeSlot: string) => {
     if (!currentLeadId) {
       console.error('No lead ID available');
+      alert('Session expired. Please try again.');
+      setIsTimeSlotModalOpen(false);
       return;
     }
 
@@ -198,22 +205,28 @@ const ExpressService = () => {
       console.log('Updating lead with date and time slot:', { id: currentLeadId, date, timeSlot });
       
       // Update the lead with the selected date and time slot
-      await expressService.updateLead(currentLeadId, {
+      const response = await expressService.updateLead(currentLeadId, {
         serviceDate: date,
         timeSlot: timeSlot
       });
+
+      if (!response || !response.data) {
+        throw new Error('Invalid response from server');
+      }
 
       // Close the time slot modal
       setIsTimeSlotModalOpen(false);
       
       // Reset the form
       setMobile('');
+      setCurrentLeadId(null);
       
       // Show success message
       alert('Booking confirmed! We will contact you shortly.');
     } catch (error) {
       console.error('Error updating lead with time slot:', error);
       alert('Sorry, there was an error confirming your booking. Please try again or contact us directly.');
+      setIsTimeSlotModalOpen(false);
     }
   };
 
@@ -221,8 +234,11 @@ const ExpressService = () => {
     // Close the modal without updating the lead
     setIsTimeSlotModalOpen(false);
     
-    // Reset the form
+    // Reset the form and state
     setMobile('');
+    setSuccess(false);
+    setError('');
+    setCurrentLeadId(null);
   };
 
   useEffect(() => {

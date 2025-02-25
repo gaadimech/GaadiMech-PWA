@@ -59,8 +59,21 @@ const TimeSlotModal: React.FC<TimeSlotModalProps> = ({ isOpen, onClose, onSubmit
   };
 
   const handleSubmit = () => {
-    if (selectedDate && selectedTimeSlot) {
+    if (!selectedDate) {
+      alert('Please select a date');
+      return;
+    }
+    
+    if (!selectedTimeSlot) {
+      alert('Please select a time slot');
+      return;
+    }
+    
+    try {
       onSubmit(selectedDate, selectedTimeSlot);
+    } catch (error) {
+      console.error('Error submitting time slot:', error);
+      alert('Something went wrong. Please try again.');
     }
   };
 
