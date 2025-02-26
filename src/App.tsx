@@ -1,5 +1,5 @@
 import React, { useEffect, useState, lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Modal from 'react-modal';
 import { HelmetProvider } from 'react-helmet-async';
@@ -44,9 +44,11 @@ const AnalyticsWrapper: React.FC<{ children: React.ReactNode }> = ({ children })
 
 const WhatsAppButton = lazy(() => import('./components/WhatsAppButton'));
 
-const App = () => {
+// Create a wrapper component to handle location-based logic
+const AppContent = () => {
   const [showForm, setShowForm] = useState(false);
   const [isFormDataLoaded, setIsFormDataLoaded] = useState(false);
+  const location = useLocation();
 
   useAnalytics();
 
@@ -57,11 +59,13 @@ const App = () => {
         const response = await enquiryService.getServiceTypes();
         if (response.data.length > 0) {
           setIsFormDataLoaded(true);
-          // Only show form after data is loaded
-          const timer = setTimeout(() => {
-            setShowForm(true);
-          }, 1000);
-          return () => clearTimeout(timer);
+          // Only show form after data is loaded and not on express page
+          if (location.pathname !== '/express') {
+            const timer = setTimeout(() => {
+              setShowForm(true);
+            }, 1000);
+            return () => clearTimeout(timer);
+          }
         }
       } catch (error) {
         console.error('Failed to fetch initial data:', error);
@@ -69,7 +73,7 @@ const App = () => {
     };
 
     fetchInitialData();
-  }, []);
+  }, [location.pathname]);
 
   useEffect(() => {
     // Remove loading spinner and show content
@@ -83,52 +87,67 @@ const App = () => {
     }
   }, []);
 
+  // Close form when navigating to express page
+  useEffect(() => {
+    if (location.pathname === '/express') {
+      setShowForm(false);
+    }
+  }, [location.pathname]);
+
+  return (
+    <>
+      <SEOContent />
+      <AnalyticsWrapper>
+        <div className="min-h-screen bg-white">
+          <Navbar />
+          <AnimatePresence mode="wait">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/careers" element={<Careers />} />
+              <Route path="/express" element={<ExpressService />} />
+              
+              {/* Service Routes */}
+              <Route path="/services/periodic" element={<PeriodicService />} />
+              <Route path="/services/ac" element={<ACService />} />
+              <Route path="/services/car-spa" element={<CarSpaService />} />
+              <Route path="/services/denting" element={<DentingService />} />
+              <Route path="/services/battery" element={<BatteryService />} />
+              <Route path="/services/windshield" element={<WindshieldService />} />
+              <Route path="/services/detailing" element={<DetailingService />} />
+              <Route path="/services/tyre" element={<TyreService />} />
+              
+              {/* Legal Routes */}
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/refund-policy" element={<RefundPolicy />} />
+            </Routes>
+          </AnimatePresence>
+          <Footer />
+          {isFormDataLoaded && (
+            <CustomerForm 
+              isOpen={showForm} 
+              onClose={() => setShowForm(false)} 
+            />
+          )}
+          <Suspense fallback={<div>Loading...</div>}>
+            <WhatsAppButton />
+          </Suspense>
+        </div>
+      </AnalyticsWrapper>
+    </>
+  );
+};
+
+const App = () => {
   return (
     <HelmetProvider>
       <Router>
-        <SEOContent />
-        <AnalyticsWrapper>
-          <div className="min-h-screen bg-white">
-            <Navbar />
-            <AnimatePresence mode="wait">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/services" element={<Services />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/blog/:slug" element={<BlogPost />} />
-                <Route path="/careers" element={<Careers />} />
-                <Route path="/express" element={<ExpressService />} />
-                
-                {/* Service Routes */}
-                <Route path="/services/periodic" element={<PeriodicService />} />
-                <Route path="/services/ac" element={<ACService />} />
-                <Route path="/services/car-spa" element={<CarSpaService />} />
-                <Route path="/services/denting" element={<DentingService />} />
-                <Route path="/services/battery" element={<BatteryService />} />
-                <Route path="/services/windshield" element={<WindshieldService />} />
-                <Route path="/services/detailing" element={<DetailingService />} />
-                <Route path="/services/tyre" element={<TyreService />} />
-                
-                {/* Legal Routes */}
-                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/refund-policy" element={<RefundPolicy />} />
-              </Routes>
-            </AnimatePresence>
-            <Footer />
-            {isFormDataLoaded && (
-              <CustomerForm 
-                isOpen={showForm} 
-                onClose={() => setShowForm(false)} 
-              />
-            )}
-            <Suspense fallback={<div>Loading...</div>}>
-              <WhatsAppButton />
-            </Suspense>
-          </div>
-        </AnalyticsWrapper>
+        <AppContent />
       </Router>
     </HelmetProvider>
   );
