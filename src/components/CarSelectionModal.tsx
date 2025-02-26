@@ -1,26 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Car, Tag } from 'lucide-react';
+import { X, Car, Tag, Droplet } from 'lucide-react';
 
 interface CarSelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (brand: string, model: string, price: number) => void;
+  onSubmit: (brand: string, model: string, fuelType: string, price: number) => void;
   mobileNumber: string;
 }
 
 interface CarPricing {
   brand: string;
   model: string;
+  fuelType: string;
   expressServicePrice: number;
 }
 
 const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, onSubmit, mobileNumber }) => {
   const [selectedBrand, setSelectedBrand] = useState<string>('');
   const [selectedModel, setSelectedModel] = useState<string>('');
+  const [selectedFuelType, setSelectedFuelType] = useState<string>('');
   const [carBrands, setCarBrands] = useState<string[]>([]);
   const [carModels, setCarModels] = useState<string[]>([]);
+  const [availableFuelTypes, setAvailableFuelTypes] = useState<string[]>([]);
   const [pricingData, setPricingData] = useState<CarPricing[]>([]);
   const [currentPrice, setCurrentPrice] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -31,18 +34,19 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
     const loadPricingData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch('/GM Service Pricing.csv');
+        const response = await fetch('/GM Pricing March Website Usage -Final.csv');
         const csvText = await response.text();
         
         // Parse CSV
         const lines = csvText.split('\n');
         const headers = lines[0].split(',');
         
+        const typeIndex = headers.findIndex(h => h.trim() === 'Type');
         const brandIndex = headers.findIndex(h => h.trim() === 'Car Brand');
         const modelIndex = headers.findIndex(h => h.trim() === 'Car Model');
-        const priceIndex = headers.findIndex(h => h.trim() === 'Express Service Price');
+        const priceIndex = headers.findIndex(h => h.trim() === 'Express Service Price GaadiMech');
         
-        if (brandIndex === -1 || modelIndex === -1 || priceIndex === -1) {
+        if (typeIndex === -1 || brandIndex === -1 || modelIndex === -1 || priceIndex === -1) {
           throw new Error('CSV format is invalid');
         }
         
@@ -53,12 +57,14 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
           if (!lines[i].trim()) continue;
           
           const values = lines[i].split(',');
+          const fuelType = values[typeIndex].trim().toLowerCase();
           const brand = values[brandIndex].trim();
           const model = values[modelIndex].trim();
-          const price = parseInt(values[priceIndex].trim(), 10);
+          const priceStr = values[priceIndex].trim();
+          const price = parseFloat(priceStr);
           
-          if (brand && model && !isNaN(price)) {
-            data.push({ brand, model, expressServicePrice: price });
+          if (brand && model && fuelType && !isNaN(price) && price > 0) {
+            data.push({ brand, model, fuelType, expressServicePrice: price });
             brands.add(brand);
           }
         }
@@ -79,25 +85,59 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
   // Update models when brand changes
   useEffect(() => {
     if (selectedBrand) {
-      const models = pricingData
-        .filter(car => car.brand === selectedBrand)
-        .map(car => car.model);
+      const models = [...new Set(
+        pricingData
+          .filter(car => car.brand === selectedBrand)
+          .map(car => car.model)
+      )];
       
       setCarModels(models.sort());
       setSelectedModel(''); // Reset model selection
+      setSelectedFuelType(''); // Reset fuel type selection
+      setAvailableFuelTypes([]); // Reset available fuel types
       setCurrentPrice(null); // Reset price
     } else {
       setCarModels([]);
       setSelectedModel('');
+      setSelectedFuelType('');
+      setAvailableFuelTypes([]);
       setCurrentPrice(null);
     }
   }, [selectedBrand, pricingData]);
 
-  // Update price when model changes
+  // Update available fuel types when model changes
   useEffect(() => {
     if (selectedBrand && selectedModel) {
+      const fuelTypes = [...new Set(
+        pricingData
+          .filter(car => car.brand === selectedBrand && car.model === selectedModel)
+          .map(car => car.fuelType)
+      )];
+      
+      setAvailableFuelTypes(fuelTypes.sort());
+      
+      // If only one fuel type is available, auto-select it
+      if (fuelTypes.length === 1) {
+        setSelectedFuelType(fuelTypes[0]);
+      } else {
+        setSelectedFuelType(''); // Reset fuel type selection if multiple options
+      }
+      
+      setCurrentPrice(null); // Reset price
+    } else {
+      setAvailableFuelTypes([]);
+      setSelectedFuelType('');
+      setCurrentPrice(null);
+    }
+  }, [selectedModel, selectedBrand, pricingData]);
+
+  // Update price when fuel type changes
+  useEffect(() => {
+    if (selectedBrand && selectedModel && selectedFuelType) {
       const carData = pricingData.find(
-        car => car.brand === selectedBrand && car.model === selectedModel
+        car => car.brand === selectedBrand && 
+               car.model === selectedModel && 
+               car.fuelType === selectedFuelType
       );
       
       if (carData) {
@@ -108,7 +148,7 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
     } else {
       setCurrentPrice(null);
     }
-  }, [selectedModel, selectedBrand, pricingData]);
+  }, [selectedFuelType, selectedModel, selectedBrand, pricingData]);
 
   const handleSubmit = () => {
     if (!selectedBrand) {
@@ -121,17 +161,27 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
       return;
     }
     
+    if (!selectedFuelType) {
+      alert('Please select a fuel type');
+      return;
+    }
+    
     if (currentPrice === null) {
       alert('Unable to determine price. Please try again.');
       return;
     }
     
     try {
-      onSubmit(selectedBrand, selectedModel, currentPrice);
+      onSubmit(selectedBrand, selectedModel, selectedFuelType, currentPrice);
     } catch (error) {
       console.error('Error submitting car selection:', error);
       alert('Something went wrong. Please try again.');
     }
+  };
+
+  // Helper function to capitalize first letter
+  const capitalize = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
   if (!isOpen) return null;
@@ -227,6 +277,37 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
                 </div>
               )}
 
+              {selectedModel && availableFuelTypes.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                    <Droplet className="w-5 h-5 mr-2 text-[#FF7200]" />
+                    Fuel Type
+                  </label>
+                  
+                  {availableFuelTypes.length === 1 ? (
+                    <div className="w-full p-3 border border-gray-300 rounded-md bg-gray-50">
+                      {capitalize(availableFuelTypes[0])}
+                    </div>
+                  ) : (
+                    <div className="flex gap-2 justify-between">
+                      {availableFuelTypes.map((fuelType) => (
+                        <button
+                          key={fuelType}
+                          onClick={() => setSelectedFuelType(fuelType)}
+                          className={`flex-1 py-2 px-3 rounded-md border ${
+                            selectedFuelType === fuelType
+                              ? 'bg-[#FF7200] text-white border-[#FF7200]'
+                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                          } transition-colors duration-200`}
+                        >
+                          {capitalize(fuelType)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
               {currentPrice !== null && (
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                   <div className="flex items-center mb-2">
@@ -248,10 +329,14 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
 
               <button
                 onClick={handleSubmit}
-                disabled={!selectedBrand || !selectedModel || currentPrice === null}
-                className="w-full bg-[#FF7200] text-white px-4 py-3 rounded-md hover:bg-[#cc5b00] transition-colors disabled:opacity-50"
+                disabled={!currentPrice}
+                className={`w-full py-3 rounded-md font-medium text-white ${
+                  currentPrice
+                    ? 'bg-[#FF7200] hover:bg-[#cc5b00]'
+                    : 'bg-gray-400 cursor-not-allowed'
+                } transition-colors duration-200`}
               >
-                Continue to Booking
+                Continue
               </button>
             </div>
           )}

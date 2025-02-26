@@ -131,6 +131,7 @@ const ExpressService = () => {
   const [currentLeadId, setCurrentLeadId] = useState<number | null>(null);
   const [selectedCarBrand, setSelectedCarBrand] = useState<string>('');
   const [selectedCarModel, setSelectedCarModel] = useState<string>('');
+  const [selectedFuelType, setSelectedFuelType] = useState<string>('');
   const [selectedServicePrice, setSelectedServicePrice] = useState<number | null>(null);
   const serviceReviews = getReviewsByService('express');
 
@@ -198,7 +199,7 @@ const ExpressService = () => {
     }
   };
 
-  const handleCarSelectionSubmit = async (brand: string, model: string, price: number) => {
+  const handleCarSelectionSubmit = async (brand: string, model: string, fuelType: string, price: number) => {
     if (!currentLeadId) {
       console.error('No lead ID available');
       alert('Session expired. Please try again.');
@@ -207,12 +208,13 @@ const ExpressService = () => {
     }
 
     try {
-      console.log('Updating lead with car information:', { id: currentLeadId, brand, model, price });
+      console.log('Updating lead with car information:', { id: currentLeadId, brand, model, fuelType, price });
       
       // Update the lead with the selected car information
       const response = await expressService.updateLead(currentLeadId, {
         carBrand: brand,
         carModel: model,
+        fuelType: fuelType,
         servicePrice: price
       });
 
@@ -220,18 +222,18 @@ const ExpressService = () => {
         throw new Error('Invalid response from server');
       }
 
-      // Store car information in state
+      // Store selected car information in state
       setSelectedCarBrand(brand);
       setSelectedCarModel(model);
+      setSelectedFuelType(fuelType);
       setSelectedServicePrice(price);
       
-      // Close the car selection modal and open the time slot modal
+      // Close car selection modal and open time slot modal
       setIsCarSelectionModalOpen(false);
       setIsTimeSlotModalOpen(true);
     } catch (error) {
       console.error('Error updating lead with car information:', error);
-      alert('Sorry, there was an error saving your car information. Please try again or contact us directly.');
-      setIsCarSelectionModalOpen(false);
+      alert('Failed to update car information. Please try again.');
     }
   };
 

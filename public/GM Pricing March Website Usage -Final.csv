@@ -1,0 +1,831 @@
+Type,Car Brand,Car Model,Periodic Service Price GaadiMech,Express Service Price GaadiMech,Comprehensive Service Price GaadiMech,Dent & Paint Price GaadiMech
+petrol,Maruti,800,2599.0,2399.0,3399.0,2199.0
+petrol,Maruti,Alto,2599.0,2399.0,3899.0,2299.0
+petrol,Maruti,Alto K10,2599.0,2399.0,3499.0,2299.0
+petrol,Maruti,A-Star,2699.0,2599.0,4099.0,2199.0
+petrol,Maruti,Baleno,2999.0,2799.0,4999.0,2599.0
+petrol,Maruti,Celerio,2799.0,2699.0,4499.0,2299.0
+petrol,Maruti,Ciaz,3699.0,3499.0,4999.0,2499.0
+petrol,Maruti,Eeco,3099.0,2899.0,4299.0,2499.0
+petrol,Maruti,Esteem,3099.0,2999.0,4099.0,2499.0
+petrol,Maruti,Ertiga,3399.0,3199.0,4299.0,2499.0
+petrol,Maruti,Estilo,2999.0,2799.0,4099.0,2399.0
+petrol,Maruti,Grand Vitara,4199.0,3899.0,5599.0,2599.0
+petrol,Maruti,Gypsy,3899.0,3699.0,5499.0,2499.0
+petrol,Maruti,Kizashi,4999.0,4699.0,6299.0,2599.0
+petrol,Maruti,Omni,2699.0,2499.0,3899.0,2399.0
+petrol,Maruti,Ritz,2699.0,2599.0,4299.0,2199.0
+petrol,Maruti,S-Cross,3199.0,2999.0,4599.0,2499.0
+petrol,Maruti,Swift,2999.0,2799.0,4599.0,2499.0
+petrol,Maruti,Swift Dzire,2999.0,2799.0,4599.0,2499.0
+petrol,Maruti,SX4,3799.0,3599.0,4999.0,2499.0
+petrol,Maruti,WagonR,2699.0,2499.0,3899.0,2299.0
+petrol,Maruti,Zen,2699.0,2599.0,4299.0,2199.0
+petrol,Maruti,Vitara Brezza,3699.0,3499.0,4999.0,2699.0
+petrol,Maruti,Ignis,2999.0,2799.0,4099.0,2499.0
+petrol,Maruti,S-Presso,3299.0,3099.0,4899.0,2499.0
+petrol,Hyundai,Accent,3499.0,3299.0,4499.0,2499.0
+petrol,Hyundai,Accent-Viva,3499.0,3299.0,4499.0,2499.0
+petrol,Hyundai,Creta,3899.0,3599.0,5099.0,2699.0
+petrol,Hyundai,Elantra,3899.0,3699.0,5299.0,2499.0
+petrol,Hyundai,Elite-i20,3099.0,2899.0,3999.0,2399.0
+petrol,Hyundai,Eon,2699.0,2499.0,3899.0,2299.0
+petrol,Hyundai,Getz,2899.0,2699.0,4199.0,2499.0
+petrol,Hyundai,Getz-Prime,3799.0,3599.0,5499.0,2499.0
+petrol,Hyundai,Grand-i10,2699.0,2599.0,4399.0,2299.0
+petrol,Hyundai,i10,2699.0,2499.0,4199.0,2299.0
+petrol,Hyundai,i20 Active,3699.0,3499.0,4199.0,2399.0
+petrol,Hyundai,Santa Fe,5999.0,5599.0,8899.0,2499.0
+petrol,Hyundai,Santro Xing,2699.0,2599.0,4099.0,2199.0
+petrol,Hyundai,Sonata,3999.0,3699.0,5799.0,2499.0
+petrol,Hyundai,Sonata Embera,3899.0,3699.0,5299.0,2499.0
+petrol,Hyundai,Sonata Transform,3899.0,3699.0,5299.0,2499.0
+petrol,Hyundai,Verna,3599.0,3399.0,4699.0,2499.0
+petrol,Hyundai,Verna Fluidic,3899.0,3699.0,5699.0,2499.0
+petrol,Hyundai,Verna Transform,3699.0,3499.0,4799.0,2499.0
+petrol,Hyundai,Xcent,2799.0,2699.0,4399.0,2499.0
+petrol,Hyundai,Venue,3899.0,3699.0,5399.0,2699.0
+petrol,Hyundai,Santro,2699.0,2599.0,4099.0,2199.0
+petrol,Hyundai,Aura,2899.0,2699.0,4299.0,2299.0
+petrol,Honda,Accord,4899.0,4599.0,6899.0,2599.0
+petrol,Honda,Amaze,3899.0,3599.0,5499.0,2599.0
+petrol,Honda,Brio,2999.0,2799.0,4799.0,2499.0
+petrol,Honda,City,3999.0,3799.0,6599.0,2599.0
+petrol,Honda,City i-VTEC,4099.0,3899.0,6599.0,2599.0
+petrol,Honda,City ZX,3999.0,3799.0,5699.0,2499.0
+petrol,Honda,Civic,4799.0,4499.0,6699.0,2799.0
+petrol,Honda,Crv,5499.0,5199.0,6299.0,2799.0
+petrol,Honda,Jazz,3899.0,3699.0,5699.0,2499.0
+petrol,Honda,Mobilio,3899.0,3699.0,5499.0,2699.0
+petrol,Toyota,Camry,6699.0,6299.0,8399.0,2599.0
+petrol,Toyota,Corolla,5099.0,4799.0,6399.0,2499.0
+petrol,Toyota,Corolla-Altis,5199.0,4899.0,6499.0,2499.0
+petrol,Toyota,Etios,3499.0,3299.0,4499.0,2499.0
+petrol,Toyota,Etios Cross,3299.0,3099.0,4499.0,2499.0
+petrol,Toyota,Etios Liva,3299.0,3099.0,4499.0,2499.0
+petrol,Toyota,Fortuner,6099.0,5699.0,8899.0,2899.0
+petrol,Toyota,Innova,5399.0,5099.0,7199.0,2899.0
+petrol,Toyota,Land Cruiser,,,,2799.0
+petrol,Toyota,Innova Crysta,5599.0,5199.0,7299.0,2799.0
+petrol,Toyota,Yaris,5199.0,4899.0,6499.0,2499.0
+petrol,Toyota,Glanza,3099.0,2999.0,5099.0,2499.0
+petrol,Toyota,Qualis,5199.0,4899.0,7799.0,2699.0
+petrol,Toyota,Urban Cruiser,3899.0,3599.0,5099.0,2499.0
+petrol,Toyota,Sera,5299.0,4899.0,6499.0,2499.0
+petrol,Mahindra,Bolero,,,,2699.0
+petrol,Mahindra,Quanto,,,,2699.0
+petrol,Mahindra,Scorpio,,,,2899.0
+petrol,Mahindra,Scorpio Getaway,,,,2899.0
+petrol,Mahindra,Thar,5999.0,5599.0,8499.0,2699.0
+petrol,Mahindra,Verito,4899.0,4599.0,6699.0,2499.0
+petrol,Mahindra,XUV500,5299.0,4999.0,7299.0,2999.0
+petrol,Mahindra,Xylo,,,,2699.0
+petrol,Mahindra,TUV300,,,,2699.0
+petrol,Mahindra,KUV100,3099.0,2999.0,4299.0,2499.0
+petrol,Mahindra,Nuvosport,4099.0,3899.0,5499.0,2499.0
+petrol,Mahindra,Logan,4099.0,3799.0,5699.0,2499.0
+petrol,Mahindra,Marazzo,,,,2899.0
+petrol,Mahindra,XUV300,4099.0,3899.0,5499.0,2699.0
+petrol,Mahindra,Bolero Camper,,,,2699.0
+petrol,Mahindra,Bolero Pickup,,,,2699.0
+petrol,Tata,Aria,5299.0,4999.0,7299.0,2599.0
+petrol,Tata,Bolt,3399.0,3199.0,4199.0,2499.0
+petrol,Tata,Indica,3399.0,3199.0,4199.0,2199.0
+petrol,Tata,Indica eV2,3399.0,3199.0,4199.0,2199.0
+petrol,Tata,Indica V2,3399.0,3199.0,4199.0,2199.0
+petrol,Tata,Indica Vista,3399.0,3199.0,4199.0,2199.0
+petrol,Tata,Indigo,3499.0,3299.0,4199.0,2499.0
+petrol,Tata,Indigo CS,3499.0,3299.0,4199.0,2499.0
+petrol,Tata,Indigo eCS,3499.0,3299.0,4199.0,2499.0
+petrol,Tata,Indigo Marina,3499.0,3299.0,4199.0,2499.0
+petrol,Tata,Indigo XL,3499.0,3299.0,4199.0,2499.0
+petrol,Tata,Manza,3499.0,3299.0,4699.0,2499.0
+petrol,Tata,Nano,2699.0,2599.0,3499.0,1999.0
+petrol,Tata,Nano GenX,2699.0,2599.0,3499.0,1999.0
+petrol,Tata,Safari,,,,2899.0
+petrol,Tata,Safari Storme,,,,2899.0
+petrol,Tata,Sumo Gold,,,,2699.0
+petrol,Tata,Sumo Grande,,,,2699.0
+petrol,Tata,Sumo Spacio,,,,2699.0
+petrol,Tata,Sumo Victa,,,,2699.0
+petrol,Tata,Zest,3899.0,3599.0,4699.0,2499.0
+petrol,Tata,Tiago,3399.0,3199.0,4299.0,2599.0
+petrol,Tata,Nexon,4099.0,3899.0,5499.0,2499.0
+petrol,Tata,Tigor,3499.0,3299.0,4299.0,2499.0
+petrol,Tata,Hexa,7999.0,7499.0,11599.0,2599.0
+petrol,Tata,Venture,,,,2699.0
+petrol,Tata,Winger,,,,2499.0
+petrol,Tata,Harrier,5299.0,4899.0,7199.0,2799.0
+petrol,Tata,Punch,3499.0,3299.0,4299.0,2499.0
+petrol,Tata,Xenon,,,,2899.0
+petrol,Tata,Altroz,3199.0,2999.0,4099.0,2399.0
+petrol,Tata,Tiago NRG,3399.0,3199.0,4299.0,2499.0
+petrol,Ford,EcoSport,4099.0,3899.0,5499.0,2799.0
+petrol,Ford,Endeavour,,,,2799.0
+petrol,Ford,Escort,3899.0,3599.0,5599.0,2699.0
+petrol,Ford,Fiesta,4099.0,3899.0,5799.0,2499.0
+petrol,Ford,Fiesta Classic,4099.0,3899.0,5799.0,2499.0
+petrol,Ford,Figo,3299.0,3099.0,5499.0,2199.0
+petrol,Ford,Figo Aspire,3599.0,3399.0,5699.0,2499.0
+petrol,Chevrolet,Aveo,3999.0,3799.0,5399.0,2499.0
+petrol,Chevrolet,Beat,2999.0,2799.0,4899.0,2199.0
+petrol,Chevrolet,Captiva,,,,2599.0
+petrol,Chevrolet,Cruze,5199.0,4899.0,7399.0,2599.0
+petrol,Chevrolet,Enjoy,4599.0,4299.0,5899.0,2499.0
+petrol,Chevrolet,Optra,4399.0,4099.0,6199.0,2499.0
+petrol,Chevrolet,Optra Magnum,4399.0,4099.0,6199.0,2499.0
+petrol,Chevrolet,Optra SRV,4199.0,3899.0,6099.0,2499.0
+petrol,Chevrolet,Sail,3699.0,3499.0,5399.0,2399.0
+petrol,Chevrolet,Sail Hatchback,3499.0,3299.0,5299.0,2399.0
+petrol,Chevrolet,Spark,2999.0,2799.0,4299.0,2199.0
+petrol,Chevrolet,Tavera,,,,2699.0
+petrol,Chevrolet,Uva,3799.0,3599.0,5299.0,2399.0
+petrol,Chevrolet,Trailblazer,,,,2599.0
+petrol,Kia,Seltos,4099.0,3899.0,5199.0,2699.0
+petrol,Kia,Sonet,4099.0,3899.0,5499.0,2699.0
+petrol,Kia,Carnival,6099.0,5699.0,8899.0,2899.0
+petrol,Kia,Carens,4099.0,3899.0,5099.0,2599.0
+petrol,Skoda,Fabia,4999.0,4699.0,7099.0,2499.0
+petrol,Skoda,Fabia Scout,4999.0,4699.0,7099.0,2499.0
+petrol,Skoda,Laura,4599.0,4299.0,6099.0,2499.0
+petrol,Skoda,Octavia,5299.0,4999.0,7099.0,2499.0
+petrol,Skoda,Rapid,5299.0,4999.0,7199.0,2499.0
+petrol,Skoda,Superb,6399.0,5999.0,8299.0,2599.0
+petrol,Skoda,Yeti,5299.0,4999.0,6999.0,2599.0
+petrol,Skoda,Slavia,5999.0,5599.0,8999.0,2799.0
+petrol,Skoda,Kushaq,5999.0,5699.0,8899.0,2799.0
+petrol,Skoda,Kodiaq,5999.0,5699.0,8899.0,2899.0
+petrol,Volkswagen,CrossPolo,3999.0,3799.0,5899.0,2499.0
+petrol,Volkswagen,Jetta,5299.0,4899.0,7199.0,2499.0
+petrol,Volkswagen,Passat,5299.0,4899.0,7199.0,2599.0
+petrol,Volkswagen,Polo,3999.0,3799.0,5899.0,2599.0
+petrol,Volkswagen,Vento,5299.0,4899.0,6499.0,2499.0
+petrol,Volkswagen,Ameo,4299.0,3999.0,5999.0,2499.0
+petrol,Volkswagen,Beetle,10299.0,9699.0,14599.0,2699.0
+petrol,Volkswagen,Tiguan,,,,2599.0
+petrol,Volkswagen,T-Roc,5999.0,5699.0,8899.0,2799.0
+petrol,Volkswagen,Taigun,5999.0,5699.0,8899.0,2799.0
+petrol,Volkswagen,Virtus,5999.0,5599.0,8999.0,2799.0
+petrol,MG,Hector,5999.0,5699.0,8899.0,2799.0
+petrol,MG,Gloster,,,,2899.0
+petrol,MG,Astor,5999.0,5599.0,8899.0,2899.0
+petrol,MG,Hector Plus,6099.0,5699.0,8899.0,2799.0
+petrol,Citroen,C5 Aircross,,,,2799.0
+petrol,Citroen,C3,4099.0,3899.0,5499.0,2699.0
+petrol,Jeep,Compass,6099.0,5699.0,8899.0,2799.0
+petrol,Fiat,Adventure,3899.0,3599.0,5299.0,2499.0
+petrol,Fiat,Avventura,3899.0,3599.0,5299.0,2499.0
+petrol,Fiat,Linea,4099.0,3899.0,5499.0,2499.0
+petrol,Fiat,Linea Classic,4099.0,3899.0,5499.0,2499.0
+petrol,Fiat,Palio D,3699.0,3499.0,5499.0,2499.0
+petrol,Fiat,Palio Stile,3699.0,3499.0,5499.0,2499.0
+petrol,Fiat,Petra,3899.0,3599.0,5499.0,2499.0
+petrol,Fiat,Punto,3099.0,2899.0,5099.0,4299.0
+petrol,Fiat,Punto Evo,3599.0,3399.0,5099.0,2499.0
+petrol,Fiat,Uno,3599.0,3399.0,5099.0,2499.0
+petrol,Fiat,Abarth Punto,3699.0,3499.0,5099.0,2499.0
+petrol,Nissan,Evalia,,,,2499.0
+petrol,Nissan,Micra,3199.0,2999.0,5199.0,2199.0
+petrol,Nissan,Micra Active,3199.0,2999.0,5199.0,2199.0
+petrol,Nissan,Sunny,4399.0,4099.0,5899.0,2499.0
+petrol,Nissan,Teana,5099.0,4799.0,6899.0,2499.0
+petrol,Nissan,Terrano,5199.0,4899.0,8299.0,2699.0
+petrol,Nissan,X-Trail,,,,2899.0
+petrol,Nissan,Gtr,28199.0,26499.0,33299.0,4299.0
+petrol,Nissan,Kicks,3999.0,3799.0,5199.0,2699.0
+petrol,Nissan,Magnite,4099.0,3899.0,5499.0,2699.0
+petrol,Renault,Duster,4299.0,4099.0,5299.0,2899.0
+petrol,Renault,Fluence,4399.0,4099.0,5899.0,2499.0
+petrol,Renault,Koleos,,,,2799.0
+petrol,Renault,Lodgy,,,,2699.0
+petrol,Renault,Pulse,3499.0,3299.0,5099.0,2499.0
+petrol,Renault,Scala,4399.0,4099.0,5899.0,2499.0
+petrol,Renault,Kwid,3499.0,3299.0,5099.0,2599.0
+petrol,Renault,Triber,3699.0,3499.0,5099.0,2499.0
+petrol,Renault,Kiger,4099.0,3899.0,5499.0,2699.0
+petrol,Isuzu,MU-X,,,,2799.0
+petrol,Volvo,Xc60,17399.0,16299.0,21499.0,4299.0
+petrol,Volvo,Xc90,19799.0,18599.0,25099.0,4699.0
+petrol,Volvo,S90,16399.0,15399.0,21899.0,4299.0
+petrol,Volvo,S60,14999.0,14099.0,20699.0,3999.0
+petrol,Volvo,S60 Cross Country,15299.0,14399.0,20899.0,3999.0
+petrol,Volvo,S80,19799.0,18599.0,26699.0,4299.0
+petrol,Volvo,V40,14999.0,14099.0,20699.0,3799.0
+petrol,Volvo,V40 Cross Country,15299.0,14399.0,20899.0,3799.0
+petrol,Volvo,S40,14199.0,13299.0,19899.0,3999.0
+petrol,Volvo,V60,16899.0,15899.0,21699.0,3999.0
+petrol,Volvo,V90,17399.0,16299.0,22299.0,4699.0
+petrol,BMW,3 Series,15299.0,14399.0,20899.0,3999.0
+petrol,BMW,5 Series,16399.0,15399.0,21899.0,4299.0
+petrol,BMW,7 Series,19799.0,18599.0,23899.0,4299.0
+petrol,BMW,X1,15299.0,14399.0,20899.0,4299.0
+petrol,BMW,X3,16399.0,15399.0,21899.0,4299.0
+petrol,BMW,X5,17399.0,16299.0,23899.0,4699.0
+petrol,BMW,X7,20799.0,19499.0,25499.0,4699.0
+petrol,BMW,1 Series,15299.0,14399.0,20899.0,3999.0
+petrol,BMW,3 Series GT,15299.0,14399.0,20899.0,3999.0
+petrol,BMW,5 Series GT,16399.0,15399.0,21899.0,4299.0
+petrol,BMW,6 Series,18699.0,17599.0,23299.0,4299.0
+petrol,BMW,M3,21899.0,20499.0,27299.0,3999.0
+petrol,BMW,M5,21899.0,20499.0,26499.0,4299.0
+petrol,BMW,X6,20799.0,19499.0,25499.0,4699.0
+petrol,BMW,Z4,19899.0,18699.0,27099.0,3999.0
+petrol,BMW,X4,16399.0,15399.0,21899.0,4299.0
+petrol,BMW,6 Series GT,18699.0,17599.0,22899.0,4299.0
+petrol,BMW,2 Series,15299.0,14399.0,20899.0,3999.0
+petrol,Mercedes,A-Class,15299.0,14399.0,20899.0,3799.0
+petrol,Mercedes,AMG GT,21899.0,20499.0,24899.0,4299.0
+petrol,Mercedes,B-Class,15299.0,14399.0,20899.0,3799.0
+petrol,Mercedes,CLA-Class,16399.0,15399.0,21499.0,3999.0
+petrol,Mercedes,CLS-Class,18599.0,17399.0,23199.0,4299.0
+petrol,Mercedes,E-Class,16899.0,15899.0,20099.0,4299.0
+petrol,Mercedes,G63 AMG,20799.0,19499.0,25499.0,4699.0
+petrol,Mercedes,GL-Class,19799.0,18599.0,29099.0,4699.0
+petrol,Mercedes,GLA-Class,15299.0,14399.0,19299.0,4299.0
+petrol,Mercedes,GLE-Class,18699.0,17599.0,22499.0,4299.0
+petrol,Mercedes,ML-Class,18699.0,17599.0,22499.0,4699.0
+petrol,Mercedes,S-Class,18699.0,17599.0,22499.0,4299.0
+petrol,Mercedes,SLK-Class,18699.0,17599.0,22899.0,3999.0
+petrol,Mercedes,R-Class,18699.0,17599.0,22899.0,4299.0
+petrol,Mercedes,V-Class,,,,4699.0
+petrol,Mercedes,Glc,16899.0,15899.0,20899.0,4299.0
+petrol,Mercedes,Gls,20799.0,19499.0,26299.0,4699.0
+petrol,Mercedes,GLE43 AMG,35299.0,33099.0,40899.0,4699.0
+petrol,Audi,A3,14999.0,14099.0,19899.0,3999.0
+petrol,Audi,A4,15299.0,14399.0,20899.0,3999.0
+petrol,Audi,A6,16399.0,15399.0,21899.0,4299.0
+petrol,Audi,A7,17499.0,16399.0,23099.0,4299.0
+petrol,Audi,A8,19799.0,18599.0,29099.0,4299.0
+petrol,Audi,A8 L,19799.0,18599.0,29099.0,4299.0
+petrol,Audi,Q3,15299.0,14399.0,20899.0,4299.0
+petrol,Audi,Q5,15299.0,14399.0,21899.0,4299.0
+petrol,Audi,Q7,20799.0,19499.0,25499.0,4699.0
+petrol,Audi,R8,35299.0,33099.0,46499.0,4299.0
+petrol,Audi,Tt,19799.0,18599.0,23299.0,3999.0
+petrol,Audi,Q8,20799.0,19499.0,24699.0,4699.0
+petrol,Audi,Rs5,19799.0,18599.0,27499.0,4299.0
+petrol,Audi,Rs3,17499.0,16399.0,22299.0,3999.0
+petrol,Audi,Rs7,22999.0,21599.0,28099.0,4299.0
+petrol,Audi,Q2,15299.0,14399.0,21099.0,3799.0
+petrol,Audi,S4,16399.0,15399.0,21899.0,3999.0
+petrol,Audi,A5,16399.0,15399.0,22299.0,3999.0
+petrol,Jaguar,F-Type,26299.0,24699.0,29299.0,4299.0
+petrol,Jaguar,Xe,14999.0,14099.0,20699.0,3999.0
+petrol,Jaguar,Xf,16399.0,15399.0,21899.0,4299.0
+petrol,Jaguar,Xj,18699.0,17599.0,23299.0,4299.0
+petrol,Jaguar,F-Pace,16399.0,15399.0,21899.0,4299.0
+petrol,Jaguar,Xjr,16399.0,15399.0,21899.0,4299.0
+,,,,,,
+Diesel,Maruti,800,,,,2199.0
+Diesel,Maruti,Alto,,,,2299.0
+Diesel,Maruti,Alto K10,,,,2299.0
+Diesel,Maruti,A-Star,,,,2199.0
+Diesel,Maruti,Baleno,3399.0,3199.0,5099.0,2599.0
+Diesel,Maruti,Celerio,3099.0,2899.0,4499.0,2299.0
+Diesel,Maruti,Ciaz,4299.0,3999.0,5399.0,2499.0
+Diesel,Maruti,Eeco,,,,2499.0
+Diesel,Maruti,Esteem,,,,2499.0
+Diesel,Maruti,Ertiga,3899.0,3699.0,5899.0,2499.0
+Diesel,Maruti,Estilo,,,,2399.0
+Diesel,Maruti,Grand Vitara,4899.0,4599.0,6899.0,2599.0
+Diesel,Maruti,Gypsy,4599.0,4299.0,6699.0,2499.0
+Diesel,Maruti,Kizashi,4899.0,4599.0,6999.0,2599.0
+Diesel,Maruti,Omni,,,,2399.0
+Diesel,Maruti,Ritz,2699.0,2599.0,4499.0,2199.0
+Diesel,Maruti,S-Cross,3499.0,3299.0,5499.0,2499.0
+Diesel,Maruti,Swift,2999.0,2799.0,4599.0,2499.0
+Diesel,Maruti,Swift Dzire,3199.0,2999.0,4999.0,2499.0
+Diesel,Maruti,SX4,4099.0,3899.0,6099.0,2499.0
+Diesel,Maruti,WagonR,,,,2299.0
+Diesel,Maruti,Zen,,,,2199.0
+Diesel,Maruti,Vitara Brezza,3499.0,3299.0,5499.0,2699.0
+Diesel,Maruti,Ignis,3299.0,3099.0,5599.0,2499.0
+Diesel,Maruti,S-Presso,3799.0,3599.0,6099.0,2499.0
+Diesel,Hyundai,Accent,3599.0,3399.0,4699.0,2499.0
+Diesel,Hyundai,Accent-Viva,4699.0,4399.0,7499.0,2499.0
+Diesel,Hyundai,Creta,3899.0,3699.0,5699.0,2699.0
+Diesel,Hyundai,Elantra,4699.0,4399.0,7399.0,2499.0
+Diesel,Hyundai,Elite-I20,3799.0,3599.0,5299.0,2399.0
+Diesel,Hyundai,Eon,,,,2299.0
+Diesel,Hyundai,Getz,,,,2499.0
+Diesel,Hyundai,Getz-Prime,3799.0,3599.0,5499.0,2499.0
+Diesel,Hyundai,Grand-I10,3099.0,2899.0,4499.0,2299.0
+Diesel,Hyundai,I10,,,,2299.0
+Diesel,Hyundai,i20 Active,3699.0,3499.0,5499.0,2399.0
+Diesel,Hyundai,Santa Fe,5999.0,5599.0,8899.0,2499.0
+Diesel,Hyundai,Santro Xing,,,,2199.0
+Diesel,Hyundai,Sonata,4799.0,4499.0,7999.0,2499.0
+Diesel,Hyundai,Sonata Embera,4799.0,4499.0,7499.0,2499.0
+Diesel,Hyundai,Sonata Transform,4799.0,4499.0,7499.0,2499.0
+Diesel,Hyundai,Verna,4699.0,4399.0,6499.0,2499.0
+Diesel,Hyundai,Verna Fluidic,4799.0,4499.0,5899.0,2499.0
+Diesel,Hyundai,Verna Transform,4699.0,4399.0,6699.0,2499.0
+Diesel,Hyundai,Xcent,3199.0,2999.0,4999.0,2499.0
+Diesel,Hyundai,Venue,3999.0,3699.0,6199.0,2699.0
+Diesel,Hyundai,Santro,2699.0,2599.0,4099.0,2199.0
+Diesel,Hyundai,Aura,2899.0,2799.0,4499.0,2299.0
+Diesel,Honda,Accord,,,,2599.0
+Diesel,Honda,Amaze,3999.0,3799.0,5999.0,2599.0
+Diesel,Honda,Brio,,,,2499.0
+Diesel,Honda,City,4099.0,3899.0,6699.0,2599.0
+Diesel,Honda,City i-VTEC,,,,2599.0
+Diesel,Honda,City ZX,4299.0,3999.0,6699.0,2499.0
+Diesel,Honda,Civic,6099.0,5799.0,9199.0,2799.0
+Diesel,Honda,Crv,6199.0,5799.0,9099.0,2799.0
+Diesel,Honda,Jazz,3999.0,3799.0,6199.0,2499.0
+Diesel,Honda,Mobilio,4099.0,3899.0,5999.0,2699.0
+Diesel,Toyota,Camry,,,,2599.0
+Diesel,Toyota,Corolla,5099.0,4799.0,7799.0,2499.0
+Diesel,Toyota,Corolla-Altis,5499.0,5199.0,7799.0,2499.0
+Diesel,Toyota,Etios,3899.0,3699.0,5799.0,2499.0
+Diesel,Toyota,Etios Cross,3799.0,3599.0,5699.0,2499.0
+Diesel,Toyota,Etios Liva,3799.0,3599.0,5699.0,2499.0
+Diesel,Toyota,Fortuner,7999.0,7499.0,9599.0,2899.0
+Diesel,Toyota,Innova,5799.0,5499.0,7799.0,2899.0
+Diesel,Toyota,Land Cruiser,7999.0,7499.0,10399.0,2799.0
+Diesel,Toyota,Innova Crysta,5999.0,5599.0,8299.0,2799.0
+Diesel,Toyota,Yaris,,,,2499.0
+Diesel,Toyota,Glanza,3299.0,3099.0,5099.0,2499.0
+Diesel,Toyota,Qualis,5199.0,4899.0,7799.0,2699.0
+Diesel,Toyota,Urban Cruiser,,,,2499.0
+Diesel,Toyota,Sera,,,,2499.0
+Diesel,Mahindra,Bolero,5299.0,4999.0,7399.0,2699.0
+Diesel,Mahindra,Quanto,5299.0,4999.0,7299.0,2699.0
+Diesel,Mahindra,Scorpio,5299.0,4999.0,7399.0,2899.0
+Diesel,Mahindra,Scorpio Getaway,5299.0,4999.0,7399.0,2899.0
+Diesel,Mahindra,Thar,5999.0,5599.0,8499.0,2699.0
+Diesel,Mahindra,Verito,5199.0,4899.0,7299.0,2499.0
+Diesel,Mahindra,XUV500,5499.0,5199.0,7399.0,2999.0
+Diesel,Mahindra,Xylo,5299.0,4999.0,7399.0,2699.0
+Diesel,Mahindra,TUV300,5499.0,5199.0,7499.0,2699.0
+Diesel,Mahindra,KUV100,3499.0,3299.0,5699.0,2499.0
+Diesel,Mahindra,Nuvosport,4499.0,4199.0,6599.0,2499.0
+Diesel,Mahindra,Logan,5199.0,4899.0,7299.0,2499.0
+Diesel,Mahindra,Marazzo,5299.0,4999.0,7399.0,2899.0
+Diesel,Mahindra,XUV300,4199.0,3899.0,6399.0,2699.0
+Diesel,Mahindra,Bolero Camper,5299.0,4999.0,7399.0,2699.0
+Diesel,Mahindra,Bolero Pickup,5299.0,4999.0,7399.0,2699.0
+Diesel,Tata,Aria,5299.0,4999.0,7299.0,2599.0
+Diesel,Tata,Bolt,3899.0,3699.0,6799.0,2499.0
+Diesel,Tata,Indica,3799.0,3599.0,5099.0,2199.0
+Diesel,Tata,Indica eV2,3799.0,3599.0,5099.0,2199.0
+Diesel,Tata,Indica V2,3799.0,3599.0,5099.0,2199.0
+Diesel,Tata,Indica Vista,3799.0,3599.0,5999.0,2199.0
+Diesel,Tata,Indigo,3899.0,3699.0,5399.0,2499.0
+Diesel,Tata,Indigo CS,3899.0,3699.0,6799.0,2499.0
+Diesel,Tata,Indigo eCS,3899.0,3699.0,6799.0,2499.0
+Diesel,Tata,Indigo Marina,3899.0,3699.0,6799.0,2499.0
+Diesel,Tata,Indigo XL,3899.0,3699.0,6799.0,2499.0
+Diesel,Tata,Manza,4399.0,4099.0,7099.0,2499.0
+Diesel,Tata,Nano,,,,1999.0
+Diesel,Tata,Nano GenX,,,,1999.0
+Diesel,Tata,Safari,6299.0,5899.0,9299.0,2899.0
+Diesel,Tata,Safari Storme,6299.0,5899.0,9299.0,2899.0
+Diesel,Tata,Sumo Gold,5799.0,5499.0,8699.0,2699.0
+Diesel,Tata,Sumo Grande,5799.0,5499.0,8699.0,2699.0
+Diesel,Tata,Sumo Spacio,5799.0,5499.0,8699.0,2699.0
+Diesel,Tata,Sumo Victa,5799.0,5499.0,8699.0,2699.0
+Diesel,Tata,Zest,4399.0,4099.0,6999.0,2499.0
+Diesel,Tata,Tiago,3899.0,3699.0,5699.0,2599.0
+Diesel,Tata,Nexon,4399.0,4099.0,6599.0,2499.0
+Diesel,Tata,Tigor,4099.0,3899.0,5799.0,2499.0
+Diesel,Tata,Hexa,7999.0,7499.0,11599.0,2599.0
+Diesel,Tata,Venture,4899.0,4599.0,6999.0,2699.0
+Diesel,Tata,Winger,4799.0,4499.0,6699.0,2499.0
+Diesel,Tata,Harrier,5299.0,4899.0,7199.0,2799.0
+Diesel,Tata,Punch,,,,2499.0
+Diesel,Tata,Xenon,6299.0,5899.0,9299.0,2899.0
+Diesel,Tata,Altroz,3899.0,3699.0,5499.0,2399.0
+Diesel,Tata,Tiago NRG,3899.0,3699.0,5699.0,2499.0
+Diesel,Ford,EcoSport,4099.0,3899.0,6299.0,2799.0
+Diesel,Ford,Endeavour,7999.0,7499.0,9099.0,2799.0
+Diesel,Ford,Escort,4299.0,3999.0,6799.0,2699.0
+Diesel,Ford,Fiesta,4299.0,3999.0,6799.0,2499.0
+Diesel,Ford,Fiesta Classic,4299.0,3999.0,6799.0,2499.0
+Diesel,Ford,Figo,3399.0,3199.0,5599.0,2199.0
+Diesel,Ford,Figo Aspire,3699.0,3499.0,5899.0,2499.0
+Diesel,Chevrolet,Aveo,3999.0,3799.0,5999.0,2499.0
+Diesel,Chevrolet,Beat,2999.0,2799.0,4899.0,2199.0
+Diesel,Chevrolet,Captiva,5999.0,5699.0,8899.0,2599.0
+Diesel,Chevrolet,Cruze,6099.0,5699.0,9199.0,2599.0
+Diesel,Chevrolet,Enjoy,4899.0,4599.0,6999.0,2499.0
+Diesel,Chevrolet,Optra,5899.0,5499.0,8899.0,2499.0
+Diesel,Chevrolet,Optra Magnum,5899.0,5499.0,8899.0,2499.0
+Diesel,Chevrolet,Optra SRV,,,,2499.0
+Diesel,Chevrolet,Sail,3799.0,3599.0,5499.0,2399.0
+Diesel,Chevrolet,Sail Hatchback,3499.0,3299.0,5399.0,2399.0
+Diesel,Chevrolet,Spark,,,,2199.0
+Diesel,Chevrolet,Tavera,5299.0,4999.0,7699.0,2699.0
+Diesel,Chevrolet,Uva,3799.0,3599.0,6199.0,2399.0
+Diesel,Chevrolet,Trailblazer,6699.0,6299.0,9799.0,2599.0
+Diesel,Kia,Seltos,4399.0,4099.0,5899.0,2699.0
+Diesel,Kia,Sonet,4099.0,3899.0,6299.0,2699.0
+Diesel,Kia,Carnival,7999.0,7499.0,9599.0,2899.0
+Diesel,Kia,Carens,4399.0,4099.0,5699.0,2599.0
+Diesel,Skoda,Fabia,4999.0,4699.0,7599.0,2499.0
+Diesel,Skoda,Fabia Scout,4999.0,4699.0,7599.0,2499.0
+Diesel,Skoda,Laura,5699.0,5299.0,7699.0,2499.0
+Diesel,Skoda,Octavia,5699.0,5299.0,8099.0,2499.0
+Diesel,Skoda,Rapid,5699.0,5299.0,8299.0,2499.0
+Diesel,Skoda,Superb,6399.0,5999.0,9399.0,2599.0
+Diesel,Skoda,Yeti,6399.0,5999.0,9199.0,2599.0
+Diesel,Skoda,Slavia,,,,2799.0
+Diesel,Skoda,Kushaq,7899.0,7499.0,9599.0,2799.0
+Diesel,Skoda,Kodiaq,7899.0,7499.0,9599.0,2899.0
+Diesel,Volkswagen,CrossPolo,4299.0,3999.0,6599.0,2499.0
+Diesel,Volkswagen,Jetta,5399.0,5099.0,8299.0,2499.0
+Diesel,Volkswagen,Passat,5399.0,5099.0,8299.0,2599.0
+Diesel,Volkswagen,Polo,4299.0,3999.0,6599.0,2599.0
+Diesel,Volkswagen,Vento,5399.0,5099.0,6699.0,2499.0
+Diesel,Volkswagen,Ameo,4499.0,4299.0,6799.0,2499.0
+Diesel,Volkswagen,Beetle,,,,2699.0
+Diesel,Volkswagen,Tiguan,6399.0,5999.0,9299.0,2599.0
+Diesel,Volkswagen,T-Roc,7899.0,7499.0,9599.0,2799.0
+Diesel,Volkswagen,Taigun,,,,2799.0
+Diesel,Volkswagen,Virtus,,,,2799.0
+Diesel,MG,Hector,7899.0,7499.0,9599.0,2799.0
+Diesel,MG,Gloster,7999.0,7499.0,9599.0,2899.0
+Diesel,MG,Astor,,,,2899.0
+Diesel,MG,Hector Plus,7999.0,7499.0,9599.0,2799.0
+Diesel,Citroen,C5 Aircross,5299.0,4999.0,7199.0,2799.0
+Diesel,Citroen,C3,,,,2699.0
+Diesel,Jeep,Compass,7999.0,7499.0,9599.0,2799.0
+Diesel,Fiat,Adventure,4099.0,3899.0,6999.0,2499.0
+Diesel,Fiat,Avventura,4099.0,3899.0,6999.0,2499.0
+Diesel,Fiat,Linea,4399.0,4099.0,7099.0,2499.0
+Diesel,Fiat,Linea Classic,4399.0,4099.0,7099.0,2499.0
+Diesel,Fiat,Palio D,3899.0,3699.0,6499.0,2499.0
+Diesel,Fiat,Palio Stile,3899.0,3699.0,6499.0,2499.0
+Diesel,Fiat,Petra,4099.0,3899.0,6599.0,2499.0
+Diesel,Fiat,Punto,3199.0,2999.0,5099.0,4299.0
+Diesel,Fiat,Punto Evo,4099.0,3899.0,6999.0,2499.0
+Diesel,Fiat,Uno,4099.0,3899.0,6999.0,2499.0
+Diesel,Fiat,Abarth Punto,,,,2499.0
+Diesel,Nissan,Evalia,5299.0,4899.0,8399.0,2499.0
+Diesel,Nissan,Micra,3199.0,2999.0,5199.0,2199.0
+Diesel,Nissan,Micra Active,,,,2199.0
+Diesel,Nissan,Sunny,4899.0,4599.0,7199.0,2499.0
+Diesel,Nissan,Teana,5399.0,5099.0,7699.0,2499.0
+Diesel,Nissan,Terrano,5199.0,4899.0,8299.0,2699.0
+Diesel,Nissan,X-Trail,5599.0,5199.0,8699.0,2899.0
+Diesel,Nissan,Gtr,,,,4299.0
+Diesel,Nissan,Kicks,4099.0,3899.0,5899.0,2699.0
+Diesel,Nissan,Magnite,,,,2699.0
+Diesel,Renault,Duster,5199.0,4899.0,7499.0,2899.0
+Diesel,Renault,Fluence,4899.0,4599.0,7199.0,2499.0
+Diesel,Renault,Koleos,5499.0,5199.0,8499.0,2799.0
+Diesel,Renault,Lodgy,5299.0,4999.0,8399.0,2699.0
+Diesel,Renault,Pulse,3899.0,3699.0,6199.0,2499.0
+Diesel,Renault,Scala,4899.0,4599.0,7199.0,2499.0
+Diesel,Renault,Kwid,3899.0,3699.0,6199.0,2599.0
+Diesel,Renault,Triber,4199.0,3899.0,6299.0,2499.0
+Diesel,Renault,Kiger,,,,2699.0
+Diesel,Isuzu,MU-X,5499.0,5199.0,7399.0,2799.0
+Diesel,Volvo,Xc60,17399.0,16299.0,21499.0,4299.0
+Diesel,Volvo,Xc90,19799.0,18599.0,25099.0,4699.0
+Diesel,Volvo,S90,16399.0,15399.0,21899.0,4299.0
+Diesel,Volvo,S60,14999.0,14099.0,20699.0,3999.0
+Diesel,Volvo,S60 Cross Country,15299.0,14399.0,20899.0,3999.0
+Diesel,Volvo,S80,19799.0,18599.0,26699.0,4299.0
+Diesel,Volvo,V40,14999.0,14099.0,20699.0,3799.0
+Diesel,Volvo,V40 Cross Country,15299.0,14399.0,20899.0,3799.0
+Diesel,Volvo,S40,,,,3999.0
+Diesel,Volvo,V60,16899.0,15899.0,21699.0,3999.0
+Diesel,Volvo,V90,17399.0,16299.0,22299.0,4699.0
+Diesel,BMW,3 Series,15299.0,14399.0,20899.0,3999.0
+Diesel,BMW,5 Series,16399.0,15399.0,21899.0,4299.0
+Diesel,BMW,7 Series,19799.0,18599.0,23899.0,4299.0
+Diesel,BMW,X1,15299.0,14399.0,20899.0,4299.0
+Diesel,BMW,X3,16399.0,15399.0,21899.0,4299.0
+Diesel,BMW,X5,17399.0,16299.0,23899.0,4699.0
+Diesel,BMW,X7,20799.0,19499.0,25499.0,4699.0
+Diesel,BMW,1 Series,15299.0,14399.0,20899.0,3999.0
+Diesel,BMW,3 Series GT,15299.0,14399.0,20899.0,3999.0
+Diesel,BMW,5 Series GT,16399.0,15399.0,21899.0,4299.0
+Diesel,BMW,6 Series,18699.0,17599.0,23299.0,4299.0
+Diesel,BMW,M3,,,,3999.0
+Diesel,BMW,M5,,,,4299.0
+Diesel,BMW,X6,20799.0,19499.0,25499.0,4699.0
+Diesel,BMW,Z4,,,,3999.0
+Diesel,BMW,X4,16399.0,15399.0,21899.0,4299.0
+Diesel,BMW,6 Series GT,18699.0,17599.0,22899.0,4299.0
+Diesel,BMW,2 Series,15299.0,14399.0,20899.0,3999.0
+Diesel,Mercedes,A-Class,15299.0,14399.0,20899.0,3799.0
+Diesel,Mercedes,AMG GT,,,,4299.0
+Diesel,Mercedes,B-Class,15299.0,14399.0,20899.0,3799.0
+Diesel,Mercedes,CLA-Class,16399.0,15399.0,21499.0,3999.0
+Diesel,Mercedes,CLS-Class,18599.0,17399.0,23199.0,4299.0
+Diesel,Mercedes,E-Class,16899.0,15899.0,20099.0,4299.0
+Diesel,Mercedes,G63 AMG,,,,4699.0
+Diesel,Mercedes,GL-Class,19799.0,18599.0,29099.0,4699.0
+Diesel,Mercedes,GLA-Class,15299.0,14399.0,19299.0,4299.0
+Diesel,Mercedes,GLE-Class,18699.0,17599.0,22499.0,4299.0
+Diesel,Mercedes,ML-Class,18699.0,17599.0,22499.0,4699.0
+Diesel,Mercedes,S-Class,18699.0,17599.0,22499.0,4299.0
+Diesel,Mercedes,SLK-Class,,,,3999.0
+Diesel,Mercedes,R-Class,18699.0,17599.0,22899.0,4299.0
+Diesel,Mercedes,V-Class,18699.0,17599.0,23699.0,4699.0
+Diesel,Mercedes,Glc,16899.0,15899.0,20899.0,4299.0
+Diesel,Mercedes,Gls,20799.0,19499.0,26299.0,4699.0
+Diesel,Mercedes,GLE43 AMG,,,,4699.0
+Diesel,Audi,A3,14999.0,14099.0,19899.0,3999.0
+Diesel,Audi,A4,15299.0,14399.0,20899.0,3999.0
+Diesel,Audi,A6,16399.0,15399.0,21899.0,4299.0
+Diesel,Audi,A7,17499.0,16399.0,23099.0,4299.0
+Diesel,Audi,A8,19799.0,18599.0,29099.0,4299.0
+Diesel,Audi,A8 L,19799.0,18599.0,29099.0,4299.0
+Diesel,Audi,Q3,15299.0,14399.0,20899.0,4299.0
+Diesel,Audi,Q5,16399.0,15399.0,21899.0,4299.0
+Diesel,Audi,Q7,20799.0,19499.0,25499.0,4699.0
+Diesel,Audi,R8,,,,4299.0
+Diesel,Audi,Tt,,,,3999.0
+Diesel,Audi,Q8,,,,4699.0
+Diesel,Audi,Rs5,,,,4299.0
+Diesel,Audi,Rs3,,,,3999.0
+Diesel,Audi,Rs7,,,,4299.0
+Diesel,Audi,Q2,15299.0,14399.0,21099.0,3799.0
+Diesel,Audi,S4,,,,3999.0
+Diesel,Audi,A5,16399.0,15399.0,22299.0,3999.0
+Diesel,Jaguar,F-Type,,,,4299.0
+Diesel,Jaguar,Xe,14999.0,14099.0,20699.0,3999.0
+Diesel,Jaguar,Xf,16399.0,15399.0,21899.0,4299.0
+Diesel,Jaguar,Xj,18699.0,17599.0,23299.0,4299.0
+Diesel,Jaguar,F-Pace,16399.0,15399.0,21899.0,4299.0
+Diesel,Jaguar,Xjr,,,,4299.0
+,,,,,,
+CNG,Maruti,800,2599.0,2399.0,3399.0,2199.0
+CNG,Maruti,Alto,2599.0,2399.0,3899.0,2299.0
+CNG,Maruti,Alto K10,2599.0,2399.0,3499.0,2299.0
+CNG,Maruti,A-Star,2699.0,2599.0,4099.0,2199.0
+CNG,Maruti,Baleno,3099.0,2999.0,4999.0,2599.0
+CNG,Maruti,Celerio,2799.0,2699.0,4499.0,2299.0
+CNG,Maruti,Ciaz,3699.0,3499.0,4999.0,2499.0
+CNG,Maruti,Eeco,3099.0,2899.0,4299.0,2499.0
+CNG,Maruti,Esteem,3099.0,2999.0,4099.0,2499.0
+CNG,Maruti,Ertiga,3399.0,3199.0,4299.0,2499.0
+CNG,Maruti,Estilo,2999.0,2799.0,4099.0,2399.0
+CNG,Maruti,Grand Vitara,4199.0,3899.0,5599.0,2599.0
+CNG,Maruti,Gypsy,3899.0,3699.0,5499.0,2499.0
+CNG,Maruti,Kizashi,4999.0,4699.0,6299.0,2599.0
+CNG,Maruti,Omni,2699.0,2499.0,3899.0,2399.0
+CNG,Maruti,Ritz,2699.0,2599.0,4299.0,2199.0
+CNG,Maruti,S-Cross,3199.0,2999.0,4599.0,2499.0
+CNG,Maruti,Swift,2999.0,2799.0,4599.0,2499.0
+CNG,Maruti,Swift Dzire,2999.0,2799.0,4599.0,2499.0
+CNG,Maruti,SX4,3799.0,3599.0,4999.0,2499.0
+CNG,Maruti,WagonR,2699.0,2499.0,3899.0,2299.0
+CNG,Maruti,Zen,2699.0,2599.0,4299.0,2199.0
+CNG,Maruti,Vitara Brezza,3699.0,3499.0,4999.0,2699.0
+CNG,Maruti,Ignis,2999.0,2799.0,4099.0,2499.0
+CNG,Maruti,S-Presso,3299.0,3099.0,4899.0,2499.0
+CNG,Hyundai,Accent,3499.0,3299.0,4499.0,2499.0
+CNG,Hyundai,Accent-Viva,3499.0,3299.0,4499.0,2499.0
+CNG,Hyundai,Creta,3899.0,3599.0,5099.0,2699.0
+CNG,Hyundai,Elantra,3899.0,3699.0,5299.0,2499.0
+CNG,Hyundai,Elite-I20,3099.0,2899.0,4099.0,2399.0
+CNG,Hyundai,Eon,2699.0,2499.0,3899.0,2299.0
+CNG,Hyundai,Getz,2899.0,2699.0,4099.0,2499.0
+CNG,Hyundai,Getz-Prime,,,,2499.0
+CNG,Hyundai,Grand-I10,2699.0,2599.0,4399.0,2299.0
+CNG,Hyundai,I10,2699.0,2499.0,4199.0,2299.0
+CNG,Hyundai,i20 Active,3699.0,3499.0,4199.0,2399.0
+CNG,Hyundai,Santa Fe,5999.0,5599.0,8899.0,2499.0
+CNG,Hyundai,Santro Xing,2699.0,2599.0,4099.0,2199.0
+CNG,Hyundai,Sonata,3999.0,3699.0,5799.0,2499.0
+CNG,Hyundai,Sonata Embera,3899.0,3699.0,5299.0,2499.0
+CNG,Hyundai,Sonata Transform,3899.0,3699.0,5299.0,2499.0
+CNG,Hyundai,Verna,3599.0,3399.0,4699.0,2499.0
+CNG,Hyundai,Verna Fluidic,3799.0,3599.0,5699.0,2499.0
+CNG,Hyundai,Verna Transform,3699.0,3499.0,4799.0,2499.0
+CNG,Hyundai,Xcent,2799.0,2699.0,4399.0,2499.0
+CNG,Hyundai,Venue,3899.0,3699.0,5399.0,2699.0
+CNG,Hyundai,Santro,2699.0,2599.0,4099.0,2199.0
+CNG,Hyundai,Aura,2899.0,2699.0,4299.0,2299.0
+CNG,Honda,Accord,4899.0,4599.0,6899.0,2599.0
+CNG,Honda,Amaze,3899.0,3599.0,5499.0,2599.0
+CNG,Honda,Brio,2999.0,2799.0,4799.0,2499.0
+CNG,Honda,City,3999.0,3799.0,6599.0,2599.0
+CNG,Honda,City i-VTEC,4099.0,3899.0,6599.0,2599.0
+CNG,Honda,City ZX,3999.0,3799.0,5699.0,2499.0
+CNG,Honda,Civic,4799.0,4499.0,6699.0,2799.0
+CNG,Honda,Crv,5499.0,5199.0,6299.0,2799.0
+CNG,Honda,Jazz,3899.0,3699.0,5699.0,2499.0
+CNG,Honda,Mobilio,3899.0,3699.0,5499.0,2699.0
+CNG,Toyota,Camry,6699.0,6299.0,8399.0,2599.0
+CNG,Toyota,Corolla,5099.0,4799.0,6399.0,2499.0
+CNG,Toyota,Corolla-Altis,5199.0,4899.0,6499.0,2499.0
+CNG,Toyota,Etios,3499.0,3299.0,4499.0,2499.0
+CNG,Toyota,Etios Cross,3299.0,3099.0,4499.0,2499.0
+CNG,Toyota,Etios Liva,3299.0,3099.0,4499.0,2499.0
+CNG,Toyota,Fortuner,,,,2899.0
+CNG,Toyota,Innova,,,,2899.0
+CNG,Toyota,Land Cruiser,,,,2799.0
+CNG,Toyota,Innova Crysta,,,,2799.0
+CNG,Toyota,Yaris,5199.0,4899.0,6499.0,2499.0
+CNG,Toyota,Glanza,3299.0,3099.0,5099.0,2499.0
+CNG,Toyota,Qualis,,,,2699.0
+CNG,Toyota,Urban Cruiser,3899.0,3599.0,5099.0,2499.0
+CNG,Toyota,Sera,,,,2499.0
+CNG,Mahindra,Bolero,,,,2699.0
+CNG,Mahindra,Quanto,,,,2699.0
+CNG,Mahindra,Scorpio,,,,2899.0
+CNG,Mahindra,Scorpio Getaway,,,,2899.0
+CNG,Mahindra,Thar,,,,2699.0
+CNG,Mahindra,Verito,4899.0,4599.0,6699.0,2499.0
+CNG,Mahindra,XUV500,,,,2999.0
+CNG,Mahindra,Xylo,,,,2699.0
+CNG,Mahindra,TUV300,,,,2699.0
+CNG,Mahindra,KUV100,3099.0,2999.0,4299.0,2499.0
+CNG,Mahindra,Nuvosport,,,,2499.0
+CNG,Mahindra,Logan,4099.0,3799.0,5699.0,2499.0
+CNG,Mahindra,Marazzo,,,,2899.0
+CNG,Mahindra,XUV300,,,,2699.0
+CNG,Mahindra,Bolero Camper,,,,2699.0
+CNG,Mahindra,Bolero Pickup,,,,2699.0
+CNG,Tata,Aria,5299.0,4999.0,7299.0,2599.0
+CNG,Tata,Bolt,3399.0,3199.0,4199.0,2499.0
+CNG,Tata,Indica,3399.0,3199.0,4199.0,2199.0
+CNG,Tata,Indica eV2,3399.0,3199.0,4199.0,2199.0
+CNG,Tata,Indica V2,3399.0,3199.0,4199.0,2199.0
+CNG,Tata,Indica Vista,3399.0,3199.0,4199.0,2199.0
+CNG,Tata,Indigo,3499.0,3299.0,4199.0,2499.0
+CNG,Tata,Indigo CS,3499.0,3299.0,4199.0,2499.0
+CNG,Tata,Indigo eCS,3499.0,3299.0,4199.0,2499.0
+CNG,Tata,Indigo Marina,3499.0,3299.0,4199.0,2499.0
+CNG,Tata,Indigo XL,3499.0,3299.0,4199.0,2499.0
+CNG,Tata,Manza,3499.0,3299.0,4699.0,2499.0
+CNG,Tata,Nano,2699.0,2599.0,3499.0,1999.0
+CNG,Tata,Nano GenX,2699.0,2599.0,3499.0,1999.0
+CNG,Tata,Safari,,,,2899.0
+CNG,Tata,Safari Storme,,,,2899.0
+CNG,Tata,Sumo Gold,,,,2699.0
+CNG,Tata,Sumo Grande,,,,2699.0
+CNG,Tata,Sumo Spacio,,,,2699.0
+CNG,Tata,Sumo Victa,,,,2699.0
+CNG,Tata,Zest,3899.0,3599.0,4699.0,2499.0
+CNG,Tata,Tiago,3399.0,3199.0,4299.0,2599.0
+CNG,Tata,Nexon,4099.0,3899.0,5499.0,2499.0
+CNG,Tata,Tigor,3499.0,3299.0,4299.0,2499.0
+CNG,Tata,Hexa,,,,2599.0
+CNG,Tata,Venture,,,,2699.0
+CNG,Tata,Winger,,,,2499.0
+CNG,Tata,Harrier,,,,2799.0
+CNG,Tata,Punch,,,,2499.0
+CNG,Tata,Xenon,,,,2899.0
+CNG,Tata,Altroz,3199.0,2999.0,4099.0,2399.0
+CNG,Tata,Tiago NRG,,,,2499.0
+CNG,Ford,EcoSport,4099.0,3899.0,5499.0,2799.0
+CNG,Ford,Endeavour,,,,2799.0
+CNG,Ford,Escort,3899.0,3699.0,5599.0,2699.0
+CNG,Ford,Fiesta,4099.0,3899.0,5799.0,2499.0
+CNG,Ford,Fiesta Classic,4099.0,3899.0,5799.0,2499.0
+CNG,Ford,Figo,3299.0,3099.0,5499.0,2199.0
+CNG,Ford,Figo Aspire,3599.0,3399.0,5699.0,2499.0
+CNG,Chevrolet,Aveo,3899.0,3599.0,5399.0,2499.0
+CNG,Chevrolet,Beat,2999.0,2799.0,4899.0,2199.0
+CNG,Chevrolet,Captiva,,,,2599.0
+CNG,Chevrolet,Cruze,5199.0,4899.0,7399.0,2599.0
+CNG,Chevrolet,Enjoy,4599.0,4299.0,5899.0,2499.0
+CNG,Chevrolet,Optra,4399.0,4099.0,6199.0,2499.0
+CNG,Chevrolet,Optra Magnum,4399.0,4099.0,6199.0,2499.0
+CNG,Chevrolet,Optra SRV,4199.0,3899.0,6099.0,2499.0
+CNG,Chevrolet,Sail,3699.0,3499.0,5399.0,2399.0
+CNG,Chevrolet,Sail Hatchback,3499.0,3299.0,5299.0,2399.0
+CNG,Chevrolet,Spark,2999.0,2799.0,4299.0,2199.0
+CNG,Chevrolet,Tavera,,,,2699.0
+CNG,Chevrolet,Uva,3799.0,3599.0,5299.0,2399.0
+CNG,Chevrolet,Trailblazer,,,,2599.0
+CNG,Kia,Seltos,4099.0,3899.0,5199.0,2699.0
+CNG,Kia,Sonet,4099.0,3899.0,5499.0,2699.0
+CNG,Kia,Carnival,,,,2899.0
+CNG,Kia,Carens,,,,2599.0
+CNG,Skoda,Fabia,4999.0,4699.0,7099.0,2499.0
+CNG,Skoda,Fabia Scout,4999.0,4699.0,7099.0,2499.0
+CNG,Skoda,Laura,4599.0,4299.0,6099.0,2499.0
+CNG,Skoda,Octavia,5299.0,4999.0,7099.0,2499.0
+CNG,Skoda,Rapid,5299.0,4999.0,7199.0,2499.0
+CNG,Skoda,Superb,6399.0,5999.0,8299.0,2599.0
+CNG,Skoda,Yeti,,,,2599.0
+CNG,Skoda,Slavia,,,,2799.0
+CNG,Skoda,Kushaq,,,,2799.0
+CNG,Skoda,Kodiaq,,,,2899.0
+CNG,Volkswagen,CrossPolo,3999.0,3799.0,5899.0,2499.0
+CNG,Volkswagen,Jetta,5299.0,4899.0,7199.0,2499.0
+CNG,Volkswagen,Passat,5299.0,4899.0,7199.0,2599.0
+CNG,Volkswagen,Polo,3999.0,3799.0,5899.0,2599.0
+CNG,Volkswagen,Vento,5299.0,4899.0,6499.0,2499.0
+CNG,Volkswagen,Ameo,4299.0,3999.0,5999.0,2499.0
+CNG,Volkswagen,Beetle,,,,2699.0
+CNG,Volkswagen,Tiguan,,,,2599.0
+CNG,Volkswagen,T-Roc,,,,2799.0
+CNG,Volkswagen,Taigun,,,,2799.0
+CNG,Volkswagen,Virtus,,,,2799.0
+CNG,MG,Hector,,,,2799.0
+CNG,MG,Gloster,,,,2899.0
+CNG,MG,Astor,,,,2899.0
+CNG,MG,Hector Plus,,,,2799.0
+CNG,Citroen,C5 Aircross,,,,2799.0
+CNG,Citroen,C3,4099.0,3899.0,5499.0,2699.0
+CNG,Jeep,Compass,,,,2799.0
+CNG,Fiat,Adventure,3899.0,3599.0,5299.0,2499.0
+CNG,Fiat,Avventura,3899.0,3599.0,5299.0,2499.0
+CNG,Fiat,Linea,4099.0,3899.0,5499.0,2499.0
+CNG,Fiat,Linea Classic,4099.0,3899.0,5499.0,2499.0
+CNG,Fiat,Palio D,3699.0,3499.0,5499.0,2499.0
+CNG,Fiat,Palio Stile,3699.0,3499.0,5499.0,2499.0
+CNG,Fiat,Petra,3899.0,3599.0,5499.0,2499.0
+CNG,Fiat,Punto,3199.0,2999.0,5099.0,4299.0
+CNG,Fiat,Punto Evo,,,,2499.0
+CNG,Fiat,Uno,3599.0,3399.0,5099.0,2499.0
+CNG,Fiat,Abarth Punto,,,,2499.0
+CNG,Nissan,Evalia,,,,2499.0
+CNG,Nissan,Micra,3199.0,2999.0,5199.0,2199.0
+CNG,Nissan,Micra Active,3199.0,2999.0,5199.0,2199.0
+CNG,Nissan,Sunny,4399.0,4099.0,5899.0,2499.0
+CNG,Nissan,Teana,5099.0,4799.0,6899.0,2499.0
+CNG,Nissan,Terrano,,,,2699.0
+CNG,Nissan,X-Trail,,,,2899.0
+CNG,Nissan,Gtr,,,,4299.0
+CNG,Nissan,Kicks,3999.0,3799.0,5199.0,2699.0
+CNG,Nissan,Magnite,4099.0,3899.0,5499.0,2699.0
+CNG,Renault,Duster,,,,2899.0
+CNG,Renault,Fluence,4399.0,4099.0,5899.0,2499.0
+CNG,Renault,Koleos,,,,2799.0
+CNG,Renault,Lodgy,,,,2699.0
+CNG,Renault,Pulse,3499.0,3299.0,5099.0,2499.0
+CNG,Renault,Scala,4399.0,4099.0,5899.0,2499.0
+CNG,Renault,Kwid,3499.0,3299.0,5099.0,2599.0
+CNG,Renault,Triber,3699.0,3499.0,5099.0,2499.0
+CNG,Renault,Kiger,4099.0,3899.0,5499.0,2699.0
+CNG,Isuzu,MU-X,,,,2799.0
+CNG,Volvo,Xc60,,,,4299.0
+CNG,Volvo,Xc90,,,,4699.0
+CNG,Volvo,S90,,,,4299.0
+CNG,Volvo,S60,,,,3999.0
+CNG,Volvo,S60 Cross Country,,,,3999.0
+CNG,Volvo,S80,,,,4299.0
+CNG,Volvo,V40,,,,3799.0
+CNG,Volvo,V40 Cross Country,,,,3799.0
+CNG,Volvo,S40,,,,3999.0
+CNG,Volvo,V60,,,,3999.0
+CNG,Volvo,V90,,,,4699.0
+CNG,BMW,3 Series,,,,3999.0
+CNG,BMW,5 Series,,,,4299.0
+CNG,BMW,7 Series,,,,4299.0
+CNG,BMW,X1,,,,4299.0
+CNG,BMW,X3,,,,4299.0
+CNG,BMW,X5,,,,4699.0
+CNG,BMW,X7,,,,4699.0
+CNG,BMW,1 Series,,,,3999.0
+CNG,BMW,3 Series GT,,,,3999.0
+CNG,BMW,5 Series GT,,,,4299.0
+CNG,BMW,6 Series,,,,4299.0
+CNG,BMW,M3,,,,3999.0
+CNG,BMW,M5,,,,4299.0
+CNG,BMW,X6,,,,4699.0
+CNG,BMW,Z4,,,,3999.0
+CNG,BMW,X4,,,,4299.0
+CNG,BMW,6 Series GT,,,,4299.0
+CNG,BMW,2 Series,,,,3999.0
+CNG,Mercedes,A-Class,,,,3799.0
+CNG,Mercedes,AMG GT,,,,4299.0
+CNG,Mercedes,B-Class,,,,3799.0
+CNG,Mercedes,CLA-Class,,,,3999.0
+CNG,Mercedes,CLS-Class,,,,4299.0
+CNG,Mercedes,E-Class,,,,4299.0
+CNG,Mercedes,G63 AMG,,,,4699.0
+CNG,Mercedes,GL-Class,,,,4699.0
+CNG,Mercedes,GLA-Class,,,,4299.0
+CNG,Mercedes,GLE-Class,,,,4299.0
+CNG,Mercedes,ML-Class,,,,4699.0
+CNG,Mercedes,S-Class,,,,4299.0
+CNG,Mercedes,SLK-Class,,,,3999.0
+CNG,Mercedes,R-Class,,,,4299.0
+CNG,Mercedes,V-Class,,,,4699.0
+CNG,Mercedes,Glc,,,,4299.0
+CNG,Mercedes,Gls,,,,4699.0
+CNG,Mercedes,GLE43 AMG,,,,4699.0
+CNG,Audi,A3,,,,3999.0
+CNG,Audi,A4,,,,3999.0
+CNG,Audi,A6,,,,4299.0
+CNG,Audi,A7,,,,4299.0
+CNG,Audi,A8,,,,4299.0
+CNG,Audi,A8 L,,,,4299.0
+CNG,Audi,Q3,,,,4299.0
+CNG,Audi,Q5,,,,4299.0
+CNG,Audi,Q7,,,,4699.0
+CNG,Audi,R8,,,,4299.0
+CNG,Audi,Tt,,,,3999.0
+CNG,Audi,Q8,,,,4699.0
+CNG,Audi,Rs5,,,,4299.0
+CNG,Audi,Rs3,,,,3999.0
+CNG,Audi,Rs7,,,,4299.0
+CNG,Audi,Q2,,,,3799.0
+CNG,Audi,S4,,,,3999.0
+CNG,Audi,A5,,,,3999.0
+CNG,Jaguar,F-Type,,,,4299.0
+CNG,Jaguar,Xe,,,,3999.0
+CNG,Jaguar,Xf,,,,4299.0
+CNG,Jaguar,Xj,,,,4299.0
+CNG,Jaguar,F-Pace,,,,4299.0
+CNG,Jaguar,Xjr,,,,4299.0
