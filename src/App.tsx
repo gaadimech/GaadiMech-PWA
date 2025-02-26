@@ -61,31 +61,67 @@ const AppContent = () => {
 
   useAnalytics();
 
-  // Handle exit intent
+  // Function to check if we should show exit popup
+  const shouldShowExitPopup = () => {
+    return !hasFilledForm && isFormDataLoaded && !hasShownExitPopup;
+  };
+
+  // Function to show exit popup
+  const showExitPopup = () => {
+    setShowForm(true);
+    setHasShownExitPopup(true);
+    sessionStorage.setItem('hasShownExitPopup', 'true');
+  };
+
+  // Handle desktop exit intent
   useEffect(() => {
     const handleMouseLeave = (e: MouseEvent) => {
-      // Only trigger if:
-      // 1. Mouse leaves from the top of the page
-      // 2. User hasn't filled the form
-      // 3. Form data is loaded
-      // 4. Haven't shown exit popup yet
-      if (
-        e.clientY <= 0 && 
-        !hasFilledForm && 
-        isFormDataLoaded &&
-        !hasShownExitPopup
-      ) {
-        setShowForm(true);
-        setHasShownExitPopup(true);
-        sessionStorage.setItem('hasShownExitPopup', 'true');
+      if (e.clientY <= 0 && shouldShowExitPopup()) {
+        showExitPopup();
       }
     };
 
-    document.addEventListener('mouseleave', handleMouseLeave);
+    // Only add mouse leave detection for desktop devices
+    if (window.innerWidth > 768) {
+      document.addEventListener('mouseleave', handleMouseLeave);
+      return () => document.removeEventListener('mouseleave', handleMouseLeave);
+    }
+  }, [hasFilledForm, isFormDataLoaded, hasShownExitPopup]);
 
-    return () => {
-      document.removeEventListener('mouseleave', handleMouseLeave);
+  // Handle mobile exit intent
+  useEffect(() => {
+    let lastFocusTime = Date.now();
+    
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        lastFocusTime = Date.now();
+      } else {
+        // If user returns after at least 5 seconds and we should show popup
+        if (Date.now() - lastFocusTime > 5000 && shouldShowExitPopup()) {
+          showExitPopup();
+        }
+      }
     };
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (shouldShowExitPopup()) {
+        showExitPopup();
+        // Modern browsers no longer show custom messages, but we'll set it anyway
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    // Only add mobile detection for mobile devices
+    if (window.innerWidth <= 768) {
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      
+      return () => {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+      };
+    }
   }, [hasFilledForm, isFormDataLoaded, hasShownExitPopup]);
 
   // Handle form submission
