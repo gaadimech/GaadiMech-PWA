@@ -385,7 +385,7 @@ const ExpressService = () => {
                       disabled={isSubmitting}
                       className="bg-[#FF7200] text-white px-6 py-3 rounded-lg hover:bg-[#0e5aa8] transition-colors disabled:opacity-50"
                     >
-                      {isSubmitting ? 'Submitting...' : 'Get Instant Callback'}
+                      {isSubmitting ? 'Submitting...' : 'Schedule Slot Now'}
                     </button>
                   </div>
                   {error && (
