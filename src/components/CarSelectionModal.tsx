@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Car, Tag, Droplet } from 'lucide-react';
+import { X, Car, Tag, Droplet, CheckCircle } from 'lucide-react';
 
 interface CarSelectionModalProps {
   isOpen: boolean;
@@ -309,21 +309,64 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
               )}
 
               {currentPrice !== null && (
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                  <div className="flex items-center mb-2">
-                    <Tag className="w-5 h-5 mr-2 text-[#FF7200]" />
-                    <h3 className="text-lg font-semibold"> Express Service in <span className="text-[#FF7200]">90 MINS</span></h3>
+                <div className="bg-gradient-to-br from-[#f8faff] to-[#e6eeff] p-6 rounded-xl border-2 border-[#0e5aa8] shadow-lg relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-[#0e5aa8] opacity-5 rounded-full -mr-8 -mt-8"></div>
+                  <div className="absolute bottom-0 left-0 w-16 h-16 bg-[#0e5aa8] opacity-5 rounded-full -ml-6 -mb-6"></div>
+                  
+                  <div className="flex items-center mb-4">
+                    <div className="bg-[#0e5aa8] p-2 rounded-lg shadow-md mr-3">
+                      <Tag className="w-5 h-5 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-800">
+                      Express Service in <span className="text-[#FF7200]">90 MINS</span>
+                    </h3>
                   </div>
-                  <div className="text-2xl font-bold text-[#FF7200] mb-2 text-center">₹{currentPrice}</div>
-                  <p className="text-sm text-gray-600 mb-1">Includes:</p>
-                  <ul className="text-sm text-gray-600 list-disc pl-5 space-y-1">
-                    <li>Engine Oil Change</li>
-                    <li>Oil Filter Change</li>
-                    <li>Air Filter Change</li>
-                    <li>Complete Car Wash</li>
-                    <li>Interior Vacuum</li>
-                    <li>15 Points General Checkup</li>
-                  </ul>
+                  
+                  <div className="text-3xl font-extrabold text-[#FF7200] mb-4 text-center py-2 border-y border-[#0e5aa8]/20">
+                    ₹{currentPrice}
+                  </div>
+                  
+                  <div className="bg-white rounded-lg p-4 shadow-inner">
+                    <p className="text-sm font-semibold text-[#0e5aa8] mb-3 uppercase tracking-wider">Includes:</p>
+                    <ul className="text-sm text-gray-700 space-y-2.5">
+                      <li className="flex items-center">
+                        <div className="bg-[#0e5aa8]/10 p-1 rounded-full mr-2.5">
+                          <CheckCircle className="w-3.5 h-3.5 text-[#0e5aa8]" />
+                        </div>
+                        <span className="font-medium">Engine Oil Change</span>
+                      </li>
+                      <li className="flex items-center">
+                        <div className="bg-[#0e5aa8]/10 p-1 rounded-full mr-2.5">
+                          <CheckCircle className="w-3.5 h-3.5 text-[#0e5aa8]" />
+                        </div>
+                        <span className="font-medium">Oil Filter Change</span>
+                      </li>
+                      <li className="flex items-center">
+                        <div className="bg-[#0e5aa8]/10 p-1 rounded-full mr-2.5">
+                          <CheckCircle className="w-3.5 h-3.5 text-[#0e5aa8]" />
+                        </div>
+                        <span className="font-medium">Air Filter Change</span>
+                      </li>
+                      <li className="flex items-center">
+                        <div className="bg-[#0e5aa8]/10 p-1 rounded-full mr-2.5">
+                          <CheckCircle className="w-3.5 h-3.5 text-[#0e5aa8]" />
+                        </div>
+                        <span className="font-medium">Complete Car Wash</span>
+                      </li>
+                      <li className="flex items-center">
+                        <div className="bg-[#0e5aa8]/10 p-1 rounded-full mr-2.5">
+                          <CheckCircle className="w-3.5 h-3.5 text-[#0e5aa8]" />
+                        </div>
+                        <span className="font-medium">Interior Vacuum</span>
+                      </li>
+                      <li className="flex items-center">
+                        <div className="bg-[#0e5aa8]/10 p-1 rounded-full mr-2.5">
+                          <CheckCircle className="w-3.5 h-3.5 text-[#0e5aa8]" />
+                        </div>
+                        <span className="font-medium">15 Points General Checkup</span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               )}
 
