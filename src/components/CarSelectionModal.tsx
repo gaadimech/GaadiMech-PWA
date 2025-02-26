@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Car, Tag, Droplet, CheckCircle } from 'lucide-react';
+import { X, Car, Tag, Droplet, CheckCircle, Clock } from 'lucide-react';
 
 interface CarSelectionModalProps {
   isOpen: boolean;
@@ -313,13 +313,14 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
                   <div className="absolute top-0 right-0 w-24 h-24 bg-[#0e5aa8] opacity-5 rounded-full -mr-8 -mt-8"></div>
                   <div className="absolute bottom-0 left-0 w-16 h-16 bg-[#0e5aa8] opacity-5 rounded-full -ml-6 -mb-6"></div>
                   
-                  <div className="flex items-center mb-4">
-                    <div className="bg-[#0e5aa8] p-2 rounded-lg shadow-md mr-3">
-                      <Tag className="w-5 h-5 text-white" />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-800">
-                      Express Service in <span className="text-[#FF7200]">90 MINS</span>
+                  <div className="flex flex-col items-center mb-4">
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">
+                      Express Service
                     </h3>
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-10 h-10 text-[#FF7200]" />
+                      <span className="text-3xl text-[#FF7200] font-bold">90 MINS</span>
+                    </div>
                   </div>
                   
                   <div className="text-3xl font-extrabold text-[#FF7200] mb-4 text-center py-2 border-y border-[#0e5aa8]/20">
