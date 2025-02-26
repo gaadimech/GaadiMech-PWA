@@ -1,47 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Clock, Car, PenTool as Tool, Phone, CheckCircle, ArrowRight, Share2, Gift, Wrench, Sparkles, Timer, Calendar, Image, MessageSquare } from 'lucide-react';
+import { Clock, Car, PenTool as Tool, Phone, CheckCircle, ArrowRight, Share2, Gift, Wrench, Sparkles, Timer, Calendar, Image, MessageSquare, User, Shield } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { expressService } from '../services/expressService';
-import CustomerForm from '../components/CustomerForm';
 import TimeSlotModal from '../components/TimeSlotModal';
 import CarSelectionModal from '../components/CarSelectionModal';
 import ReviewCarousel from '../components/ReviewCarousel';
 import { getReviewsByService } from '../data/reviews';
 import { enquiryService } from '../services/enquiry';
-
-const serviceComparison = [
-  {
-    name: "Express Service",
-    time: "90 Minutes",
-    highlight: true,
-    features: [
-      "Quick turnaround time",
-      "Multiple technicians working simultaneously",
-      "Real-time service updates",
-      "Oil and filter change",
-      "Basic inspection",
-      "Fluid level check",
-      "Tire pressure check",
-      "Battery check",
-      "AC performance check"
-    ]
-  },
-  {
-    name: "Basic Periodic Service",
-    time: "4 Hours",
-    features: [
-      "Comprehensive inspection",
-      "Oil and filter change",
-      "Brake inspection",
-      "Fluid level top-up",
-      "Battery health check",
-      "Tire rotation",
-      "Air filter check",
-      "Basic diagnostics"
-    ]
-  }
-];
 
 const steps = [
   {
@@ -63,6 +29,16 @@ const steps = [
     icon: <Phone className="w-12 h-12 text-[#FF7200]" />,
     title: "Real-Time Updates",
     description: "Track progress with photos & videos"
+  },
+  {
+    icon: <User className="w-12 h-12 text-[#FF7200]" />,
+    title: "GaadiMech's Trained Mechanics",
+    description: "Expert technicians with specialized training"
+  },
+  {
+    icon: <Shield className="w-12 h-12 text-[#FF7200]" />,
+    title: "Genuine Parts Used",
+    description: "Quality parts for optimal performance"
   }
 ];
 
@@ -123,7 +99,6 @@ const ExpressService = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const [currentImage, setCurrentImage] = useState(0);
-  const [isCustomerFormOpen, setIsCustomerFormOpen] = useState(false);
   const [isTimeSlotModalOpen, setIsTimeSlotModalOpen] = useState(false);
   const [isCarSelectionModalOpen, setIsCarSelectionModalOpen] = useState(false);
   const [selectedServiceType, setSelectedServiceType] = useState<number | undefined>();
@@ -422,22 +397,24 @@ const ExpressService = () => {
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
             How It Works
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
             {steps.map((step, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="text-center"
+                className="text-center bg-white rounded-lg p-4 md:p-6 shadow-sm md:shadow-none border border-gray-100 md:border-0 hover:shadow-md transition-shadow duration-300"
               >
                 <div className="flex justify-center mb-4">
-                  {step.icon}
+                  <div className="bg-orange-50 p-2 md:p-0 rounded-full md:rounded-none">
+                    {step.icon}
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2">
                   {step.title}
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-gray-600 hidden md:block">
                   {step.description}
                 </p>
               </motion.div>
@@ -520,102 +497,8 @@ const ExpressService = () => {
         </div>
       </section>
 
-      {/* Service Comparison Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            Choose Your Service Type
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {serviceComparison.map((service, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={`bg-white p-8 rounded-xl ${service.highlight
-                    ? 'border-2 border-[#FF7200] shadow-xl relative'
-                    : 'border border-gray-200 shadow-lg'
-                  }`}
-              >
-                {service.highlight && (
-                  <div className="absolute top-0 right-0">
-                    <div className="bg-[#FF7200] text-white px-4 py-1 rounded-bl-lg font-medium flex items-center gap-1">
-                      <Timer className="w-4 h-4" />
-                      Recommended
-                    </div>
-                  </div>
-                )}
-
-                <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    {service.name}
-                  </h3>
-                  <div className="flex items-center justify-center gap-2 mb-4">
-                    <Clock className={`w-6 h-6 ${service.highlight ? 'text-[#FF7200]' : 'text-gray-600'}`} />
-                    <p className={`text-xl font-semibold ${service.highlight ? 'text-[#FF7200]' : 'text-gray-600'}`}>
-                      {service.time}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-4 mb-8">
-                  {service.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-start gap-3">
-                      <CheckCircle className={`w-5 h-5 mt-0.5 ${service.highlight ? 'text-[#FF7200]' : 'text-gray-600'
-                        }`} />
-                      <span className="text-gray-600">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {service.name === "Basic Periodic Service" ? (
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => {
-                      setSelectedServiceType(1);
-                      setIsCustomerFormOpen(true);
-                    }}
-                    className="w-full py-3 rounded-md transition-colors flex items-center justify-center gap-2 border-2 border-[#FF7200] text-[#FF7200] hover:bg-[#FF7200] hover:text-white"
-                  >
-                    <Calendar className="w-5 h-5" />
-                    Schedule Service
-                  </motion.button>
-                ) : (
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => {
-                      setSelectedServiceType(4);
-                      setIsCustomerFormOpen(true);
-                    }}
-                    className="w-full py-3 rounded-md transition-colors flex items-center justify-center gap-2 bg-[#FF7200] text-white hover:bg-[#0e5aa8]"
-                  >
-                    <Calendar className="w-5 h-5" />
-                    Schedule Service
-                  </motion.button>
-                )}
-              </motion.div>
-            ))}
-          </div>
-
-          {serviceTypesLoaded && (
-            <CustomerForm 
-              isOpen={isCustomerFormOpen}
-              onClose={() => {
-                setIsCustomerFormOpen(false);
-                setSelectedServiceType(undefined);
-              }}
-              defaultServiceType={selectedServiceType}
-            />
-          )}
-        </div>
-      </section>
-
       {/* Quality Features */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
             Quality Assurance
