@@ -9,9 +9,10 @@ interface CustomerFormProps {
   isOpen: boolean;
   onClose: () => void;
   defaultServiceType?: number;
+  onSubmitSuccess?: () => void;
 }
 
-const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultServiceType }) => {
+const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultServiceType, onSubmitSuccess }) => {
   const [formData, setFormData] = useState<EnquiryFormData>({
     name: '',
     mobileNumber: '',
@@ -72,6 +73,8 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
         message: '',
         serviceType: undefined
       });
+      // Call onSubmitSuccess callback if provided
+      onSubmitSuccess?.();
     } catch (error) {
       setStatus('error');
       setErrorMessage(error instanceof Error ? error.message : 'An error occurred. Please try again.');

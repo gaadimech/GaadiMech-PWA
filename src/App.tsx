@@ -48,9 +48,51 @@ const WhatsAppButton = lazy(() => import('./components/WhatsAppButton'));
 const AppContent = () => {
   const [showForm, setShowForm] = useState(false);
   const [isFormDataLoaded, setIsFormDataLoaded] = useState(false);
+  const [hasFilledForm, setHasFilledForm] = useState(() => {
+    return sessionStorage.getItem('hasFilledForm') === 'true';
+  });
+  const [hasShownInitialPopup, setHasShownInitialPopup] = useState(() => {
+    return sessionStorage.getItem('hasShownInitialPopup') === 'true';
+  });
+  const [hasShownExitPopup, setHasShownExitPopup] = useState(() => {
+    return sessionStorage.getItem('hasShownExitPopup') === 'true';
+  });
   const location = useLocation();
 
   useAnalytics();
+
+  // Handle exit intent
+  useEffect(() => {
+    const handleMouseLeave = (e: MouseEvent) => {
+      // Only trigger if:
+      // 1. Mouse leaves from the top of the page
+      // 2. User hasn't filled the form
+      // 3. Form data is loaded
+      // 4. Haven't shown exit popup yet
+      if (
+        e.clientY <= 0 && 
+        !hasFilledForm && 
+        isFormDataLoaded &&
+        !hasShownExitPopup
+      ) {
+        setShowForm(true);
+        setHasShownExitPopup(true);
+        sessionStorage.setItem('hasShownExitPopup', 'true');
+      }
+    };
+
+    document.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      document.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, [hasFilledForm, isFormDataLoaded, hasShownExitPopup]);
+
+  // Handle form submission
+  const handleFormSubmission = () => {
+    setHasFilledForm(true);
+    sessionStorage.setItem('hasFilledForm', 'true');
+  };
 
   useEffect(() => {
     // First fetch the service types
@@ -59,10 +101,15 @@ const AppContent = () => {
         const response = await enquiryService.getServiceTypes();
         if (response.data.length > 0) {
           setIsFormDataLoaded(true);
-          // Only show form after data is loaded and not on express page
-          if (location.pathname !== '/express') {
+          // Only show initial popup if:
+          // 1. Not on express page
+          // 2. Haven't shown initial popup yet
+          // 3. Haven't filled form yet
+          if (location.pathname !== '/express' && !hasShownInitialPopup && !hasFilledForm) {
             const timer = setTimeout(() => {
               setShowForm(true);
+              setHasShownInitialPopup(true);
+              sessionStorage.setItem('hasShownInitialPopup', 'true');
             }, 1000);
             return () => clearTimeout(timer);
           }
@@ -73,7 +120,7 @@ const AppContent = () => {
     };
 
     fetchInitialData();
-  }, [location.pathname]);
+  }, [location.pathname, hasShownInitialPopup, hasFilledForm]);
 
   useEffect(() => {
     // Remove loading spinner and show content
@@ -131,7 +178,8 @@ const AppContent = () => {
           {isFormDataLoaded && (
             <CustomerForm 
               isOpen={showForm} 
-              onClose={() => setShowForm(false)} 
+              onClose={() => setShowForm(false)}
+              onSubmitSuccess={handleFormSubmission}
             />
           )}
           <Suspense fallback={<div>Loading...</div>}>
