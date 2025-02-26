@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import { expressService } from '../services/expressService';
 import CustomerForm from '../components/CustomerForm';
 import TimeSlotModal from '../components/TimeSlotModal';
+import CarSelectionModal from '../components/CarSelectionModal';
 import ReviewCarousel from '../components/ReviewCarousel';
 import { getReviewsByService } from '../data/reviews';
 import { enquiryService } from '../services/enquiry';
@@ -124,9 +125,13 @@ const ExpressService = () => {
   const [currentImage, setCurrentImage] = useState(0);
   const [isCustomerFormOpen, setIsCustomerFormOpen] = useState(false);
   const [isTimeSlotModalOpen, setIsTimeSlotModalOpen] = useState(false);
+  const [isCarSelectionModalOpen, setIsCarSelectionModalOpen] = useState(false);
   const [selectedServiceType, setSelectedServiceType] = useState<number | undefined>();
   const [serviceTypesLoaded, setServiceTypesLoaded] = useState(false);
   const [currentLeadId, setCurrentLeadId] = useState<number | null>(null);
+  const [selectedCarBrand, setSelectedCarBrand] = useState<string>('');
+  const [selectedCarModel, setSelectedCarModel] = useState<string>('');
+  const [selectedServicePrice, setSelectedServicePrice] = useState<number | null>(null);
   const serviceReviews = getReviewsByService('express');
 
   const validateMobile = (number: string) => {
@@ -176,8 +181,8 @@ const ExpressService = () => {
       if (response && response.data && response.data.id) {
         setCurrentLeadId(response.data.id);
         
-        // Open the time slot modal
-        setIsTimeSlotModalOpen(true);
+        // Open the car selection modal instead of time slot modal
+        setIsCarSelectionModalOpen(true);
         
         // Show success message for mobile number submission
         setSuccess(true);
@@ -191,6 +196,54 @@ const ExpressService = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleCarSelectionSubmit = async (brand: string, model: string, price: number) => {
+    if (!currentLeadId) {
+      console.error('No lead ID available');
+      alert('Session expired. Please try again.');
+      setIsCarSelectionModalOpen(false);
+      return;
+    }
+
+    try {
+      console.log('Updating lead with car information:', { id: currentLeadId, brand, model, price });
+      
+      // Update the lead with the selected car information
+      const response = await expressService.updateLead(currentLeadId, {
+        carBrand: brand,
+        carModel: model,
+        servicePrice: price
+      });
+
+      if (!response || !response.data) {
+        throw new Error('Invalid response from server');
+      }
+
+      // Store car information in state
+      setSelectedCarBrand(brand);
+      setSelectedCarModel(model);
+      setSelectedServicePrice(price);
+      
+      // Close the car selection modal and open the time slot modal
+      setIsCarSelectionModalOpen(false);
+      setIsTimeSlotModalOpen(true);
+    } catch (error) {
+      console.error('Error updating lead with car information:', error);
+      alert('Sorry, there was an error saving your car information. Please try again or contact us directly.');
+      setIsCarSelectionModalOpen(false);
+    }
+  };
+
+  const handleCarSelectionModalClose = () => {
+    // Close the modal without updating the lead
+    setIsCarSelectionModalOpen(false);
+    
+    // Reset the form and state
+    setMobile('');
+    setSuccess(false);
+    setError('');
+    setCurrentLeadId(null);
   };
 
   const handleTimeSlotSubmit = async (date: string, timeSlot: string) => {
@@ -220,6 +273,9 @@ const ExpressService = () => {
       // Reset the form
       setMobile('');
       setCurrentLeadId(null);
+      setSelectedCarBrand('');
+      setSelectedCarModel('');
+      setSelectedServicePrice(null);
       
       // Show success message
       alert('Booking confirmed! We will contact you shortly.');
@@ -239,6 +295,9 @@ const ExpressService = () => {
     setSuccess(false);
     setError('');
     setCurrentLeadId(null);
+    setSelectedCarBrand('');
+    setSelectedCarModel('');
+    setSelectedServicePrice(null);
   };
 
   useEffect(() => {
@@ -338,6 +397,14 @@ const ExpressService = () => {
           </div>
         </div>
       </section>
+
+      {/* Car Selection Modal */}
+      <CarSelectionModal
+        isOpen={isCarSelectionModalOpen}
+        onClose={handleCarSelectionModalClose}
+        onSubmit={handleCarSelectionSubmit}
+        mobileNumber={mobile}
+      />
 
       {/* Time Slot Modal */}
       <TimeSlotModal

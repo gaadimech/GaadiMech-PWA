@@ -3,6 +3,9 @@ export interface ExpressServiceFormData {
   serviceType?: string;
   serviceDate?: string;
   timeSlot?: string;
+  carBrand?: string;
+  carModel?: string;
+  servicePrice?: number;
 }
 
 export interface ExpressServiceResponse {
@@ -13,6 +16,9 @@ export interface ExpressServiceResponse {
       serviceType?: string;
       serviceDate?: string;
       timeSlot?: string;
+      carBrand?: string;
+      carModel?: string;
+      servicePrice?: number;
       createdAt: string;
       updatedAt: string;
     };
