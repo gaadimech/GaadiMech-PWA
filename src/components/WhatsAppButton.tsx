@@ -1,12 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import styles from './WhatsAppButton.module.css';
 
 const WhatsAppButton = () => {
+  const [visible, setVisible] = useState(false);
+  
+  useEffect(() => {
+    // Set a timeout to show the button after 15 seconds
+    const timer = setTimeout(() => {
+      setVisible(true);
+    }, 15000); // 15 seconds in milliseconds
+    
+    // Cleanup the timer when component unmounts
+    return () => clearTimeout(timer);
+  }, []);
+  
   const handleClick = () => {
     const message = encodeURIComponent("Hi, I'd like to book a Car Service through GaadiMech.");
     window.open(`https://wa.me/917300042410?text=${message}`, '_blank');
   };
+
+  // If not visible yet, don't render anything
+  if (!visible) return null;
 
   return (
     <motion.button
