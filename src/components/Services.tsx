@@ -21,7 +21,7 @@ const services = [
       </motion.div>
     ),
     title: 'Express Service',
-    description: 'Get your car serviced in 90 Minutes or Less — Time is Money!',
+    description: 'Get Your Car Serviced in 90 Minutes or Less — Time is Money!',
     highlight: true,
     link: '/express',
     featured: true
@@ -29,49 +29,49 @@ const services = [
   {
     image: 'https://i.ibb.co/t4HmbHZ/Group.png',
     title: 'Periodic Service',
-    description: 'Regular maintenance and servicing',
+    description: 'Regular Maintenance and Servicing',
     link: '/services/periodic'
   },
   {
     image: 'https://i.ibb.co/dtZj35M/Group-3.png',
     title: 'AC Service',
-    description: 'Professional car AC repair and maintenance',
+    description: 'Professional Car AC Repair and Maintenance',
     link: '/services/ac'
   },
   {
     image: 'https://i.ibb.co/54mCj9R/Group-1.png',
     title: 'Car Spa & Cleaning',
-    description: 'Professional car cleaning services',
+    description: 'Professional Car Cleaning Services',
     link: '/services/car-spa'
   },
   {
     image: 'https://i.ibb.co/RNTXGpd/Group-2.png',
     title: 'Denting & Painting',
-    description: 'Expert dent removal and painting services',
+    description: 'Expert Dent Removal and Painting Services',
     link: '/services/denting'
   },
   {
     image: 'https://i.ibb.co/ZXCWCRC/Group-4.png',
     title: 'Battery Service',
-    description: 'Battery check, repair and replacement',
+    description: 'Battery Check, Repair and Replacement',
     link: '/services/battery'
   },
   {
     image: 'https://i.ibb.co/3zcSYzf/Frame.png',
     title: 'Windshield Service',
-    description: 'Windshield repair and replacement',
+    description: 'Windshield Repair and Replacement',
     link: '/services/windshield'
   },
   {
     image: 'https://i.ibb.co/MpG0nBb/Layer-1.png',
     title: 'Car Detailing',
-    description: 'Professional car detailing services',
+    description: 'Professional Car Detailing Services',
     link: '/services/detailing'
   },
   {
     image: 'https://i.ibb.co/hMSWCJB/Layer-x0020-1-1.png',
     title: 'Tyre Service',
-    description: 'Tyre maintenance and replacement',
+    description: 'Tyre Maintenance and Replacement',
     link: '/services/tyre'
   }
 ];

@@ -204,7 +204,7 @@ const Hero = () => {
               <div className="absolute inset-0 border-[8px] border-white rounded-lg shadow-xl"></div>
               
               <img
-                src="https://i.ibb.co/R3QpgRT/DALL-E-2024-10-10-15-00-52-A-hyper-realistic-image-showing-two-Indian-mechanics-working-on-the-tires.webp"
+                src="https://i.ibb.co/Kcb1YjZc/Mechanic-Image-1.png"
                 alt="Professional mechanic working on a car"
                 className="rounded-lg shadow-xl w-full max-w-2xl mx-auto hover:opacity-90 transition-opacity"
                 loading="lazy"

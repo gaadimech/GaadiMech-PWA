@@ -24,7 +24,7 @@ export interface ServiceTypeData {
 const servicesData: Record<ServiceType, ServiceTypeData> = {
   'periodic': {
     title: 'Car Periodic Service',
-    subtitle: 'Keep your car running smoothly with our expert maintenance services',
+    subtitle: 'Keep Your Car Running Smoothly With Our Expert Maintenance Services',
     serviceCards: [
       {
         id: 'periodic-basic',
@@ -77,7 +77,7 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
   },
   'denting': {
     title: 'Car Denting & Painting',
-    subtitle: 'Expert denting and painting services to make your car look brand new',
+    subtitle: 'Expert Denting and Painting Services to Make Your Car Look Brand New',
     serviceCards: [
       {
         id: 'denting-door',
@@ -120,7 +120,7 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
   },  
   'ac': {
     title: 'Car AC Service & Repair',
-    subtitle: 'Get your car AC working at peak performance with our expert services',
+    subtitle: 'Get Your Car AC Working at Peak Performance With Our Expert Services',
     serviceCards: [
       {
         id: 'ac-regular',
