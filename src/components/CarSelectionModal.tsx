@@ -346,7 +346,7 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
               
               {currentPrice !== null && (
                 <div className="mt-6">
-                  <div className="bg-[#EBF3FA] border-[1px] border-[#3B82F6]/20 p-6 rounded-lg shadow-sm">
+                  <div className="bg-[#EBF3FA] border-[1px] border-[#3B82F6]/20 p-6 rounded-lg shadow-md">
                     <h3 className="text-2xl font-bold text-center text-gray-900 mb-4">Express Service</h3>
                     
                     <div className="flex justify-center mb-4">
@@ -357,53 +357,81 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
                     </div>
                     
                     <div className="border-t border-b border-gray-200 py-4 mb-4">
-                      <div className="text-4xl font-bold text-center text-[#FF7200]">₹{currentPrice.toFixed(0)}</div>
+                      <div className="text-4xl font-bold text-center text-[#FF7200]">₹{new Intl.NumberFormat('en-IN').format(currentPrice)}</div>
                     </div>
                     
-                    <div className="bg-white rounded-lg p-6">
-                      <h4 className="text-lg font-bold text-[#2563EB] mb-4">INCLUDES:</h4>
+                    <div className="bg-white rounded-lg p-6 shadow-inner">
+                      <h4 className="text-xl font-bold text-[#2563EB] mb-4">INCLUDES:</h4>
                       
-                      <div className="space-y-3">
+                      <div className="space-y-3 grid md:grid-cols-2 gap-x-4">
                         <div className="flex items-center">
-                          <div className="bg-blue-100 rounded-full p-1 mr-3">
+                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
                             <CheckCircle className="w-5 h-5 text-[#2563EB]" />
                           </div>
-                          <span className="text-gray-700 font-medium">Engine Oil Change</span>
+                          <span className="text-gray-700 font-medium">Engine Oil Replacement</span>
                         </div>
                         
                         <div className="flex items-center">
-                          <div className="bg-blue-100 rounded-full p-1 mr-3">
+                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
                             <CheckCircle className="w-5 h-5 text-[#2563EB]" />
                           </div>
-                          <span className="text-gray-700 font-medium">Oil Filter Change</span>
+                          <span className="text-gray-700 font-medium">Oil Filter Replacement</span>
                         </div>
                         
                         <div className="flex items-center">
-                          <div className="bg-blue-100 rounded-full p-1 mr-3">
+                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
                             <CheckCircle className="w-5 h-5 text-[#2563EB]" />
                           </div>
-                          <span className="text-gray-700 font-medium">Air Filter Change</span>
+                          <span className="text-gray-700 font-medium">Air Filter Replacement</span>
                         </div>
                         
                         <div className="flex items-center">
-                          <div className="bg-blue-100 rounded-full p-1 mr-3">
+                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
                             <CheckCircle className="w-5 h-5 text-[#2563EB]" />
                           </div>
                           <span className="text-gray-700 font-medium">Complete Car Wash</span>
                         </div>
                         
                         <div className="flex items-center">
-                          <div className="bg-blue-100 rounded-full p-1 mr-3">
+                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
                             <CheckCircle className="w-5 h-5 text-[#2563EB]" />
                           </div>
-                          <span className="text-gray-700 font-medium">Interior Vacuum</span>
+                          <span className="text-gray-700 font-medium">Interior Vacuuming</span>
                         </div>
                         
                         <div className="flex items-center">
-                          <div className="bg-blue-100 rounded-full p-1 mr-3">
+                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
                             <CheckCircle className="w-5 h-5 text-[#2563EB]" />
                           </div>
-                          <span className="text-gray-700 font-medium">15 Points General Checkup</span>
+                          <span className="text-gray-700 font-medium">15 Point Car Inspection</span>
+                        </div>
+
+                        <div className="flex items-center">
+                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
+                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
+                          </div>
+                          <span className="text-gray-700 font-medium">Coolant Top-up (up to 100ml)</span>
+                        </div>
+                        
+                        <div className="flex items-center">
+                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
+                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
+                          </div>
+                          <span className="text-gray-700 font-medium">Battery Water Top-up</span>
+                        </div>
+                        
+                        <div className="flex items-center">
+                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
+                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
+                          </div>
+                          <span className="text-gray-700 font-medium">Brake Oil Top-up</span>
+                        </div>
+                        
+                        <div className="flex items-center">
+                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
+                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
+                          </div>
+                          <span className="text-gray-700 font-medium">Wiper Fluid Replacement</span>
                         </div>
                       </div>
                     </div>
@@ -412,7 +440,7 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
                   <div className="mt-6">
                     <button
                       onClick={handleSubmit}
-                      className="w-full bg-[#FF7200] text-white font-medium py-4 px-4 rounded-md hover:bg-[#cc5b00] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF7200] focus:ring-opacity-50 text-lg"
+                      className="w-full bg-[#FF7200] text-white font-semibold py-4 px-4 rounded-md hover:bg-[#cc5b00] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF7200] focus:ring-opacity-50 text-lg shadow-md"
                     >
                       Continue
                     </button>
