@@ -87,18 +87,11 @@ const qualityFeatures = [
   }
 ];
 
-const carouselImages = [
-  "https://images.unsplash.com/photo-1632823471565-1ecdf5c6d7f9",
-  "https://images.unsplash.com/photo-1632823471641-c1a24b1a8cec",
-  "https://images.unsplash.com/photo-1632823471674-5c3c777f1d19"
-];
-
 const ExpressService = () => {
   const [mobile, setMobile] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
-  const [currentImage, setCurrentImage] = useState(0);
   const [isTimeSlotModalOpen, setIsTimeSlotModalOpen] = useState(false);
   const [isCarSelectionModalOpen, setIsCarSelectionModalOpen] = useState(false);
   const [selectedServiceType, setSelectedServiceType] = useState<number | undefined>();
@@ -157,11 +150,11 @@ const ExpressService = () => {
       if (response && response.data && response.data.id) {
         setCurrentLeadId(response.data.id);
         
-        // Open the car selection modal instead of time slot modal
-        setIsCarSelectionModalOpen(true);
-        
         // Show success message for mobile number submission
         setSuccess(true);
+        
+        // Open the car selection modal
+        setIsCarSelectionModalOpen(true);
       } else {
         throw new Error('Invalid response format');
       }
@@ -205,10 +198,17 @@ const ExpressService = () => {
       
       // Close car selection modal and open time slot modal
       setIsCarSelectionModalOpen(false);
-      setIsTimeSlotModalOpen(true);
+      
+      // Add a small delay before opening the time slot modal to ensure proper transition
+      setTimeout(() => {
+        setIsTimeSlotModalOpen(true);
+      }, 100);
     } catch (error) {
       console.error('Error updating lead with car information:', error);
       alert('Failed to update car information. Please try again.');
+      
+      // Keep the car selection modal open in case of error
+      setIsCarSelectionModalOpen(true);
     }
   };
 
@@ -216,11 +216,11 @@ const ExpressService = () => {
     // Close the modal without updating the lead
     setIsCarSelectionModalOpen(false);
     
-    // Reset the form and state
+    // Reset the form and state if the user cancels
     setMobile('');
+    setCurrentLeadId(null);
     setSuccess(false);
     setError('');
-    setCurrentLeadId(null);
   };
 
   const handleTimeSlotSubmit = async (date: string, timeSlot: string) => {
@@ -252,6 +252,7 @@ const ExpressService = () => {
       setCurrentLeadId(null);
       setSelectedCarBrand('');
       setSelectedCarModel('');
+      setSelectedFuelType('');
       setSelectedServicePrice(null);
       
       // Show success message
@@ -276,13 +277,6 @@ const ExpressService = () => {
     setSelectedCarModel('');
     setSelectedServicePrice(null);
   };
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentImage((prev) => (prev + 1) % carouselImages.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
 
   useEffect(() => {
     const checkServiceTypes = async () => {
@@ -462,37 +456,6 @@ const ExpressService = () => {
                 </p>
               </motion.div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Image Carousel Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            Experience the Express Service
-          </h2>
-          <div className="relative h-[400px] rounded-xl overflow-hidden">
-            <motion.img
-              key={currentImage}
-              src={carouselImages[currentImage]}
-              alt={`Service Image ${currentImage + 1}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
-              {carouselImages.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentImage(index)}
-                  className={`w-2 h-2 rounded-full transition-colors ${currentImage === index ? 'bg-[#FF7200]' : 'bg-white'
-                    }`}
-                />
-              ))}
-            </div>
           </div>
         </div>
       </section>

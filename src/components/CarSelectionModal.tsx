@@ -34,33 +34,63 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
     const loadPricingData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch('/GM Pricing March Website Usage -Final.csv');
+        console.log('Fetching CSV file...');
+        // Add cache-busting parameter to ensure a fresh copy is downloaded
+        const cacheBuster = new Date().getTime();
+        const response = await fetch(`/GM Pricing March Website Usage -Final.csv?v=${cacheBuster}`);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch CSV: ${response.status} ${response.statusText}`);
+        }
+        
         const csvText = await response.text();
+        console.log('CSV fetched, parsing data...');
         
-        // Parse CSV
+        // Parse CSV - properly handle the newline in headers
         const lines = csvText.split('\n');
-        const headers = lines[0].split(',');
         
-        const typeIndex = headers.findIndex(h => h.trim() === 'Type');
-        const brandIndex = headers.findIndex(h => h.trim() === 'Car Brand');
-        const modelIndex = headers.findIndex(h => h.trim() === 'Car Model');
-        const priceIndex = headers.findIndex(h => h.trim() === 'Express Service Price GaadiMech');
+        // The headers might span multiple lines due to an error in the CSV
+        // Join the first two lines to handle the newline in the "Comprehensive Service Price" column
+        const headersText = lines[0] + (lines[1] || '');
+        const headers = headersText.split(',').map(h => h.trim());
         
-        if (typeIndex === -1 || brandIndex === -1 || modelIndex === -1 || priceIndex === -1) {
-          throw new Error('CSV format is invalid');
+        console.log('Headers found:', headers);
+        
+        // Updated column names to match the actual CSV
+        const fuelTypeIndex = headers.findIndex(h => h === 'FuelType');
+        const brandIndex = headers.findIndex(h => h === 'Car Brand');
+        const modelIndex = headers.findIndex(h => h === 'Car Model');
+        const priceIndex = headers.findIndex(h => h.includes('Express Service Price'));
+        
+        console.log('Column indices:', { fuelTypeIndex, brandIndex, modelIndex, priceIndex });
+        
+        if (fuelTypeIndex === -1 || brandIndex === -1 || modelIndex === -1 || priceIndex === -1) {
+          console.error('CSV header format is invalid.', { 
+            headers,
+            fuelTypeIndex,
+            brandIndex,
+            modelIndex, 
+            priceIndex,
+            headersText
+          });
+          throw new Error(`CSV format is invalid. Missing required columns. FuelType: ${fuelTypeIndex}, Car Brand: ${brandIndex}, Car Model: ${modelIndex}, Express Service Price: ${priceIndex}`);
         }
         
         const data: CarPricing[] = [];
         const brands = new Set<string>();
         
-        for (let i = 1; i < lines.length; i++) {
+        // Start from line 2 as headers might span lines 0 and 1
+        for (let i = 2; i < lines.length; i++) {
           if (!lines[i].trim()) continue;
           
           const values = lines[i].split(',');
-          const fuelType = values[typeIndex].trim().toLowerCase();
+          if (values.length <= Math.max(fuelTypeIndex, brandIndex, modelIndex, priceIndex)) continue;
+          
+          const fuelType = values[fuelTypeIndex].trim().toLowerCase();
           const brand = values[brandIndex].trim();
           const model = values[modelIndex].trim();
-          const priceStr = values[priceIndex].trim();
+          // Handle potential spaces in the price column
+          const priceStr = values[priceIndex].trim().replace(/[^\d.]/g, ''); // Remove any non-numeric characters except decimal point
           const price = parseFloat(priceStr);
           
           if (brand && model && fuelType && !isNaN(price) && price > 0) {
@@ -69,18 +99,26 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
           }
         }
         
+        console.log(`Parsed ${data.length} car entries with ${brands.size} unique brands`);
+        
+        if (data.length === 0) {
+          throw new Error('No valid data found in CSV');
+        }
+        
         setPricingData(data);
         setCarBrands(Array.from(brands).sort());
         setIsLoading(false);
       } catch (error) {
         console.error('Error loading pricing data:', error);
-        setError('Failed to load car data. Please try again later.');
+        setError('Failed to load car data. Please try again later or contact customer support.');
         setIsLoading(false);
       }
     };
     
-    loadPricingData();
-  }, []);
+    if (isOpen) {
+      loadPricingData();
+    }
+  }, [isOpen]);
 
   // Update models when brand changes
   useEffect(() => {
@@ -181,7 +219,7 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
 
   // Helper function to capitalize first letter
   const capitalize = (str: string) => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+    return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
   };
 
   if (!isOpen) return null;
@@ -219,21 +257,24 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
           
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Select Your Car</h2>
+            <p className="text-gray-500">Mobile Number: {mobileNumber}</p>
           </div>
 
-          {isLoading ? (
+          {error ? (
+            <div className="text-center">
+              <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-4">
+                <p>{error}</p>
+              </div>
+              <button
+                className="bg-[#FF7200] text-white px-4 py-2 rounded-md hover:bg-[#cc5b00]"
+                onClick={onClose}
+              >
+                Close
+              </button>
+            </div>
+          ) : isLoading ? (
             <div className="flex justify-center items-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF7200]"></div>
-            </div>
-          ) : error ? (
-            <div className="text-red-500 text-center py-4">
-              {error}
-              <button 
-                onClick={onClose}
-                className="mt-4 bg-[#FF7200] text-white px-4 py-2 rounded-md hover:bg-[#cc5b00]"
-              >
-                Go Back
-              </button>
             </div>
           ) : (
             <div className="space-y-6">
@@ -255,11 +296,11 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
                   ))}
                 </select>
               </div>
-
+              
               {selectedBrand && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                    <Car className="w-5 h-5 mr-2 text-[#FF7200]" />
+                    <Tag className="w-5 h-5 mr-2 text-[#FF7200]" />
                     Select Car Model
                   </label>
                   <select
@@ -276,112 +317,108 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
                   </select>
                 </div>
               )}
-
+              
               {selectedModel && availableFuelTypes.length > 0 && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
                     <Droplet className="w-5 h-5 mr-2 text-[#FF7200]" />
-                    Fuel Type
+                    Select Fuel Type
                   </label>
-                  
-                  {availableFuelTypes.length === 1 ? (
-                    <div className="w-full p-3 border border-gray-300 rounded-md bg-gray-50">
-                      {capitalize(availableFuelTypes[0])}
-                    </div>
-                  ) : (
-                    <div className="flex gap-2 justify-between">
-                      {availableFuelTypes.map((fuelType) => (
-                        <button
-                          key={fuelType}
-                          onClick={() => setSelectedFuelType(fuelType)}
-                          className={`flex-1 py-2 px-3 rounded-md border ${
-                            selectedFuelType === fuelType
-                              ? 'bg-[#FF7200] text-white border-[#FF7200]'
-                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                          } transition-colors duration-200`}
-                        >
-                          {capitalize(fuelType)}
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                  <div className="grid grid-cols-2 gap-3">
+                    {availableFuelTypes.map((type) => (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => setSelectedFuelType(type)}
+                        className={`p-3 border rounded-md flex items-center justify-center focus:outline-none transition-all ${
+                          selectedFuelType === type
+                            ? 'bg-[#FF7200] text-white border-[#FF7200]'
+                            : 'border-gray-300 hover:border-[#FF7200] text-gray-700'
+                        }`}
+                      >
+                        {selectedFuelType === type && <CheckCircle className="w-4 h-4 mr-1" />}
+                        {capitalize(type)}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
-
+              
               {currentPrice !== null && (
-                <div className="bg-gradient-to-br from-[#f8faff] to-[#e6eeff] p-6 rounded-xl border-2 border-[#0e5aa8] shadow-lg relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-[#0e5aa8] opacity-5 rounded-full -mr-8 -mt-8"></div>
-                  <div className="absolute bottom-0 left-0 w-16 h-16 bg-[#0e5aa8] opacity-5 rounded-full -ml-6 -mb-6"></div>
-                  
-                  <div className="flex flex-col items-center mb-4">
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">
-                      Express Service
-                    </h3>
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-10 h-10 text-[#FF7200]" />
-                      <span className="text-3xl text-[#FF7200] font-bold">90 MINS</span>
+                <div className="mt-6">
+                  <div className="bg-[#EBF3FA] border-[1px] border-[#3B82F6]/20 p-6 rounded-lg shadow-sm">
+                    <h3 className="text-2xl font-bold text-center text-gray-900 mb-4">Express Service</h3>
+                    
+                    <div className="flex justify-center mb-4">
+                      <div className="flex items-center">
+                        <Clock className="w-8 h-8 text-[#FF7200] mr-3" />
+                        <span className="text-4xl font-bold text-[#FF7200]">90 MINS</span>
+                      </div>
+                    </div>
+                    
+                    <div className="border-t border-b border-gray-200 py-4 mb-4">
+                      <div className="text-4xl font-bold text-center text-[#FF7200]">₹{currentPrice.toFixed(0)}</div>
+                    </div>
+                    
+                    <div className="bg-white rounded-lg p-6">
+                      <h4 className="text-lg font-bold text-[#2563EB] mb-4">INCLUDES:</h4>
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-center">
+                          <div className="bg-blue-100 rounded-full p-1 mr-3">
+                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
+                          </div>
+                          <span className="text-gray-700 font-medium">Engine Oil Change</span>
+                        </div>
+                        
+                        <div className="flex items-center">
+                          <div className="bg-blue-100 rounded-full p-1 mr-3">
+                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
+                          </div>
+                          <span className="text-gray-700 font-medium">Oil Filter Change</span>
+                        </div>
+                        
+                        <div className="flex items-center">
+                          <div className="bg-blue-100 rounded-full p-1 mr-3">
+                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
+                          </div>
+                          <span className="text-gray-700 font-medium">Air Filter Change</span>
+                        </div>
+                        
+                        <div className="flex items-center">
+                          <div className="bg-blue-100 rounded-full p-1 mr-3">
+                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
+                          </div>
+                          <span className="text-gray-700 font-medium">Complete Car Wash</span>
+                        </div>
+                        
+                        <div className="flex items-center">
+                          <div className="bg-blue-100 rounded-full p-1 mr-3">
+                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
+                          </div>
+                          <span className="text-gray-700 font-medium">Interior Vacuum</span>
+                        </div>
+                        
+                        <div className="flex items-center">
+                          <div className="bg-blue-100 rounded-full p-1 mr-3">
+                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
+                          </div>
+                          <span className="text-gray-700 font-medium">15 Points General Checkup</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
-                  <div className="text-3xl font-extrabold text-[#FF7200] mb-4 text-center py-2 border-y border-[#0e5aa8]/20">
-                    ₹{currentPrice}
-                  </div>
-                  
-                  <div className="bg-white rounded-lg p-4 shadow-inner">
-                    <p className="text-sm font-semibold text-[#0e5aa8] mb-3 uppercase tracking-wider">Includes:</p>
-                    <ul className="text-sm text-gray-700 space-y-2.5">
-                      <li className="flex items-center">
-                        <div className="bg-[#0e5aa8]/10 p-1 rounded-full mr-2.5">
-                          <CheckCircle className="w-3.5 h-3.5 text-[#0e5aa8]" />
-                        </div>
-                        <span className="font-medium">Engine Oil Change</span>
-                      </li>
-                      <li className="flex items-center">
-                        <div className="bg-[#0e5aa8]/10 p-1 rounded-full mr-2.5">
-                          <CheckCircle className="w-3.5 h-3.5 text-[#0e5aa8]" />
-                        </div>
-                        <span className="font-medium">Oil Filter Change</span>
-                      </li>
-                      <li className="flex items-center">
-                        <div className="bg-[#0e5aa8]/10 p-1 rounded-full mr-2.5">
-                          <CheckCircle className="w-3.5 h-3.5 text-[#0e5aa8]" />
-                        </div>
-                        <span className="font-medium">Air Filter Change</span>
-                      </li>
-                      <li className="flex items-center">
-                        <div className="bg-[#0e5aa8]/10 p-1 rounded-full mr-2.5">
-                          <CheckCircle className="w-3.5 h-3.5 text-[#0e5aa8]" />
-                        </div>
-                        <span className="font-medium">Complete Car Wash</span>
-                      </li>
-                      <li className="flex items-center">
-                        <div className="bg-[#0e5aa8]/10 p-1 rounded-full mr-2.5">
-                          <CheckCircle className="w-3.5 h-3.5 text-[#0e5aa8]" />
-                        </div>
-                        <span className="font-medium">Interior Vacuum</span>
-                      </li>
-                      <li className="flex items-center">
-                        <div className="bg-[#0e5aa8]/10 p-1 rounded-full mr-2.5">
-                          <CheckCircle className="w-3.5 h-3.5 text-[#0e5aa8]" />
-                        </div>
-                        <span className="font-medium">15 Points General Checkup</span>
-                      </li>
-                    </ul>
+                  <div className="mt-6">
+                    <button
+                      onClick={handleSubmit}
+                      className="w-full bg-[#FF7200] text-white font-medium py-4 px-4 rounded-md hover:bg-[#cc5b00] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF7200] focus:ring-opacity-50 text-lg"
+                    >
+                      Continue
+                    </button>
                   </div>
                 </div>
               )}
-
-              <button
-                onClick={handleSubmit}
-                disabled={!currentPrice}
-                className={`w-full py-3 rounded-md font-medium text-white ${
-                  currentPrice
-                    ? 'bg-[#FF7200] hover:bg-[#cc5b00]'
-                    : 'bg-gray-400 cursor-not-allowed'
-                } transition-colors duration-200`}
-              >
-                Continue
-              </button>
             </div>
           )}
         </motion.div>
