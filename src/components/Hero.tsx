@@ -31,21 +31,21 @@ const Hero = () => {
             <p className="text-base md:text-lg text-gray-600 mb-6 md:mb-8">
               Enjoy trusted service partners, hassle-free booking, transparent pricing, and a wide range of services. Quality, convenience, and expert care at your doorstep.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+            <div className="flex flex-row gap-4 justify-center md:justify-start">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleBookService}
-                className="bg-[#FF7200] text-white px-6 py-3 rounded-md hover:bg-green-600 transition-colors flex items-center justify-center"
+                className="w-1/2 bg-[#FF7200] text-white px-2 sm:px-6 py-3 rounded-md hover:bg-green-600 transition-colors flex items-center justify-center text-sm sm:text-base"
               >
                 Book Service Now
-                <ArrowRight className="ml-2" size={20} />
+                <ArrowRight className="ml-1 sm:ml-2" size={16} />
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleContact}
-                className="border-2 border-[#FF7200] text-[#FF7200] px-6 py-3 rounded-md hover:bg-[#0e5aa8] hover:border-[#0e5aa8] hover:text-white transition-colors"
+                className="w-1/2 border-2 border-[#FF7200] text-[#FF7200] px-2 sm:px-6 py-3 rounded-md hover:bg-[#0e5aa8] hover:border-[#0e5aa8] hover:text-white transition-colors text-sm sm:text-base"
               >
                 Contact Us
               </motion.button>
