@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Clock, ArrowRight, Zap, Timer, Calendar } from 'lucide-react';
+import { Clock, ArrowRight, Zap, Timer, Calendar, ChevronRight } from 'lucide-react';
 
 const services = [
   {
@@ -153,11 +153,26 @@ const Services = () => {
             <motion.div
               key={index}
               onClick={() => handleServiceClick(service)}
-              className={`bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow flex flex-col items-center text-center group cursor-pointer`}
-              whileHover={{ scale: service.link ? 1.05 : 1 }}
-              whileTap={{ scale: service.link ? 0.95 : 1 }}
+              className={`bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center group cursor-pointer relative overflow-hidden border border-transparent hover:border-orange-200 md:hover:border-orange-200 border-gray-100`}
+              whileHover={{ 
+                scale: service.link ? 1.02 : 1,
+                y: -5
+              }}
+              whileTap={{ scale: service.link ? 0.98 : 1 }}
             >
-              <div className="mb-4 w-16 h-16 md:w-20 md:h-20 flex items-center justify-center">
+              {/* Highlight corner accent */}
+              <div className="absolute top-0 right-0 w-0 h-0 
+                border-t-[40px] border-t-[#FF7200] opacity-30 md:opacity-0
+                border-l-[40px] border-l-transparent
+                md:group-hover:opacity-100 transition-opacity duration-300"></div>
+              
+              <motion.div 
+                className="mb-4 w-16 h-16 md:w-20 md:h-20 flex items-center justify-center relative"
+                whileHover={{ rotate: [0, -5, 5, -5, 0] }}
+                transition={{ duration: 0.5 }}
+              >
+                {/* Subtle pulse animation for mobile */}
+                <div className="absolute inset-0 bg-orange-100 rounded-full opacity-20 animate-pulse hidden xs:flex"></div>
                 {service.icon ? (
                   service.icon
                 ) : (
@@ -167,13 +182,33 @@ const Services = () => {
                     className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
                   />
                 )}
-              </div>
-              <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2">
+              </motion.div>
+              <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2 group-hover:text-[#FF7200] transition-colors">
                 {service.title}
               </h3>
-              <p className="hidden md:block text-sm text-gray-600">
+              <p className="hidden md:block text-sm text-gray-600 mb-4">
                 {service.description}
               </p>
+              
+              {/* View Service Button - visible on mobile, hover effect on desktop */}
+              <div className="mt-auto pt-2 w-full">
+                <div className="flex items-center justify-center text-[#FF7200] md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 transform md:translate-y-2 md:group-hover:translate-y-0">
+                  <span className="font-medium mr-1 text-sm md:text-base">Learn More</span>
+                  <motion.div
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 1, repeat: Infinity }}
+                  >
+                    <ChevronRight size={16} />
+                  </motion.div>
+                </div>
+              </div>
+              
+              {/* Mobile-only indicator */}
+              <div className="absolute bottom-1 right-1 md:hidden">
+                <div className="w-5 h-5 bg-[#FF7200] rounded-full flex items-center justify-center">
+                  <ChevronRight size={12} className="text-white" />
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
