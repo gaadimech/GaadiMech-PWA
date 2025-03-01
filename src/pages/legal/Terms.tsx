@@ -21,7 +21,7 @@ const Terms = () => {
         <div className="text-center mb-8">
           <FileText className="w-16 h-16 text-[#FF7200] mx-auto mb-4" />
           <h1 className="text-4xl font-bold text-gray-900">Terms and Conditions</h1>
-          <p className="text-gray-600 mt-2">Effective: Date</p>
+          <p className="text-gray-600 mt-2">Effective: 1st Feb, 2025</p>
         </div>
 
         <div className="prose prose-sm max-w-none">
