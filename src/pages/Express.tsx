@@ -88,7 +88,10 @@ const qualityFeatures = [
 ];
 
 const ExpressService = () => {
-  const [mobile, setMobile] = useState('');
+  const [mobile, setMobile] = useState(() => {
+    // Initialize mobile number from session storage if available
+    return sessionStorage.getItem('userMobileNumber') || '';
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -116,6 +119,9 @@ const ExpressService = () => {
       setError('Please enter a valid 10-digit mobile number');
       return;
     }
+
+    // Save mobile number to session storage
+    sessionStorage.setItem('userMobileNumber', mobile);
 
     // Default to "Express Service" (ID: 4) if no service type is selected
     const serviceType = selectedServiceType || 4;
@@ -216,6 +222,11 @@ const ExpressService = () => {
     // Close the modal without updating the lead
     setIsCarSelectionModalOpen(false);
     
+    // Store user's mobile number in session storage before resetting the form
+    if (mobile) {
+      sessionStorage.setItem('userMobileNumber', mobile);
+    }
+    
     // Reset the form and state if the user cancels
     setMobile('');
     setCurrentLeadId(null);
@@ -247,6 +258,11 @@ const ExpressService = () => {
       // Close the time slot modal
       setIsTimeSlotModalOpen(false);
       
+      // Store user's mobile number in session storage before resetting the form
+      if (mobile) {
+        sessionStorage.setItem('userMobileNumber', mobile);
+      }
+      
       // Reset the form
       setMobile('');
       setCurrentLeadId(null);
@@ -267,6 +283,11 @@ const ExpressService = () => {
   const handleTimeSlotModalClose = () => {
     // Close the modal without updating the lead
     setIsTimeSlotModalOpen(false);
+    
+    // Store user's mobile number in session storage before resetting the form
+    if (mobile) {
+      sessionStorage.setItem('userMobileNumber', mobile);
+    }
     
     // Reset the form and state
     setMobile('');

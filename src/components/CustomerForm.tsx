@@ -65,6 +65,10 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
     try {
       await enquiryService.submit(formData);
       setStatus('success');
+      
+      // Save mobile number to session storage
+      sessionStorage.setItem('userMobileNumber', formData.mobileNumber);
+      
       setFormData({
         name: '',
         mobileNumber: '',
