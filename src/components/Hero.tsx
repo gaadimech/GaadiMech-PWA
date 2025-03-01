@@ -1,8 +1,11 @@
 import React from 'react';
 import { ArrowRight, Phone, Clock, Home, DollarSign, Check, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
+  const navigate = useNavigate();
+
   const handleBookService = () => {
     const message = encodeURIComponent("Hi, I'd like to book an Express Car Service through GaadiMech.");
     window.open(`https://wa.me/917300042410?text=${message}`, '_blank');
@@ -10,6 +13,10 @@ const Hero = () => {
 
   const handleContact = () => {
     window.location.href = `tel:+918448285289`;
+  };
+
+  const handleExpressServiceClick = () => {
+    navigate('/express');
   };
 
   // Animation variants
@@ -35,9 +42,7 @@ const Hero = () => {
   return (
     <section id="home" className="pt-12 md:pt-20 relative overflow-hidden bg-gradient-to-b from-gray-50 to-white border-b-8 border-gray-100">
       {/* Decorative elements - hidden on mobile for better performance */}
-      <div className="hidden md:block absolute top-20 left-10 w-20 h-20 rounded-full bg-[#FF7200] opacity-10 blur-xl"></div>
       <div className="hidden md:block absolute bottom-20 right-10 w-32 h-32 rounded-full bg-blue-500 opacity-10 blur-xl"></div>
-      <div className="hidden md:block absolute top-40 right-1/4 w-10 h-10 rounded-full border-4 border-[#FF7200] opacity-20"></div>
       <div className="hidden md:block absolute bottom-1/3 left-1/4 w-6 h-12 rounded-full bg-[#FF7200] opacity-10"></div>
       
       {/* Dotted pattern - hidden on mobile */}
@@ -89,7 +94,10 @@ const Hero = () => {
             </p>
             
             {/* Simplified timer visualization */}
-            <div className="mb-6 p-4 bg-white rounded-xl border border-gray-100 shadow-sm mx-auto md:mx-0 max-w-xs">
+            <div 
+              className="mb-6 p-4 bg-white rounded-xl border border-gray-100 shadow-sm mx-auto md:mx-0 max-w-xs cursor-pointer hover:shadow-md transition-all"
+              onClick={handleExpressServiceClick}
+            >
               <div className="flex items-center justify-center gap-4">
                 <div className="relative">
                   <div className="w-16 h-16 flex items-center justify-center rounded-xl bg-[#FF7200] text-white font-bold text-2xl">
@@ -182,19 +190,11 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative mt-8 md:mt-0 hidden md:block"
           >
-            {/* Flash sticker */}
-            <div className="absolute -top-6 -right-6 z-20 rotate-12">
-              <div className="bg-yellow-400 text-gray-900 font-bold text-sm px-4 py-1 rounded-full shadow-lg flex items-center gap-1">
-                <Clock size={14} />
-                <span>SUPER FAST</span>
-              </div>
-            </div>
-            
             {/* Express badge */}
             <div className="absolute top-0 right-0 bg-gradient-to-r from-[#FF7200] to-[#FF9500] text-white px-3 py-2 rounded-tr-lg rounded-bl-lg font-bold z-10 shadow-lg">
               <div className="flex items-center">
-                <Clock size={18} className="mr-1" />
-                <span>EXPRESS</span>
+                <Clock size={25} className="mr-1" />
+                <span>SUPER FAST</span>
               </div>
             </div>
             
@@ -211,9 +211,6 @@ const Hero = () => {
                 width="800"
                 height="600"
               />
-              
-              {/* Decorative corner */}
-              <div className="absolute -bottom-3 -right-3 w-16 h-16 bg-[#FF7200] opacity-10 rounded-full"></div>
             </div>
             
             <div className="absolute -bottom-6 -left-6 bg-white p-4 md:p-6 rounded-lg shadow-xl w-auto">
