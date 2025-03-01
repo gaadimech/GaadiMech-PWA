@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Phone, Clock, Home, DollarSign, Check, Star } from 'lucide-react';
+import { ArrowRight, Phone, Clock, Home, IndianRupee, Check, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
@@ -156,7 +156,7 @@ const Hero = () => {
                 className="bg-white py-3 px-5 rounded-xl shadow-sm hover:shadow-md transition-shadow flex items-center"
               >
                 <div className="bg-[#FF7200] rounded-full p-3 flex-shrink-0">
-                  <DollarSign className="text-white" size={20} />
+                  <IndianRupee className="text-white" size={20} />
                 </div>
                 <p className="ml-3 text-lg font-medium text-gray-700">
                   <span className="text-[#FF7200] font-bold">Affordable</span> Pricing
