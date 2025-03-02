@@ -97,8 +97,10 @@ const Services = () => {
     if (service.link) {
       if (service.link === '/express') {
         window.scrollTo(0, 0);
+        navigate('/express?openModal=true');
+      } else {
+        navigate(service.link);
       }
-      navigate(service.link);
     }
   };
 
