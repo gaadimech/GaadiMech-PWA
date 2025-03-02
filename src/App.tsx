@@ -146,7 +146,7 @@ const AppContent = () => {
               setShowForm(true);
               setHasShownInitialPopup(true);
               sessionStorage.setItem('hasShownInitialPopup', 'true');
-            }, 1000);
+            }, 15000);
             return () => clearTimeout(timer);
           }
         }
