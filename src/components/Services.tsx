@@ -102,6 +102,12 @@ const Services = () => {
     }
   };
 
+  const handleScheduleClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent the card click event from firing
+    navigate('/express?openModal=true');
+    window.scrollTo(0, 0);
+  };
+
   const featuredService = services.find(service => service.featured);
   const regularServices = services.filter(service => !service.featured);
 
@@ -158,6 +164,7 @@ const Services = () => {
                       <span className="font-bold">90-Minute Service</span>
                     </div>
                     <motion.button
+                      onClick={handleScheduleClick}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       className="bg-[#FF7200] text-white px-6 py-2 rounded-md hover:bg-[#0e5aa8] transition-colors flex items-center gap-2 shadow-md"

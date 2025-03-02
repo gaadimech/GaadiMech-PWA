@@ -9,6 +9,7 @@ import ReviewCarousel from '../components/ReviewCarousel';
 import { getReviewsByService } from '../data/reviews';
 import { enquiryService } from '../services/enquiry';
 import Modal from 'react-modal';
+import { useLocation } from 'react-router-dom';
 
 const steps = [
   {
@@ -89,6 +90,7 @@ const qualityFeatures = [
 ];
 
 const ExpressService = () => {
+  const location = useLocation();
   const [mobile, setMobile] = useState(() => {
     // Initialize mobile number from session storage if available
     return sessionStorage.getItem('userMobileNumber') || '';
@@ -334,7 +336,13 @@ const ExpressService = () => {
     };
     
     checkServiceTypes();
-  }, []);
+    
+    // Check if the openModal query parameter is present
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.get('openModal') === 'true') {
+      setIsMobileInputModalOpen(true);
+    }
+  }, [location.search]);
 
   return (
     <motion.div
