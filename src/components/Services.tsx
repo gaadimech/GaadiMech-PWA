@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Clock, ArrowRight, Zap, Timer, Calendar, ChevronRight } from 'lucide-react';
+import { Clock, ArrowRight, Zap, Timer, Calendar, ChevronRight, Car } from 'lucide-react';
 
 const services = [
   {
@@ -15,13 +15,27 @@ const services = [
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        className="w-full h-full"
+        className="w-full h-full relative"
       >
-        <Zap className="w-full h-full text-[#FF7200]" />
+        <Car className="w-full h-full text-[#FF7200] relative z-10" />
+        <motion.div 
+          className="absolute inset-0 flex items-center justify-center z-20"
+          animate={{
+            scale: [1, 1.3, 1],
+            opacity: [0.7, 1, 0.7]
+          }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        >
+          <Zap className="w-1/2 h-1/2 text-yellow-400 drop-shadow-md" />
+        </motion.div>
       </motion.div>
     ),
-    title: 'Express Service',
-    description: 'Get Your Car Serviced in 90 Minutes or Less — Time is Money!',
+    title: 'Express Car Service',
+    description: 'Sounds Impossible? We\'ve Made It Possible, That Too At 20% Lesser Price Than Your Regular Car Service!*',
     highlight: true,
     link: '/express',
     featured: true
@@ -117,25 +131,36 @@ const Services = () => {
               </div>
 
               <div className="flex flex-col md:flex-row items-center gap-6">
-                <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 bg-orange-100 rounded-full p-6 flex items-center justify-center">
+                <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 bg-orange-100 rounded-full p-6 flex items-center justify-center relative">
                   {featuredService.icon}
+                  <motion.div 
+                    className="absolute inset-0 rounded-full border-2 border-[#FF7200]"
+                    animate={{ 
+                      scale: [1, 1.1, 1],
+                      opacity: [1, 0.8, 1]
+                    }}
+                    transition={{ 
+                      repeat: Infinity, 
+                      duration: 2 
+                    }}
+                  ></motion.div>
                 </div>
                 <div className="flex-grow text-center md:text-left">
                   <h3 className="text-2xl md:text-3xl font-bold text-[#FF7200] mb-2">
                     {featuredService.title}
                   </h3>
-                  <p className="text-lg text-gray-600 mb-4">
+                  <p className="text-lg text-gray-700 mb-4 font-medium">
                     {featuredService.description}
                   </p>
                   <div className="flex flex-wrap gap-4 justify-center md:justify-start">
-                    <div className="flex items-center text-gray-700">
+                    <div className="flex items-center text-gray-700 bg-orange-50 px-3 py-1 rounded-full">
                       <Clock className="w-5 h-5 mr-2 text-[#FF7200]" />
                       <span className="font-bold">90-Minute Service</span>
                     </div>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="bg-[#FF7200] text-white px-6 py-2 rounded-md hover:bg-[#0e5aa8] transition-colors flex items-center gap-2"
+                      className="bg-[#FF7200] text-white px-6 py-2 rounded-md hover:bg-[#0e5aa8] transition-colors flex items-center gap-2 shadow-md"
                     >
                       <Calendar className="w-5 h-5" />
                       Schedule Slot Now
