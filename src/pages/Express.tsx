@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Clock, Car, PenTool as Tool, Phone, CheckCircle, ArrowRight, Share2, Gift, Wrench, Sparkles, Timer, Calendar, Image, MessageSquare, User, Shield } from 'lucide-react';
+import { Clock, Car, PenTool as Tool, Phone, CheckCircle, ArrowRight, Share2, Gift, Wrench, Sparkles, Timer, Calendar, Image, MessageSquare, User, Shield, X } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { expressService } from '../services/expressService';
 import TimeSlotModal from '../components/TimeSlotModal';
@@ -8,6 +8,7 @@ import CarSelectionModal from '../components/CarSelectionModal';
 import ReviewCarousel from '../components/ReviewCarousel';
 import { getReviewsByService } from '../data/reviews';
 import { enquiryService } from '../services/enquiry';
+import Modal from 'react-modal';
 
 const steps = [
   {
@@ -97,6 +98,7 @@ const ExpressService = () => {
   const [error, setError] = useState('');
   const [isTimeSlotModalOpen, setIsTimeSlotModalOpen] = useState(false);
   const [isCarSelectionModalOpen, setIsCarSelectionModalOpen] = useState(false);
+  const [isMobileInputModalOpen, setIsMobileInputModalOpen] = useState(false);
   const [selectedServiceType, setSelectedServiceType] = useState<number | undefined>();
   const [serviceTypesLoaded, setServiceTypesLoaded] = useState(false);
   const [currentLeadId, setCurrentLeadId] = useState<number | null>(null);
@@ -104,6 +106,7 @@ const ExpressService = () => {
   const [selectedCarModel, setSelectedCarModel] = useState<string>('');
   const [selectedFuelType, setSelectedFuelType] = useState<string>('');
   const [selectedServicePrice, setSelectedServicePrice] = useState<number | null>(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const serviceReviews = getReviewsByService('express');
 
   const validateMobile = (number: string) => {
@@ -111,7 +114,11 @@ const ExpressService = () => {
     return mobileRegex.test(number);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleScheduleClick = () => {
+    setIsMobileInputModalOpen(true);
+  };
+
+  const handleMobileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -159,7 +166,8 @@ const ExpressService = () => {
         // Show success message for mobile number submission
         setSuccess(true);
         
-        // Open the car selection modal
+        // Close mobile input modal and open car selection modal
+        setIsMobileInputModalOpen(false);
         setIsCarSelectionModalOpen(true);
       } else {
         throw new Error('Invalid response format');
@@ -171,6 +179,17 @@ const ExpressService = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleMobileModalClose = () => {
+    setIsMobileInputModalOpen(false);
+    setMobile('');
+    setError('');
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    handleScheduleClick();
   };
 
   const handleCarSelectionSubmit = async (brand: string, model: string, fuelType: string, price: number) => {
@@ -263,16 +282,21 @@ const ExpressService = () => {
         sessionStorage.setItem('userMobileNumber', mobile);
       }
       
-      // Reset the form
-      setMobile('');
-      setCurrentLeadId(null);
-      setSelectedCarBrand('');
-      setSelectedCarModel('');
-      setSelectedFuelType('');
-      setSelectedServicePrice(null);
-      
       // Show success message
-      alert('Booking confirmed! We will contact you shortly.');
+      setShowSuccessMessage(true);
+      
+      // Auto close success message after 1.5 seconds
+      setTimeout(() => {
+        setShowSuccessMessage(false);
+        
+        // Reset the form after success message is closed
+        setMobile('');
+        setCurrentLeadId(null);
+        setSelectedCarBrand('');
+        setSelectedCarModel('');
+        setSelectedFuelType('');
+        setSelectedServicePrice(null);
+      }, 1500);
     } catch (error) {
       console.error('Error updating lead with time slot:', error);
       alert('Sorry, there was an error confirming your booking. Please try again or contact us directly.');
@@ -348,47 +372,89 @@ const ExpressService = () => {
               state-of-the-art technology – all while you enjoy a coffee.
             </motion.p>
 
-            <motion.form
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              onSubmit={handleSubmit}
               className="max-w-md mx-auto"
             >
-              {success ? (
-                <div className="bg-green-50 text-green-600 p-4 rounded-lg">
-                  <p className="font-semibold">Thanks! We'll call you right back.</p>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <div className="flex gap-2">
-                    <input
-                      type="tel"
-                      value={mobile}
-                      onChange={(e) => setMobile(e.target.value)}
-                      placeholder="Enter your mobile number"
-                      className={`flex-1 px-4 py-3 rounded-lg border ${
-                        error ? 'border-red-500' : 'border-gray-300'
-                      } focus:ring-2 focus:ring-[#FF7200] focus:border-transparent`}
-                      required
-                    />
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="bg-[#FF7200] text-white px-6 py-3 rounded-lg hover:bg-[#0e5aa8] transition-colors disabled:opacity-50"
-                    >
-                      {isSubmitting ? 'Submitting...' : 'Schedule Slot Now'}
-                    </button>
-                  </div>
-                  {error && (
-                    <p className="text-red-500 text-sm mt-1">{error}</p>
-                  )}
-                </div>
-              )}
-            </motion.form>
+              <button
+                onClick={handleScheduleClick}
+                className="w-64 bg-[#FF7200] text-white px-8 py-4 rounded-lg hover:bg-[#FF8000] transition-colors text-lg font-semibold flex items-center justify-center gap-2 mx-auto shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
+              >
+                <Calendar className="w-5 h-5" />
+                Schedule Slot Now
+              </button>
+            </motion.div>
           </div>
         </div>
       </section>
+
+      {/* Mobile Input Modal */}
+      <Modal
+        isOpen={isMobileInputModalOpen}
+        onRequestClose={handleMobileModalClose}
+        className="modal-content max-w-md mx-auto bg-white p-6 rounded-xl shadow-2xl"
+        overlayClassName="modal-overlay fixed inset-0 bg-black/60 flex items-center justify-center overflow-y-auto z-50"
+        contentLabel="Mobile Input Modal"
+      >
+        <div className="relative">
+          <button
+            onClick={handleMobileModalClose}
+            className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <Phone className="w-6 h-6 text-[#FF7200]" />
+            Enter Your Mobile Number
+          </h2>
+          
+          <form onSubmit={handleMobileSubmit}>
+            <div className="mb-4">
+              <input
+                type="tel"
+                value={mobile}
+                onChange={(e) => setMobile(e.target.value)}
+                placeholder="Enter your 10-digit mobile number"
+                className={`w-full px-4 py-3 rounded-lg border ${
+                  error ? 'border-red-500' : 'border-gray-300'
+                } focus:ring-2 focus:ring-[#FF7200] focus:border-transparent`}
+                required
+              />
+              {error && (
+                <p className="text-red-500 text-sm mt-1">{error}</p>
+              )}
+            </div>
+            
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-[#FF7200] text-white py-3 rounded-lg hover:bg-[#FF8000] transition-colors disabled:opacity-50 font-semibold"
+            >
+              {isSubmitting ? 'Submitting...' : 'Continue'}
+            </button>
+          </form>
+        </div>
+      </Modal>
+
+      {/* Success Message Modal */}
+      <Modal
+        isOpen={showSuccessMessage}
+        onRequestClose={() => setShowSuccessMessage(false)}
+        className="modal-content max-w-md mx-auto bg-white p-6 rounded-xl shadow-2xl"
+        overlayClassName="modal-overlay fixed inset-0 bg-black/60 flex items-center justify-center overflow-y-auto z-50"
+        contentLabel="Success Message Modal"
+      >
+        <div className="text-center">
+          <div className="flex justify-center mb-4">
+            <CheckCircle className="w-16 h-16 text-green-500" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Successfully Submitted!</h2>
+          <p className="text-gray-600 text-lg">GaadiMech Buddy will get in touch with you shortly!</p>
+        </div>
+      </Modal>
 
       {/* Car Selection Modal */}
       <CarSelectionModal
