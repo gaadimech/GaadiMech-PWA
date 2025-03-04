@@ -129,6 +129,11 @@ const ExpressService = () => {
       return;
     }
 
+    // Prevent multiple submissions
+    if (isSubmitting) {
+      return;
+    }
+
     // Save mobile number to session storage
     sessionStorage.setItem('userMobileNumber', mobile);
 
@@ -441,7 +446,12 @@ const ExpressService = () => {
               disabled={isSubmitting}
               className="w-full bg-[#FF7200] text-white py-3 rounded-lg hover:bg-[#FF8000] transition-colors disabled:opacity-50 font-semibold"
             >
-              {isSubmitting ? 'Submitting...' : 'Continue'}
+              {isSubmitting ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  Processing...
+                </div>
+              ) : 'Continue'}
             </button>
           </form>
         </div>
