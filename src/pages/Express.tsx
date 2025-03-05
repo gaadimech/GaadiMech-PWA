@@ -587,6 +587,7 @@ const ExpressService = () => {
         onClose={handleCarSelectionModalClose}
         onSubmit={handleCarSelectionSubmit}
         mobileNumber={mobile}
+        leadId={currentLeadId || undefined}
       />
 
       {/* Time Slot Modal */}

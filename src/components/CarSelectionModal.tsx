@@ -3,12 +3,14 @@ import Modal from 'react-modal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Car, Tag, Droplet, CheckCircle, Clock } from 'lucide-react';
 import { saveVehicleToSession, getVehicleFromSession } from '../utils/pricing-utils';
+import { expressService } from '../services/expressService';
 
 interface CarSelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (brand: string, model: string, fuelType: string, price: number) => void;
   mobileNumber: string;
+  leadId?: number;
 }
 
 interface CarPricing {
@@ -18,7 +20,7 @@ interface CarPricing {
   expressServicePrice: number;
 }
 
-const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, onSubmit, mobileNumber }) => {
+const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, onSubmit, mobileNumber, leadId }) => {
   const [selectedBrand, setSelectedBrand] = useState<string>('');
   const [selectedModel, setSelectedModel] = useState<string>('');
   const [selectedFuelType, setSelectedFuelType] = useState<string>('');
@@ -218,6 +220,47 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
       setCurrentPrice(null);
     }
   }, [selectedBrand, selectedModel, selectedFuelType, pricingData]);
+
+  // Add function to update lead data in Strapi
+  const updateLeadWithSelection = async (field: string, value: string, price?: number) => {
+    if (!leadId) return;
+    
+    const data: Record<string, any> = {
+      [field]: value
+    };
+    
+    if (price !== undefined) {
+      data.servicePrice = price;
+    }
+    
+    try {
+      await expressService.updateLead(leadId, data);
+      console.log(`Updated ${field} in Strapi:`, value);
+    } catch (error) {
+      console.error(`Error updating ${field} in Strapi:`, error);
+    }
+  };
+
+  // Update brand effect - add Strapi update
+  useEffect(() => {
+    if (selectedBrand && leadId) {
+      updateLeadWithSelection('carBrand', selectedBrand);
+    }
+  }, [selectedBrand, leadId]);
+  
+  // Update model effect - add Strapi update
+  useEffect(() => {
+    if (selectedBrand && selectedModel && leadId) {
+      updateLeadWithSelection('carModel', selectedModel);
+    }
+  }, [selectedModel, selectedBrand, leadId]);
+  
+  // Update fuel type and price effect - add Strapi update
+  useEffect(() => {
+    if (selectedBrand && selectedModel && selectedFuelType && currentPrice !== null && leadId) {
+      updateLeadWithSelection('fuelType', selectedFuelType, currentPrice);
+    }
+  }, [selectedFuelType, currentPrice, selectedBrand, selectedModel, leadId]);
 
   const handleSubmit = () => {
     if (selectedBrand && selectedModel && selectedFuelType && currentPrice !== null) {
