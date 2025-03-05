@@ -9,13 +9,17 @@ interface ServiceCardComponentProps {
   vehicleSelected: boolean;
   actualPrice?: string;
   onSelectCar: () => void;
+  selectedVehicle?: Vehicle | null;
+  serviceType?: string;
 }
 
 const ServiceCard: React.FC<ServiceCardComponentProps> = ({
   card,
   vehicleSelected,
   actualPrice,
-  onSelectCar
+  onSelectCar,
+  selectedVehicle,
+  serviceType
 }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [highlightDuration, setHighlightDuration] = useState(false);
@@ -32,8 +36,24 @@ const ServiceCard: React.FC<ServiceCardComponentProps> = ({
   }, [isExpressService]);
   
   const handleBookNow = () => {
+    let customMessage = card.whatsappMessage;
+    
+    // If vehicle is selected, create a custom message with vehicle and service details
+    if (selectedVehicle && vehicleSelected && actualPrice) {
+      // Get service type name from the card.id or provided serviceType
+      let serviceName = card.title;
+      
+      // Create the custom message
+      customMessage = `Hi, I've Booked a ${serviceName} from GaadiMech.com.
+Details:
+Car Model: *${selectedVehicle.manufacturer} ${selectedVehicle.model}*
+Fuel Type: ${selectedVehicle.fuelType}
+Service Type: ${serviceName}
+Package Price: ${actualPrice}`;
+    }
+    
     // Open WhatsApp with pre-filled message
-    window.open(`https://wa.me/917300042410?text=${encodeURIComponent(card.whatsappMessage)}`, '_blank');
+    window.open(`https://wa.me/917300042410?text=${encodeURIComponent(customMessage)}`, '_blank');
   };
   
   const toggleDetails = (e: React.MouseEvent) => {

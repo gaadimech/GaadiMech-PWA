@@ -209,6 +209,8 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
               vehicleSelected={!!selectedVehicle}
               actualPrice={selectedVehicle ? getServiceTypePrice(card.id) : undefined}
               onSelectCar={() => setShowVehicleModal(true)}
+              selectedVehicle={selectedVehicle}
+              serviceType={serviceType}
             />
           ))}
         </div>
