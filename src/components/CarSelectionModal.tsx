@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Car, Tag, Droplet, CheckCircle, Clock } from 'lucide-react';
+import { saveVehicleToSession, getVehicleFromSession } from '../utils/pricing-utils';
 
 interface CarSelectionModalProps {
   isOpen: boolean;
@@ -28,6 +29,17 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
   const [currentPrice, setCurrentPrice] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      // Check for saved vehicle when modal opens
+      const savedVehicle = getVehicleFromSession();
+      if (savedVehicle) {
+        setSelectedBrand(savedVehicle.manufacturer);
+        // The models and fuel types will be populated in subsequent effects
+      }
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     // Load car pricing data from CSV
@@ -120,100 +132,115 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
     }
   }, [isOpen]);
 
-  // Update models when brand changes
+  // Update models when brand changes or when CSV data loads
   useEffect(() => {
-    if (selectedBrand) {
-      const models = [...new Set(
+    if (selectedBrand && pricingData.length > 0) {
+      // Find all models for the selected brand
+      const models = Array.from(new Set(
         pricingData
-          .filter(car => car.brand === selectedBrand)
-          .map(car => car.model)
-      )];
+          .filter(item => item.brand.toLowerCase() === selectedBrand.toLowerCase())
+          .map(item => item.model)
+      )).sort();
       
-      setCarModels(models.sort());
-      setSelectedModel(''); // Reset model selection
-      setSelectedFuelType(''); // Reset fuel type selection
-      setAvailableFuelTypes([]); // Reset available fuel types
-      setCurrentPrice(null); // Reset price
+      setCarModels(models);
+      
+      // If we had a saved vehicle, try to select its model now that we have the models list
+      const savedVehicle = getVehicleFromSession();
+      if (savedVehicle && 
+          savedVehicle.manufacturer.toLowerCase() === selectedBrand.toLowerCase() && 
+          !selectedModel) {
+        // Find the model in our list that matches the saved one
+        const matchingModel = models.find(
+          model => model.toLowerCase() === savedVehicle.model.toLowerCase()
+        );
+        if (matchingModel) {
+          setSelectedModel(matchingModel);
+        }
+      }
     } else {
       setCarModels([]);
       setSelectedModel('');
-      setSelectedFuelType('');
-      setAvailableFuelTypes([]);
-      setCurrentPrice(null);
     }
   }, [selectedBrand, pricingData]);
-
-  // Update available fuel types when model changes
+  
+  // Update fuel types when model changes or when a model is auto-selected from session
   useEffect(() => {
-    if (selectedBrand && selectedModel) {
-      const fuelTypes = [...new Set(
+    if (selectedBrand && selectedModel && pricingData.length > 0) {
+      // Find all fuel types for the selected brand and model
+      const fuelTypes = Array.from(new Set(
         pricingData
-          .filter(car => car.brand === selectedBrand && car.model === selectedModel)
-          .map(car => car.fuelType)
-      )];
+          .filter(item => 
+            item.brand.toLowerCase() === selectedBrand.toLowerCase() && 
+            item.model.toLowerCase() === selectedModel.toLowerCase()
+          )
+          .map(item => item.fuelType)
+      )).sort();
       
-      setAvailableFuelTypes(fuelTypes.sort());
+      setAvailableFuelTypes(fuelTypes);
       
-      // If only one fuel type is available, auto-select it
-      if (fuelTypes.length === 1) {
-        setSelectedFuelType(fuelTypes[0]);
-      } else {
-        setSelectedFuelType(''); // Reset fuel type selection if multiple options
+      // If we had a saved vehicle, try to select its fuel type
+      const savedVehicle = getVehicleFromSession();
+      if (savedVehicle && 
+          savedVehicle.manufacturer.toLowerCase() === selectedBrand.toLowerCase() && 
+          savedVehicle.model.toLowerCase() === selectedModel.toLowerCase() && 
+          !selectedFuelType) {
+        // Find the fuel type in our list that matches the saved one
+        const matchingFuelType = fuelTypes.find(
+          fuel => fuel.toLowerCase() === savedVehicle.fuelType.toLowerCase()
+        );
+        if (matchingFuelType) {
+          setSelectedFuelType(matchingFuelType);
+        }
       }
-      
-      setCurrentPrice(null); // Reset price
     } else {
       setAvailableFuelTypes([]);
       setSelectedFuelType('');
-      setCurrentPrice(null);
     }
-  }, [selectedModel, selectedBrand, pricingData]);
+  }, [selectedBrand, selectedModel, pricingData]);
 
-  // Update price when fuel type changes
+  // Update price when all selections are made
   useEffect(() => {
-    if (selectedBrand && selectedModel && selectedFuelType) {
-      const carData = pricingData.find(
-        car => car.brand === selectedBrand && 
-               car.model === selectedModel && 
-               car.fuelType === selectedFuelType
+    if (selectedBrand && selectedModel && selectedFuelType && pricingData.length > 0) {
+      // Find the pricing data for the selected vehicle
+      const selectedVehiclePricing = pricingData.find(
+        item => 
+          item.brand.toLowerCase() === selectedBrand.toLowerCase() && 
+          item.model.toLowerCase() === selectedModel.toLowerCase() && 
+          item.fuelType.toLowerCase() === selectedFuelType.toLowerCase()
       );
       
-      if (carData) {
-        setCurrentPrice(carData.expressServicePrice);
+      if (selectedVehiclePricing) {
+        setCurrentPrice(selectedVehiclePricing.expressServicePrice);
       } else {
         setCurrentPrice(null);
       }
     } else {
       setCurrentPrice(null);
     }
-  }, [selectedFuelType, selectedModel, selectedBrand, pricingData]);
+  }, [selectedBrand, selectedModel, selectedFuelType, pricingData]);
 
   const handleSubmit = () => {
-    if (!selectedBrand) {
-      alert('Please select a car brand');
-      return;
-    }
-    
-    if (!selectedModel) {
-      alert('Please select a car model');
-      return;
-    }
-    
-    if (!selectedFuelType) {
-      alert('Please select a fuel type');
-      return;
-    }
-    
-    if (currentPrice === null) {
-      alert('Unable to determine price. Please try again.');
-      return;
-    }
-    
-    try {
+    if (selectedBrand && selectedModel && selectedFuelType && currentPrice !== null) {
+      // Save vehicle to session storage to be used across service pages
+      saveVehicleToSession({
+        manufacturer: selectedBrand,
+        model: selectedModel,
+        fuelType: selectedFuelType
+      });
+      
+      // Proceed with form submission (passing values to parent component)
       onSubmit(selectedBrand, selectedModel, selectedFuelType, currentPrice);
-    } catch (error) {
-      console.error('Error submitting car selection:', error);
-      alert('Something went wrong. Please try again.');
+    } else {
+      // Let the user know what's missing
+      if (!selectedBrand) {
+        setError('Please select a car brand');
+      } else if (!selectedModel) {
+        setError('Please select a car model');
+      } else if (!selectedFuelType) {
+        setError('Please select a fuel type');
+      } else if (currentPrice === null) {
+        setError('Unable to determine price. Please try a different selection.');
+      }
     }
   };
 

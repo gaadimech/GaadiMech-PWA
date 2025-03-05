@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Calendar, User, Phone, Car, Wrench } from 'lucide-react';
 import { enquiryService } from '../services/enquiry';
 import type { EnquiryFormData, ServiceType } from '../types/enquiry';
+import { getVehicleFromSession } from '../utils/pricing-utils';
 
 interface CustomerFormProps {
   isOpen: boolean;
@@ -150,6 +151,24 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
       fetchServiceTypes();
     }
   }, [isOpen, defaultServiceType, onClose]);
+
+  // Load saved vehicle data when the form opens
+  useEffect(() => {
+    if (isOpen) {
+      // Check for mobile number in session storage
+      const savedMobile = sessionStorage.getItem('userMobileNumber');
+      if (savedMobile) {
+        setFormData(prev => ({ ...prev, mobileNumber: savedMobile }));
+      }
+      
+      // Check for vehicle details in session storage
+      const savedVehicle = getVehicleFromSession();
+      if (savedVehicle) {
+        const carModelText = `${savedVehicle.manufacturer} ${savedVehicle.model} (${savedVehicle.fuelType})`;
+        setFormData(prev => ({ ...prev, carModel: carModelText }));
+      }
+    }
+  }, [isOpen]);
 
   // Don't render if not open or if service types haven't loaded
   if (!isOpen || serviceTypes.length === 0) return null;

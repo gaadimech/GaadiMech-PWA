@@ -10,6 +10,7 @@ import { getReviewsByService } from '../data/reviews';
 import { enquiryService } from '../services/enquiry';
 import Modal from 'react-modal';
 import { useLocation } from 'react-router-dom';
+import { getVehicleFromSession } from '../utils/pricing-utils';
 
 const steps = [
   {
@@ -101,8 +102,8 @@ const ExpressService = () => {
   const [isTimeSlotModalOpen, setIsTimeSlotModalOpen] = useState(false);
   const [isCarSelectionModalOpen, setIsCarSelectionModalOpen] = useState(false);
   const [isMobileInputModalOpen, setIsMobileInputModalOpen] = useState(false);
-  const [selectedServiceType, setSelectedServiceType] = useState<number | undefined>();
-  const [serviceTypesLoaded, setServiceTypesLoaded] = useState(false);
+  const [selectedServiceType, setSelectedServiceType] = useState<number | null>(null);
+  const [serviceTypesLoaded, setServiceTypesLoaded] = useState<boolean>(false);
   const [currentLeadId, setCurrentLeadId] = useState<number | null>(null);
   const [selectedCarBrand, setSelectedCarBrand] = useState<string>('');
   const [selectedCarModel, setSelectedCarModel] = useState<string>('');
@@ -111,40 +112,61 @@ const ExpressService = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const serviceReviews = getReviewsByService('express');
 
+  // State for selected time slot
+  const [selectedDate, setSelectedDate] = useState<string>('');
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
+
   const validateMobile = (number: string) => {
     const mobileRegex = /^[6-9]\d{9}$/;
     return mobileRegex.test(number);
   };
 
   const handleScheduleClick = () => {
+    // Clear previous errors
+    setError('');
+    
+    // First check if we have a mobile number in session
+    const storedMobile = sessionStorage.getItem('userMobileNumber');
+    const savedVehicle = getVehicleFromSession();
+    
+    if (storedMobile) {
+      setMobile(storedMobile);
+      
+      // If we already have the car details from session storage
+      if (savedVehicle && !currentLeadId) {
+        // Create a lead with the mobile number
+        if (!validateMobile(storedMobile)) {
+          setError('Please enter a valid 10-digit mobile number');
+          setIsMobileInputModalOpen(true);
+          return;
+        }
+        
+        // Call the lead creation directly 
+        createLead(storedMobile);
+        return;
+      }
+    }
+    
+    // If we have a vehicle but no mobile number yet
+    if (savedVehicle && !storedMobile) {
+      // Ask for mobile number first
+      setIsMobileInputModalOpen(true);
+      return;
+    }
+    
+    // Default flow - always open mobile input first
     setIsMobileInputModalOpen(true);
   };
-
-  const handleMobileSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-
-    if (!validateMobile(mobile)) {
-      setError('Please enter a valid 10-digit mobile number');
-      return;
-    }
-
-    // Prevent multiple submissions
-    if (isSubmitting) {
-      return;
-    }
-
-    // Save mobile number to session storage
-    sessionStorage.setItem('userMobileNumber', mobile);
-
-    // Default to "Express Service" (ID: 4) if no service type is selected
-    const serviceType = selectedServiceType || 4;
+  
+  const createLead = async (mobileNumber: string) => {
+    if (isSubmitting) return;
     
-    // Default service name - use this if we can't fetch the actual name
+    sessionStorage.setItem('userMobileNumber', mobileNumber);
+    const serviceType = selectedServiceType || 4; // Default to "Express Service" (ID: 4)
     let serviceTypeName = "Express Service";
     
     setIsSubmitting(true);
-
+    
     try {
       // Try to get the service name if service types are loaded
       if (serviceTypesLoaded) {
@@ -156,26 +178,31 @@ const ExpressService = () => {
           }
         } catch (error) {
           console.error('Error fetching service types:', error);
-          // Continue with default name if there's an error
         }
       }
-
+      
       // Submit the mobile number with the service type name
       const response = await expressService.submitLead({
-        mobileNumber: mobile,
+        mobileNumber: mobileNumber,
         serviceType: serviceTypeName
       });
-
-      // Store the lead ID for potential updates
+      
       if (response && response.data && response.data.id) {
-        setCurrentLeadId(response.data.id);
+        // Store the lead ID - important for tracking
+        const leadId = response.data.id;
+        setCurrentLeadId(leadId);
         
-        // Show success message for mobile number submission
+        // Store the lead ID in session storage to persist across page reloads
+        sessionStorage.setItem('expressServiceLeadId', leadId.toString());
+        
         setSuccess(true);
         
-        // Close mobile input modal and open car selection modal
+        // Even if we have saved vehicle details, always show the car selection modal
+        // so that users can see the pricing before proceeding
         setIsMobileInputModalOpen(false);
         setIsCarSelectionModalOpen(true);
+        
+        // We'll pre-load the saved vehicle details in the CarSelectionModal component
       } else {
         throw new Error('Invalid response format');
       }
@@ -188,30 +215,13 @@ const ExpressService = () => {
     }
   };
 
-  const handleMobileModalClose = () => {
-    setIsMobileInputModalOpen(false);
-    setMobile('');
-    setError('');
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    handleScheduleClick();
-  };
-
-  const handleCarSelectionSubmit = async (brand: string, model: string, fuelType: string, price: number) => {
-    if (!currentLeadId) {
-      console.error('No lead ID available');
-      alert('Session expired. Please try again.');
-      setIsCarSelectionModalOpen(false);
-      return;
-    }
-
+  // Create a new function that accepts the lead ID as a parameter
+  const handleCarSelectionSubmitWithId = async (leadId: number, brand: string, model: string, fuelType: string, price: number) => {
     try {
-      console.log('Updating lead with car information:', { id: currentLeadId, brand, model, fuelType, price });
+      console.log('Updating lead with car information:', { id: leadId, brand, model, fuelType, price });
       
       // Update the lead with the selected car information
-      const response = await expressService.updateLead(currentLeadId, {
+      const response = await expressService.updateLead(leadId, {
         carBrand: brand,
         carModel: model,
         fuelType: fuelType,
@@ -244,6 +254,43 @@ const ExpressService = () => {
     }
   };
 
+  // The original function now calls the new one with the current lead ID
+  const handleCarSelectionSubmit = async (brand: string, model: string, fuelType: string, price: number) => {
+    if (!currentLeadId) {
+      console.error('No lead ID available');
+      alert('Session expired. Please try again.');
+      setIsCarSelectionModalOpen(false);
+      return;
+    }
+
+    // Call the shared implementation with the lead ID
+    await handleCarSelectionSubmitWithId(currentLeadId, brand, model, fuelType, price);
+  };
+
+  const handleMobileSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (!validateMobile(mobile)) {
+      setError('Please enter a valid 10-digit mobile number');
+      return;
+    }
+
+    // Use the helper function to create the lead
+    await createLead(mobile);
+  };
+
+  const handleMobileModalClose = () => {
+    setIsMobileInputModalOpen(false);
+    setMobile('');
+    setError('');
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    handleScheduleClick();
+  };
+
   const handleCarSelectionModalClose = () => {
     // Close the modal without updating the lead
     setIsCarSelectionModalOpen(false);
@@ -252,6 +299,9 @@ const ExpressService = () => {
     if (mobile) {
       sessionStorage.setItem('userMobileNumber', mobile);
     }
+    
+    // Clear the lead ID from session storage since the user cancelled
+    sessionStorage.removeItem('expressServiceLeadId');
     
     // Reset the form and state if the user cancels
     setMobile('');
@@ -289,6 +339,9 @@ const ExpressService = () => {
         sessionStorage.setItem('userMobileNumber', mobile);
       }
       
+      // Clear the lead ID from session storage since this booking is complete
+      sessionStorage.removeItem('expressServiceLeadId');
+      
       // Show success message
       setShowSuccessMessage(true);
       
@@ -305,9 +358,11 @@ const ExpressService = () => {
         setSelectedServicePrice(null);
       }, 1500);
     } catch (error) {
-      console.error('Error updating lead with time slot:', error);
-      alert('Sorry, there was an error confirming your booking. Please try again or contact us directly.');
-      setIsTimeSlotModalOpen(false);
+      console.error('Error updating lead with date and time slot:', error);
+      alert('Failed to update time slot. Please try again.');
+      
+      // Keep the time slot modal open in case of error
+      setIsTimeSlotModalOpen(true);
     }
   };
 
@@ -320,14 +375,10 @@ const ExpressService = () => {
       sessionStorage.setItem('userMobileNumber', mobile);
     }
     
-    // Reset the form and state
-    setMobile('');
-    setSuccess(false);
-    setError('');
-    setCurrentLeadId(null);
-    setSelectedCarBrand('');
-    setSelectedCarModel('');
-    setSelectedServicePrice(null);
+    // IMPORTANT: Unlike the car selection cancel, DO NOT reset the current lead ID
+    // This ensures we don't create duplicate leads if the user goes back
+    
+    // We also don't reset car selection details to maintain state between modals
   };
 
   useEffect(() => {
@@ -348,6 +399,62 @@ const ExpressService = () => {
       setIsMobileInputModalOpen(true);
     }
   }, [location.search]);
+
+  // Query parameter handling
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const serviceType = queryParams.get('service_type');
+    
+    if (serviceType) {
+      const serviceTypeId = parseInt(serviceType, 10);
+      if (!isNaN(serviceTypeId)) {
+        setSelectedServiceType(serviceTypeId);
+      }
+    }
+  }, [location]);
+  
+  // Check for saved vehicle on mount and also check for an existing lead
+  useEffect(() => {
+    // Check for saved vehicle
+    const savedVehicle = getVehicleFromSession();
+    if (savedVehicle) {
+      setSelectedCarBrand(savedVehicle.manufacturer);
+      setSelectedCarModel(savedVehicle.model);
+      setSelectedFuelType(savedVehicle.fuelType);
+      console.log("Loaded saved vehicle:", savedVehicle);
+    }
+    
+    // Check for saved lead ID
+    const savedLeadId = sessionStorage.getItem('expressServiceLeadId');
+    if (savedLeadId) {
+      const leadId = parseInt(savedLeadId, 10);
+      if (!isNaN(leadId)) {
+        console.log("Found existing lead ID:", leadId);
+        setCurrentLeadId(leadId);
+      }
+    }
+    
+    // Check if we have everything needed to auto-start the flow
+    const storedMobile = sessionStorage.getItem('userMobileNumber');
+    
+    // If we have both vehicle and mobile info but no active modals yet,
+    // we can prompt user to continue their booking
+    if (savedVehicle && storedMobile && !isTimeSlotModalOpen && !isCarSelectionModalOpen && !isSubmitting) {
+      console.log("Found both vehicle and mobile in session. Setting up for booking continuation.");
+      setMobile(storedMobile);
+      
+      // Wait a bit to ensure component is fully mounted
+      setTimeout(() => {
+        // If we have a lead ID, we can open car selection directly
+        if (savedLeadId) {
+          setIsCarSelectionModalOpen(true);
+        } else {
+          // Otherwise, prompt the user to start booking
+          handleScheduleClick();
+        }
+      }, 500);
+    }
+  }, []);
 
   return (
     <motion.div
