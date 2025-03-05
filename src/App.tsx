@@ -57,20 +57,34 @@ const AppContent = () => {
   const [hasShownExitPopup, setHasShownExitPopup] = useState(() => {
     return sessionStorage.getItem('hasShownExitPopup') === 'true';
   });
+  const [popupCount, setPopupCount] = useState(() => {
+    return parseInt(sessionStorage.getItem('popupCount') || '0');
+  });
+  const [hasShownFirstPopup, setHasShownFirstPopup] = useState(() => {
+    return sessionStorage.getItem('hasShownFirstPopup') === 'true';
+  });
   const location = useLocation();
 
   useAnalytics();
 
   // Function to check if we should show exit popup
   const shouldShowExitPopup = () => {
-    return !hasFilledForm && isFormDataLoaded && !hasShownExitPopup;
+    return !hasFilledForm && 
+           isFormDataLoaded && 
+           !hasShownExitPopup && 
+           popupCount < 2 && 
+           location.pathname !== '/express' && 
+           hasShownFirstPopup;
   };
 
   // Function to show exit popup
   const showExitPopup = () => {
     setShowForm(true);
     setHasShownExitPopup(true);
+    const newCount = popupCount + 1;
+    setPopupCount(newCount);
     sessionStorage.setItem('hasShownExitPopup', 'true');
+    sessionStorage.setItem('popupCount', newCount.toString());
   };
 
   // Handle desktop exit intent
@@ -86,7 +100,7 @@ const AppContent = () => {
       document.addEventListener('mouseleave', handleMouseLeave);
       return () => document.removeEventListener('mouseleave', handleMouseLeave);
     }
-  }, [hasFilledForm, isFormDataLoaded, hasShownExitPopup]);
+  }, [hasFilledForm, isFormDataLoaded, hasShownExitPopup, popupCount, location.pathname, hasShownFirstPopup]);
 
   // Handle mobile exit intent
   useEffect(() => {
@@ -122,7 +136,7 @@ const AppContent = () => {
         window.removeEventListener('beforeunload', handleBeforeUnload);
       };
     }
-  }, [hasFilledForm, isFormDataLoaded, hasShownExitPopup]);
+  }, [hasFilledForm, isFormDataLoaded, hasShownExitPopup, popupCount, location.pathname, hasShownFirstPopup]);
 
   // Handle form submission
   const handleFormSubmission = () => {
@@ -141,11 +155,17 @@ const AppContent = () => {
           // 1. Not on express page
           // 2. Haven't shown initial popup yet
           // 3. Haven't filled form yet
-          if (location.pathname !== '/express' && !hasShownInitialPopup && !hasFilledForm) {
+          // 4. Haven't reached popup limit
+          if (location.pathname !== '/express' && !hasShownInitialPopup && !hasFilledForm && popupCount < 2) {
             const timer = setTimeout(() => {
               setShowForm(true);
               setHasShownInitialPopup(true);
+              setHasShownFirstPopup(true);
+              const newCount = popupCount + 1;
+              setPopupCount(newCount);
               sessionStorage.setItem('hasShownInitialPopup', 'true');
+              sessionStorage.setItem('hasShownFirstPopup', 'true');
+              sessionStorage.setItem('popupCount', newCount.toString());
             }, 45000);
             return () => clearTimeout(timer);
           }
@@ -156,7 +176,7 @@ const AppContent = () => {
     };
 
     fetchInitialData();
-  }, [location.pathname, hasShownInitialPopup, hasFilledForm]);
+  }, [location.pathname, hasShownInitialPopup, hasFilledForm, popupCount]);
 
   useEffect(() => {
     // Remove loading spinner and show content
