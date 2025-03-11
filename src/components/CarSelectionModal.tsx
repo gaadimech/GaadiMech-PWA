@@ -429,7 +429,7 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
                     onClick={handleSubmit}
                     className="w-full bg-[#FF7200] text-white font-semibold py-4 px-4 rounded-md hover:bg-[#cc5b00] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF7200] focus:ring-opacity-50 text-lg shadow-md"
                   >
-                    Continue
+                    Unlock Offer Price!
                   </button>
                 </div>
               )}

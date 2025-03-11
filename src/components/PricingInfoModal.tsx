@@ -50,8 +50,8 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
     }
   };
 
-  // Traditional service price (higher than express service)
-  const traditionalServicePrice = 19999;
+  // Calculate traditional service price (Express service has a 60% discount)
+  const traditionalServicePrice = Math.round(servicePrice / 0.4);
 
   // Calculate the savings
   const savings = traditionalServicePrice - servicePrice;
