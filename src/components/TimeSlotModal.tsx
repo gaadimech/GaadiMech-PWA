@@ -203,7 +203,7 @@ const TimeSlotModal: React.FC<TimeSlotModalProps> = ({ isOpen, onClose, onSubmit
               disabled={!selectedDate || !selectedTimeSlot}
               className="w-full bg-[#FF7200] text-white px-4 py-2.5 sm:py-3 rounded-md hover:bg-[#cc5b00] transition-colors disabled:opacity-50 text-sm sm:text-base font-semibold"
             >
-              Confirm & Secure Your ₹500 Discount
+              Complete Booking
             </button>
           </div>
         </motion.div>

@@ -299,12 +299,25 @@ const ExpressService = () => {
       // Clear the lead ID from session storage since this booking is complete
       sessionStorage.removeItem('expressServiceLeadId');
       
-      // Show success message
+      // Show success message briefly to provide feedback
       setShowSuccessMessage(true);
       
-      // Auto close success message after 1.5 seconds
+      // Create WhatsApp message with booking details
+      const discountedPrice = selectedServicePrice ? selectedServicePrice - 500 : 0;
+      const message = `Hi, I booked a 90 Mins Car Express Car Service with GaadiMech
+Car Manufacturer: ${selectedCarBrand}
+Car Model: ${selectedCarModel}
+Package Price: ₹${selectedServicePrice}
+*Discounted Price: ₹${discountedPrice}*
+Booking Slot: ${new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}, ${timeSlot}`;
+      
+      // Direct WhatsApp redirection after a brief delay to show success message
       setTimeout(() => {
+        // Close success message
         setShowSuccessMessage(false);
+        
+        // Open WhatsApp with pre-populated message
+        window.open(`https://wa.me/917300042410?text=${encodeURIComponent(message)}`, '_blank');
         
         // Reset all form fields after successful submission
         setMobile('');
@@ -315,7 +328,7 @@ const ExpressService = () => {
         setSelectedServicePrice(null);
         setSuccess(false);
         setError('');
-      }, 1500);
+      }, 1000); // Show success message for 1 second before redirecting
     } catch (error) {
       console.error('Error updating lead with time slot:', error);
       alert('Failed to update time slot. Please try again.');
@@ -545,9 +558,9 @@ const ExpressService = () => {
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h2>
           <p className="text-base sm:text-lg text-gray-600 mb-3">Your ₹500 discount has been locked in successfully!</p>
-          <div className="bg-green-50 p-3 rounded-lg border border-green-100 mb-2 sm:mb-3">
-            <p className="text-sm sm:text-base text-green-800 font-medium">You've secured one of our limited discount slots.</p>
-            <p className="text-xs sm:text-sm text-green-700">GaadiMech Buddy will get in touch with you shortly!</p>
+          <div className="flex items-center justify-center">
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#25D366] mr-2"></div>
+            <p className="text-sm text-gray-700">Redirecting to WhatsApp...</p>
           </div>
         </div>
       </Modal>

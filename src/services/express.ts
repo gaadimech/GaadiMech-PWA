@@ -8,4 +8,11 @@ export const expressService = {
     });
     return response.data;
   },
+  
+  async updateLead(leadId: number, updateData: { serviceDate?: string; timeSlot?: string }): Promise<ExpressLeadResponse> {
+    const response = await apiClient.put<ExpressLeadResponse>(`/express-leads/${leadId}`, {
+      data: updateData,
+    });
+    return response.data;
+  },
 }; 
