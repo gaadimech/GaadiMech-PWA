@@ -160,17 +160,18 @@ const ExpressService = () => {
   };
 
   // Handle "Book Slot Now" click from pricing modal
-  const handleBookSlotNowClick = () => {
+  const handleBookSlotNowClick = (providedMobileNumber?: string) => {
     setIsPricingModalOpen(false);
     
-    // Check if we already have a mobile number in session
-    const storedMobile = sessionStorage.getItem('userMobileNumber');
-    if (storedMobile && validateMobile(storedMobile)) {
-      setMobile(storedMobile);
+    // Use the provided mobile number if available, otherwise check session storage
+    const mobileToUse = providedMobileNumber || sessionStorage.getItem('userMobileNumber') || '';
+    
+    if (mobileToUse && validateMobile(mobileToUse)) {
+      setMobile(mobileToUse);
       // This function will create the lead with car and mobile info
-      createLeadWithAllInfo(storedMobile, selectedCarBrand, selectedCarModel, selectedFuelType, selectedServicePrice || 0);
+      createLeadWithAllInfo(mobileToUse, selectedCarBrand, selectedCarModel, selectedFuelType, selectedServicePrice || 0);
     } else {
-      // No valid mobile in session, show mobile input modal
+      // No valid mobile, show mobile input modal
       setIsMobileInputModalOpen(true);
     }
   };
@@ -581,6 +582,7 @@ const ExpressService = () => {
         carModel={selectedCarModel}
         fuelType={selectedFuelType}
         servicePrice={selectedServicePrice || 0}
+        initialMobileNumber={mobile}
       />
 
       {/* How It Works */}

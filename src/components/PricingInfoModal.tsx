@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { motion } from 'framer-motion';
-import { X, CheckCircle, Shield, Clock, Car } from 'lucide-react';
+import { X, CheckCircle, Shield, Clock, Car, Phone } from 'lucide-react';
 
 interface PricingInfoModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onBookNow: () => void;
+  onBookNow: (mobileNumber?: string) => void;
   carBrand: string;
   carModel: string;
   fuelType: string;
   servicePrice: number;
+  initialMobileNumber?: string;
 }
 
 // Function to get the standard car logo
@@ -26,8 +27,11 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
   carBrand,
   carModel,
   fuelType,
-  servicePrice
+  servicePrice,
+  initialMobileNumber = ''
 }) => {
+  const [mobileNumber, setMobileNumber] = useState(initialMobileNumber);
+
   const customStyles = {
     content: {
       top: '50%',
@@ -59,6 +63,10 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
 
   // Get standard car logo
   const CarLogo = getCarLogo();
+
+  const handleSubmit = () => {
+    onBookNow(mobileNumber);
+  };
 
   return (
     <Modal
@@ -126,14 +134,32 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
             </div>
           </div>
 
+          {/* Mobile Number Input */}
+          <div className="mb-4">
+            <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:border-[#FF7200] focus-within:ring-1 focus-within:ring-[#FF7200]">
+              <div className="bg-gray-100 p-3 border-r border-gray-300">
+                <Phone className="w-5 h-5 text-gray-500" />
+              </div>
+              <input
+                type="tel"
+                value={mobileNumber}
+                onChange={(e) => setMobileNumber(e.target.value)}
+                placeholder="Enter Your Mobile Number"
+                className="flex-1 p-3 outline-none text-gray-700"
+                maxLength={10}
+                pattern="[0-9]*"
+              />
+            </div>
+          </div>
+
           {/* CTA Button */}
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={onBookNow}
+            onClick={handleSubmit}
             className="w-full py-4 px-4 bg-[#FF7200] text-white font-bold rounded-lg hover:bg-[#e86700] transition-colors shadow-lg mb-6"
           >
-            Book Slot Now
+            Unlock Offer Now!
           </motion.button>
           
           {/* Service inclusions */}
