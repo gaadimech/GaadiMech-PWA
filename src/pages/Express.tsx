@@ -163,13 +163,12 @@ const ExpressService = () => {
   const handleBookSlotNowClick = (providedMobileNumber?: string) => {
     setIsPricingModalOpen(false);
     
-    // Use the provided mobile number if available, otherwise check session storage
-    const mobileToUse = providedMobileNumber || sessionStorage.getItem('userMobileNumber') || '';
-    
-    if (mobileToUse && validateMobile(mobileToUse)) {
-      setMobile(mobileToUse);
+    // Since mobile validation now happens in PricingInfoModal, providedMobileNumber should always be valid
+    // We can skip the validation and mobile input modal step
+    if (providedMobileNumber) {
+      setMobile(providedMobileNumber);
       // This function will create the lead with car and mobile info
-      createLeadWithAllInfo(mobileToUse, selectedCarBrand, selectedCarModel, selectedFuelType, selectedServicePrice || 0)
+      createLeadWithAllInfo(providedMobileNumber, selectedCarBrand, selectedCarModel, selectedFuelType, selectedServicePrice || 0)
         .then(() => {
           // Open time slot modal immediately after creating lead
           setIsTimeSlotModalOpen(true);
@@ -179,8 +178,11 @@ const ExpressService = () => {
           alert('Something went wrong. Please try again.');
         });
     } else {
-      // No valid mobile, show mobile input modal
-      setIsMobileInputModalOpen(true);
+      // This should rarely happen since we validate in the modal, but handle just in case
+      console.error('No mobile number provided from pricing modal');
+      alert('Please provide a valid mobile number to continue.');
+      // Reopen the pricing modal
+      setIsPricingModalOpen(true);
     }
   };
   

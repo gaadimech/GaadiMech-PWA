@@ -31,6 +31,8 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
   initialMobileNumber = ''
 }) => {
   const [mobileNumber, setMobileNumber] = useState(initialMobileNumber);
+  // Add error state for mobile number validation
+  const [mobileError, setMobileError] = useState<string>('');
   // Simulate a random number of remaining spots between 5-15
   const [spotsRemaining] = useState(() => Math.floor(Math.random() * 11) + 5);
 
@@ -66,7 +68,28 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
   // Get standard car logo
   const CarLogo = getCarLogo();
 
+  // Validate mobile number: must be 10 digits and start with 6-9
+  const validateMobileNumber = (number: string): boolean => {
+    const mobileRegex = /^[6-9]\d{9}$/;
+    return mobileRegex.test(number);
+  };
+
   const handleSubmit = () => {
+    // Reset any previous errors
+    setMobileError('');
+    
+    // Validate mobile number before proceeding
+    if (!mobileNumber.trim()) {
+      setMobileError('Please enter your mobile number to continue');
+      return;
+    }
+    
+    if (!validateMobileNumber(mobileNumber)) {
+      setMobileError('Please enter a valid 10-digit mobile number');
+      return;
+    }
+    
+    // If validation passes, proceed with booking
     onBookNow(mobileNumber);
   };
 
@@ -177,11 +200,18 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
                 value={mobileNumber}
                 onChange={(e) => setMobileNumber(e.target.value)}
                 placeholder="Enter Your Mobile Number"
-                className="flex-1 p-2 sm:p-3 outline-none text-gray-700 text-sm sm:text-base"
+                className={`flex-1 p-2 sm:p-3 outline-none text-gray-700 text-sm sm:text-base ${mobileError ? 'border-red-300 bg-red-50' : ''}`}
                 maxLength={10}
                 pattern="[0-9]*"
+                required
               />
             </div>
+            {/* Display error message if validation fails */}
+            {mobileError && (
+              <p className="mt-1 text-xs sm:text-sm text-red-600 font-medium">
+                {mobileError}
+              </p>
+            )}
           </div>
 
           {/* CTA Button */}
