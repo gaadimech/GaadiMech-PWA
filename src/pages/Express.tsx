@@ -169,7 +169,15 @@ const ExpressService = () => {
     if (mobileToUse && validateMobile(mobileToUse)) {
       setMobile(mobileToUse);
       // This function will create the lead with car and mobile info
-      createLeadWithAllInfo(mobileToUse, selectedCarBrand, selectedCarModel, selectedFuelType, selectedServicePrice || 0);
+      createLeadWithAllInfo(mobileToUse, selectedCarBrand, selectedCarModel, selectedFuelType, selectedServicePrice || 0)
+        .then(() => {
+          // Open time slot modal immediately after creating lead
+          setIsTimeSlotModalOpen(true);
+        })
+        .catch(error => {
+          console.error('Error creating lead:', error);
+          alert('Something went wrong. Please try again.');
+        });
     } else {
       // No valid mobile, show mobile input modal
       setIsMobileInputModalOpen(true);
@@ -178,7 +186,7 @@ const ExpressService = () => {
   
   // New function to create a lead with all info at once
   const createLeadWithAllInfo = async (mobileNumber: string, carBrand: string, carModel: string, fuelType: string, price: number) => {
-    if (isSubmitting) return;
+    if (isSubmitting) return Promise.reject('Already submitting');
     
     setIsSubmitting(true);
     sessionStorage.setItem('userMobileNumber', mobileNumber);
@@ -186,20 +194,9 @@ const ExpressService = () => {
     let serviceTypeName = "Express Service";
     
     try {
-      // Try to get the service name if service types are loaded
-      if (serviceTypesLoaded) {
-        try {
-          const response = await enquiryService.getServiceTypes();
-          const serviceTypeObj = response.data.find(type => type.id === serviceType);
-          if (serviceTypeObj && serviceTypeObj.name) {
-            serviceTypeName = serviceTypeObj.name;
-          }
-        } catch (error) {
-          console.error('Error fetching service types:', error);
-        }
-      }
+      // Create the lead with all info
+      console.log('Creating lead with:', { mobileNumber, carBrand, carModel, fuelType, price });
       
-      // Submit all details at once
       const response = await expressService.submitLead({
         mobileNumber: mobileNumber,
         serviceType: serviceTypeName,
@@ -209,27 +206,22 @@ const ExpressService = () => {
         servicePrice: price
       });
       
-      if (response && response.data && response.data.id) {
-        // Store the lead ID
-        const leadId = response.data.id;
-        setCurrentLeadId(leadId);
-        
-        // Store the lead ID in session storage to persist across page reloads
-        sessionStorage.setItem('expressServiceLeadId', leadId.toString());
-        
-        setSuccess(true);
-        
-        // Now open the time slot modal
-        setIsTimeSlotModalOpen(true);
-      } else {
-        throw new Error('Invalid response format');
+      if (!response || !response.data || !response.data.id) {
+        throw new Error('Invalid response from server');
       }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      setError('Something went wrong. Please try again.');
-      setSuccess(false);
-    } finally {
+      
+      const leadId = response.data.id;
+      console.log('Lead created successfully with ID:', leadId);
+      
+      setCurrentLeadId(leadId);
+      sessionStorage.setItem('expressServiceLeadId', String(leadId));
       setIsSubmitting(false);
+      
+      return Promise.resolve(); // Return resolved promise for chaining
+    } catch (error) {
+      console.error('Error creating lead:', error);
+      setIsSubmitting(false);
+      return Promise.reject(error); // Return rejected promise for error handling
     }
   };
 
@@ -543,16 +535,20 @@ const ExpressService = () => {
       <Modal
         isOpen={showSuccessMessage}
         onRequestClose={() => setShowSuccessMessage(false)}
-        className="modal-content max-w-md mx-auto bg-white p-6 rounded-xl shadow-2xl"
+        className="modal-content max-w-md mx-auto bg-white p-4 sm:p-6 rounded-xl shadow-2xl w-[90%]"
         overlayClassName="modal-overlay fixed inset-0 bg-black/60 flex items-center justify-center overflow-y-auto z-50"
         contentLabel="Success Message Modal"
       >
         <div className="text-center">
-          <div className="flex justify-center mb-4">
-            <CheckCircle className="w-16 h-16 text-green-500" />
+          <div className="flex justify-center mb-3 sm:mb-4">
+            <CheckCircle className="w-12 h-12 sm:w-16 sm:h-16 text-green-500" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Successfully Submitted!</h2>
-          <p className="text-gray-600 text-lg">GaadiMech Buddy will get in touch with you shortly!</p>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h2>
+          <p className="text-base sm:text-lg text-gray-600 mb-3">Your ₹500 discount has been locked in successfully!</p>
+          <div className="bg-green-50 p-3 rounded-lg border border-green-100 mb-2 sm:mb-3">
+            <p className="text-sm sm:text-base text-green-800 font-medium">You've secured one of our limited discount slots.</p>
+            <p className="text-xs sm:text-sm text-green-700">GaadiMech Buddy will get in touch with you shortly!</p>
+          </div>
         </div>
       </Modal>
 
@@ -571,6 +567,7 @@ const ExpressService = () => {
         onClose={handleTimeSlotModalClose}
         onSubmit={handleTimeSlotSubmit}
         mobileNumber={mobile}
+        servicePrice={selectedServicePrice || 0}
       />
 
       {/* Pricing Info Modal */}

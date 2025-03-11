@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { motion } from 'framer-motion';
-import { X, CheckCircle, Shield, Clock, Car, Phone } from 'lucide-react';
+import { X, CheckCircle, Shield, Clock, Car, Phone, Gift, AlertTriangle, Users } from 'lucide-react';
 
 interface PricingInfoModalProps {
   isOpen: boolean;
@@ -31,6 +31,8 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
   initialMobileNumber = ''
 }) => {
   const [mobileNumber, setMobileNumber] = useState(initialMobileNumber);
+  // Simulate a random number of remaining spots between 5-15
+  const [spotsRemaining] = useState(() => Math.floor(Math.random() * 11) + 5);
 
   const customStyles = {
     content: {
@@ -90,25 +92,25 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
 
         <div className="p-6">
           {/* Vehicle details card with standard car logo */}
-          <div className="bg-gray-50 p-4 rounded-lg mb-6 border border-gray-200">
-            <h3 className="font-semibold text-gray-800 mb-3">Vehicle Details</h3>
+          <div className="bg-gray-50 p-3 sm:p-4 rounded-lg mb-4 sm:mb-6 border border-gray-200">
+            <h3 className="font-semibold text-gray-800 text-sm sm:text-base mb-2 sm:mb-3">Vehicle Details</h3>
             <div className="flex items-center">
               <div className="mr-3">
                 {CarLogo}
               </div>
               <div>
-                <div className="font-medium text-lg">{carBrand} {carModel}</div>
-                <div className="text-gray-600">{fuelType}</div>
+                <div className="font-medium text-base sm:text-lg">{carBrand} {carModel}</div>
+                <div className="text-gray-600 text-sm">{fuelType}</div>
               </div>
             </div>
           </div>
 
           {/* Pricing comparison with clean design */}
-          <div className="mb-6">
+          <div className="mb-4 sm:mb-6">
             {/* Regular Workshop Service - subdued */}
-            <div className="p-3 bg-gray-100 rounded-t-lg text-gray-400">
+            <div className="p-2 sm:p-3 bg-gray-100 rounded-t-lg text-gray-400">
               <div className="flex justify-between items-center">
-                <div className="text-base font-medium">Regular Workshop Service</div>
+                <div className="text-sm sm:text-base font-medium">Regular Workshop Service</div>
                 <div className="font-bold">₹{traditionalServicePrice}</div>
               </div>
             </div>
@@ -117,17 +119,17 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
             <div className="h-1 bg-gradient-to-r from-[#FF7200] to-[#FFA500]"></div>
             
             {/* Express Service - highlighted */}
-            <div className="p-4 bg-orange-50 rounded-b-lg">
+            <div className="p-3 sm:p-4 bg-orange-50 rounded-b-lg">
               <div className="flex justify-between items-center mb-1">
-                <div className="text-lg font-bold text-gray-800">Express Service</div>
-                <div className="text-2xl font-bold text-[#FF7200]">₹{servicePrice}</div>
+                <div className="text-base sm:text-lg font-bold text-gray-800">Express Service</div>
+                <div className="text-xl sm:text-2xl font-bold text-[#FF7200]">₹{servicePrice}</div>
               </div>
-              <div className="flex justify-between items-center">
-                <div className="flex items-center text-sm text-[#FF7200]">
-                  <Clock className="w-4 h-4 mr-1" />
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                <div className="flex items-center text-xs sm:text-sm text-[#FF7200] mb-1 sm:mb-0">
+                  <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                   <span>90-Minute Service</span>
                 </div>
-                <div className="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">
+                <div className="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full self-start sm:self-auto">
                   Save {savingsPercentage}% (₹{savings})
                 </div>
               </div>
@@ -136,16 +138,46 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
 
           {/* Mobile Number Input */}
           <div className="mb-4">
+            {/* Discount offer banner */}
+            <div className="bg-green-50 border border-green-200 rounded-lg p-2 sm:p-3 mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center mb-2 sm:mb-0">
+                <Gift className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 mr-2 flex-shrink-0" />
+                <div>
+                  <p className="font-semibold text-green-800 text-sm sm:text-base">Enter your mobile number</p>
+                  <p className="text-xs sm:text-sm text-green-700">Get instant ₹500 OFF on your service!</p>
+                </div>
+              </div>
+              <div className="bg-green-600 text-white text-base sm:text-lg font-bold px-3 py-1 rounded-md self-start sm:self-auto">
+                ₹500 OFF
+              </div>
+            </div>
+            
+            {/* Urgency message */}
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-2 mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center mb-2 sm:mb-0">
+                <AlertTriangle className="w-4 h-4 text-amber-600 mr-2 flex-shrink-0" />
+                <p className="text-xs sm:text-sm font-medium text-amber-800">
+                  Limited offer! Only available for the first 100 users.
+                </p>
+              </div>
+              
+              {/* Spots remaining counter */}
+              <div className="flex items-center bg-amber-200 px-2 py-1 rounded-md self-start sm:self-auto">
+                <Users className="w-3 h-3 text-amber-800 mr-1" />
+                <span className="text-xs font-bold text-amber-900">{spotsRemaining} spots left</span>
+              </div>
+            </div>
+            
             <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:border-[#FF7200] focus-within:ring-1 focus-within:ring-[#FF7200]">
-              <div className="bg-gray-100 p-3 border-r border-gray-300">
-                <Phone className="w-5 h-5 text-gray-500" />
+              <div className="bg-gray-100 p-2 sm:p-3 border-r border-gray-300">
+                <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500" />
               </div>
               <input
                 type="tel"
                 value={mobileNumber}
                 onChange={(e) => setMobileNumber(e.target.value)}
                 placeholder="Enter Your Mobile Number"
-                className="flex-1 p-3 outline-none text-gray-700"
+                className="flex-1 p-2 sm:p-3 outline-none text-gray-700 text-sm sm:text-base"
                 maxLength={10}
                 pattern="[0-9]*"
               />
@@ -157,54 +189,62 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleSubmit}
-            className="w-full py-4 px-4 bg-[#FF7200] text-white font-bold rounded-lg hover:bg-[#e86700] transition-colors shadow-lg mb-6"
+            className="w-full py-3 sm:py-4 px-4 bg-[#FF7200] text-white font-bold rounded-lg hover:bg-[#e86700] transition-colors shadow-lg mb-3 sm:mb-6 text-sm sm:text-base"
           >
-            Unlock Offer Now!
+            Unlock ₹500 Discount Now!
           </motion.button>
           
+          {/* Limited time message under button */}
+          <div className="text-center mb-4 sm:mb-6">
+            <p className="text-xs font-medium text-amber-700 flex items-center justify-center">
+              <Clock className="w-3 h-3 mr-1" />
+              Don't miss out! Claim your discount before it's gone.
+            </p>
+          </div>
+          
           {/* Service inclusions */}
-          <div className="bg-white p-4 rounded-lg border border-gray-200 mb-6">
-            <h3 className="font-semibold text-gray-700 mb-4">Service Inclusions:</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="bg-white p-3 sm:p-4 rounded-lg border border-gray-200 mb-4 sm:mb-6">
+            <h3 className="font-semibold text-gray-700 text-sm sm:text-base mb-3 sm:mb-4">Service Inclusions:</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
               <div className="flex items-start">
-                <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-gray-700">Engine Oil Replacement</p>
+                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-1 sm:mr-2 flex-shrink-0 mt-0.5" />
+                <p className="text-gray-700 text-xs sm:text-sm">Engine Oil Replacement</p>
               </div>
               <div className="flex items-start">
-                <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-gray-700">Oil Filter Replacement</p>
+                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-1 sm:mr-2 flex-shrink-0 mt-0.5" />
+                <p className="text-gray-700 text-xs sm:text-sm">Oil Filter Replacement</p>
               </div>
               <div className="flex items-start">
-                <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-gray-700">Air Filter Replacement</p>
+                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-1 sm:mr-2 flex-shrink-0 mt-0.5" />
+                <p className="text-gray-700 text-xs sm:text-sm">Air Filter Replacement</p>
               </div>
               <div className="flex items-start">
-                <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-gray-700">Complete Car Wash</p>
+                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-1 sm:mr-2 flex-shrink-0 mt-0.5" />
+                <p className="text-gray-700 text-xs sm:text-sm">Complete Car Wash</p>
               </div>
               <div className="flex items-start">
-                <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-gray-700">Interior Vacuuming</p>
+                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-1 sm:mr-2 flex-shrink-0 mt-0.5" />
+                <p className="text-gray-700 text-xs sm:text-sm">Interior Vacuuming</p>
               </div>
               <div className="flex items-start">
-                <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-gray-700">15 Point Car Inspection</p>
+                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-1 sm:mr-2 flex-shrink-0 mt-0.5" />
+                <p className="text-gray-700 text-xs sm:text-sm">15 Point Car Inspection</p>
               </div>
               <div className="flex items-start">
-                <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-gray-700">Coolant Top-up (up to 100ml)</p>
+                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-1 sm:mr-2 flex-shrink-0 mt-0.5" />
+                <p className="text-gray-700 text-xs sm:text-sm">Coolant Top-up (up to 100ml)</p>
               </div>
               <div className="flex items-start">
-                <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-gray-700">Battery Water Top-up</p>
+                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-1 sm:mr-2 flex-shrink-0 mt-0.5" />
+                <p className="text-gray-700 text-xs sm:text-sm">Battery Water Top-up</p>
               </div>
               <div className="flex items-start">
-                <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-gray-700">Brake Oil Top-up</p>
+                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-1 sm:mr-2 flex-shrink-0 mt-0.5" />
+                <p className="text-gray-700 text-xs sm:text-sm">Brake Oil Top-up</p>
               </div>
               <div className="flex items-start">
-                <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-gray-700">Wiper Fluid Replacement</p>
+                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-1 sm:mr-2 flex-shrink-0 mt-0.5" />
+                <p className="text-gray-700 text-xs sm:text-sm">Wiper Fluid Replacement</p>
               </div>
             </div>
           </div>
