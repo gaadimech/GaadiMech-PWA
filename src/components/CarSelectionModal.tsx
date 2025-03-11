@@ -263,7 +263,17 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
   }, [selectedFuelType, currentPrice, selectedBrand, selectedModel, leadId]);
 
   const handleSubmit = () => {
-    if (selectedBrand && selectedModel && selectedFuelType && currentPrice !== null) {
+    if (selectedBrand && selectedModel && selectedFuelType) {
+      // Find the price for this selection
+      const selectedVehiclePricing = pricingData.find(
+        car => 
+          car.brand.toLowerCase() === selectedBrand.toLowerCase() && 
+          car.model.toLowerCase() === selectedModel.toLowerCase() && 
+          car.fuelType.toLowerCase() === selectedFuelType.toLowerCase()
+      );
+      
+      const price = selectedVehiclePricing?.expressServicePrice || 3999; // Default price if not found
+      
       // Save vehicle to session storage to be used across service pages
       saveVehicleToSession({
         manufacturer: selectedBrand,
@@ -272,7 +282,7 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
       });
       
       // Proceed with form submission (passing values to parent component)
-      onSubmit(selectedBrand, selectedModel, selectedFuelType, currentPrice);
+      onSubmit(selectedBrand, selectedModel, selectedFuelType, price);
     } else {
       // Let the user know what's missing
       if (!selectedBrand) {
@@ -281,8 +291,6 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
         setError('Please select a car model');
       } else if (!selectedFuelType) {
         setError('Please select a fuel type');
-      } else if (currentPrice === null) {
-        setError('Unable to determine price. Please try a different selection.');
       }
     }
   };
@@ -414,107 +422,15 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
                 </div>
               )}
               
-              {currentPrice !== null && (
+              {/* Continue button will appear only after all three selections are made */}
+              {selectedBrand && selectedModel && selectedFuelType && (
                 <div className="mt-6">
-                  <div className="bg-[#EBF3FA] border-[1px] border-[#3B82F6]/20 p-6 rounded-lg shadow-md">
-                    <h3 className="text-2xl font-bold text-center text-gray-900 mb-4">Express Service</h3>
-                    
-                    <div className="flex justify-center mb-4">
-                      <div className="flex items-center">
-                        <Clock className="w-8 h-8 text-[#FF7200] mr-3" />
-                        <span className="text-4xl font-bold text-[#FF7200]">90 MINS</span>
-                      </div>
-                    </div>
-                    
-                    <div className="border-t border-b border-gray-200 py-4 mb-4">
-                      <div className="text-4xl font-bold text-center text-[#FF7200]">₹{new Intl.NumberFormat('en-IN').format(currentPrice)}</div>
-                    </div>
-                    
-                    <div className="bg-white rounded-lg p-6 shadow-inner">
-                      <h4 className="text-xl font-bold text-[#2563EB] mb-4">INCLUDES:</h4>
-                      
-                      <div className="space-y-3 grid md:grid-cols-2 gap-x-4">
-                        <div className="flex items-center">
-                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
-                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
-                          </div>
-                          <span className="text-gray-700 font-medium">Engine Oil Replacement</span>
-                        </div>
-                        
-                        <div className="flex items-center">
-                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
-                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
-                          </div>
-                          <span className="text-gray-700 font-medium">Oil Filter Replacement</span>
-                        </div>
-                        
-                        <div className="flex items-center">
-                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
-                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
-                          </div>
-                          <span className="text-gray-700 font-medium">Air Filter Replacement</span>
-                        </div>
-                        
-                        <div className="flex items-center">
-                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
-                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
-                          </div>
-                          <span className="text-gray-700 font-medium">Complete Car Wash</span>
-                        </div>
-                        
-                        <div className="flex items-center">
-                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
-                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
-                          </div>
-                          <span className="text-gray-700 font-medium">Interior Vacuuming</span>
-                        </div>
-                        
-                        <div className="flex items-center">
-                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
-                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
-                          </div>
-                          <span className="text-gray-700 font-medium">15 Point Car Inspection</span>
-                        </div>
-
-                        <div className="flex items-center">
-                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
-                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
-                          </div>
-                          <span className="text-gray-700 font-medium">Coolant Top-up (up to 100ml)</span>
-                        </div>
-                        
-                        <div className="flex items-center">
-                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
-                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
-                          </div>
-                          <span className="text-gray-700 font-medium">Battery Water Top-up</span>
-                        </div>
-                        
-                        <div className="flex items-center">
-                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
-                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
-                          </div>
-                          <span className="text-gray-700 font-medium">Brake Oil Top-up</span>
-                        </div>
-                        
-                        <div className="flex items-center">
-                          <div className="bg-blue-100 rounded-full p-1 mr-3 flex-shrink-0">
-                            <CheckCircle className="w-5 h-5 text-[#2563EB]" />
-                          </div>
-                          <span className="text-gray-700 font-medium">Wiper Fluid Replacement</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-6">
-                    <button
-                      onClick={handleSubmit}
-                      className="w-full bg-[#FF7200] text-white font-semibold py-4 px-4 rounded-md hover:bg-[#cc5b00] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF7200] focus:ring-opacity-50 text-lg shadow-md"
-                    >
-                      Continue
-                    </button>
-                  </div>
+                  <button
+                    onClick={handleSubmit}
+                    className="w-full bg-[#FF7200] text-white font-semibold py-4 px-4 rounded-md hover:bg-[#cc5b00] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF7200] focus:ring-opacity-50 text-lg shadow-md"
+                  >
+                    Continue
+                  </button>
                 </div>
               )}
             </div>

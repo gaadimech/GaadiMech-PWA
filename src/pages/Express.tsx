@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import { expressService } from '../services/expressService';
 import TimeSlotModal from '../components/TimeSlotModal';
 import CarSelectionModal from '../components/CarSelectionModal';
+import PricingInfoModal from '../components/PricingInfoModal';
 import ReviewCarousel from '../components/ReviewCarousel';
 import { getReviewsByService } from '../data/reviews';
 import { enquiryService } from '../services/enquiry';
@@ -102,6 +103,7 @@ const ExpressService = () => {
   const [isTimeSlotModalOpen, setIsTimeSlotModalOpen] = useState(false);
   const [isCarSelectionModalOpen, setIsCarSelectionModalOpen] = useState(false);
   const [isMobileInputModalOpen, setIsMobileInputModalOpen] = useState(false);
+  const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
   const [selectedServiceType, setSelectedServiceType] = useState<number | null>(null);
   const [serviceTypesLoaded, setServiceTypesLoaded] = useState<boolean>(false);
   const [currentLeadId, setCurrentLeadId] = useState<number | null>(null);
@@ -125,47 +127,62 @@ const ExpressService = () => {
     // Clear previous errors
     setError('');
     
-    // First check if we have a mobile number in session
-    const storedMobile = sessionStorage.getItem('userMobileNumber');
+    // First check if we have vehicle details in session
     const savedVehicle = getVehicleFromSession();
     
-    if (storedMobile) {
-      setMobile(storedMobile);
-      
-      // If we already have the car details from session storage
-      if (savedVehicle && !currentLeadId) {
-        // Create a lead with the mobile number
-        if (!validateMobile(storedMobile)) {
-          setError('Please enter a valid 10-digit mobile number');
-          setIsMobileInputModalOpen(true);
-          return;
-        }
-        
-        // Call the lead creation directly 
-        createLead(storedMobile);
-        return;
-      }
+    if (savedVehicle) {
+      // Pre-select the saved vehicle details
+      setSelectedCarBrand(savedVehicle.manufacturer);
+      setSelectedCarModel(savedVehicle.model);
+      setSelectedFuelType(savedVehicle.fuelType);
     }
     
-    // If we have a vehicle but no mobile number yet
-    if (savedVehicle && !storedMobile) {
-      // Ask for mobile number first
-      setIsMobileInputModalOpen(true);
-      return;
-    }
-    
-    // Default flow - always open mobile input first
-    setIsMobileInputModalOpen(true);
+    // Open car selection modal directly
+    setIsCarSelectionModalOpen(true);
   };
   
-  const createLead = async (mobileNumber: string) => {
+  const handleCarSelectionSubmit = async (brand: string, model: string, fuelType: string, price: number) => {
+    // Store selected car information in state
+    setSelectedCarBrand(brand);
+    setSelectedCarModel(model);
+    setSelectedFuelType(fuelType);
+    setSelectedServicePrice(price);
+    
+    // Store in session for persistence
+    const vehicleData = { manufacturer: brand, model, fuelType };
+    sessionStorage.setItem('selectedVehicle', JSON.stringify(vehicleData));
+    
+    // Close car selection modal
+    setIsCarSelectionModalOpen(false);
+    
+    // Open pricing modal without creating a lead yet
+    setIsPricingModalOpen(true);
+  };
+
+  // Handle "Book Slot Now" click from pricing modal
+  const handleBookSlotNowClick = () => {
+    setIsPricingModalOpen(false);
+    
+    // Check if we already have a mobile number in session
+    const storedMobile = sessionStorage.getItem('userMobileNumber');
+    if (storedMobile && validateMobile(storedMobile)) {
+      setMobile(storedMobile);
+      // This function will create the lead with car and mobile info
+      createLeadWithAllInfo(storedMobile, selectedCarBrand, selectedCarModel, selectedFuelType, selectedServicePrice || 0);
+    } else {
+      // No valid mobile in session, show mobile input modal
+      setIsMobileInputModalOpen(true);
+    }
+  };
+  
+  // New function to create a lead with all info at once
+  const createLeadWithAllInfo = async (mobileNumber: string, carBrand: string, carModel: string, fuelType: string, price: number) => {
     if (isSubmitting) return;
     
+    setIsSubmitting(true);
     sessionStorage.setItem('userMobileNumber', mobileNumber);
     const serviceType = selectedServiceType || 4; // Default to "Express Service" (ID: 4)
     let serviceTypeName = "Express Service";
-    
-    setIsSubmitting(true);
     
     try {
       // Try to get the service name if service types are loaded
@@ -181,14 +198,18 @@ const ExpressService = () => {
         }
       }
       
-      // Submit the mobile number with the service type name
+      // Submit all details at once
       const response = await expressService.submitLead({
         mobileNumber: mobileNumber,
-        serviceType: serviceTypeName
+        serviceType: serviceTypeName,
+        carBrand: carBrand,
+        carModel: carModel,
+        fuelType: fuelType,
+        servicePrice: price
       });
       
       if (response && response.data && response.data.id) {
-        // Store the lead ID - important for tracking
+        // Store the lead ID
         const leadId = response.data.id;
         setCurrentLeadId(leadId);
         
@@ -197,12 +218,8 @@ const ExpressService = () => {
         
         setSuccess(true);
         
-        // Even if we have saved vehicle details, always show the car selection modal
-        // so that users can see the pricing before proceeding
-        setIsMobileInputModalOpen(false);
-        setIsCarSelectionModalOpen(true);
-        
-        // We'll pre-load the saved vehicle details in the CarSelectionModal component
+        // Now open the time slot modal
+        setIsTimeSlotModalOpen(true);
       } else {
         throw new Error('Invalid response format');
       }
@@ -215,58 +232,6 @@ const ExpressService = () => {
     }
   };
 
-  // Create a new function that accepts the lead ID as a parameter
-  const handleCarSelectionSubmitWithId = async (leadId: number, brand: string, model: string, fuelType: string, price: number) => {
-    try {
-      console.log('Updating lead with car information:', { id: leadId, brand, model, fuelType, price });
-      
-      // Update the lead with the selected car information
-      const response = await expressService.updateLead(leadId, {
-        carBrand: brand,
-        carModel: model,
-        fuelType: fuelType,
-        servicePrice: price
-      });
-
-      if (!response || !response.data) {
-        throw new Error('Invalid response from server');
-      }
-
-      // Store selected car information in state
-      setSelectedCarBrand(brand);
-      setSelectedCarModel(model);
-      setSelectedFuelType(fuelType);
-      setSelectedServicePrice(price);
-      
-      // Close car selection modal and open time slot modal
-      setIsCarSelectionModalOpen(false);
-      
-      // Add a small delay before opening the time slot modal to ensure proper transition
-      setTimeout(() => {
-        setIsTimeSlotModalOpen(true);
-      }, 100);
-    } catch (error) {
-      console.error('Error updating lead with car information:', error);
-      alert('Failed to update car information. Please try again.');
-      
-      // Keep the car selection modal open in case of error
-      setIsCarSelectionModalOpen(true);
-    }
-  };
-
-  // The original function now calls the new one with the current lead ID
-  const handleCarSelectionSubmit = async (brand: string, model: string, fuelType: string, price: number) => {
-    if (!currentLeadId) {
-      console.error('No lead ID available');
-      alert('Session expired. Please try again.');
-      setIsCarSelectionModalOpen(false);
-      return;
-    }
-
-    // Call the shared implementation with the lead ID
-    await handleCarSelectionSubmitWithId(currentLeadId, brand, model, fuelType, price);
-  };
-
   const handleMobileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -276,14 +241,21 @@ const ExpressService = () => {
       return;
     }
 
-    // Use the helper function to create the lead
-    await createLead(mobile);
+    // Create lead with all information we have
+    await createLeadWithAllInfo(
+      mobile, 
+      selectedCarBrand, 
+      selectedCarModel, 
+      selectedFuelType, 
+      selectedServicePrice || 0
+    );
   };
 
   const handleMobileModalClose = () => {
     setIsMobileInputModalOpen(false);
     setMobile('');
     setError('');
+    // Don't reset other data as we want to preserve car selection
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -292,22 +264,14 @@ const ExpressService = () => {
   };
 
   const handleCarSelectionModalClose = () => {
-    // Close the modal without updating the lead
+    // Close the modal without losing data
     setIsCarSelectionModalOpen(false);
-    
-    // Store user's mobile number in session storage before resetting the form
-    if (mobile) {
-      sessionStorage.setItem('userMobileNumber', mobile);
-    }
-    
-    // Clear the lead ID from session storage since the user cancelled
-    sessionStorage.removeItem('expressServiceLeadId');
-    
-    // Reset the form and state if the user cancels
-    setMobile('');
-    setCurrentLeadId(null);
-    setSuccess(false);
-    setError('');
+    // Keep car selection data in session storage if any
+  };
+  
+  const handlePricingModalClose = () => {
+    setIsPricingModalOpen(false);
+    // Keep all data for potential future use
   };
 
   const handleTimeSlotSubmit = async (date: string, timeSlot: string) => {
@@ -349,20 +313,19 @@ const ExpressService = () => {
       setTimeout(() => {
         setShowSuccessMessage(false);
         
-        // Reset the form after success message is closed
+        // Reset all form fields after successful submission
         setMobile('');
         setCurrentLeadId(null);
         setSelectedCarBrand('');
         setSelectedCarModel('');
         setSelectedFuelType('');
         setSelectedServicePrice(null);
+        setSuccess(false);
+        setError('');
       }, 1500);
     } catch (error) {
-      console.error('Error updating lead with date and time slot:', error);
+      console.error('Error updating lead with time slot:', error);
       alert('Failed to update time slot. Please try again.');
-      
-      // Keep the time slot modal open in case of error
-      setIsTimeSlotModalOpen(true);
     }
   };
 
@@ -381,24 +344,35 @@ const ExpressService = () => {
     // We also don't reset car selection details to maintain state between modals
   };
 
+  // Check for URL parameters when the component mounts
   useEffect(() => {
-    const checkServiceTypes = async () => {
+    // Parse query parameters
+    const searchParams = new URLSearchParams(location.search);
+    const openModal = searchParams.get('openModal');
+
+    // If openModal=true, trigger the car selection modal
+    if (openModal === 'true') {
+      handleScheduleClick();
+    }
+
+    // Check for saved lead ID in session storage
+    const savedLeadId = sessionStorage.getItem('expressServiceLeadId');
+    if (savedLeadId) {
+      setCurrentLeadId(parseInt(savedLeadId, 10));
+    }
+
+    // Load service types
+    const loadServiceTypes = async () => {
       try {
-        const response = await enquiryService.getServiceTypes();
-        setServiceTypesLoaded(response.data.length > 0);
+        await enquiryService.getServiceTypes();
+        setServiceTypesLoaded(true);
       } catch (error) {
-        console.error('Failed to check service types:', error);
+        console.error('Error loading service types:', error);
       }
     };
-    
-    checkServiceTypes();
-    
-    // Check if the openModal query parameter is present
-    const searchParams = new URLSearchParams(location.search);
-    if (searchParams.get('openModal') === 'true') {
-      setIsMobileInputModalOpen(true);
-    }
-  }, [location.search]);
+
+    loadServiceTypes();
+  }, [location.search]); // Only re-run if the search params change
 
   // Query parameter handling
   useEffect(() => {
@@ -596,6 +570,17 @@ const ExpressService = () => {
         onClose={handleTimeSlotModalClose}
         onSubmit={handleTimeSlotSubmit}
         mobileNumber={mobile}
+      />
+
+      {/* Pricing Info Modal */}
+      <PricingInfoModal
+        isOpen={isPricingModalOpen}
+        onClose={handlePricingModalClose}
+        onBookNow={handleBookSlotNowClick}
+        carBrand={selectedCarBrand}
+        carModel={selectedCarModel}
+        fuelType={selectedFuelType}
+        servicePrice={selectedServicePrice || 0}
       />
 
       {/* How It Works */}
