@@ -98,13 +98,13 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
       isOpen={isOpen}
       onRequestClose={onClose}
       style={customStyles}
-      contentLabel="Express Service Pricing"
+      contentLabel="Express Service"
       ariaHideApp={false}
     >
       <div className="bg-white rounded-lg shadow-xl overflow-hidden">
         {/* Header with gradient background */}
         <div className="flex justify-between items-center p-4 bg-gradient-to-r from-[#FF7200] to-[#FFA500] text-white">
-          <h2 className="text-xl font-bold">Express Service Pricing</h2>
+          <h2 className="text-xl font-bold">Express Service</h2>
           <button
             onClick={onClose}
             className="text-white hover:text-gray-200 transition-colors"
@@ -150,7 +150,7 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                 <div className="flex items-center text-xs sm:text-sm text-[#FF7200] mb-1 sm:mb-0">
                   <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                  <span>90-Minute Service</span>
+                  <span>Complete Car Service in 90 Minutes</span>
                 </div>
                 <div className="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full self-start sm:self-auto">
                   Save {savingsPercentage}% (₹{savings})
