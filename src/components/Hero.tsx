@@ -171,7 +171,7 @@ const Hero = () => {
                 onClick={handleBookService}
                 className="w-1/2 bg-gradient-to-r from-[#FF7200] to-[#FF9500] text-white px-2 sm:px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base font-medium hover:from-[#25D366] hover:to-[#128C7E]"
               >
-                <img src="/public/images/whatsapp-icon.png" alt="WhatsApp" className="mr-2" style={{ width: '20px', height: '20px' }} />
+                <img src="https://i.ibb.co/gM65tZy7/whatsapp-icon.png" alt="WhatsApp" className="mr-2" style={{ width: '36px', height: '36px' }} />
                 Chat With Us
                 <ArrowRight className="ml-1 sm:ml-2" size={16} />
               </motion.button>
@@ -181,7 +181,7 @@ const Hero = () => {
                 onClick={handleContact}
                 className="w-1/2 bg-gradient-to-r from-[#FF7200] to-[#FF9500] text-white px-2 sm:px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base font-medium hover:from-[#0e5aa8] hover:to-[#1c7ed6]"
               >
-                <Phone className="mr-2" size={16} />
+                <Phone className="mr-2" size={24} />
                 Contact Us
               </motion.button>
             </div>
