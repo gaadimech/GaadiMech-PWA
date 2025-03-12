@@ -204,7 +204,7 @@ const ExpressService = () => {
         serviceType: serviceTypeName,
         carBrand: carBrand,
         carModel: carModel,
-        fuelType: fuelType,
+        fuel_type: fuelType,
         servicePrice: price
       });
       
@@ -309,6 +309,7 @@ const ExpressService = () => {
       const message = `Hi, I booked a 90 Mins Car Express Car Service with GaadiMech
 Car Manufacturer: ${selectedCarBrand}
 Car Model: ${selectedCarModel}
+Fuel Type: ${selectedFuelType || 'Not specified'}
 Package Price: ₹${selectedServicePrice}
 *Discounted Price: ₹${discountedPrice}*
 Booking Slot: ${new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}, ${timeSlot}`;

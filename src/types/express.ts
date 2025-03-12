@@ -5,7 +5,7 @@ export interface ExpressLeadFormData {
   preferredDate?: string;
   serviceType?: string;
   carBrand?: string;
-  fuelType?: string;
+  fuel_type?: string;
   servicePrice?: number;
   serviceDate?: string;
   timeSlot?: string;
@@ -19,7 +19,7 @@ export interface ExpressLeadResponse {
       mobileNumber: string;
       carModel?: string;
       carBrand?: string;
-      fuelType?: string;
+      fuel_type?: string;
       preferredDate?: string;
       serviceType?: string;
       servicePrice?: number;
