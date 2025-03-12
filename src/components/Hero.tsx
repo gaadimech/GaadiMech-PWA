@@ -169,17 +169,19 @@ const Hero = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleBookService}
-                className="w-1/2 bg-gradient-to-r from-[#FF7200] to-[#FF9500] text-white px-2 sm:px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base font-medium"
+                className="w-1/2 bg-gradient-to-r from-[#FF7200] to-[#FF9500] text-white px-2 sm:px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base font-medium hover:from-[#25D366] hover:to-[#128C7E]"
               >
-                Book Now
+                <img src="/public/images/whatsapp-icon.png" alt="WhatsApp" className="mr-2" style={{ width: '20px', height: '20px' }} />
+                Chat With Us
                 <ArrowRight className="ml-1 sm:ml-2" size={16} />
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleContact}
-                className="w-1/2 bg-white border-2 border-[#FF7200] text-[#FF7200] px-2 sm:px-6 py-3 rounded-xl shadow-md hover:shadow-lg hover:bg-[#0e5aa8] hover:border-[#0e5aa8] hover:text-white transition-all text-sm sm:text-base font-medium"
+                className="w-1/2 bg-gradient-to-r from-[#FF7200] to-[#FF9500] text-white px-2 sm:px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base font-medium hover:from-[#0e5aa8] hover:to-[#1c7ed6]"
               >
+                <Phone className="mr-2" size={16} />
                 Contact Us
               </motion.button>
             </div>
