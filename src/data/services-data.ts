@@ -10,6 +10,7 @@ export interface ServiceCard {
   duration: string;
   price: string; // Default price to display when no vehicle is selected
   isBestseller?: boolean;
+  visible?: boolean; // Add visibility flag
   details: string[];
   whatsappMessage: string;
 }
@@ -30,6 +31,7 @@ export const customizedServiceCard: ServiceCard = {
   reviewCount: 150,
   duration: '3-4 Hours',
   //isBestseller: true,
+  visible: true, // Visible by default
   image: 'https://i.ibb.co/t4HmbHZ/Group.png', // Using a placeholder image instead of null
   details: [
     'Personalize your service package',
@@ -50,6 +52,7 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
     title: 'Car Periodic Service',
     subtitle: 'Keep Your Car Running Smoothly With Our Expert Maintenance Services',
     serviceCards: [
+      customizedServiceCard,
       {
         id: 'periodic-basic',
         title: 'Periodic Service',
@@ -59,6 +62,7 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
         reviewCount: 570,
         duration: '4-5 Hours',
         price: '₹X,XXX',
+        visible: true, // Visible by default
         details: [
           'Engine Oil Replacement',
           'Oil Filter Replacement',
@@ -83,6 +87,7 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
         reviewCount: 190,
         duration: '90 Mins!',
         price: '₹X,XXX',
+        visible: false, // Set to false to hide
         details: [
           'Engine Oil Replacement',
           'Oil Filter Replacement',
@@ -96,8 +101,7 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
           'Wiper Fluid Replacement',
         ],
         whatsappMessage: 'Hi, I\'d like to book an Express Service for my car.'
-      },
-      customizedServiceCard
+      }
     ]
   },
   'denting': {

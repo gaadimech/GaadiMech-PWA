@@ -30,8 +30,12 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
   const serviceData = servicesData[serviceType];
   const serviceReviews = getReviewsByService(serviceType);
   
-  // Filter cards based on active tab
+  // Filter cards based on active tab and visibility
   const filteredCards = serviceData.serviceCards.filter(card => {
+    // First check if the card is visible (defaulting to true if not specified)
+    if (card.visible === false) return false;
+    
+    // Then apply the tab filtering
     if (activeTab === 'all') return true;
     return card.id.includes(activeTab.toLowerCase());
   });
@@ -186,16 +190,19 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
               >
                 Periodic
               </button>
-              <button
-                onClick={() => handleTabChange('express')}
-                className={`px-6 py-2 rounded-full whitespace-nowrap transition-colors ${
-                  activeTab === 'express'
-                    ? 'bg-[#FF7200] text-white'
-                    : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
-                }`}
-              >
-                Express
-              </button>
+              {/* Express tab is hidden when no Express Service cards are visible */}
+              {serviceData.serviceCards.some(card => card.id.includes('express') && card.visible !== false) && (
+                <button
+                  onClick={() => handleTabChange('express')}
+                  className={`px-6 py-2 rounded-full whitespace-nowrap transition-colors ${
+                    activeTab === 'express'
+                      ? 'bg-[#FF7200] text-white'
+                      : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                  }`}
+                >
+                  Express
+                </button>
+              )}
             </>
           )}
         </div>
@@ -208,7 +215,7 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
             
             // Find the periodic service card to get its price
             const periodicServiceCard = servicesData['periodic']?.serviceCards.find(c => c.id === 'periodic-basic');
-            const periodicServicePrice = periodicServiceCard ? getServiceTypePrice('periodic-basic') : null;
+            const periodicServicePrice = periodicServiceCard ? getServiceTypePrice('periodic-basic') : undefined;
             
             return (
               <ServiceCard
