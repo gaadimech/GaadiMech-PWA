@@ -45,11 +45,29 @@ interface BlogSEO {
   metaTitle: string;
   metaDescription: string;
   metaRobots: string;
-  metaImage: null | BlogImage;
+  metaImage: BlogImage | null;
 }
 
+// Interface for the raw Strapi response
+export interface RawBlogPostAttributes {
+  id: number;
+  documentId: string;
+  title: string;
+  slug: string;
+  content: string;
+  excerpt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string | null;
+  pub_at?: string;
+  published_at?: string;
+  featuredImage: BlogImage | null;
+  seo: BlogSEO | null;
+}
+
+// Interface for the transformed data used in the application
 export interface BlogPostAttributes {
-  id?: number;
+  id: number;
   title: string;
   slug: string;
   content: string;
@@ -58,12 +76,8 @@ export interface BlogPostAttributes {
   updatedAt: string;
   publishedAt: string;
   featuredImage: {
-    data: {
-      attributes: {
-        url: string;
-        // other image attributes...
-      }
-    }
+    url: string;
+    // other image properties as needed
   } | null;
   seo: {
     id: number;
@@ -78,12 +92,9 @@ export interface BlogPostAttributes {
 }
 
 export interface StrapiResponse<T> {
-  data: Array<{
-    id: number;
-    attributes: T;
-  }>;
+  data: Array<T>;
   meta: {
-    pagination: {
+    pagination?: {
       page: number;
       pageSize: number;
       pageCount: number;
@@ -93,8 +104,5 @@ export interface StrapiResponse<T> {
 }
 
 export interface SingleStrapiResponse<T> {
-  data: {
-    id: number;
-    attributes: T;
-  };
+  data: T;
 }

@@ -15,6 +15,7 @@ const Blog = () => {
       try {
         setLoading(true);
         const posts = await blogService.getAllPosts();
+        console.log('Fetched blog posts:', posts); // Debug log
         setPosts(posts);
         setError(null);
       } catch (error) {
@@ -68,6 +69,11 @@ const Blog = () => {
                     src={post.featuredImage.url}
                     alt={post.title || 'Blog post image'}
                     className="w-full h-48 object-cover"
+                    onError={(e) => {
+                      console.error('Image failed to load:', post.featuredImage?.url);
+                      // Set a fallback image or placeholder
+                      (e.target as HTMLImageElement).src = 'https://via.placeholder.com/800x400?text=No+Image';
+                    }}
                   />
                 ) : (
                   <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
