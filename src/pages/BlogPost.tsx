@@ -81,8 +81,8 @@ const BlogPostPage = () => {
             className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg mb-8"
             onError={(e) => {
               console.error('Image failed to load:', post.featuredImage?.url);
-              // Set a fallback image
-              (e.target as HTMLImageElement).src = 'https://via.placeholder.com/1200x600?text=No+Image';
+              // Use the SVG placeholder
+              (e.target as HTMLImageElement).src = '/images/blog-placeholder.svg';
             }}
           />
         )}

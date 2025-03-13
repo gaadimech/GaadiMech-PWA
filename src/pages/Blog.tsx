@@ -71,13 +71,17 @@ const Blog = () => {
                     className="w-full h-48 object-cover"
                     onError={(e) => {
                       console.error('Image failed to load:', post.featuredImage?.url);
-                      // Set a fallback image or placeholder
-                      (e.target as HTMLImageElement).src = 'https://via.placeholder.com/800x400?text=No+Image';
+                      // Use the SVG placeholder
+                      (e.target as HTMLImageElement).src = '/images/blog-placeholder.svg';
                     }}
                   />
                 ) : (
                   <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-400">No image available</span>
+                    <img 
+                      src="/images/blog-placeholder.svg"
+                      alt="No image available"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 )}
                 <div className="p-6">
