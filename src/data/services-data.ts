@@ -20,6 +20,30 @@ export interface ServiceTypeData {
   serviceCards: ServiceCard[];
 }
 
+// Define the customized service card before using it
+export const customizedServiceCard: ServiceCard = {
+  id: 'customizable-service',
+  title: 'Customized Car Service',
+  description: 'Build your own service package by selecting only what your car needs.',
+  price: '₹1999',
+  rating: 4.8,
+  reviewCount: 150,
+  duration: '3-4 Hours',
+  //isBestseller: true,
+  image: 'https://i.ibb.co/t4HmbHZ/Group.png', // Using a placeholder image instead of null
+  details: [
+    'Personalize your service package',
+    'Select only the components you need',
+    'Transparent pricing for each service',
+    'Save money by customizing your package',
+    'Professional service with genuine parts',
+    'Service warranty on all work done',
+    '100% Genuine Spare Parts',
+    'Expert mechanics'
+  ],
+  whatsappMessage: 'Hi, I would like to book a Customized Car Service package.'
+};
+
 // Central data store for all service cards organized by service type
 const servicesData: Record<ServiceType, ServiceTypeData> = {
   'periodic': {
@@ -72,7 +96,8 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
           'Wiper Fluid Replacement',
         ],
         whatsappMessage: 'Hi, I\'d like to book an Express Service for my car.'
-      }
+      },
+      customizedServiceCard
     ]
   },
   'denting': {

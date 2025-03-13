@@ -202,17 +202,27 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
         
         {/* Service cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {filteredCards.map((card, index) => (
-            <ServiceCard
-              key={`${card.id}-${index}`}
-              card={card}
-              vehicleSelected={!!selectedVehicle}
-              actualPrice={selectedVehicle ? getServiceTypePrice(card.id) : undefined}
-              onSelectCar={() => setShowVehicleModal(true)}
-              selectedVehicle={selectedVehicle}
-              serviceType={serviceType}
-            />
-          ))}
+          {filteredCards.map((card, index) => {
+            // Get the actual price for this vehicle and service
+            const actualPrice = getServiceTypePrice(card.id);
+            
+            // Find the periodic service card to get its price
+            const periodicServiceCard = servicesData['periodic']?.serviceCards.find(c => c.id === 'periodic-basic');
+            const periodicServicePrice = periodicServiceCard ? getServiceTypePrice('periodic-basic') : null;
+            
+            return (
+              <ServiceCard
+                key={`${card.id}-${index}`}
+                card={card}
+                vehicleSelected={!!selectedVehicle}
+                actualPrice={actualPrice}
+                onSelectCar={() => setShowVehicleModal(true)}
+                selectedVehicle={selectedVehicle}
+                serviceType={serviceType}
+                periodicServicePrice={card.id === 'customizable-service' ? periodicServicePrice : undefined}
+              />
+            );
+          })}
         </div>
         
         {/* Customer reviews */}
