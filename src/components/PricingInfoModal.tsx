@@ -174,74 +174,74 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
           </div>
 
           {/* Mobile Number Input - REARRANGED */}
-          <div className="mb-6">
-            {/* Highlight box around entire input section */}
-            <div className="border-2 border-green-500 rounded-xl p-3 sm:p-4 bg-green-50 shadow-md">
-              {/* Discount offer banner - enhanced styling */}
-              <div className="mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-center mb-2 sm:mb-0">
-                  <Gift className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 mr-2 flex-shrink-0 animate-pulse" />
+          <div className="mb-5">
+            {/* Highlight box around entire input section - refined styling */}
+            <div className="border border-green-400 rounded-lg p-3 bg-green-50 shadow-sm">
+              {/* Discount offer banner - more subtle styling */}
+              <div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center mb-1 sm:mb-0">
+                  <Gift className="w-4 h-4 text-green-600 mr-2 flex-shrink-0" />
                   <div>
-                    <p className="font-bold text-green-800 text-base sm:text-lg">Enter your mobile number</p>
-                    <p className="text-sm text-green-700 font-medium">Get instant ₹500 OFF on your service!</p>
+                    <p className="font-semibold text-green-800 text-sm">Enter your mobile number</p>
+                    <p className="text-xs text-green-700">Get instant ₹500 OFF on your service!</p>
                   </div>
                 </div>
-                <div className="bg-green-600 text-white text-lg sm:text-xl font-bold px-4 py-1.5 rounded-md self-start sm:self-auto">
+                <div className="bg-green-600 text-white text-sm font-bold px-3 py-1 rounded self-start sm:self-auto">
                   ₹500 OFF
                 </div>
               </div>
               
-              {/* Down arrow indicator */}
-              <div className="flex justify-center my-2">
-                <svg className="w-6 h-6 text-green-700 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              {/* Subtle down arrow indicator */}
+              <div className="flex justify-center my-1">
+                <svg className="w-4 h-4 text-green-600 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                 </svg>
               </div>
               
-              {/* Simplified input field with more robust styling */}
-              <div className="relative bg-white rounded-lg overflow-hidden mb-4">
+              {/* Refined input field with more elegant styling */}
+              <div className="relative bg-white rounded-md overflow-hidden mb-3">
                 {/* Simple input field without complex structure */}
                 <input
                   type="tel"
                   value={mobileNumber}
                   onChange={(e) => setMobileNumber(e.target.value)}
                   placeholder="Enter Your Mobile Number"
-                  className="w-full p-4 pl-12 outline-none text-gray-800 text-lg font-medium border-2 border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                  className="w-full p-3 pl-10 outline-none text-gray-800 text-base font-medium border border-gray-300 rounded-md focus:border-green-500 focus:ring-1 focus:ring-green-500"
                   maxLength={10}
                   pattern="[0-9]*"
                   required
                   autoFocus
                 />
                 {/* Absolutely positioned phone icon to prevent layout issues */}
-                <div className="absolute left-0 top-0 h-full flex items-center justify-center pl-4">
-                  <Phone className="w-5 h-5 text-green-600" />
+                <div className="absolute left-0 top-0 h-full flex items-center justify-center pl-3">
+                  <Phone className="w-4 h-4 text-green-600" />
                 </div>
               </div>
               
               {/* Display error message if validation fails */}
               {mobileError && (
-                <p className="mt-1 mb-3 text-sm text-red-600 font-medium">
+                <p className="mt-1 mb-2 text-xs text-red-600 font-medium">
                   {mobileError}
                 </p>
               )}
               
-              {/* Prominent CTA Button - moved inside the highlight box */}
+              {/* Refined CTA Button */}
               <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={handleSubmit}
-                className="w-full py-4 px-4 bg-[#FF7200] text-white font-bold rounded-lg hover:bg-[#e86700] transition-colors shadow-lg text-lg flex items-center justify-center"
+                className="w-full py-3 px-4 bg-[#FF7200] text-white font-bold rounded-md hover:bg-[#e86700] transition-colors shadow-md text-base flex items-center justify-center"
               >
                 <span>Unlock ₹500 Discount Now!</span>
-                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </motion.button>
               
-              {/* Limited time message under button */}
+              {/* Subtle limited time message under button */}
               <div className="text-center mt-2">
-                <p className="text-sm font-medium text-amber-700 flex items-center justify-center">
-                  <Clock className="w-4 h-4 mr-1" />
+                <p className="text-xs text-amber-700 flex items-center justify-center">
+                  <Clock className="w-3 h-3 mr-1" />
                   Don't miss out! Claim your discount before it's gone.
                 </p>
               </div>
