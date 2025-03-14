@@ -102,12 +102,12 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
       ariaHideApp={false}
     >
       <div className="bg-white rounded-lg shadow-xl overflow-hidden">
-        {/* Header with gradient background */}
-        <div className="flex justify-between items-center p-4 bg-gradient-to-r from-[#FF7200] to-[#FFA500] text-white">
+        {/* Header with white background instead of orange gradient */}
+        <div className="flex justify-between items-center p-4 bg-white text-gray-800 border-b border-gray-200">
           <h2 className="text-xl font-bold">Express Service</h2>
           <button
             onClick={onClose}
-            className="text-white hover:text-gray-200 transition-colors"
+            className="text-gray-600 hover:text-gray-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -141,11 +141,11 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
             {/* Horizontal divider */}
             <div className="h-1 bg-gradient-to-r from-[#FF7200] to-[#FFA500]"></div>
             
-            {/* Express Service - highlighted */}
+            {/* Express Service - highlighted, with black price instead of orange */}
             <div className="p-3 sm:p-4 bg-orange-50 rounded-b-lg">
               <div className="flex justify-between items-center mb-1">
                 <div className="text-base sm:text-lg font-bold text-gray-800">Express Service</div>
-                <div className="text-xl sm:text-2xl font-bold text-[#FF7200]">₹{servicePrice}</div>
+                <div className="text-xl sm:text-2xl font-bold text-gray-900">₹{servicePrice}</div>
               </div>
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                 <div className="flex items-center text-xs sm:text-sm text-[#FF7200] mb-1 sm:mb-0">
@@ -156,10 +156,24 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
                   Save {savingsPercentage}% (₹{savings})
                 </div>
               </div>
+              
+              {/* Merged limited offer into the main widget - NEW */}
+              <div className="mt-3 flex items-center justify-between border-t border-orange-200 pt-2">
+                <div className="flex items-center">
+                  <AlertTriangle className="w-3 h-3 sm:w-4 sm:h-4 text-amber-600 mr-1 flex-shrink-0" />
+                  <p className="text-xs font-medium text-amber-800">
+                    Limited offer! Only available for the first 100 users.
+                  </p>
+                </div>
+                <div className="flex items-center bg-amber-100 px-2 py-1 rounded-md">
+                  <Users className="w-3 h-3 text-amber-800 mr-1" />
+                  <span className="text-xs font-bold text-amber-900">{spotsRemaining} spots left</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Mobile Number Input */}
+          {/* Mobile Number Input - REARRANGED */}
           <div className="mb-4">
             {/* Discount offer banner */}
             <div className="bg-green-50 border border-green-200 rounded-lg p-2 sm:p-3 mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -172,22 +186,6 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
               </div>
               <div className="bg-green-600 text-white text-base sm:text-lg font-bold px-3 py-1 rounded-md self-start sm:self-auto">
                 ₹500 OFF
-              </div>
-            </div>
-            
-            {/* Urgency message */}
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-2 mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center mb-2 sm:mb-0">
-                <AlertTriangle className="w-4 h-4 text-amber-600 mr-2 flex-shrink-0" />
-                <p className="text-xs sm:text-sm font-medium text-amber-800">
-                  Limited offer! Only available for the first 100 users.
-                </p>
-              </div>
-              
-              {/* Spots remaining counter */}
-              <div className="flex items-center bg-amber-200 px-2 py-1 rounded-md self-start sm:self-auto">
-                <Users className="w-3 h-3 text-amber-800 mr-1" />
-                <span className="text-xs font-bold text-amber-900">{spotsRemaining} spots left</span>
               </div>
             </div>
             
