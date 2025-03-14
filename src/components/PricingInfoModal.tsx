@@ -174,63 +174,78 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
           </div>
 
           {/* Mobile Number Input - REARRANGED */}
-          <div className="mb-4">
-            {/* Discount offer banner */}
-            <div className="bg-green-50 border border-green-200 rounded-lg p-2 sm:p-3 mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center mb-2 sm:mb-0">
-                <Gift className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 mr-2 flex-shrink-0" />
-                <div>
-                  <p className="font-semibold text-green-800 text-sm sm:text-base">Enter your mobile number</p>
-                  <p className="text-xs sm:text-sm text-green-700">Get instant ₹500 OFF on your service!</p>
+          <div className="mb-6">
+            {/* Highlight box around entire input section */}
+            <div className="border-2 border-green-500 rounded-xl p-3 sm:p-4 bg-green-50 shadow-md">
+              {/* Discount offer banner - enhanced styling */}
+              <div className="mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center mb-2 sm:mb-0">
+                  <Gift className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 mr-2 flex-shrink-0 animate-pulse" />
+                  <div>
+                    <p className="font-bold text-green-800 text-base sm:text-lg">Enter your mobile number</p>
+                    <p className="text-sm text-green-700 font-medium">Get instant ₹500 OFF on your service!</p>
+                  </div>
+                </div>
+                <div className="bg-green-600 text-white text-lg sm:text-xl font-bold px-4 py-1.5 rounded-md self-start sm:self-auto">
+                  ₹500 OFF
                 </div>
               </div>
-              <div className="bg-green-600 text-white text-base sm:text-lg font-bold px-3 py-1 rounded-md self-start sm:self-auto">
-                ₹500 OFF
+              
+              {/* Down arrow indicator */}
+              <div className="flex justify-center my-2">
+                <svg className="w-6 h-6 text-green-700 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </div>
+              
+              {/* Enhanced input field with larger size and stronger focus */}
+              <div className="flex items-center border-2 border-gray-400 rounded-lg overflow-hidden focus-within:border-green-500 focus-within:ring-2 focus-within:ring-green-500 bg-white hover:border-green-400 transition-colors">
+                <div className="bg-gray-100 p-3 sm:p-4 border-r-2 border-gray-300">
+                  <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+                </div>
+                <input
+                  type="tel"
+                  value={mobileNumber}
+                  onChange={(e) => setMobileNumber(e.target.value)}
+                  placeholder="Enter Your Mobile Number"
+                  className={`flex-1 p-3 sm:p-4 outline-none text-gray-800 text-base sm:text-lg font-medium ${mobileError ? 'border-red-300 bg-red-50' : ''}`}
+                  maxLength={10}
+                  pattern="[0-9]*"
+                  required
+                  autoFocus
+                />
+              </div>
+              {/* Display error message if validation fails */}
+              {mobileError && (
+                <p className="mt-1 text-sm text-red-600 font-medium">
+                  {mobileError}
+                </p>
+              )}
+              
+              {/* Prominent CTA Button - moved inside the highlight box */}
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={handleSubmit}
+                className="w-full py-4 px-4 bg-[#FF7200] text-white font-bold rounded-lg hover:bg-[#e86700] transition-colors shadow-lg mt-4 text-base sm:text-lg flex items-center justify-center"
+              >
+                <span>Unlock ₹500 Discount Now!</span>
+                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </motion.button>
+              
+              {/* Limited time message under button */}
+              <div className="text-center mt-2">
+                <p className="text-sm font-medium text-amber-700 flex items-center justify-center">
+                  <Clock className="w-4 h-4 mr-1" />
+                  Don't miss out! Claim your discount before it's gone.
+                </p>
               </div>
             </div>
-            
-            <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:border-[#FF7200] focus-within:ring-1 focus-within:ring-[#FF7200]">
-              <div className="bg-gray-100 p-2 sm:p-3 border-r border-gray-300">
-                <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500" />
-              </div>
-              <input
-                type="tel"
-                value={mobileNumber}
-                onChange={(e) => setMobileNumber(e.target.value)}
-                placeholder="Enter Your Mobile Number"
-                className={`flex-1 p-2 sm:p-3 outline-none text-gray-700 text-sm sm:text-base ${mobileError ? 'border-red-300 bg-red-50' : ''}`}
-                maxLength={10}
-                pattern="[0-9]*"
-                required
-              />
-            </div>
-            {/* Display error message if validation fails */}
-            {mobileError && (
-              <p className="mt-1 text-xs sm:text-sm text-red-600 font-medium">
-                {mobileError}
-              </p>
-            )}
-          </div>
-
-          {/* CTA Button */}
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={handleSubmit}
-            className="w-full py-3 sm:py-4 px-4 bg-[#FF7200] text-white font-bold rounded-lg hover:bg-[#e86700] transition-colors shadow-lg mb-3 sm:mb-6 text-sm sm:text-base"
-          >
-            Unlock ₹500 Discount Now!
-          </motion.button>
-          
-          {/* Limited time message under button */}
-          <div className="text-center mb-4 sm:mb-6">
-            <p className="text-xs font-medium text-amber-700 flex items-center justify-center">
-              <Clock className="w-3 h-3 mr-1" />
-              Don't miss out! Claim your discount before it's gone.
-            </p>
           </div>
           
-          {/* Service inclusions */}
+          {/* Service inclusions - moved below the prominent input section */}
           <div className="bg-white p-3 sm:p-4 rounded-lg border border-gray-200 mb-4 sm:mb-6">
             <h3 className="font-semibold text-gray-700 text-sm sm:text-base mb-3 sm:mb-4">Service Inclusions:</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
