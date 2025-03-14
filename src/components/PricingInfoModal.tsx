@@ -153,7 +153,7 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
                   <span>Complete Car Service in 90 Minutes</span>
                 </div>
                 <div className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded-full self-start sm:self-auto">
-                  Save {savingsPercentage}% (₹{savings})
+                  Save {savingsPercentage}%
                 </div>
               </div>
               
