@@ -198,26 +198,29 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
                 </svg>
               </div>
               
-              {/* Enhanced input field with larger size and stronger focus */}
-              <div className="flex items-center border-2 border-gray-400 rounded-lg overflow-hidden focus-within:border-green-500 focus-within:ring-2 focus-within:ring-green-500 bg-white hover:border-green-400 transition-colors">
-                <div className="bg-gray-100 p-3 sm:p-4 border-r-2 border-gray-300">
-                  <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
-                </div>
+              {/* Simplified input field with more robust styling */}
+              <div className="relative bg-white rounded-lg overflow-hidden mb-4">
+                {/* Simple input field without complex structure */}
                 <input
                   type="tel"
                   value={mobileNumber}
                   onChange={(e) => setMobileNumber(e.target.value)}
                   placeholder="Enter Your Mobile Number"
-                  className={`flex-1 p-3 sm:p-4 outline-none text-gray-800 text-base sm:text-lg font-medium ${mobileError ? 'border-red-300 bg-red-50' : ''}`}
+                  className="w-full p-4 pl-12 outline-none text-gray-800 text-lg font-medium border-2 border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-500"
                   maxLength={10}
                   pattern="[0-9]*"
                   required
                   autoFocus
                 />
+                {/* Absolutely positioned phone icon to prevent layout issues */}
+                <div className="absolute left-0 top-0 h-full flex items-center justify-center pl-4">
+                  <Phone className="w-5 h-5 text-green-600" />
+                </div>
               </div>
+              
               {/* Display error message if validation fails */}
               {mobileError && (
-                <p className="mt-1 text-sm text-red-600 font-medium">
+                <p className="mt-1 mb-3 text-sm text-red-600 font-medium">
                   {mobileError}
                 </p>
               )}
@@ -227,7 +230,7 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={handleSubmit}
-                className="w-full py-4 px-4 bg-[#FF7200] text-white font-bold rounded-lg hover:bg-[#e86700] transition-colors shadow-lg mt-4 text-base sm:text-lg flex items-center justify-center"
+                className="w-full py-4 px-4 bg-[#FF7200] text-white font-bold rounded-lg hover:bg-[#e86700] transition-colors shadow-lg text-lg flex items-center justify-center"
               >
                 <span>Unlock ₹500 Discount Now!</span>
                 <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
