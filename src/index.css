@@ -27,3 +27,25 @@ input, textarea {
 .meta-pixel-container {
   display: none;
 }
+
+/* Custom animations */
+@keyframes slow-zoom {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-slow-zoom {
+  animation: slow-zoom 30s infinite ease-in-out;
+}
+
+/* Custom backgrounds */
+.bg-radial-gradient {
+  background: radial-gradient(circle, rgba(255, 114, 0, 0.2) 0%, rgba(255, 114, 0, 0) 70%);
+}
