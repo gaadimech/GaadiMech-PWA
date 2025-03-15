@@ -134,8 +134,8 @@ const Services = () => {
               {/* Recommended Tag */}
               <div className="absolute top-0 right-0">
                 <div className="bg-[#FF7200] text-white px-4 py-1 rounded-bl-lg font-medium flex items-center gap-1">
-                  <Timer className="w-4 h-4" />
-                  Recommended
+                  <Zap className="w-4 h-4" />
+                  Super Fast
                 </div>
               </div>
 
@@ -156,7 +156,7 @@ const Services = () => {
                 </div>
                 <div className="flex-grow text-center md:text-left">
                   <div className="mb-1">
-                    <span className="text-lg md:text-xl text-gray-700 font-medium">Express Car Service</span>
+                    <span className="text-xl md:text-2xl text-gray-800 font-bold">Express Car Service</span>
                   </div>
                   <h3 className="text-2xl md:text-3xl font-bold text-[#FF7200] mb-1">
                     {featuredService.title}
