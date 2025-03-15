@@ -34,8 +34,9 @@ const services = [
         </motion.div>
       </motion.div>
     ),
-    title: 'Express Car Service',
-    description: 'Sounds Impossible? We\'ve Made It Possible, That Too At 20% Lesser Price Than Your Regular Car Service!*',
+    title: 'Why Wait All Day?',
+    description: 'Get Premium Car Service in 90 Minutes for 20% Less',
+    tagline: 'Fast, Affordable, Done Right!',
     highlight: true,
     link: '/express',
     featured: true
@@ -129,7 +130,7 @@ const Services = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <div className="relative bg-gradient-to-r from-orange-50 to-white p-8 rounded-xl shadow-lg border-2 border-[#FF7200] cursor-pointer overflow-hidden">
+            <div className="relative bg-gradient-to-r from-orange-50 via-white to-orange-50 p-8 rounded-xl shadow-lg border-2 border-[#FF7200] cursor-pointer overflow-hidden">
               {/* Recommended Tag */}
               <div className="absolute top-0 right-0">
                 <div className="bg-[#FF7200] text-white px-4 py-1 rounded-bl-lg font-medium flex items-center gap-1">
@@ -154,13 +155,21 @@ const Services = () => {
                   ></motion.div>
                 </div>
                 <div className="flex-grow text-center md:text-left">
-                  <h3 className="text-2xl md:text-3xl font-bold text-[#FF7200] mb-2">
+                  <div className="mb-1">
+                    <span className="text-lg md:text-xl text-gray-700 font-medium">Express Car Service</span>
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-[#FF7200] mb-1">
                     {featuredService.title}
                   </h3>
-                  <p className="text-lg text-gray-700 mb-4 font-medium">
+                  <p className="text-lg md:text-xl text-gray-800 mb-1 font-semibold">
                     {featuredService.description}
                   </p>
-                  <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+                  {featuredService.tagline && (
+                    <p className="text-sm md:text-base text-[#FF7200] font-medium mb-3 italic">
+                      {featuredService.tagline}
+                    </p>
+                  )}
+                  <div className="flex flex-wrap gap-4 justify-center md:justify-start mt-4">
                     <div className="flex items-center text-gray-700 bg-orange-50 px-3 py-1 rounded-full">
                       <Clock className="w-5 h-5 mr-2 text-[#FF7200]" />
                       <span className="font-bold">90-Minute Service</span>
