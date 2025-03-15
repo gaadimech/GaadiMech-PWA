@@ -90,7 +90,7 @@ const About = () => {
           viewport={{ once: true }}
           className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"
         >
-          <div className="order-2 md:order-1 flex justify-center">
+          <div className="hidden md:flex order-2 md:order-1 justify-center">
             <div className="relative">
               <div className="absolute -inset-3 bg-[#FF7200]/10 rounded-2xl blur-lg"></div>
               <img
@@ -100,7 +100,7 @@ const About = () => {
               />
             </div>
           </div>
-          <div className="order-1 md:order-2">
+          <div className="order-1 md:order-2 col-span-1 md:col-span-1">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               The GaadiMech <span className="text-[#FF7200]">Advantage</span>
             </h2>
