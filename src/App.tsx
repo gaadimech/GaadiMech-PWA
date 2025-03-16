@@ -12,6 +12,7 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Careers from './pages/Careers';
 import ExpressService from './pages/Express';
+import WorkshopPartner from './pages/WorkshopPartner';
 import Footer from './components/Footer';
 import CustomerForm from './components/CustomerForm';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
@@ -228,6 +229,7 @@ const AppContent = () => {
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/refund-policy" element={<RefundPolicy />} />
+              <Route path="/workshop-partner" element={<WorkshopPartner />} />
             </Routes>
           </AnimatePresence>
           <Footer />

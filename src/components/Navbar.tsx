@@ -64,6 +64,13 @@ const Navbar = () => {
             >
               Careers
             </Link>
+            <Link
+              to="/workshop-partner"
+              onClick={handleLinkClick}
+              className={`text-gray-700 hover:text-[#FF7200] ${location.pathname === '/workshop-partner' ? 'text-[#FF7200]' : ''}`}
+            >
+              Partner With Us
+            </Link>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -115,6 +122,13 @@ const Navbar = () => {
               className="block px-3 py-2 text-gray-700 hover:text-[#FF7200]"
             >
               Careers
+            </Link>
+            <Link 
+              to="/workshop-partner" 
+              onClick={handleLinkClick}
+              className="block px-3 py-2 text-gray-700 hover:text-[#FF7200]"
+            >
+              Partner With Us
             </Link>
             <button
               onClick={handleBookNow}

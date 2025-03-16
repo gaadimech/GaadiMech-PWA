@@ -33,6 +33,7 @@ const Footer = () => {
               <li><Link to="/contact" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Contact</Link></li>
               <li><Link to="/about" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">About</Link></li>
               <li><Link to="/blog" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Blog</Link></li>
+              <li><Link to="/workshop-partner" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Partner With Us</Link></li>
             </ul>
           </div>
           <div>
