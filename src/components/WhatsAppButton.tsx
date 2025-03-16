@@ -6,10 +6,10 @@ const WhatsAppButton = () => {
   const [visible, setVisible] = useState(false);
   
   useEffect(() => {
-    // Set a timeout to show the button after 15 seconds
+    // Set a timeout to show the button after 25 seconds
     const timer = setTimeout(() => {
       setVisible(true);
-    }, 15000); // 15 seconds in milliseconds
+    }, 25000); // 25 seconds in milliseconds
     
     // Cleanup the timer when component unmounts
     return () => clearTimeout(timer);

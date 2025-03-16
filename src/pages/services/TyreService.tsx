@@ -612,21 +612,6 @@ const TyreService = () => {
           </div>
         </div>
       </div>
-      
-      {/* Final Floating CTA Button */}
-      <div className="fixed bottom-8 right-8 z-50 md:hidden">
-        <motion.button
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 1, type: "spring" }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={handleBookAppointment}
-          className="bg-[#FF7200] text-white p-4 rounded-full shadow-lg"
-        >
-          <ArrowRight className="w-6 h-6" />
-        </motion.button>
-      </div>
     </motion.div>
   );
 };
