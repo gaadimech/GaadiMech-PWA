@@ -1,17 +1,32 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, CheckCircle } from 'lucide-react';
+import { X, CheckCircle, AlertTriangle } from 'lucide-react';
 import Modal from 'react-modal';
+import axios from 'axios';
 
 interface WorkshopPartnerFormProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+// Get the API URL from Vite environment variables or use a default
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:1337';
+
+// Interface for Strapi error response
+interface StrapiErrorResponse {
+  error: {
+    tracking_status: number;
+    name: string;
+    message: string;
+    details?: any;
+  };
+}
+
 const WorkshopPartnerForm: React.FC<WorkshopPartnerFormProps> = ({ isOpen, onClose }) => {
   const [formStep, setFormStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submissionError, setSubmissionError] = useState('');
   
   // Form state
   const [formData, setFormData] = useState({
@@ -53,6 +68,7 @@ const WorkshopPartnerForm: React.FC<WorkshopPartnerFormProps> = ({ isOpen, onClo
           setFormStep(1);
           setIsSubmitted(false);
           setIsSubmitting(false);
+          setSubmissionError('');
           setFormData({
             ownerName: '',
             ownerPhone: '',
@@ -259,6 +275,31 @@ const WorkshopPartnerForm: React.FC<WorkshopPartnerFormProps> = ({ isOpen, onClo
     onClose();
   };
 
+  // Prepare data for Strapi submission
+  const prepareDataForSubmission = () => {
+    // Format service types as a comma-separated string for Strapi
+    const serviceTypesString = formData.serviceTypes.join(', ');
+    
+    // Create a data object that matches your Strapi content type structure
+    return {
+      data: {
+        ownerName: formData.ownerName,
+        ownerPhone: formData.ownerPhone,
+        ownerEmail: formData.ownerEmail,
+        workshopName: formData.workshopName,
+        workshopAddress: formData.workshopAddress,
+        city: formData.city,
+        workshopAge: formData.workshopAge,
+        numTechnicians: formData.numTechnicians,
+        serviceTypes: serviceTypesString,
+        monthlyVehicles: formData.monthlyVehicles,
+        heardFrom: formData.heardFrom,
+        additionalInfo: formData.additionalInfo || 'No additional information provided',
+        tracking_status: 'new'
+      }
+    };
+  };
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent default form submission
@@ -269,23 +310,19 @@ const WorkshopPartnerForm: React.FC<WorkshopPartnerFormProps> = ({ isOpen, onClo
     }
     
     setIsSubmitting(true);
+    setSubmissionError('');
     
     try {
-      // Here you would normally send the form data to your backend
-      // For now, we'll just simulate a successful submission after a delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Prepare data for Strapi
+      const strapiData = prepareDataForSubmission();
+      
+      // Send data to Strapi
+      const response = await axios.post(`${API_URL}/api/workshop-partners`, strapiData);
+      
+      console.log('Submission successful:', response.data);
       
       // Set submitted state to true to show success message
       setIsSubmitted(true);
-      
-      // Optional: send the data to the server
-      // const response = await fetch('/api/workshop-partners', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(formData),
-      // });
       
       // Reset form after 3 seconds and close
       setTimeout(() => {
@@ -309,10 +346,21 @@ const WorkshopPartnerForm: React.FC<WorkshopPartnerFormProps> = ({ isOpen, onClo
           });
           setFormStep(1);
           setIsSubmitted(false);
+          setSubmissionError('');
         }, 300);
       }, 3000);
-    } catch (error) {
-      console.error('Error submitting form:', error);
+    } catch (error: any) {
+      console.error('Error submitting form to Strapi:', error);
+      
+      // Handle submission error
+      if (error.response && error.response.data) {
+        // Extract the error message from Strapi's response if available
+        const strapiError = error.response.data.error?.message || 'Failed to submit form. Please try again later.';
+        setSubmissionError(strapiError);
+      } else {
+        setSubmissionError('Network error. Please check your connection and try again.');
+      }
+      
       setIsSubmitting(false);
     }
   };
@@ -353,6 +401,13 @@ const WorkshopPartnerForm: React.FC<WorkshopPartnerFormProps> = ({ isOpen, onClo
           </div>
           
           <div className="p-6">
+            {submissionError && (
+              <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start">
+                <AlertTriangle className="text-red-500 w-5 h-5 mr-2 flex-shrink-0 mt-0.5" />
+                <p className="text-red-700 text-sm">{submissionError}</p>
+              </div>
+            )}
+            
             <div className="flex mb-8">
               <div className={`flex-1 text-center relative ${formStep === 1 ? 'text-[#FF7200] font-semibold' : 'text-gray-500'}`}>
                 <div className={`w-8 h-8 rounded-full ${formStep === 1 ? 'bg-[#FF7200]' : 'bg-gray-200'} text-white flex items-center justify-center mx-auto mb-2`}>
