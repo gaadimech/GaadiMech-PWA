@@ -21,7 +21,16 @@ export default defineConfig({
         '/services/battery',
         '/services/windshield',
         '/services/detailing',
-        '/services/tyre'
+        '/services/tyre',
+        '/jaipur',
+        '/delhi',
+        '/mumbai',
+        '/bangalore',
+        '/chennai',
+        '/kolkata',
+        '/hyderabad',
+        '/pune',
+        '/ahmedabad'
       ],
       exclude: ['/admin', '/dashboard', '/login', '/register', '/reset-password', '/verify-email'],
       generateRobotsTxt: true,
