@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { cities, CityData } from '../data/cityData';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
@@ -13,6 +13,7 @@ import Breadcrumb from '../components/Breadcrumb';
 const CityPage: React.FC = () => {
   const { citySlug } = useParams<{ citySlug: string }>();
   const cityData = cities[citySlug || ''];
+  const navigate = useNavigate();
 
   if (!cityData) {
     return <div>City not found</div>;
@@ -45,6 +46,10 @@ const CityPage: React.FC = () => {
 
   const handleContact = () => {
     window.location.href = `tel:+918448285289`;
+  };
+
+  const handleServiceClick = (serviceType: string) => {
+    navigate(`/services/${serviceType.toLowerCase().replace(/\s+/g, '-')}`);
   };
 
   return (
@@ -246,6 +251,8 @@ const CityPage: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
+                onClick={() => handleServiceClick(service.title)}
+                className="cursor-pointer"
               >
                 <Card className="p-8 hover:shadow-lg transition-shadow duration-300 group">
                   <div className="flex items-center mb-6">
@@ -255,7 +262,14 @@ const CityPage: React.FC = () => {
                     <h3 className="text-xl font-semibold">{service.title}</h3>
                   </div>
                   <p className="text-gray-600">{service.description}</p>
-                  <Button variant="ghost" className="mt-4 text-[#FF7200] hover:text-[#FF9500]">
+                  <Button 
+                    variant="ghost" 
+                    className="mt-4 text-[#FF7200] hover:text-[#FF9500]"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleServiceClick(service.title);
+                    }}
+                  >
                     Learn More →
                   </Button>
                 </Card>
@@ -331,7 +345,40 @@ const CityPage: React.FC = () => {
             <p className="text-gray-600 max-w-2xl mx-auto">Find answers to common questions about our car services in {cityData.name}</p>
           </div>
           <div className="max-w-3xl mx-auto">
-            {cityData.faqs.map((faq, index) => (
+            {[
+              {
+                question: `How do I find a reliable car mechanic near me in ${cityData.name}?`,
+                answer: `GaadiMech is your trusted car mechanic near you in ${cityData.name}. We offer professional automotive repair services with experienced mechanics available 24/7. Our car repair shop near you provides comprehensive vehicle maintenance and repair solutions.`
+              },
+              {
+                question: `What car repair services do you offer in ${cityData.name}?`,
+                answer: `Our auto repair shop offers complete car repair services including engine repair, transmission services, brake repair, AC service and repair, denting and painting, tire services, battery replacement, and more. We're your one-stop car service center for all automotive repair needs.`
+              },
+              {
+                question: `How much does car service cost in ${cityData.name}?`,
+                answer: `Our car service prices in ${cityData.name} are transparent and competitive. We offer affordable car repairs with no hidden charges. The exact cost depends on your vehicle model and service requirements. Contact us for a detailed quote.`
+              },
+              {
+                question: `Do you provide emergency car repair services in ${cityData.name}?`,
+                answer: `Yes, we offer 24/7 emergency car repair services in ${cityData.name}. Whether you need roadside assistance, towing service, or immediate car repair, our mobile mechanics are just a call away.`
+              },
+              {
+                question: `What areas do you cover for car service in ${cityData.name}?`,
+                answer: `We provide car repair services across ${cityData.name} including ${cityData.faqs[1].answer}`
+              },
+              {
+                question: `What types of diagnostic services do you offer?`,
+                answer: `Our auto repair experts provide comprehensive vehicle diagnostics including check engine light diagnostics, emission testing, electrical system diagnosis, and complete vehicle inspection services. We use advanced diagnostic tools to identify and fix issues accurately.`
+              },
+              {
+                question: `Do you offer specialized car AC services?`,
+                answer: `Yes, we are specialists in car AC repair and service. Our car AC mechanics near you can handle all types of AC issues including cooling problems, gas refilling, compressor repair, and complete AC system maintenance.`
+              },
+              {
+                question: `What makes GaadiMech different from other car repair shops?`,
+                answer: `GaadiMech stands out with our doorstep service, professional automotive mechanics, transparent pricing, and 100% satisfaction guarantee. We're not just a car repair shop - we're your complete auto care solution with certified mechanics and modern diagnostic equipment.`
+              }
+            ].map((faq, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
