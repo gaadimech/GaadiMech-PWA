@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import sitemap from 'vite-plugin-sitemap';
+import { compression } from 'vite-plugin-compression2';
 
 export default defineConfig({
   plugins: [
@@ -40,24 +41,37 @@ export default defineConfig({
         disallow: ['/admin', '/dashboard', '/login', '/register', '/reset-password', '/verify-email'],
         crawlDelay: 10
       }]
-    })
+    }),
+    compression({
+      algorithm: 'brotliCompress',
+      exclude: [/\.(br)$/, /\.(gz)$/],
+      deleteOriginalAssets: false,
+    }),
+    compression({
+      algorithm: 'gzip',
+      exclude: [/\.(br)$/, /\.(gz)$/],
+      deleteOriginalAssets: false,
+    }),
   ],
   optimizeDeps: {
     exclude: ['lucide-react'],
-    include: ['react-icons']
+    include: ['react-icons'],
+    esbuildOptions: {
+      target: 'es2020',
+    },
   },
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          router: ['react-router-dom'],
-          ui: ['lucide-react'],
-          animations: ['framer-motion'],
-          modal: ['react-modal'],
-          markdown: ['react-markdown']
-        }
-      }
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) return 'vendor-react';
+            if (id.includes('framer-motion')) return 'vendor-animations';
+            if (id.includes('lucide')) return 'vendor-icons';
+            return 'vendor';
+          }
+        },
+      },
     },
     chunkSizeWarningLimit: 1000,
     cssCodeSplit: true,
@@ -66,16 +80,19 @@ export default defineConfig({
       compress: {
         drop_console: true,
         drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn']
-      }
+        pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn'],
+        passes: 2,
+      },
     },
     sourcemap: false,
     assetsInlineLimit: 4096,
     modulePreload: {
-      polyfill: true
-    }
+      polyfill: true,
+    },
+    target: 'es2020',
+    reportCompressedSize: false,
   },
   server: {
-    compression: true
-  }
+    compression: true,
+  },
 });
