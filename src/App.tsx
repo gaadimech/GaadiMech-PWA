@@ -18,6 +18,7 @@ import Footer from './components/Footer';
 import CustomerForm from './components/CustomerForm';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 import { useAnalytics } from './hooks/useAnalytics';
+import SeoKeywords from './components/SeoKeywords';
 
 // Service Pages
 import PeriodicService from './pages/services/PeriodicService';
@@ -234,6 +235,7 @@ const AppContent = () => {
               <Route path="/workshop-partner" element={<WorkshopPartner />} />
             </Routes>
           </AnimatePresence>
+          <SeoKeywords />
           <Footer />
           {isFormDataLoaded && (
             <CustomerForm 
