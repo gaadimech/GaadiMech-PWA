@@ -59,27 +59,53 @@ const SeoKeywords = () => {
     "Car Service at Home near me",
   ];
 
-  // Split keywords into lines for better readability
-  const lines = [
-    keywords.slice(0, 5),   // First line
-    keywords.slice(5, 10),  // Second line
-    keywords.slice(10, 15), // Third line
-    keywords.slice(15, 20), // Fourth line
-    keywords.slice(20, 25), // Fifth line
-    keywords.slice(25, 30), // Sixth line
-    keywords.slice(30, 35), // Seventh line
-    keywords.slice(35, 40), // Eighth line
-    keywords.slice(40),     // Last line
-  ];
+  // Create responsive line breaks
+  const getMobileLines = () => {
+    const mobileLines = [];
+    for (let i = 0; i < keywords.length; i += 3) {
+      mobileLines.push(keywords.slice(i, i + 3));
+    }
+    return mobileLines;
+  };
+
+  const getDesktopLines = () => {
+    const desktopLines = [];
+    for (let i = 0; i < keywords.length; i += 5) {
+      desktopLines.push(keywords.slice(i, i + 5));
+    }
+    return desktopLines;
+  };
 
   return (
-    <section className="py-6 bg-gray-50/30">
+    <section className="py-4 bg-gray-50/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="space-y-3">
-          {lines.map((line, lineIndex) => (
+        {/* Mobile View */}
+        <div className="space-y-2 md:hidden">
+          {getMobileLines().map((line, lineIndex) => (
             <div 
               key={lineIndex} 
-              className="text-[11px] md:text-xs leading-relaxed text-gray-500/90 font-light"
+              className="text-[9px] leading-relaxed text-gray-400 font-light flex flex-wrap"
+            >
+              {line.map((keyword, keywordIndex) => (
+                <React.Fragment key={keywordIndex}>
+                  <span className="hover:text-gray-600 transition-colors cursor-default">
+                    {keyword}
+                  </span>
+                  {keywordIndex < line.length - 1 && (
+                    <span className="text-gray-300 mx-1">|</span>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop View */}
+        <div className="hidden md:block space-y-2">
+          {getDesktopLines().map((line, lineIndex) => (
+            <div 
+              key={lineIndex} 
+              className="text-xs leading-relaxed text-gray-400 font-light"
             >
               {line.map((keyword, keywordIndex) => (
                 <React.Fragment key={keywordIndex}>
