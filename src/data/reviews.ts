@@ -174,5 +174,20 @@ export const reviews: Review[] = [
 ];
 
 export const getReviewsByService = (serviceName: string): Review[] => {
-  return reviews.filter(review => review.service === serviceName);
+  // Map service types to their corresponding review service names
+  const serviceNameMap: Record<string, string> = {
+    'ac': 'ac_service',
+    'denting': 'dent_paint',
+    'tyre': 'tyre_replacement',
+    'detailing': 'car_detailing',
+    'carspa': 'car_spa',
+    'windshield': 'windshield_replacement',
+    'battery': 'battery_service',
+    'periodic': 'periodic',
+    'express': 'express'
+  };
+
+  // Get the mapped service name or use the original if not found
+  const mappedServiceName = serviceNameMap[serviceName] || serviceName;
+  return reviews.filter(review => review.service === mappedServiceName);
 }; 
