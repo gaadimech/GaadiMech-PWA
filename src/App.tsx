@@ -18,7 +18,6 @@ import Footer from './components/Footer';
 import CustomerForm from './components/CustomerForm';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 import { useAnalytics } from './hooks/useAnalytics';
-import SeoKeywords from './components/SeoKeywords';
 
 // Service Pages
 import PeriodicService from './pages/services/PeriodicService';
@@ -36,8 +35,6 @@ import { enquiryService } from './services/enquiry';
 import PrivacyPolicy from './pages/legal/PrivacyPolicy';
 import Terms from './pages/legal/Terms';
 import RefundPolicy from './pages/legal/RefundPolicy';
-
-import CityPage from './pages/CityPage';
 
 Modal.setAppElement('#root');
 
@@ -235,12 +232,8 @@ const AppContent = () => {
               <Route path="/terms" element={<Terms />} />
               <Route path="/refund-policy" element={<RefundPolicy />} />
               <Route path="/workshop-partner" element={<WorkshopPartner />} />
-              
-              {/* City Routes */}
-              <Route path="/:city" element={<CityPage />} />
             </Routes>
           </AnimatePresence>
-          <SeoKeywords />
           <Footer />
           {isFormDataLoaded && (
             <CustomerForm 
