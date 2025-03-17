@@ -36,6 +36,8 @@ import PrivacyPolicy from './pages/legal/PrivacyPolicy';
 import Terms from './pages/legal/Terms';
 import RefundPolicy from './pages/legal/RefundPolicy';
 
+import CityPage from './pages/CityPage';
+
 Modal.setAppElement('#root');
 
 // Create a new component to use the hook
@@ -232,6 +234,7 @@ const AppContent = () => {
               <Route path="/terms" element={<Terms />} />
               <Route path="/refund-policy" element={<RefundPolicy />} />
               <Route path="/workshop-partner" element={<WorkshopPartner />} />
+              <Route path="/:citySlug" element={<CityPage />} />
             </Routes>
           </AnimatePresence>
           <Footer />
