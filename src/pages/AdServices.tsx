@@ -34,8 +34,8 @@ const services = [
         </motion.div>
       </motion.div>
     ),
-    title: 'Limited Time Offer!',
-    description: 'Get Premium Car Service in 90 Minutes - 20% OFF Today Only!',
+    title: 'Car Service in 90 Mins, or it\'s FREE',
+    description: 'Limited Time Offer!',
     tagline: 'Book Now & Save Big!',
     highlight: true,
     link: '/express',
@@ -181,7 +181,7 @@ const AdServices = () => {
                       className="bg-[#FF7200] text-white px-6 py-2 rounded-md hover:bg-[#0e5aa8] transition-colors flex items-center gap-2 shadow-md"
                     >
                       <Calendar className="w-5 h-5" />
-                      Book Now & Save
+                      Book Slot Now!
                     </motion.button>
                   </div>
                 </div>
