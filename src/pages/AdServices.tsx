@@ -34,7 +34,7 @@ const services = [
         </motion.div>
       </motion.div>
     ),
-    title: 'Car Service in 90 Mins, or it\'s FREE',
+    title: 'Car Service in 90 Mins, or it\'s FREE*',
     description: 'Limited Time Offer!',
     tagline: 'Book Now & Save Big!',
     highlight: true,
@@ -185,6 +185,10 @@ const AdServices = () => {
                     </motion.button>
                   </div>
                 </div>
+              </div>
+              {/* TnC text in bottom right */}
+              <div className="absolute bottom-2 right-3 text-xs text-gray-400">
+                *TnCs Apply
               </div>
             </div>
           </motion.div>
