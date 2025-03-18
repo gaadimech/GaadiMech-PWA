@@ -12,7 +12,8 @@ import Breadcrumb from '../components/Breadcrumb';
 
 const CityPage: React.FC = () => {
   const { citySlug } = useParams<{ citySlug: string }>();
-  const cityData = cities[citySlug || ''];
+  const normalizedCitySlug = citySlug?.toLowerCase() || '';
+  const cityData = cities[normalizedCitySlug];
   const navigate = useNavigate();
 
   if (!cityData) {
