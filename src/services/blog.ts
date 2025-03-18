@@ -6,7 +6,7 @@ export const blogService = {
   async getAllPosts() {
     try {
       const response = await apiClient.get<StrapiResponse<RawBlogPostAttributes>>(
-        '/articles?populate=*'
+        '/articles?populate=*&sort=publishedAt:desc'
       );
       
       // Add debugging to see the raw response

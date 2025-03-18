@@ -16,7 +16,15 @@ const Blog = () => {
         setLoading(true);
         const posts = await blogService.getAllPosts();
         console.log('Fetched blog posts:', posts); // Debug log
-        setPosts(posts);
+        
+        // Sort posts by publishedAt date (newest first) as a backup to API sorting
+        const sortedPosts = [...posts].sort((a, b) => {
+          const dateA = new Date(a.publishedAt || a.createdAt).getTime();
+          const dateB = new Date(b.publishedAt || b.createdAt).getTime();
+          return dateB - dateA; // Descending order (newest first)
+        });
+        
+        setPosts(sortedPosts);
         setError(null);
       } catch (error) {
         console.error('Error fetching blog posts:', error);
