@@ -159,7 +159,7 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
         rating: 4.6,
         reviewCount: 320,
         duration: '45-60 Mins',
-        price: '₹1,999',
+        price: '₹999',
         details: [
           'AC Gas Refill (up to 400gms)',
           'Leak Detection',
@@ -177,17 +177,17 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
         rating: 4.5,
         reviewCount: 180,
         duration: '4-6 Hours',
-        price: '₹3,999',
+          price: 'Real-Time Quotes',
         details: [
-          'AC Gas Refill (up to 400gms)',
-          'Leak Detection',
-          'Condenser Cleaning',
-          'Compressor Inspection',
-          'AC Filter Cleaning',
-          'Cooling Coil Servicing (Includes Dashboard Removing Refitting)',
-          'Compressor Oil Top-up',
+          'Compressor Repair/Replacement',
+          'Condenser Repair/Replacement',
+          'Cooling Coil Repair/Replacement',
+          'Expansion Valve Repair/Replacement',
+          'Blower Motor Repair/Replacement',
+          'Complete AC System Diagnosis',
+          'AC Electrical Circuit Repair',
         ],
-        whatsappMessage: 'Hi, I\'d like to book an AC Repair Service for my car.'
+        whatsappMessage: 'Hi, I\'d like to book a Comprehensive AC Service for my car. I need a real-time estimate based on diagnostic inspection.'
       }
     ]
   },
