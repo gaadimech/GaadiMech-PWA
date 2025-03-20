@@ -134,9 +134,12 @@ const Hero = () => {
                 <div className="bg-[#FF7200] rounded-full p-3 flex-shrink-0">
                   <Clock className="text-white" size={20} />
                 </div>
-                <p className="ml-3 text-lg font-medium text-gray-700">
-                  <span className="text-[#FF7200] font-bold">Express</span> Service
-                </p>
+                <div className="ml-3">
+                  <p className="text-lg font-medium text-gray-700">
+                    <span className="text-[#FF7200] font-bold">No More Waiting</span>
+                  </p>
+                  <span className="text-sm font-semibold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full inline-block mt-1">(90 Mins vs 6+ Hours)</span>
+                </div>
               </motion.div>
               
               <motion.div 
@@ -146,9 +149,12 @@ const Hero = () => {
                 <div className="bg-[#FF7200] rounded-full p-3 flex-shrink-0">
                   <Home className="text-white" size={20} />
                 </div>
-                <p className="ml-3 text-lg font-medium text-gray-700">
-                  <span className="text-[#FF7200] font-bold">Doorstep</span> Pickup & Drop
-                </p>
+                <div className="ml-3">
+                  <p className="text-lg font-medium text-gray-700">
+                    <span className="text-[#FF7200] font-bold">Zero Hassle</span>
+                  </p>
+                  <span className="text-sm font-semibold bg-green-100 text-green-800 px-2 py-0.5 rounded-full inline-block mt-1">(100% doorstep service)</span>
+                </div>
               </motion.div>
               
               <motion.div 
@@ -158,9 +164,12 @@ const Hero = () => {
                 <div className="bg-[#FF7200] rounded-full p-3 flex-shrink-0">
                   <IndianRupee className="text-white" size={20} />
                 </div>
-                <p className="ml-3 text-lg font-medium text-gray-700">
-                  <span className="text-[#FF7200] font-bold">Affordable</span> Pricing
-                </p>
+                <div className="ml-3">
+                  <p className="text-lg font-medium text-gray-700">
+                    <span className="text-[#FF7200] font-bold">Transparent Pricing</span>
+                  </p>
+                  <span className="text-sm font-semibold bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full inline-block mt-1">(No hidden fees)</span>
+                </div>
               </motion.div>
             </motion.div>
             
