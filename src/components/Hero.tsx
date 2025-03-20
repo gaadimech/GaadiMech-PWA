@@ -273,14 +273,16 @@ const Hero = () => {
               {/* Frame overlay */}
               <div className="absolute inset-0 border-[8px] border-white rounded-lg shadow-xl"></div>
               
-              <img
-                src="https://i.ibb.co/Kcb1YjZc/Mechanic-Image-1.png"
-                alt="Professional mechanic working on a car"
-                className="rounded-lg shadow-xl w-full max-w-2xl mx-auto hover:opacity-90 transition-opacity"
-                loading="lazy"
+              <iframe
+                src="https://www.youtube.com/embed/unRdRJJypR4?si=V9CFOHrq8EU6WEzB&autoplay=1&mute=1&loop=1&playlist=unRdRJJypR4"
+                title="Car Service Timelapse"
+                className="rounded-lg shadow-xl w-full max-w-2xl mx-auto"
                 width="800"
                 height="600"
-              />
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              ></iframe>
 
               {/* Animated review badge overlay */}
               <motion.div
