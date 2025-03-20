@@ -206,7 +206,7 @@ const ExpressService = () => {
         carModel: carModel,
         fuel_type: fuelType,
         servicePrice: price
-      });
+      } as any);
       
       if (!response || !response.data || !response.data.id) {
         throw new Error('Invalid response from server');
@@ -597,6 +597,31 @@ Booking Slot: ${new Date(date).toLocaleDateString('en-IN', { day: 'numeric', mon
         servicePrice={selectedServicePrice || 0}
         initialMobileNumber={mobile}
       />
+
+      {/* Timelapse Video Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              See Express Service in Action
+            </h2>
+            <p className="text-xl text-gray-600">
+              Watch how we complete your car service in just 90 minutes
+            </p>
+          </div>
+          <div className="relative overflow-hidden pb-[56.25%] rounded-lg shadow-xl">
+            <iframe 
+              className="absolute top-0 left-0 w-full h-full"
+              src="https://www.youtube.com/embed/unRdRJJypR4?si=yDPoz_MREFH_Zsyi" 
+              title="YouTube video player" 
+              frameBorder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              referrerPolicy="strict-origin-when-cross-origin" 
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
+      </section>
 
       {/* How It Works */}
       <section className="py-20 bg-gray-50">
