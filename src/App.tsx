@@ -35,6 +35,7 @@ import { enquiryService } from './services/enquiry';
 import PrivacyPolicy from './pages/legal/PrivacyPolicy';
 import Terms from './pages/legal/Terms';
 import RefundPolicy from './pages/legal/RefundPolicy';
+import ExpressServiceTnC from './pages/legal/ExpressServiceTnC';
 
 import CityPage from './pages/CityPage';
 
@@ -233,6 +234,7 @@ const AppContent = () => {
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/refund-policy" element={<RefundPolicy />} />
+              <Route path="/express-Service-TnCs" element={<ExpressServiceTnC />} />
               <Route path="/workshop-partner" element={<WorkshopPartner />} />
               <Route path="/:citySlug" element={<CityPage />} />
             </Routes>

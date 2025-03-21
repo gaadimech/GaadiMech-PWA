@@ -12,6 +12,7 @@ import { enquiryService } from '../services/enquiry';
 import Modal from 'react-modal';
 import { useLocation } from 'react-router-dom';
 import { getVehicleFromSession } from '../utils/pricing-utils';
+import { Link } from 'react-router-dom';
 
 const steps = [
   {
@@ -756,6 +757,15 @@ Booking Slot: ${new Date(date).toLocaleDateString('en-IN', { day: 'numeric', mon
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ReviewCarousel reviews={serviceReviews} />
+        </div>
+      </section>
+
+      {/* Terms and Conditions Note */}
+      <section className="py-6 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-sm text-gray-500">
+            *Terms and conditions apply. For complete details, visit our <Link to="/express-Service-TnCs" className="text-[#FF7200] hover:underline">Express Service Terms and Conditions</Link> page.
+          </p>
         </div>
       </section>
     </motion.div>
