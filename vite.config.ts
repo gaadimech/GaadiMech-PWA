@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [
     react(),
     sitemap({
-      hostname: 'https://gaadimech.com',
+      hostname: 'https://www.gaadimech.com',
       dynamicRoutes: [
         '/',
         '/about',
@@ -67,6 +67,5 @@ export default defineConfig({
     }
   },
   server: {
-    compression: true
   }
 });
