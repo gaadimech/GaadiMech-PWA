@@ -52,6 +52,30 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
     title: 'Car Periodic Service',
     subtitle: 'Keep Your Car Running Smoothly With Our Expert Maintenance Services',
     serviceCards: [
+      {
+        id: 'periodic-express',
+        title: 'Express Service',
+        description: 'Ultra Fast Car Service - Time is Money!',
+        image: 'https://i.ibb.co/t4HmbHZ/Group.png',
+        rating: 4.8,
+        reviewCount: 190,
+        duration: '90 Mins!',
+        price: '₹X,XXX',
+        visible: true, // Changed from false to true to make it visible
+        details: [
+          'Engine Oil Replacement',
+          'Oil Filter Replacement',
+          'Air Filter Replacement',
+          'Complete Car Wash',
+          'Interior Vacuuming',
+          '15 Point Car Inspection',
+          'Coolant Top-up (up to 100ml)',
+          'Battery Water Top-up',
+          'Brake Oil Top-up',
+          'Wiper Fluid Replacement',
+        ],
+        whatsappMessage: 'Hi, I\'d like to book an Express Service for my car.'
+      },
       customizedServiceCard,
       {
         id: 'periodic-basic',
@@ -62,7 +86,7 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
         reviewCount: 570,
         duration: '4-5 Hours',
         price: '₹X,XXX',
-        visible: true, // Visible by default
+        visible: false, // Changed from true to false to temporarily hide
         details: [
           'Engine Oil Replacement',
           'Oil Filter Replacement',
@@ -77,30 +101,6 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
           'Wiper Fluid Replacement',
         ],
         whatsappMessage: 'Hi, I\'d like to book a Periodic Service for my car.'
-      },
-      {
-        id: 'periodic-express',
-        title: 'Express Service',
-        description: 'Ultra Fast Car Service - Time is Money!',
-        image: 'https://i.ibb.co/t4HmbHZ/Group.png',
-        rating: 4.8,
-        reviewCount: 190,
-        duration: '90 Mins!',
-        price: '₹X,XXX',
-        visible: false, // Set to false to hide
-        details: [
-          'Engine Oil Replacement',
-          'Oil Filter Replacement',
-          'Air Filter Replacement',
-          'Complete Car Wash',
-          'Interior Vacuuming',
-          '15 Point Car Inspection',
-          'Coolant Top-up (up to 100ml)',
-          'Battery Water Top-up',
-          'Brake Oil Top-up',
-          'Wiper Fluid Replacement',
-        ],
-        whatsappMessage: 'Hi, I\'d like to book an Express Service for my car.'
       }
     ]
   },
@@ -192,6 +192,31 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
     ]
   },
   // Add more service types as needed
+  'battery': {
+    title: 'Car Battery Replacement',
+    subtitle: 'Professional Battery Replacement Services for Your Vehicle',
+    serviceCards: []
+  },
+  'windshield': {
+    title: 'Windshield Replacement & Repair',
+    subtitle: 'Expert Windshield Services to Ensure Safety and Visibility',
+    serviceCards: []
+  },
+  'detailing': {
+    title: 'Car Detailing Services',
+    subtitle: 'Comprehensive Detailing Services to Make Your Car Look Brand New',
+    serviceCards: []
+  },
+  'tyre': {
+    title: 'Tyre Services',
+    subtitle: 'Professional Tyre Repair, Replacement and Maintenance Services',
+    serviceCards: []
+  },
+  'carspa': {
+    title: 'Car Spa & Cleaning',
+    subtitle: 'Premium Car Spa Services for a Fresh and Clean Vehicle',
+    serviceCards: []
+  }
 };
 
 export default servicesData; 

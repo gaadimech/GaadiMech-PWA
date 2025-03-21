@@ -155,12 +155,27 @@ Total Package Price: ₹${currentTotalPrice.toFixed(2)}`;
       let serviceName = card.title;
       
       // Create the custom message
-      customMessage = `Hi, I've Booked a ${serviceName} from GaadiMech.com.
+      if (isExpressService) {
+        // For Express Service, include both original and discounted prices
+        const originalPrice = actualPrice;
+        const discountedPrice = getDiscountedPrice();
+        
+        customMessage = `Hi, I've Booked a ${serviceName} from GaadiMech.com.
+Details:
+Car Model: *${selectedVehicle.manufacturer} ${selectedVehicle.model}*
+Fuel Type: ${selectedVehicle.fuelType}
+Service Type: ${serviceName}
+Original Price: ${originalPrice}
+Discounted Price (₹500 off): ${discountedPrice}`;
+      } else {
+        // For other services, use regular pricing
+        customMessage = `Hi, I've Booked a ${serviceName} from GaadiMech.com.
 Details:
 Car Model: *${selectedVehicle.manufacturer} ${selectedVehicle.model}*
 Fuel Type: ${selectedVehicle.fuelType}
 Service Type: ${serviceName}
 Package Price: ${actualPrice}`;
+      }
     }
     
     // Open WhatsApp with pre-filled message
@@ -203,10 +218,24 @@ Package Price: ${actualPrice}`;
         // When no vehicle is selected, show the card's default price
         return card.price;
       }
+    } else if (isExpressService && vehicleSelected && actualPrice) {
+      // For express service with selected vehicle, return the original price without discount
+      // The discount will be applied in the UI
+      return actualPrice;
     } else {
       // For other cards, use the normal logic
       return vehicleSelected && actualPrice ? actualPrice : card.price;
     }
+  };
+  
+  // Calculate the discounted price for express service (₹500 off)
+  const getDiscountedPrice = () => {
+    if (isExpressService && vehicleSelected && actualPrice) {
+      const originalPrice = parseFloat(actualPrice.replace(/[^\d.]/g, ''));
+      const discountedPrice = Math.max(0, originalPrice - 500); // Ensure price doesn't go below 0
+      return `₹${discountedPrice.toFixed(2)}`;
+    }
+    return null;
   };
   
   // Common button class to ensure consistency
@@ -528,26 +557,34 @@ Package Price: ${actualPrice}`;
   
   return (
     <motion.div 
-      className="bg-white rounded-lg shadow-lg p-6 relative flex flex-col h-full"
+      className={`bg-white rounded-lg shadow-lg relative flex flex-col h-full overflow-hidden
+      ${isExpressService ? 'border-2 border-[#FF7200]' : ''}`}
       whileHover={{ y: -5 }}
       transition={{ duration: 0.3 }}
     >
+      {/* Express Service Banner - Only for Express Service */}
+      {isExpressService && (
+        <div className="absolute top-0 right-0 bg-[#FF7200] text-white text-xs font-bold py-1.5 px-4 shadow-md transform rotate-45 translate-x-7 translate-y-2 z-10">
+          EXPRESS
+        </div>
+      )}
+      
       {/* Card content is organized into three main sections with consistent heights */}
       
       {/* Header Section */}
-      <div className="mb-3">
+      <div className={`p-6 ${isExpressService ? 'pb-3' : 'pb-4'}`}>
         {card.isBestseller && (
           <div className="absolute top-4 left-4 bg-[#FFF0E6] text-[#FF7200] text-xs font-semibold py-1 px-2 rounded">
             Bestseller
           </div>
         )}
         
-        <h3 className="text-xl font-bold text-gray-900">{card.title}</h3>
-        <p className="text-gray-600 text-sm min-h-[40px]">{card.description}</p>
+        <h3 className={`text-xl font-bold ${isExpressService ? 'text-[#FF7200]' : 'text-gray-900'}`}>{card.title}</h3>
+        <p className="text-gray-600 text-sm min-h-[40px] mt-1">{card.description}</p>
       </div>
       
-      {/* Info Section */}
-      <div className="border-t border-b border-gray-100 py-3 mb-3">
+      {/* Info Section - Made more attractive for Express */}
+      <div className="border-t border-b border-gray-100 mx-6 py-3">
         <div className="flex items-center">
           <div className="bg-green-100 text-green-800 rounded-md px-2 py-1 flex items-center">
             <Star className="w-4 h-4 fill-current text-yellow-500 mr-1" />
@@ -556,43 +593,8 @@ Package Price: ${actualPrice}`;
           <span className="text-gray-500 text-sm ml-2">({card.reviewCount}+ reviews)</span>
           
           {isExpressService ? (
-            <div className="relative ml-auto">
-              <motion.div 
-                className="absolute -inset-2 rounded-full"
-                initial={{ pathLength: 0 }}
-                animate={{ 
-                  pathLength: highlightDuration ? 1 : 0,
-                  opacity: highlightDuration ? 1 : 0
-                }}
-                transition={{ 
-                  pathLength: { duration: 1, ease: "easeInOut" },
-                  opacity: { duration: 0.5 }
-                }}
-                style={{ zIndex: 1 }}
-              >
-                <svg 
-                  className="absolute inset-0 w-full h-full"
-                  viewBox="0 0 140 70"
-                  style={{ overflow: 'visible' }}
-                >
-                  <motion.ellipse
-                    cx="70"
-                    cy="35"
-                    rx="68"
-                    ry="34"
-                    fill="none"
-                    stroke="#FF3A3A"
-                    strokeWidth="3"
-                    strokeDasharray="0 1"
-                    initial={{ pathLength: 0 }}
-                    animate={{ 
-                      pathLength: highlightDuration ? 1 : 0
-                    }}
-                    transition={{ duration: 1 }}
-                  />
-                </svg>
-              </motion.div>
-              <div className="flex items-center px-3 py-1.5 rounded-full relative z-10">
+            <div className="relative ml-auto flex items-center">
+              <div className={`flex items-center px-3 py-1.5 rounded-full bg-red-50 ${highlightDuration ? 'ring-2 ring-red-400' : ''}`}>
                 <Clock className="w-4 h-4 text-[#FF7200] mr-1" />
                 <span className="text-sm font-bold text-gray-800">{card.duration}</span>
               </div>
@@ -604,13 +606,29 @@ Package Price: ${actualPrice}`;
       </div>
       
       {/* Action Section - using flex-grow to push this to the bottom */}
-      <div className="flex-grow flex flex-col justify-end">
+      <div className="flex-grow flex flex-col justify-end p-6 pt-4">
         {/* Price and Button */}
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-4">
           <div>
-            <h4 className="text-2xl font-bold text-gray-900">
-              {getDisplayPrice()}
-            </h4>
+            {isExpressService && vehicleSelected && actualPrice ? (
+              <div className="flex flex-col">
+                <div className="flex items-center">
+                  <h4 className="text-2xl font-bold text-[#FF7200]">
+                    {getDiscountedPrice()}
+                  </h4>
+                  <span className="ml-2 text-lg line-through text-gray-500">
+                    {getDisplayPrice()}
+                  </span>
+                </div>
+                <div className="bg-green-100 text-green-700 font-medium text-sm px-2 py-0.5 rounded-md inline-block mt-1 w-fit">
+                  ₹500 OFF
+                </div>
+              </div>
+            ) : (
+              <h4 className="text-2xl font-bold text-gray-900">
+                {getDisplayPrice()}
+              </h4>
+            )}
           </div>
           {vehicleSelected ? (
             card.id === 'customizable-service' ? (
@@ -618,7 +636,7 @@ Package Price: ${actualPrice}`;
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleCustomizeButton}
-                className={buttonClass}
+                className={`${buttonClass} w-full sm:w-[170px]`}
               >
                 BUILD YOUR PACKAGE
                 <ArrowRight className="ml-1" size={16} />
@@ -628,7 +646,10 @@ Package Price: ${actualPrice}`;
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleBookNow}
-                className={buttonClass}
+                className={`${isExpressService ? 
+                  'bg-[#FF7200] hover:bg-[#FF7200]/90 text-white' : 
+                  'bg-[#FF7200] hover:bg-[#FF7200]/90 text-white'} 
+                  px-6 py-3 rounded-md transition-colors flex items-center justify-center w-full sm:w-[170px] text-sm whitespace-nowrap font-bold shadow-md`}
               >
                 BOOK NOW
                 <ArrowRight className="ml-1" size={16} />
@@ -639,7 +660,7 @@ Package Price: ${actualPrice}`;
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onSelectCar}
-              className={selectCarButtonClass}
+              className={`${selectCarButtonClass} w-full sm:w-[170px]`}
             >
               SELECT CAR
               <ArrowRight className="ml-1" size={16} />
@@ -679,8 +700,8 @@ Package Price: ${actualPrice}`;
                 <ul className="space-y-2">
                   {card.details.map((detail, index) => (
                     <li key={index} className="text-gray-700 flex items-start p-1.5 rounded hover:bg-gray-50">
-                      <div className="bg-[#FFF0E6] rounded-full p-1 mr-2 flex-shrink-0">
-                        <Check className="w-3 h-3 text-[#FF7200]" strokeWidth={3} />
+                      <div className={`${isExpressService ? 'bg-[#FFF0E6]' : 'bg-[#FFF0E6]'} rounded-full p-1 mr-2 flex-shrink-0`}>
+                        <Check className={`w-3 h-3 ${isExpressService ? 'text-[#FF7200]' : 'text-[#FF7200]'}`} strokeWidth={3} />
                       </div>
                       <span className="mt-0.5">{detail}</span>
                     </li>
@@ -691,6 +712,13 @@ Package Price: ${actualPrice}`;
           </AnimatePresence>
         </div>
       </div>
+      
+      {/* Express Service Highlight - only for express service and on desktop */}
+      {isExpressService && (
+        <div className="absolute top-1/4 right-0 w-20 h-20 -rotate-45 hidden lg:block">
+          <div className="w-full h-full bg-gradient-to-r from-transparent to-[#FFF0E6] opacity-40"></div>
+        </div>
+      )}
       
       {/* Render the modal using a portal */}
       {renderCustomizationModal()}
