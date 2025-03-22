@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import { submitContactForm } from '../services/contact';
 
+interface ContactProps {
+  isHomePage?: boolean;
+}
+
 interface FormErrors {
   name?: string;
   email?: string;
@@ -9,7 +13,7 @@ interface FormErrors {
   message?: string;
 }
 
-const Contact = () => {
+const Contact: React.FC<ContactProps> = ({ isHomePage = false }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -120,6 +124,63 @@ const Contact = () => {
     return (touchedFields[fieldName] || isSubmitAttempted) && errors[fieldName];
   };
 
+  // Contact information items
+  const contactInfoItems = [
+    {
+      icon: <MapPin className="text-white" size={24} />,
+      title: "Location",
+      content: "GaadiMech HQ, 21, Purani Chungi, Jaipur, Rajasthan",
+      onClick: handleLocationClick
+    },
+    {
+      icon: <Phone className="text-white" size={24} />,
+      title: "Phone",
+      content: "+91 844 828 5289",
+      onClick: handlePhoneClick
+    },
+    {
+      icon: <Mail className="text-white" size={24} />,
+      title: "Email",
+      content: "contact@gaadimech.com",
+      onClick: handleEmailClick
+    }
+  ];
+
+  // Render contact information item
+  const renderContactItem = (item: any, index: number) => (
+    <div 
+      key={index}
+      className="flex items-start gap-4 cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors"
+      onClick={item.onClick}
+    >
+      <div className="bg-[#FF7200] rounded-full p-3 flex-shrink-0">
+        {item.icon}
+      </div>
+      <div>
+        <h3 className="text-lg font-semibold text-gray-900">{item.title}</h3>
+        <p className="text-gray-600 hover:text-[#FF7200]">{item.content}</p>
+      </div>
+    </div>
+  );
+
+  // Home page layout with just the contact info in horizontal format
+  if (isHomePage) {
+    return (
+      <section id="contact" className="py-12 md:py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10 md:mb-16">
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4">Contact Us</h2>
+            <p className="text-base md:text-lg text-gray-600">Get in touch with our expert team</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {contactInfoItems.map((item, index) => renderContactItem(item, index))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Contact page layout with form and contact info
   return (
     <section id="contact" className="py-12 md:py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -232,42 +293,7 @@ const Contact = () => {
             )}
           </div>
           <div className="space-y-6 md:space-y-8">
-            <div 
-              className="flex items-start gap-4 cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors"
-              onClick={handleLocationClick}
-            >
-              <div className="bg-[#FF7200] rounded-full p-3 flex-shrink-0">
-                <MapPin className="text-white" size={24} />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Location</h3>
-                <p className="text-gray-600 hover:text-[#FF7200]">GaadiMech HQ, 21, Purani Chungi, Jaipur, Rajasthan</p>
-              </div>
-            </div>
-            <div 
-              className="flex items-start gap-4 cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors"
-              onClick={handlePhoneClick}
-            >
-              <div className="bg-[#FF7200] rounded-full p-3 flex-shrink-0">
-                <Phone className="text-white" size={24} />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Phone</h3>
-                <p className="text-gray-600 hover:text-[#FF7200]">+91 844 828 5289</p>
-              </div>
-            </div>
-            <div 
-              className="flex items-start gap-4 cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors"
-              onClick={handleEmailClick}
-            >
-              <div className="bg-[#FF7200] rounded-full p-3 flex-shrink-0">
-                <Mail className="text-white" size={24} />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Email</h3>
-                <p className="text-gray-600 hover:text-[#FF7200]">contact@gaadimech.com</p>
-              </div>
-            </div>
+            {contactInfoItems.map((item, index) => renderContactItem(item, index))}
           </div>
         </div>
       </div>

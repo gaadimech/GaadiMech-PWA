@@ -15,7 +15,7 @@ const Home = () => {
       <About />
       <ComingSoon />
       <HomepageFAQSection />
-      <Contact />
+      <Contact isHomePage={true} />
     </main>
   );
 };
