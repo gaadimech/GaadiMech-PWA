@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import { submitContactForm } from '../services/contact';
+import BlogCarousel from './BlogCarousel';
 
 interface ContactProps {
   isHomePage?: boolean;
@@ -175,6 +176,11 @@ const Contact: React.FC<ContactProps> = ({ isHomePage = false }) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {contactInfoItems.map((item, index) => renderContactItem(item, index))}
           </div>
+          
+          {/* Recent Blog Posts Carousel */}
+          <div className="mt-16">
+            <BlogCarousel maxPosts={5} />
+          </div>
         </div>
       </section>
     );
@@ -295,6 +301,11 @@ const Contact: React.FC<ContactProps> = ({ isHomePage = false }) => {
           <div className="space-y-6 md:space-y-8">
             {contactInfoItems.map((item, index) => renderContactItem(item, index))}
           </div>
+        </div>
+        
+        {/* Recent Blog Posts Carousel */}
+        <div className="mt-16">
+          <BlogCarousel maxPosts={5} />
         </div>
       </div>
     </section>

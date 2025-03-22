@@ -49,3 +49,13 @@ input, textarea {
 .bg-radial-gradient {
   background: radial-gradient(circle, rgba(255, 114, 0, 0.2) 0%, rgba(255, 114, 0, 0) 70%);
 }
+
+/* Hide scrollbar for carousel */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
