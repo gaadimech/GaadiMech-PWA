@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { motion } from 'framer-motion';
-import { X, CheckCircle, Shield, Clock, Car, Phone, Gift, AlertTriangle, Users } from 'lucide-react';
+import { X, CheckCircle, Shield, Clock, Car, Phone, Gift, AlertTriangle, Users, TrendingDown, Calendar, ArrowUp, ArrowDown } from 'lucide-react';
 
 interface PricingInfoModalProps {
   isOpen: boolean;
@@ -35,6 +35,10 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
   const [mobileError, setMobileError] = useState<string>('');
   // Simulate a random number of remaining spots between 5-15
   const [spotsRemaining] = useState(() => Math.floor(Math.random() * 11) + 5);
+  
+  // Add state for price history simulation
+  const [priceHistory, setPriceHistory] = useState<{date: string, price: number}[]>([]);
+  const [priceForecast, setPriceForecast] = useState<{date: string, price: number, probability: number}[]>([]);
 
   const customStyles = {
     content: {
@@ -93,6 +97,47 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
     onBookNow(mobileNumber);
   };
 
+  // Generate price history and forecast on component mount
+  useEffect(() => {
+    // Simplified price history: just last week and today
+    const previousPrices: {date: string, price: number}[] = [];
+    
+    // Last week's price (10-20% higher than current)
+    const lastWeekPriceIncrease = Math.random() * 0.1 + 0.1; // 10-20%
+    const lastWeekPrice = Math.round(servicePrice * (1 + lastWeekPriceIncrease));
+    
+    previousPrices.push({
+      date: 'Last Week',
+      price: lastWeekPrice
+    });
+    
+    // Today's price
+    previousPrices.push({
+      date: 'Today',
+      price: servicePrice
+    });
+    
+    setPriceHistory(previousPrices);
+    
+    // Simplified forecast: just next week
+    const futurePrices: {date: string, price: number, probability: number}[] = [];
+    
+    // Next week's price (15-30% higher than current)
+    const nextWeekPriceIncrease = Math.random() * 0.15 + 0.15; // 15-30%
+    const nextWeekPrice = Math.round(servicePrice * (1 + nextWeekPriceIncrease));
+    
+    // High probability of price increase (80-95%)
+    const probability = Math.round(Math.random() * 15 + 80); // 80-95%
+    
+    futurePrices.push({
+      date: 'Next Week',
+      price: nextWeekPrice,
+      probability
+    });
+    
+    setPriceForecast(futurePrices);
+  }, [servicePrice]);
+
   return (
     <Modal
       isOpen={isOpen}
@@ -128,6 +173,90 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
             </div>
           </div>
 
+          {/* UPDATED: Compact Price Chart Section */}
+          <div className="mb-2 bg-blue-50 p-2 rounded-md border border-blue-200">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center">
+                <TrendingDown className="w-3.5 h-3.5 text-green-600 mr-1" />
+                <h3 className="font-semibold text-blue-800 text-sm">Weekly Price Trend</h3>
+              </div>
+              <div className="bg-green-100 text-green-800 text-xs font-bold px-2 py-0.5 rounded-full animate-pulse">
+                Today: ₹{servicePrice}
+              </div>
+            </div>
+            
+            {/* Simplified Weekly Price Timeline */}
+            <div className="relative mb-2 mt-3 px-2">
+              {/* Horizontal line */}
+              <div className="absolute top-[25px] left-0 right-0 h-[1.5px] bg-gray-200 z-0"></div>
+              
+              {/* Price points - just 3 points now: Last Week, Today, Next Week */}
+              <div className="flex justify-between items-center">
+                {/* Last Week */}
+                <div className="flex flex-col items-center relative z-10">
+                  {/* Price tag */}
+                  <div className="text-xs font-bold text-gray-600 bg-gray-100 border-gray-300 px-1.5 py-0.5 rounded-full border mb-1 whitespace-nowrap">
+                    ₹{priceHistory[0]?.price || 0}
+                  </div>
+                  
+                  {/* Dot - all dots at exactly same height */}
+                  <div className="w-3 h-3 rounded-full bg-gray-400 border-2 border-white shadow-sm"></div>
+                  
+                  {/* Date */}
+                  <div className="text-xs text-gray-500 mt-1 text-center">
+                    Last Week
+                  </div>
+                </div>
+
+                {/* Today - with animated circle */}
+                <div className="flex flex-col items-center relative z-10">
+                  {/* Animated circle around price tag */}
+                  <div className="relative">
+                    {/* Animated circle */}
+                    <div className="absolute -top-1 -left-1 -right-1 -bottom-1 rounded-full border-2 border-green-500 animate-pulse"></div>
+                    
+                    {/* Price tag */}
+                    <div className="text-xs font-bold text-green-600 bg-green-100 border-green-300 px-1.5 py-0.5 rounded-full border whitespace-nowrap">
+                      ₹{servicePrice}
+                    </div>
+                  </div>
+                  
+                  {/* Dot - same size and alignment for all dots */}
+                  <div className="w-3 h-3 rounded-full bg-green-500 border-2 border-white shadow-sm mt-1"></div>
+                  
+                  {/* Date */}
+                  <div className="text-xs text-green-700 mt-1 text-center font-bold">
+                    Today
+                  </div>
+                </div>
+
+                {/* Next Week */}
+                <div className="flex flex-col items-center relative z-10">
+                  {/* Price tag - removed probability badge */}
+                  <div className="text-xs font-bold text-red-600 bg-red-50 border-red-200 px-1.5 py-0.5 rounded-full border mb-1 whitespace-nowrap">
+                    ₹{priceForecast[0]?.price || 0}
+                  </div>
+                  
+                  {/* Dot - all dots aligned perfectly */}
+                  <div className="w-3 h-3 rounded-full bg-red-400 border-2 border-white shadow-sm"></div>
+                  
+                  {/* Date */}
+                  <div className="text-xs text-gray-500 mt-1 text-center">
+                    Next Week
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Action prompt - kept as requested */}
+            <div className="bg-amber-50 p-1.5 rounded-md border border-amber-200 text-center mt-2">
+              <p className="text-xs font-medium text-amber-800">
+                <AlertTriangle className="w-3 h-3 inline-block mr-1" />
+                Price likely to increase next week. Lock Price Today!
+              </p>
+            </div>
+          </div>
+
           {/* Pricing comparison with clean design */}
           <div className="mb-3">
             {/* Regular Workshop Service - subdued */}
@@ -154,20 +283,6 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
                 </div>
                 <div className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded-full self-start sm:self-auto">
                   Save {savingsPercentage}%
-                </div>
-              </div>
-              
-              {/* Merged limited offer into the main widget - NEW */}
-              <div className="mt-2 flex items-center justify-between border-t border-orange-200 pt-1">
-                <div className="flex items-center">
-                  <AlertTriangle className="w-3 h-3 text-amber-600 mr-1 flex-shrink-0" />
-                  <p className="text-xs font-medium text-amber-800">
-                    Limited offer! Only available for the first 100 users.
-                  </p>
-                </div>
-                <div className="flex items-center bg-amber-100 px-2 py-0.5 rounded">
-                  <Users className="w-3 h-3 text-amber-800 mr-1" />
-                  <span className="text-xs font-bold text-amber-900">{spotsRemaining} spots left</span>
                 </div>
               </div>
             </div>
