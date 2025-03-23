@@ -45,6 +45,9 @@ const ServiceCard: React.FC<ServiceCardComponentProps> = ({
   const [basePackagePrice, setBasePackagePrice] = useState(0);
   const [currentTotalPrice, setCurrentTotalPrice] = useState(0);
   
+  // Also update the mobile number input section to show the discount is already applied
+  const [showMobileInput, setShowMobileInput] = useState(false);
+  
   // Animation for express service
   useEffect(() => {
     if (isExpressService) {
@@ -166,7 +169,7 @@ Car Model: *${selectedVehicle.manufacturer} ${selectedVehicle.model}*
 Fuel Type: ${selectedVehicle.fuelType}
 Service Type: ${serviceName}
 Original Price: ${originalPrice}
-Discounted Price (₹500 off): ${discountedPrice}`;
+Final Price (₹500 discount already applied): ${discountedPrice}`;
       } else {
         // For other services, use regular pricing
         customMessage = `Hi, I've Booked a ${serviceName} from GaadiMech.com.
@@ -555,6 +558,16 @@ Package Price: ${actualPrice}`;
     );
   };
   
+  const handleMobileButtonClick = () => {
+    if (isExpressService) {
+      // For Express Service, no need to show mobile input since discount is already applied
+      // Just proceed with booking
+      handleBookNow();
+    } else {
+      setShowMobileInput(true);
+    }
+  };
+  
   return (
     <motion.div 
       className={`bg-white rounded-lg shadow-lg relative flex flex-col h-full overflow-hidden
@@ -603,6 +616,23 @@ Package Price: ${actualPrice}`;
             <span className="text-gray-500 text-sm ml-auto">{card.duration}</span>
           )}
         </div>
+        
+        {isExpressService ? (
+          <div className="mt-2 flex items-center justify-between border-t border-dashed border-green-200 pt-2">
+            <div className="flex items-center">
+              <div className="bg-green-100 p-1 rounded-full mr-1.5">
+                <Check className="w-3 h-3 text-green-600" />
+              </div>
+              <span className="text-xs text-green-700 font-medium">₹500 discount auto-applied</span>
+            </div>
+            <span className="text-xs text-gray-500">Limited time offer</span>
+          </div>
+        ) : (
+          <div className="mt-2 text-xs text-gray-600 flex items-center">
+            <span className="mr-1">✓</span>
+            <span>₹500 discount already applied - no mobile number needed!</span>
+          </div>
+        )}
       </div>
       
       {/* Action Section - using flex-grow to push this to the bottom */}
@@ -613,15 +643,22 @@ Package Price: ${actualPrice}`;
             {isExpressService && vehicleSelected && actualPrice ? (
               <div className="flex flex-col">
                 <div className="flex items-center">
-                  <h4 className="text-2xl font-bold text-[#FF7200]">
-                    {getDiscountedPrice()}
-                  </h4>
-                  <span className="ml-2 text-lg line-through text-gray-500">
-                    {getDisplayPrice()}
-                  </span>
-                </div>
-                <div className="bg-green-100 text-green-700 font-medium text-sm px-2 py-0.5 rounded-md inline-block mt-1 w-fit">
-                  ₹500 OFF
+                  <div className="flex flex-col">
+                    <div className="flex items-baseline">
+                      <h4 className="text-2xl font-bold text-[#FF7200]">
+                        {getDiscountedPrice()}
+                      </h4>
+                      <span className="ml-2 text-sm line-through text-gray-500">
+                        {getDisplayPrice()}
+                      </span>
+                    </div>
+                    <div className="flex items-center mt-1">
+                      <div className="bg-green-100 text-green-700 font-medium text-xs px-2 py-0.5 rounded-md inline-block w-fit">
+                        ₹500 OFF
+                      </div>
+                      <span className="ml-2 text-xs text-gray-600">Auto-applied at checkout</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -645,7 +682,7 @@ Package Price: ${actualPrice}`;
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={handleBookNow}
+                onClick={handleMobileButtonClick}
                 className={`${isExpressService ? 
                   'bg-[#FF7200] hover:bg-[#FF7200]/90 text-white' : 
                   'bg-[#FF7200] hover:bg-[#FF7200]/90 text-white'} 
@@ -722,6 +759,37 @@ Package Price: ${actualPrice}`;
       
       {/* Render the modal using a portal */}
       {renderCustomizationModal()}
+
+      {/* Mobile number input and discount section (conditionally rendered) */}
+      {showMobileInput && !isExpressService && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50" style={{ backdropFilter: 'blur(2px)' }}>
+          <div className="bg-white rounded-xl w-full max-w-md p-6 shadow-2xl">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold">Enter your mobile number</h3>
+              <button onClick={() => setShowMobileInput(false)} className="p-1 rounded-full hover:bg-gray-100">
+                <X size={18} className="text-gray-500" />
+              </button>
+            </div>
+            <div className="mb-4">
+              <input 
+                type="tel" 
+                placeholder="Enter Your Mobile Number" 
+                className="w-full border border-gray-300 rounded-lg px-4 py-3"
+                maxLength={10}
+              />
+            </div>
+            <button 
+              onClick={() => {
+                setShowMobileInput(false);
+                handleBookNow();
+              }}
+              className={`${buttonClass} w-full`}
+            >
+              Unlock ₹500 Discount Now! <ArrowRight className="ml-1" size={16} />
+            </button>
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 };

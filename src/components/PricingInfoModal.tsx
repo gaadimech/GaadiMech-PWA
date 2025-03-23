@@ -149,7 +149,12 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
       <div className="bg-white rounded-lg shadow-xl overflow-hidden">
         {/* Header with white background instead of orange gradient */}
         <div className="flex justify-between items-center p-3 bg-white text-gray-800 border-b border-gray-200">
-          <h2 className="text-xl font-bold">Express Service</h2>
+          <div className="flex items-center">
+            <h2 className="text-xl font-bold">Express Service</h2>
+            <div className="ml-2 bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-sm flex items-center">
+              <span>₹500 OFF</span>
+            </div>
+          </div>
           <button
             onClick={onClose}
             className="text-gray-600 hover:text-gray-800 transition-colors"
@@ -215,9 +220,17 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
                     {/* Animated circle */}
                     <div className="absolute -top-1 -left-1 -right-1 -bottom-1 rounded-full border-2 border-green-500 animate-pulse"></div>
                     
-                    {/* Price tag */}
-                    <div className="text-xs font-bold text-green-600 bg-green-100 border-green-300 px-1.5 py-0.5 rounded-full border whitespace-nowrap">
-                      ₹{servicePrice}
+                    {/* Today's price with original and discounted price */}
+                    <div className="flex flex-col items-center">
+                      <div className="text-xs font-bold text-gray-600 line-through mb-0.5">₹{servicePrice}</div>
+                      <div className="text-xs font-bold text-green-600 bg-green-100 border-green-300 px-1.5 py-0.5 rounded-full border whitespace-nowrap">
+                        ₹{servicePrice - 500}
+                      </div>
+                      <div className="absolute -right-6 -top-3">
+                        <div className="text-[9px] font-bold bg-red-500 text-white px-1 py-0.5 rounded rotate-12">
+                          -₹500
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
@@ -248,7 +261,7 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
               </div>
             </div>
             
-            {/* Action prompt - kept as requested */}
+            {/* Action prompt - updated with discount mention */}
             <div className="bg-amber-50 p-1.5 rounded-md border border-amber-200 text-center mt-2">
               <p className="text-xs font-medium text-amber-800">
                 <AlertTriangle className="w-3 h-3 inline-block mr-1" />
@@ -274,7 +287,15 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
             <div className="p-2 bg-orange-50 rounded-b-md">
               <div className="flex justify-between items-center mb-1">
                 <div className="text-base font-bold text-gray-800">Express Service</div>
-                <div className="text-xl font-bold text-gray-900">₹{servicePrice}</div>
+                <div className="flex flex-col items-end">
+                  <div className="flex items-baseline">
+                    <span className="text-lg line-through text-gray-500 mr-2">₹{servicePrice}</span>
+                    <span className="text-xl font-bold text-[#FF7200]">₹{servicePrice - 500}</span>
+                  </div>
+                  <div className="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-md inline-block">
+                    ₹500 OFF
+                  </div>
+                </div>
               </div>
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                 <div className="flex items-center text-xs text-[#FF7200] mb-1 sm:mb-0">
@@ -290,45 +311,43 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
 
           {/* Mobile Number Input - REARRANGED */}
           <div className="mb-3">
-            {/* Highlight box around entire input section - simplified styling */}
-            <div className="border border-green-400 rounded-md p-2 bg-green-50">
-              {/* More compact layout */}
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center">
-                  <Gift className="w-4 h-4 text-green-600 mr-1.5 flex-shrink-0" />
-                  <div>
-                    <p className="font-semibold text-green-800 text-sm">Enter your mobile number</p>
-                    <p className="text-xs text-green-700">Get instant ₹500 OFF on your service!</p>
-                  </div>
-                </div>
-                <div className="bg-green-600 text-white text-sm font-bold px-2 py-0.5 rounded">
-                  ₹500 OFF
+            {/* Highlight box around entire input section - with stronger styling to grab attention */}
+            <div className="border-2 border-green-500 rounded-md p-3 bg-green-50 shadow-sm">
+              {/* Larger text layout that fills the width better */}
+              <div className="text-center mb-2">
+                <p className="font-bold text-green-800 text-lg">Enter your mobile number</p>
+                <div className="flex items-center justify-center mt-1">
+                  <p className="text-sm text-green-700">Get instant</p>
+                  <span className="mx-1.5 bg-green-700 text-white text-sm font-bold px-2 py-0.5 rounded-sm">
+                    ₹500 OFF
+                  </span>
+                  <p className="text-sm text-green-700">on your service!</p>
                 </div>
               </div>
               
-              {/* Simple down arrow with less space */}
-              <div className="flex justify-center my-1">
-                <svg className="w-4 h-4 text-green-600 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              {/* Simple down arrow with animation */}
+              <div className="flex justify-center my-1.5">
+                <svg className="w-5 h-5 text-green-600 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                 </svg>
               </div>
               
-              {/* Streamlined input field */}
+              {/* Improved input field with stronger focus states */}
               <div className="relative mb-2">
                 <input
                   type="tel"
                   value={mobileNumber}
                   onChange={(e) => setMobileNumber(e.target.value)}
                   placeholder="Enter Your Mobile Number"
-                  className="w-full p-2 pl-8 outline-none text-gray-800 text-base border border-gray-300 rounded-md focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                  className="w-full p-3 pl-10 outline-none text-gray-800 text-base border-2 border-gray-300 rounded-md focus:border-green-500 focus:ring-2 focus:ring-green-500 transition-all"
                   maxLength={10}
                   pattern="[0-9]*"
                   required
                   autoFocus
                 />
                 {/* Phone icon */}
-                <div className="absolute left-0 top-0 h-full flex items-center justify-center pl-2">
-                  <Phone className="w-4 h-4 text-green-600" />
+                <div className="absolute left-0 top-0 h-full flex items-center justify-center pl-3">
+                  <Phone className="w-5 h-5 text-green-600" />
                 </div>
               </div>
               
@@ -339,24 +358,24 @@ const PricingInfoModal: React.FC<PricingInfoModalProps> = ({
                 </p>
               )}
               
-              {/* CTA Button */}
+              {/* CTA Button - more attention-grabbing */}
               <motion.button
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.99 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={handleSubmit}
-                className="w-full py-2.5 px-3 bg-[#FF7200] text-white font-bold rounded-md hover:bg-[#e86700] transition-colors shadow-sm text-base flex items-center justify-center"
+                className="w-full py-3 px-3 bg-[#FF7200] text-white font-bold rounded-md hover:bg-[#e86700] transition-colors shadow-md text-base flex items-center justify-center"
               >
-                <span>Unlock ₹500 Discount Now!</span>
+                <span>GET ₹500 OFF NOW!</span>
                 <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </motion.button>
               
-              {/* Minimal message under button */}
-              <div className="text-center mt-1">
+              {/* Urgency message under button */}
+              <div className="text-center mt-2">
                 <p className="text-xs text-amber-700 flex items-center justify-center">
                   <Clock className="w-3 h-3 mr-1" />
-                  Don't miss out! Claim your discount before it's gone.
+                  Limited time offer! Enter mobile number to lock in the discount.
                 </p>
               </div>
             </div>
