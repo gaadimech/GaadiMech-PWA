@@ -15,13 +15,15 @@ const TimeSlotModal: React.FC<TimeSlotModalProps> = ({ isOpen, onClose, onSubmit
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [availableDates, setAvailableDates] = useState<string[]>([]);
-  const [timeSlots] = useState<string[]>([
-    '9:00 AM - 11:00 AM',
-    '11:00 AM - 1:00 PM',
-    '1:00 PM - 3:00 PM',
-    '3:00 PM - 5:00 PM',
-    '5:00 PM - 7:00 PM'
-  ]);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
+  
+  const allTimeSlots = [
+    { start: '09:00', end: '11:00', display: '9:00 AM - 11:00 AM' },
+    { start: '11:00', end: '13:00', display: '11:00 AM - 1:00 PM' },
+    { start: '13:00', end: '15:00', display: '1:00 PM - 3:00 PM' },
+    { start: '15:00', end: '17:00', display: '3:00 PM - 5:00 PM' },
+    { start: '17:00', end: '19:00', display: '5:00 PM - 7:00 PM' }
+  ];
 
   useEffect(() => {
     // Generate available dates (today + next 7 days)
@@ -38,6 +40,35 @@ const TimeSlotModal: React.FC<TimeSlotModalProps> = ({ isOpen, onClose, onSubmit
     setAvailableDates(dates);
     setSelectedDate(dates[0]); // Default to today
   }, []);
+
+  useEffect(() => {
+    if (!selectedDate) return;
+
+    const today = new Date();
+    const selectedDateObj = new Date(selectedDate);
+    const isToday = selectedDateObj.toDateString() === today.toDateString();
+
+    if (isToday) {
+      const currentTime = today.getHours() * 60 + today.getMinutes();
+      
+      // Filter out time slots that have already started
+      const availableSlots = allTimeSlots.filter(slot => {
+        const slotStartTime = parseInt(slot.start.split(':')[0]) * 60 + parseInt(slot.start.split(':')[1]);
+        // Only show slots that haven't started yet
+        return slotStartTime > currentTime;
+      });
+
+      setAvailableTimeSlots(availableSlots.map(slot => slot.display));
+    } else {
+      // For future dates, show all slots
+      setAvailableTimeSlots(allTimeSlots.map(slot => slot.display));
+    }
+
+    // Reset selected time slot if it's no longer available
+    if (selectedTimeSlot && !availableTimeSlots.includes(selectedTimeSlot)) {
+      setSelectedTimeSlot('');
+    }
+  }, [selectedDate]);
 
   const formatDateDisplay = (dateStr: string): string => {
     if (!dateStr) return '';
@@ -181,7 +212,7 @@ const TimeSlotModal: React.FC<TimeSlotModalProps> = ({ isOpen, onClose, onSubmit
                 Select Time Slot
               </label>
               <div className="grid grid-cols-1 gap-1.5 sm:gap-2">
-                {timeSlots.map((slot) => (
+                {availableTimeSlots.map((slot) => (
                   <button
                     key={slot}
                     type="button"
