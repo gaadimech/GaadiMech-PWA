@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Calendar, Clock, Gift, CheckCircle, Award } from 'lucide-react';
+import { X, Calendar, Clock, Gift, CheckCircle, Award, Users } from 'lucide-react';
 
 interface TimeSlotModalProps {
   isOpen: boolean;
@@ -11,19 +11,59 @@ interface TimeSlotModalProps {
   servicePrice?: number;
 }
 
+// Define interface for time slot
+interface TimeSlot {
+  start: string;
+  end: string;
+  display: string;
+  isHighPriority: boolean;
+}
+
 const TimeSlotModal: React.FC<TimeSlotModalProps> = ({ isOpen, onClose, onSubmit, mobileNumber, servicePrice = 0 }) => {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [availableDates, setAvailableDates] = useState<string[]>([]);
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
+  const [bookedSlotsByDate, setBookedSlotsByDate] = useState<Record<string, string[]>>({});
   
-  const allTimeSlots = [
-    { start: '09:00', end: '11:00', display: '9:00 AM - 11:00 AM' },
-    { start: '11:00', end: '13:00', display: '11:00 AM - 1:00 PM' },
-    { start: '13:00', end: '15:00', display: '1:00 PM - 3:00 PM' },
-    { start: '15:00', end: '17:00', display: '3:00 PM - 5:00 PM' },
-    { start: '17:00', end: '19:00', display: '5:00 PM - 7:00 PM' }
+  const allTimeSlots: TimeSlot[] = [
+    { start: '09:00', end: '11:00', display: '9:00 AM - 11:00 AM', isHighPriority: true },
+    { start: '11:00', end: '13:00', display: '11:00 AM - 1:00 PM', isHighPriority: false },
+    { start: '13:00', end: '15:00', display: '1:00 PM - 3:00 PM', isHighPriority: false },
+    { start: '15:00', end: '17:00', display: '3:00 PM - 5:00 PM', isHighPriority: false },
+    { start: '17:00', end: '19:00', display: '5:00 PM - 7:00 PM', isHighPriority: true }
   ];
+
+  // Function to generate random booked slots for each date
+  const generateRandomBookedSlots = () => {
+    const bookedSlots: Record<string, string[]> = {};
+    
+    availableDates.forEach(date => {
+      // Decide how many slots to book (1 or 2)
+      const numSlotsToBook = Math.random() < 0.6 ? 1 : 2;
+      
+      // Create a copy of allTimeSlots that we can modify
+      const slotsForDate = [...allTimeSlots];
+      
+      // Shuffle array using Fisher-Yates algorithm but weighted based on priority
+      for (let i = slotsForDate.length - 1; i > 0; i--) {
+        // Determine if we should give high priority slots more weight
+        const highPriorityFactor = slotsForDate[i].isHighPriority ? 0.6 : 0.4;
+        
+        // Use the random number with the priority factor to decide if we swap
+        if (Math.random() < highPriorityFactor) {
+          // Pick a random index to swap with the current index
+          const j = Math.floor(Math.random() * (i + 1));
+          [slotsForDate[i], slotsForDate[j]] = [slotsForDate[j], slotsForDate[i]];
+        }
+      }
+      
+      // Take the first numSlotsToBook slots after shuffling
+      bookedSlots[date] = slotsForDate.slice(0, numSlotsToBook).map(slot => slot.display);
+    });
+    
+    return bookedSlots;
+  };
 
   useEffect(() => {
     // Generate available dates (today + next 7 days)
@@ -42,33 +82,48 @@ const TimeSlotModal: React.FC<TimeSlotModalProps> = ({ isOpen, onClose, onSubmit
   }, []);
 
   useEffect(() => {
+    if (availableDates.length > 0 && Object.keys(bookedSlotsByDate).length === 0) {
+      // Generate random booked slots when dates are first loaded
+      setBookedSlotsByDate(generateRandomBookedSlots());
+    }
+  }, [availableDates]);
+
+  useEffect(() => {
     if (!selectedDate) return;
 
     const today = new Date();
     const selectedDateObj = new Date(selectedDate);
     const isToday = selectedDateObj.toDateString() === today.toDateString();
 
+    let filteredSlots: string[] = [];
+
     if (isToday) {
       const currentTime = today.getHours() * 60 + today.getMinutes();
       
       // Filter out time slots that have already started
-      const availableSlots = allTimeSlots.filter(slot => {
-        const slotStartTime = parseInt(slot.start.split(':')[0]) * 60 + parseInt(slot.start.split(':')[1]);
-        // Only show slots that haven't started yet
-        return slotStartTime > currentTime;
-      });
-
-      setAvailableTimeSlots(availableSlots.map(slot => slot.display));
+      filteredSlots = allTimeSlots
+        .filter(slot => {
+          const slotStartTime = parseInt(slot.start.split(':')[0]) * 60 + parseInt(slot.start.split(':')[1]);
+          // Only show slots that haven't started yet
+          return slotStartTime > currentTime;
+        })
+        .map(slot => slot.display);
     } else {
       // For future dates, show all slots
-      setAvailableTimeSlots(allTimeSlots.map(slot => slot.display));
+      filteredSlots = allTimeSlots.map(slot => slot.display);
     }
 
+    // Filter out booked slots for the selected date
+    const bookedSlotsForDate = bookedSlotsByDate[selectedDate] || [];
+    const availableSlots = filteredSlots.filter(slot => !bookedSlotsForDate.includes(slot));
+    
+    setAvailableTimeSlots(availableSlots);
+
     // Reset selected time slot if it's no longer available
-    if (selectedTimeSlot && !availableTimeSlots.includes(selectedTimeSlot)) {
+    if (selectedTimeSlot && !availableSlots.includes(selectedTimeSlot)) {
       setSelectedTimeSlot('');
     }
-  }, [selectedDate]);
+  }, [selectedDate, bookedSlotsByDate]);
 
   const formatDateDisplay = (dateStr: string): string => {
     if (!dateStr) return '';
@@ -110,6 +165,10 @@ const TimeSlotModal: React.FC<TimeSlotModalProps> = ({ isOpen, onClose, onSubmit
   };
 
   if (!isOpen) return null;
+
+  // Get all slots for display and marking as booked
+  const allTimeSlotDisplays = allTimeSlots.map(slot => slot.display);
+  const bookedSlotsForSelectedDate = bookedSlotsByDate[selectedDate] || [];
 
   return (
     <Modal
@@ -211,21 +270,62 @@ const TimeSlotModal: React.FC<TimeSlotModalProps> = ({ isOpen, onClose, onSubmit
                 <Clock className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 text-[#FF7200]" />
                 Select Time Slot
               </label>
+              
+              <div className="mb-2 flex justify-between items-center">
+                <p className="text-xs text-gray-500 flex items-center">
+                  <Users className="w-3 h-3 mr-1 text-gray-400" />
+                  {bookedSlotsForSelectedDate.length} slot{bookedSlotsForSelectedDate.length !== 1 ? 's' : ''} already booked today
+                </p>
+                <p className="text-xs text-gray-500">
+                  {availableTimeSlots.length} slot{availableTimeSlots.length !== 1 ? 's' : ''} available
+                </p>
+              </div>
+              
               <div className="grid grid-cols-1 gap-1.5 sm:gap-2">
-                {availableTimeSlots.map((slot) => (
-                  <button
-                    key={slot}
-                    type="button"
-                    onClick={() => setSelectedTimeSlot(slot)}
-                    className={`py-2 sm:py-3 px-3 sm:px-4 rounded-md text-left text-xs sm:text-sm ${
-                      selectedTimeSlot === slot
-                        ? 'bg-[#FF7200] text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {slot}
-                  </button>
-                ))}
+                {/* Display all slots in chronological order */}
+                {allTimeSlots.map((slot) => {
+                  const isBooked = bookedSlotsForSelectedDate.includes(slot.display);
+                  const isPastSlot = selectedDate === availableDates[0] && new Date().getHours() > parseInt(slot.start.split(':')[0]);
+                  
+                  // Don't show past slots for today
+                  if (isPastSlot) return null;
+                  
+                  if (isBooked) {
+                    return (
+                      <div 
+                        key={`slot-${slot.display}`}
+                        className="py-2 sm:py-3 px-3 sm:px-4 rounded-md text-left text-xs sm:text-sm bg-gray-200 text-gray-500 opacity-80 cursor-not-allowed flex justify-between items-center border border-gray-300"
+                      >
+                        <span>{slot.display}</span>
+                        <span className="text-xs bg-gray-300 text-gray-700 px-2 py-0.5 rounded-full flex items-center font-medium border border-gray-400">
+                          <Users className="w-3 h-3 mr-1" />
+                          Booked
+                        </span>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <button
+                        key={`slot-${slot.display}`}
+                        type="button"
+                        onClick={() => setSelectedTimeSlot(slot.display)}
+                        className={`py-2 sm:py-3 px-3 sm:px-4 rounded-md text-left text-xs sm:text-sm border ${
+                          selectedTimeSlot === slot.display
+                            ? 'bg-[#FF7200] text-white border-[#FF7200]'
+                            : 'bg-white text-gray-800 hover:bg-gray-50 border-gray-200'
+                        }`}
+                      >
+                        {slot.display}
+                      </button>
+                    );
+                  }
+                })}
+                
+                {availableTimeSlots.length === 0 && bookedSlotsForSelectedDate.length === 0 && (
+                  <div className="py-4 text-center text-sm text-gray-500">
+                    No time slots available for this date.
+                  </div>
+                )}
               </div>
             </div>
 
