@@ -13,6 +13,7 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Careers from './pages/Careers';
 import ExpressService from './pages/Express';
+import AdsExpressService from './pages/AdsExpress';
 import WorkshopPartner from './pages/WorkshopPartner';
 import Footer from './components/Footer';
 import CustomerForm from './components/CustomerForm';
@@ -79,6 +80,7 @@ const AppContent = () => {
            !hasShownExitPopup && 
            popupCount < 2 && 
            location.pathname !== '/express' && 
+           location.pathname !== '/ads-express' && 
            hasShownFirstPopup;
   };
 
@@ -157,11 +159,15 @@ const AppContent = () => {
         if (response.data.length > 0) {
           setIsFormDataLoaded(true);
           // Only show initial popup if:
-          // 1. Not on express page
+          // 1. Not on express page or ads-express page
           // 2. Haven't shown initial popup yet
           // 3. Haven't filled form yet
           // 4. Haven't reached popup limit
-          if (location.pathname !== '/express' && !hasShownInitialPopup && !hasFilledForm && popupCount < 2) {
+          if (location.pathname !== '/express' && 
+              location.pathname !== '/ads-express' && 
+              !hasShownInitialPopup && 
+              !hasFilledForm && 
+              popupCount < 2) {
             const timer = setTimeout(() => {
               setShowForm(true);
               setHasShownInitialPopup(true);
@@ -197,7 +203,7 @@ const AppContent = () => {
 
   // Close form when navigating to express page
   useEffect(() => {
-    if (location.pathname === '/express') {
+    if (location.pathname === '/express' || location.pathname === '/ads-express') {
       setShowForm(false);
     }
   }, [location.pathname]);
@@ -219,6 +225,7 @@ const AppContent = () => {
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/careers" element={<Careers />} />
               <Route path="/express" element={<ExpressService />} />
+              <Route path="/ads-express" element={<AdsExpressService />} />
               
               {/* Service Routes */}
               <Route path="/services/periodic" element={<PeriodicService />} />
