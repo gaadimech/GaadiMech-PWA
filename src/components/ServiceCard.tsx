@@ -45,9 +45,6 @@ const ServiceCard: React.FC<ServiceCardComponentProps> = ({
   const [basePackagePrice, setBasePackagePrice] = useState(0);
   const [currentTotalPrice, setCurrentTotalPrice] = useState(0);
   
-  // Also update the mobile number input section to show the discount is already applied
-  const [showMobileInput, setShowMobileInput] = useState(false);
-  
   // Animation for express service
   useEffect(() => {
     if (isExpressService) {
@@ -133,7 +130,12 @@ const ServiceCard: React.FC<ServiceCardComponentProps> = ({
   };
   
   const handleBookNow = () => {
-    let customMessage = card.whatsappMessage;
+    if (!vehicleSelected) {
+      onSelectCar();
+      return;
+    }
+
+    let customMessage = '';
     
     // If this is a customized service and the modal has been used
     if (card.id === 'customizable-service' && customServices.length > 0) {
@@ -145,43 +147,36 @@ const ServiceCard: React.FC<ServiceCardComponentProps> = ({
         `• ${service.name} - ₹${service.price.toFixed(2)}`
       ).join('\n');
       
-      customMessage = `Hi, I've created a Customized Car Service Package from GaadiMech.com.
-Details:
-${selectedVehicle ? `Car Model: *${selectedVehicle.manufacturer} ${selectedVehicle.model}*
-Fuel Type: ${selectedVehicle.fuelType}` : ''}
-Selected Services:
+      customMessage = `Hi, I'd like to book a Customized Car Service from GaadiMech.com
+
+*Car Details:*
+• Model: ${selectedVehicle?.manufacturer} ${selectedVehicle?.model}
+• Fuel Type: ${selectedVehicle?.fuelType}
+
+*Selected Services:*
 ${servicesList}
 
-Total Package Price: ₹${currentTotalPrice.toFixed(2)}`;
-    } else if (selectedVehicle && vehicleSelected && actualPrice) {
-      // For non-customized services, use the existing message format
-      let serviceName = card.title;
+*Total Package Price:* ₹${currentTotalPrice.toFixed(2)}`;
+    } else {
+      // For non-customized services
+      const serviceName = card.title;
+      const displayPrice = getDisplayPrice();
+      const discountedPrice = getDiscountedPrice();
       
-      // Create the custom message
-      if (isExpressService) {
-        // For Express Service, include both original and discounted prices
-        const originalPrice = actualPrice;
-        const discountedPrice = getDiscountedPrice();
-        
-        customMessage = `Hi, I've Booked a ${serviceName} from GaadiMech.com.
-Details:
-Car Model: *${selectedVehicle.manufacturer} ${selectedVehicle.model}*
-Fuel Type: ${selectedVehicle.fuelType}
-Service Type: ${serviceName}
-Original Price: ${originalPrice}
-Final Price (₹500 discount already applied): ${discountedPrice}`;
-      } else {
-        // For other services, use regular pricing
-        customMessage = `Hi, I've Booked a ${serviceName} from GaadiMech.com.
-Details:
-Car Model: *${selectedVehicle.manufacturer} ${selectedVehicle.model}*
-Fuel Type: ${selectedVehicle.fuelType}
-Service Type: ${serviceName}
-Package Price: ${actualPrice}`;
-      }
+      customMessage = `Hi, I'd like to book a ${serviceName} from GaadiMech.com
+
+*Car Details:*
+• Model: ${selectedVehicle?.manufacturer} ${selectedVehicle?.model}
+• Fuel Type: ${selectedVehicle?.fuelType}
+
+*Service Details:*
+• Service Type: ${serviceName}${isExpressService ? `
+• Original Price: ${displayPrice}
+• Final Price (after ₹500 discount): ${discountedPrice}` : `
+• Price: ${displayPrice}`}`;
     }
     
-    // Open WhatsApp with pre-filled message
+    // Open WhatsApp with the detailed message
     window.open(`https://wa.me/917300042410?text=${encodeURIComponent(customMessage)}`, '_blank');
   };
   
@@ -558,16 +553,6 @@ Package Price: ${actualPrice}`;
     );
   };
   
-  const handleMobileButtonClick = () => {
-    if (isExpressService) {
-      // For Express Service, no need to show mobile input since discount is already applied
-      // Just proceed with booking
-      handleBookNow();
-    } else {
-      setShowMobileInput(true);
-    }
-  };
-  
   return (
     <motion.div 
       className={`bg-white rounded-lg shadow-lg relative flex flex-col h-full overflow-hidden
@@ -682,7 +667,7 @@ Package Price: ${actualPrice}`;
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={handleMobileButtonClick}
+                onClick={handleBookNow}
                 className={`${isExpressService ? 
                   'bg-[#FF7200] hover:bg-[#FF7200]/90 text-white' : 
                   'bg-[#FF7200] hover:bg-[#FF7200]/90 text-white'} 
@@ -759,37 +744,6 @@ Package Price: ${actualPrice}`;
       
       {/* Render the modal using a portal */}
       {renderCustomizationModal()}
-
-      {/* Mobile number input and discount section (conditionally rendered) */}
-      {showMobileInput && !isExpressService && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50" style={{ backdropFilter: 'blur(2px)' }}>
-          <div className="bg-white rounded-xl w-full max-w-md p-6 shadow-2xl">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold">Enter your mobile number</h3>
-              <button onClick={() => setShowMobileInput(false)} className="p-1 rounded-full hover:bg-gray-100">
-                <X size={18} className="text-gray-500" />
-              </button>
-            </div>
-            <div className="mb-4">
-              <input 
-                type="tel" 
-                placeholder="Enter Your Mobile Number" 
-                className="w-full border border-gray-300 rounded-lg px-4 py-3"
-                maxLength={10}
-              />
-            </div>
-            <button 
-              onClick={() => {
-                setShowMobileInput(false);
-                handleBookNow();
-              }}
-              className={`${buttonClass} w-full`}
-            >
-              Unlock ₹500 Discount Now! <ArrowRight className="ml-1" size={16} />
-            </button>
-          </div>
-        </div>
-      )}
     </motion.div>
   );
 };

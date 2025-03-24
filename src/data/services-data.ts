@@ -177,7 +177,7 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
         rating: 4.5,
         reviewCount: 180,
         duration: '4-6 Hours',
-          price: 'Real-Time Quotes',
+        price: 'Real-Time Quotes',
         details: [
           'Compressor Repair/Replacement',
           'Condenser Repair/Replacement',
