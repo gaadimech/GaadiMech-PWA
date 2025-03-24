@@ -10,6 +10,7 @@ export interface PricingData {
   periodicServicePrice: number;
   expressServicePrice: number;
   dentingPaintPrice: number;
+  fullBodyPaintPrice: number;
 }
 
 export interface ServiceTypeOption {

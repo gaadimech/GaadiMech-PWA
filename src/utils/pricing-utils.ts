@@ -8,6 +8,7 @@ interface CSVRow {
   'Periodic Service Price GaadiMech': string;
   'Express Service Price GaadiMech': string;
   'Dent & Paint Price GaadiMech': string;
+  'Dent and Paint Full Body': string;
 }
 
 // Format price as Indian currency
@@ -86,6 +87,7 @@ export const getPricingData = (data: CSVRow[], vehicle: Vehicle): PricingData | 
     periodicServicePrice: parseFloat(row['Periodic Service Price GaadiMech']),
     expressServicePrice: parseFloat(row['Express Service Price GaadiMech']),
     dentingPaintPrice: parseFloat(row['Dent & Paint Price GaadiMech']),
+    fullBodyPaintPrice: parseFloat(row['Dent and Paint Full Body']),
   };
 };
 

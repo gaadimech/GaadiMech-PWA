@@ -92,7 +92,8 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
     // Handle cases where pricing data is not available
     if (pricingData.periodicServicePrice <= 0 && 
         pricingData.expressServicePrice <= 0 && 
-        pricingData.dentingPaintPrice <= 0) {
+        pricingData.dentingPaintPrice <= 0 &&
+        pricingData.fullBodyPaintPrice <= 0) {
       return 'Price not available';
     }
     
@@ -101,9 +102,10 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
       return formatPrice(pricingData.periodicServicePrice);
     } else if (cardId.includes('periodic-express')) {
       return formatPrice(pricingData.expressServicePrice);
-    } else if (cardId.includes('denting')) {
-      // All denting services use the same price from CSV
+    } else if (cardId.includes('denting-door')) {
       return formatPrice(pricingData.dentingPaintPrice);
+    } else if (cardId.includes('denting-full')) {
+      return formatPrice(pricingData.fullBodyPaintPrice);
     }
     
     return '';
