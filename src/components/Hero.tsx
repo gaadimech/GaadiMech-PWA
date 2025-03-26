@@ -190,7 +190,7 @@ const Hero = () => {
             {/* Trust indicators */}
             <div className="flex items-center justify-center md:justify-start mb-6 space-x-6">
               <div className="flex flex-col items-center">
-                <p className="font-bold text-xl text-[#FF7200]">500+</p>
+                <p className="font-bold text-xl text-[#FF7200]">2K+</p>
                 <p className="text-xs text-gray-600">Happy Customers</p>
               </div>
               <div className="h-10 w-px bg-gray-200"></div>
