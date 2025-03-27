@@ -69,6 +69,7 @@ const TimeSlotModal: React.FC<TimeSlotModalProps> = ({ isOpen, onClose, onSubmit
     // Generate available dates (today + next 7 days)
     const dates: string[] = [];
     const today = new Date();
+    const currentHour = today.getHours();
     
     for (let i = 0; i < 8; i++) {
       const date = new Date(today);
@@ -78,7 +79,13 @@ const TimeSlotModal: React.FC<TimeSlotModalProps> = ({ isOpen, onClose, onSubmit
     }
     
     setAvailableDates(dates);
-    setSelectedDate(dates[0]); // Default to today
+    
+    // If current time is past 5 PM (17:00), select tomorrow's date by default
+    if (currentHour >= 17) {
+      setSelectedDate(dates[1]); // Select tomorrow
+    } else {
+      setSelectedDate(dates[0]); // Select today
+    }
   }, []);
 
   useEffect(() => {
