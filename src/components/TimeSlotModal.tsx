@@ -65,27 +65,44 @@ const TimeSlotModal: React.FC<TimeSlotModalProps> = ({ isOpen, onClose, onSubmit
     return bookedSlots;
   };
 
+  // Helper function to get current time in IST
+  const getCurrentTimeIST = () => {
+    // Get current time in UTC
+    const now = new Date();
+    // Convert to IST (UTC+5:30)
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const istTime = new Date(utc + (3600000 * 5.5));
+    return istTime;
+  };
+
   useEffect(() => {
-    // Generate available dates (today + next 7 days)
+    // Get current IST date and time
+    const todayIST = getCurrentTimeIST();
+    const currentHourIST = todayIST.getHours();
+    const currentMinutesIST = todayIST.getMinutes();
+    
+    // Create a new date object for start date
+    const startDate = new Date(todayIST);
+    
+    // Generate dates starting from the appropriate day
     const dates: string[] = [];
-    const today = new Date();
-    const currentHour = today.getHours();
     
     for (let i = 0; i < 8; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-      const formattedDate = date.toISOString().split('T')[0];
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      // Format date in YYYY-MM-DD
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
       dates.push(formattedDate);
     }
     
     setAvailableDates(dates);
     
-    // If current time is past 5 PM (17:00), select tomorrow's date by default
-    if (currentHour >= 17) {
-      setSelectedDate(dates[1]); // Select tomorrow
-    } else {
-      setSelectedDate(dates[0]); // Select today
-    }
+    // If it's past the last slot time (5 PM), select tomorrow's date by default
+    const isAfterLastSlot = currentHourIST >= 17;
+    setSelectedDate(isAfterLastSlot ? dates[1] : dates[0]);
   }, []);
 
   useEffect(() => {
@@ -98,21 +115,21 @@ const TimeSlotModal: React.FC<TimeSlotModalProps> = ({ isOpen, onClose, onSubmit
   useEffect(() => {
     if (!selectedDate) return;
 
-    const today = new Date();
+    const todayIST = getCurrentTimeIST();
     const selectedDateObj = new Date(selectedDate);
-    const isToday = selectedDateObj.toDateString() === today.toDateString();
+    const isToday = selectedDateObj.toDateString() === todayIST.toDateString();
 
     let filteredSlots: string[] = [];
 
     if (isToday) {
-      const currentTime = today.getHours() * 60 + today.getMinutes();
+      const currentTimeIST = todayIST.getHours() * 60 + todayIST.getMinutes();
       
       // Filter out time slots that have already started
       filteredSlots = allTimeSlots
         .filter(slot => {
           const slotStartTime = parseInt(slot.start.split(':')[0]) * 60 + parseInt(slot.start.split(':')[1]);
           // Only show slots that haven't started yet
-          return slotStartTime > currentTime;
+          return slotStartTime > currentTimeIST;
         })
         .map(slot => slot.display);
     } else {
@@ -135,17 +152,26 @@ const TimeSlotModal: React.FC<TimeSlotModalProps> = ({ isOpen, onClose, onSubmit
   const formatDateDisplay = (dateStr: string): string => {
     if (!dateStr) return '';
     
-    const date = new Date(dateStr + 'T00:00:00');
-    const today = new Date();
+    const todayIST = getCurrentTimeIST();
+    const today = new Date(todayIST);
     today.setHours(0, 0, 0, 0);
     
     const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setDate(today.getDate() + 1);
     
-    if (date.getTime() === today.getTime()) return 'Today';
-    if (date.getTime() === tomorrow.getTime()) return 'Tomorrow';
+    const inputDate = new Date(dateStr + 'T00:00:00');
     
-    return date.toLocaleDateString('en-US', { 
+    // Compare dates without time
+    const compareDate = (date1: Date, date2: Date) => {
+      return date1.getFullYear() === date2.getFullYear() &&
+             date1.getMonth() === date2.getMonth() &&
+             date1.getDate() === date2.getDate();
+    };
+    
+    if (compareDate(inputDate, today)) return 'Today';
+    if (compareDate(inputDate, tomorrow)) return 'Tomorrow';
+    
+    return inputDate.toLocaleDateString('en-US', { 
       weekday: 'short', 
       month: 'short', 
       day: 'numeric' 
