@@ -15,6 +15,7 @@ import Careers from './pages/Careers';
 import ExpressService from './pages/Express';
 import AdsExpressService from './pages/AdsExpress';
 import WorkshopPartner from './pages/WorkshopPartner';
+import FranchisePage from './pages/FranchisePage';
 import Footer from './components/Footer';
 import CustomerForm from './components/CustomerForm';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
@@ -244,6 +245,7 @@ const AppContent = () => {
               <Route path="/express-Service-TnCs" element={<ExpressServiceTnC />} />
               <Route path="/workshop-partner" element={<WorkshopPartner />} />
               <Route path="/:citySlug" element={<CityPage />} />
+              <Route path="/franchise" element={<FranchisePage />} />
             </Routes>
           </AnimatePresence>
           <Footer />
@@ -255,7 +257,7 @@ const AppContent = () => {
             />
           )}
           <Suspense fallback={<div>Loading...</div>}>
-            <WhatsAppButton />
+            {location.pathname !== '/franchise' && <WhatsAppButton />}
           </Suspense>
         </div>
       </AnalyticsWrapper>
