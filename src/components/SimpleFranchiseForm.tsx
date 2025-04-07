@@ -364,7 +364,7 @@ const SimpleFranchiseForm: React.FC<SimpleFranchiseFormProps> = ({ isOpen, onClo
       ) : (
         <>
           <div className="flex justify-between items-center bg-gradient-to-r from-[#FF7200] to-[#FF8800] text-white p-5 sm:p-6 sticky top-0 z-20">
-            <h2 className="text-xl font-bold">Franchise Application Form</h2>
+            <h2 className="text-xl font-bold">Franchise Enquiry Form</h2>
             <button 
               onClick={handleCloseAttempt} 
               className="text-white hover:bg-white/20 p-1.5 rounded-full transition-colors"

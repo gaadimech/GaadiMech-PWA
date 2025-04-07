@@ -358,10 +358,10 @@ const FranchisePartner = () => {
                       </div>
                       <ul className="space-y-2.5 pl-4">
                         {[
-                          "Mechanical Engineer from BITS Pilani",
+                          "Mechanical Engineer, BITS Pilani",
                           "Ex-Flipkart, OYO, and Credit Suisse",
-                          "Scaled US tutoring business to ₹1.2Cr annual revenue",
-                          "Leads tech systems, automation & service innovation"
+                          "Scaled US based tutoring business to ₹1.2Cr annual revenue",
+                          <strong>Leads Tech Systems, Marketing & Service Innovation</strong>
                         ].map((item, i) => (
                           <motion.li 
                             key={i}
@@ -401,7 +401,7 @@ const FranchisePartner = () => {
                           "Founded Jaipur's largest car servicing brand",
                           "Top-ranked CA (AIR 11) and CS (AIR 19)",
                           "5+ years of automobile aftermarket leadership",
-                          "Drives growth strategy & financial performance"
+                          <strong>Drives Growth Strategy & Financial Performance</strong>
                         ].map((item, i) => (
                           <motion.li 
                             key={i}
@@ -1048,51 +1048,6 @@ const FranchisePartner = () => {
                   </AnimatePresence>
                 </div>
               ))}
-            </div>
-          </motion.div>
-
-          {/* Final CTA */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.0 }}
-            viewport={{ once: true }}
-            className="text-center"
-          >
-            <div className="bg-gradient-to-r from-gray-900 to-gray-800 p-12 rounded-2xl shadow-xl relative overflow-hidden">
-              {/* Animated elements */}
-              <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20">
-                <div className="absolute w-20 h-20 bg-[#FF7200]/30 rounded-full blur-xl animate-pulse" 
-                     style={{top: '30%', left: '10%', animationDuration: '6s'}}></div>
-                <div className="absolute w-32 h-32 bg-[#FF7200]/20 rounded-full blur-xl animate-pulse" 
-                     style={{top: '60%', left: '80%', animationDuration: '8s'}}></div>
-                <div className="absolute w-24 h-24 bg-[#FF7200]/20 rounded-full blur-xl animate-pulse" 
-                     style={{top: '20%', left: '70%', animationDuration: '7s'}}></div>
-              </div>
-              
-              <div className="max-w-3xl mx-auto relative z-10">
-                <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Join the GaadiMech Express Revolution?</h3>
-                <p className="text-white text-xl mb-8">
-                  Apply now to secure your territory before it's taken. Limited franchise zones available.
-                </p>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="inline-block"
-                >
-                  <button
-                    onClick={openForm}
-                    className="inline-block bg-[#FF7200] text-white px-8 py-4 rounded-lg font-bold text-xl hover:bg-[#FF9500] transition-colors shadow-lg relative overflow-hidden group"
-                  >
-                    <span className="absolute inset-0 w-0 bg-white transition-all duration-500 ease-out group-hover:w-full opacity-10"></span>
-                    Apply For Franchise - Takes Just 2 Minutes
-                  </button>
-                </motion.div>
-                
-                {/* Decorative corner elements */}
-                <div className="absolute top-2 left-2 w-12 h-12 border-t-2 border-l-2 border-[#FF7200]/30"></div>
-                <div className="absolute bottom-2 right-2 w-12 h-12 border-b-2 border-r-2 border-[#FF7200]/30"></div>
-              </div>
             </div>
           </motion.div>
         </div>
