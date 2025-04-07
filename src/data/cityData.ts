@@ -10,6 +10,7 @@ export interface CityData {
     title: string;
     description: string;
     image: string;
+    type: string;
   }[];
   stats: {
     label: string;
@@ -41,17 +42,20 @@ export const cities: Record<string, CityData> = {
       {
         title: "General Service",
         description: "Complete car service including oil change, filter replacement, and general inspection",
-        image: "/images/services/general-service.jpg"
+        image: "/images/services/general-service.jpg",
+        type: "periodic"
       },
       {
         title: "AC Service",
         description: "Professional AC service and repair to keep your car cool in Jaipur's heat",
-        image: "/images/services/ac-service.jpg"
+        image: "/images/services/ac-service.jpg",
+        type: "ac"
       },
       {
         title: "Denting & Painting",
         description: "Expert car body repair and painting services",
-        image: "/images/services/denting-painting.jpg"
+        image: "/images/services/denting-painting.jpg",
+        type: "denting"
       }
     ],
     stats: [
@@ -99,17 +103,20 @@ export const cities: Record<string, CityData> = {
       {
         title: "General Service",
         description: "Complete car service including oil change, filter replacement, and general inspection",
-        image: "/images/services/general-service.jpg"
+        image: "/images/services/general-service.jpg",
+        type: "periodic"
       },
       {
         title: "AC Service",
         description: "Professional AC service and repair to keep your car cool in Mumbai's climate",
-        image: "/images/services/ac-service.jpg"
+        image: "/images/services/ac-service.jpg",
+        type: "ac"
       },
       {
         title: "Denting & Painting",
         description: "Expert car body repair and painting services",
-        image: "/images/services/denting-painting.jpg"
+        image: "/images/services/denting-painting.jpg",
+        type: "denting"
       }
     ],
     stats: [
@@ -157,17 +164,20 @@ export const cities: Record<string, CityData> = {
       {
         title: "General Service",
         description: "Complete car service including oil change, filter replacement, and general inspection",
-        image: "/images/services/general-service.jpg"
+        image: "/images/services/general-service.jpg",
+        type: "periodic"
       },
       {
         title: "AC Service",
         description: "Professional AC service and repair to keep your car cool in Delhi's extreme weather",
-        image: "/images/services/ac-service.jpg"
+        image: "/images/services/ac-service.jpg",
+        type: "ac"
       },
       {
         title: "Denting & Painting",
         description: "Expert car body repair and painting services",
-        image: "/images/services/denting-painting.jpg"
+        image: "/images/services/denting-painting.jpg",
+        type: "denting"
       }
     ],
     stats: [
@@ -215,17 +225,20 @@ export const cities: Record<string, CityData> = {
       {
         title: "General Service",
         description: "Complete car service including oil change, filter replacement, and general inspection",
-        image: "/images/services/general-service.jpg"
+        image: "/images/services/general-service.jpg",
+        type: "periodic"
       },
       {
         title: "AC Service",
         description: "Professional AC service and repair to keep your car cool in Bangalore's climate",
-        image: "/images/services/ac-service.jpg"
+        image: "/images/services/ac-service.jpg",
+        type: "ac"
       },
       {
         title: "Denting & Painting",
         description: "Expert car body repair and painting services",
-        image: "/images/services/denting-painting.jpg"
+        image: "/images/services/denting-painting.jpg",
+        type: "denting"
       }
     ],
     stats: [
@@ -273,17 +286,20 @@ export const cities: Record<string, CityData> = {
       {
         title: "General Service",
         description: "Complete car service including oil change, filter replacement, and general inspection",
-        image: "/images/services/general-service.jpg"
+        image: "/images/services/general-service.jpg",
+        type: "periodic"
       },
       {
         title: "AC Service",
         description: "Professional AC service and repair to keep your car cool in Pune's climate",
-        image: "/images/services/ac-service.jpg"
+        image: "/images/services/ac-service.jpg",
+        type: "ac"
       },
       {
         title: "Denting & Painting",
         description: "Expert car body repair and painting services",
-        image: "/images/services/denting-painting.jpg"
+        image: "/images/services/denting-painting.jpg",
+        type: "denting"
       }
     ],
     stats: [

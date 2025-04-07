@@ -1,5 +1,4 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
 import { useParams, useNavigate } from 'react-router-dom';
 import { cities, CityData } from '../data/cityData';
 import { Button } from '../components/ui/button';
@@ -10,6 +9,14 @@ import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Breadcrumb from '../components/Breadcrumb';
 
+/**
+ * CityPage Component
+ * 
+ * This component renders a city-specific landing page with localized content.
+ * Each city page follows the same template but with city-specific data.
+ * 
+ * SEO information is managed through the SEO utility and not directly in this component.
+ */
 const CityPage: React.FC = () => {
   const { citySlug } = useParams<{ citySlug: string }>();
   const normalizedCitySlug = citySlug?.toLowerCase() || '';
@@ -55,42 +62,6 @@ const CityPage: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{cityData.title}</title>
-        <meta name="description" content={cityData.description} />
-        <meta name="keywords" content={cityData.metaKeywords.join(', ')} />
-        <meta property="og:title" content={cityData.title} />
-        <meta property="og:description" content={cityData.description} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={`https://gaadimech.com/${cityData.slug}`} />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "AutoRepair",
-            "name": `GaadiMech Car Service in ${cityData.name}`,
-            "description": cityData.description,
-            "areaServed": cityData.name,
-            "priceRange": "₹₹",
-            "address": {
-              "@type": "PostalAddress",
-              "addressLocality": cityData.name
-            },
-            "geo": {
-              "@type": "GeoCoordinates",
-              "addressLocality": cityData.name
-            },
-            "openingHoursSpecification": {
-              "@type": "OpeningHoursSpecification",
-              "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-              "opens": "08:00",
-              "closes": "20:00"
-            },
-            "telephone": "+91-XXXXXXXXXX",
-            "image": "https://gaadimech.com/logo.png"
-          })}
-        </script>
-      </Helmet>
-
       <Breadcrumb cityName={cityData.name} />
 
       {/* Hero Section */}
@@ -179,7 +150,7 @@ const CityPage: React.FC = () => {
                   onClick={handleBookService}
                   className="w-1/2 bg-gradient-to-r from-[#FF7200] to-[#FF9500] text-white px-2 sm:px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base font-medium hover:from-[#25D366] hover:to-[#128C7E]"
                 >
-                  <img src="https://i.ibb.co/gM65tZy7/whatsapp-icon.png" alt="WhatsApp" className="mr-2" style={{ width: '36px', height: '36px' }} />
+                  <img src="https://i.ibb.co/gM65t7Z/whatsapp-icon.png" alt="WhatsApp" className="mr-2" style={{ width: '36px', height: '36px' }} />
                   Book Service
                   <ArrowRight className="ml-1 sm:ml-2 h-4 w-4" />
                 </motion.button>
@@ -194,6 +165,8 @@ const CityPage: React.FC = () => {
                 </motion.button>
               </div>
             </motion.div>
+            
+            {/* Hero image section - right side */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -238,195 +211,83 @@ const CityPage: React.FC = () => {
       </section>
 
       {/* Services Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Services in {cityData.name}</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Experience premium car service with our expert mechanics. We bring the workshop to your doorstep.</p>
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900">Our Services in {cityData.name}</h2>
+            <p className="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
+              From routine maintenance to major repairs, we provide all car services in {cityData.name}
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          
+          {/* Service Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {cityData.services.map((service, index) => (
-              <motion.div
+              <Card 
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                onClick={() => handleServiceClick(service.title)}
-                className="cursor-pointer"
+                className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => handleServiceClick(service.type)}
               >
-                <Card className="p-8 hover:shadow-lg transition-shadow duration-300 group">
-                  <div className="flex items-center mb-6">
-                    <div className="w-12 h-12 bg-[#FF7200] bg-opacity-10 rounded-lg flex items-center justify-center mr-4 group-hover:bg-[#FF7200] transition-colors duration-300">
-                      <WrenchIcon className="w-6 h-6 text-[#FF7200] group-hover:text-white transition-colors duration-300" />
+                <div className="p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="p-3 bg-orange-100 rounded-lg">
+                      <WrenchIcon className="h-6 w-6 text-[#FF7200]" />
                     </div>
-                    <h3 className="text-xl font-semibold">{service.title}</h3>
+                    <div className="flex items-center bg-green-100 px-2 py-1 rounded-full">
+                      <StarIcon className="h-4 w-4 text-green-600 mr-1" />
+                      <span className="text-sm font-medium text-green-800">Top Rated</span>
+                    </div>
                   </div>
-                  <p className="text-gray-600">{service.description}</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{service.title}</h3>
+                  <p className="text-gray-600 mb-4">{service.description}</p>
                   <Button 
-                    variant="ghost" 
-                    className="mt-4 text-[#FF7200] hover:text-[#FF9500]"
+                    className="w-full bg-gradient-to-r from-[#FF7200] to-[#FF9500] hover:from-[#FF9500] hover:to-[#FF7200] text-white"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleServiceClick(service.title);
+                      handleServiceClick(service.type);
                     }}
                   >
-                    Learn More →
+                    Learn More
+                    <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {cityData.stats.map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="text-center"
-              >
-                <div className="text-4xl font-bold text-[#FF7200] mb-2">{stat.value}</div>
-                <div className="text-gray-600 font-medium">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Reviews Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">What Our Customers Say</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Trusted by thousands of car owners in {cityData.name}</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {cityData.reviews.map((review, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <Card className="p-8 hover:shadow-lg transition-shadow duration-300">
-                  <div className="flex items-center mb-4">
-                    <div className="flex text-yellow-400">
-                      {[...Array(review.rating)].map((_, i) => (
-                        <StarIcon key={i} className="h-5 w-5" />
-                      ))}
-                    </div>
-                    <span className="ml-2 text-gray-600">{review.date}</span>
-                  </div>
-                  <p className="text-gray-700 mb-6 text-lg">{review.comment}</p>
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold">{review.name}</span>
-                    <span className="text-gray-600">{review.location}</span>
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Find answers to common questions about our car services in {cityData.name}</p>
-          </div>
-          <div className="max-w-3xl mx-auto">
-            {[
-              {
-                question: `How do I find a reliable car mechanic near me in ${cityData.name}?`,
-                answer: `GaadiMech is your trusted car mechanic near you in ${cityData.name}. We offer professional automotive repair services with experienced mechanics available 24/7. Our car repair shop near you provides comprehensive vehicle maintenance and repair solutions.`
-              },
-              {
-                question: `What car repair services do you offer in ${cityData.name}?`,
-                answer: `Our auto repair shop offers complete car repair services including engine repair, transmission services, brake repair, AC service and repair, denting and painting, tire services, battery replacement, and more. We're your one-stop car service center for all automotive repair needs.`
-              },
-              {
-                question: `How much does car service cost in ${cityData.name}?`,
-                answer: `Our car service prices in ${cityData.name} are transparent and competitive. We offer affordable car repairs with no hidden charges. The exact cost depends on your vehicle model and service requirements. Contact us for a detailed quote.`
-              },
-              {
-                question: `Do you provide emergency car repair services in ${cityData.name}?`,
-                answer: `Yes, we offer 24/7 emergency car repair services in ${cityData.name}. Whether you need roadside assistance, towing service, or immediate car repair, our mobile mechanics are just a call away.`
-              },
-              {
-                question: `What areas do you cover for car service in ${cityData.name}?`,
-                answer: `We provide car repair services across ${cityData.name} including ${cityData.faqs[1].answer}`
-              },
-              {
-                question: `What types of diagnostic services do you offer?`,
-                answer: `Our auto repair experts provide comprehensive vehicle diagnostics including check engine light diagnostics, emission testing, electrical system diagnosis, and complete vehicle inspection services. We use advanced diagnostic tools to identify and fix issues accurately.`
-              },
-              {
-                question: `Do you offer specialized car AC services?`,
-                answer: `Yes, we are specialists in car AC repair and service. Our car AC mechanics near you can handle all types of AC issues including cooling problems, gas refilling, compressor repair, and complete AC system maintenance.`
-              },
-              {
-                question: `What makes GaadiMech different from other car repair shops?`,
-                answer: `GaadiMech stands out with our doorstep service, professional automotive mechanics, transparent pricing, and 100% satisfaction guarantee. We're not just a car repair shop - we're your complete auto care solution with certified mechanics and modern diagnostic equipment.`
-              }
-            ].map((faq, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <Card className="p-6 mb-4 hover:shadow-md transition-shadow duration-300">
-                  <h3 className="text-xl font-semibold mb-2">{faq.question}</h3>
-                  <p className="text-gray-600">{faq.answer}</p>
-                </Card>
-              </motion.div>
+                </div>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-[#FF7200] via-[#FF9500] to-[#FF7200] text-white">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Service Your Car?</h2>
-            <p className="text-xl mb-8 text-white/90">Book your car service in {cityData.name} today and get 20% off on your first service!</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleBookService}
-                className="bg-white text-[#FF7200] px-8 py-3 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center text-base font-medium hover:bg-gray-50"
-              >
-                <img src="https://i.ibb.co/gM65tZy7/whatsapp-icon.png" alt="WhatsApp" className="mr-2" style={{ width: '36px', height: '36px' }} />
-                Book Service Now
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleContact}
-                className="border-2 border-white text-white px-8 py-3 rounded-xl hover:bg-white/10 transition-all flex items-center justify-center text-base font-medium"
-              >
-                <PhoneIcon className="mr-2 h-5 w-5" />
-                Contact Support
-              </motion.button>
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white p-8 rounded-2xl shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-orange-100 to-transparent opacity-60"></div>
+            <div className="relative z-10">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Need Car Service in {cityData.name}?</h2>
+              <p className="text-xl text-gray-600 mb-8 max-w-3xl">
+                Book your car service with GaadiMech today and experience the best car service in {cityData.name}.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button 
+                  className="bg-gradient-to-r from-[#FF7200] to-[#FF9500] hover:from-[#25D366] hover:to-[#128C7E] text-white px-8 py-3 text-lg"
+                  onClick={handleBookService}
+                >
+                  Book on WhatsApp
+                </Button>
+                <Button 
+                  className="bg-white text-[#FF7200] border-2 border-[#FF7200] hover:bg-[#FF7200] hover:text-white px-8 py-3 text-lg"
+                  onClick={handleContact}
+                >
+                  Call Us Now
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Additional sections like Testimonials, FAQ, etc. would go here */}
+      {/* ... existing code ... */}
     </>
   );
 };
