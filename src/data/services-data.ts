@@ -111,11 +111,11 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
       {
         id: 'denting-door',
         title: 'Express Dent & Paint',
-        description: 'Professional painting service for car doors',
+        description: 'Ultra Fast Car Service - Time is Money!',
         image: 'https://i.ibb.co/qjZBrnD/dent-and-paint.png',
-        rating: 4.4,
-        reviewCount: 250,
-        duration: '4-6 Hours',
+        rating: 4.8,
+        reviewCount: 190,
+        duration: '1 Day Delivery',
         price: '₹X,XXX/Panel',
         details: [
           '2 Year Warranty',
@@ -124,7 +124,7 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
           'Grade A Primer',
           'High Quality Paint',
         ],
-        whatsappMessage: 'Hi, I\'d like to book a Express Dent & Paint service for my car.'
+        whatsappMessage: 'Hi, I\'d like to book an Express Dent & Paint service for my car. I get Rs.500 off!'
       },
       {
         id: 'denting-full',

@@ -38,6 +38,7 @@ const ServiceCard: React.FC<ServiceCardComponentProps> = ({
   const [showDetails, setShowDetails] = useState(false);
   const [highlightDuration, setHighlightDuration] = useState(false);
   const isExpressService = card.duration.includes('90 Mins') || card.duration.includes('⏰');
+  const isExpressDentService = card.id === 'denting-door' || card.title.includes('Express Dent');
   
   // New states for customization
   const [showCustomizationModal, setShowCustomizationModal] = useState(false);
@@ -47,13 +48,13 @@ const ServiceCard: React.FC<ServiceCardComponentProps> = ({
   
   // Animation for express service
   useEffect(() => {
-    if (isExpressService) {
+    if (isExpressService || isExpressDentService) {
       const interval = setInterval(() => {
         setHighlightDuration(prev => !prev);
       }, 2000);
       return () => clearInterval(interval);
     }
-  }, [isExpressService]);
+  }, [isExpressService, isExpressDentService]);
   
   // Initialize custom services when the modal is opened
   useEffect(() => {
@@ -163,14 +164,17 @@ ${servicesList}
       const displayPrice = getDisplayPrice();
       const discountedPrice = getDiscountedPrice();
       
-      customMessage = `Hi, I'd like to book a ${serviceName} from GaadiMech.com
+      // Use "an" before service names starting with vowel sounds
+      const article = serviceName.startsWith('Express') ? 'an' : 'a';
+      
+      customMessage = `Hi, I'd like to book ${article} ${serviceName} from GaadiMech.com
 
 *Car Details:*
 • Model: ${selectedVehicle?.manufacturer} ${selectedVehicle?.model}
 • Fuel Type: ${selectedVehicle?.fuelType}
 
 *Service Details:*
-• Service Type: ${serviceName}${isExpressService ? `
+• Service Type: ${serviceName}${(isExpressService || isExpressDentService) && discountedPrice ? `
 • Original Price: ${displayPrice}
 • Final Price (after ₹500 discount): ${discountedPrice}` : `
 • Price: ${displayPrice}`}`;
@@ -216,8 +220,8 @@ ${servicesList}
         // When no vehicle is selected, show the card's default price
         return card.price;
       }
-    } else if (isExpressService && vehicleSelected && actualPrice) {
-      // For express service with selected vehicle, return the original price without discount
+    } else if ((isExpressService || isExpressDentService) && vehicleSelected && actualPrice) {
+      // For express services with selected vehicle, return the original price without discount
       // The discount will be applied in the UI
       return actualPrice;
     } else {
@@ -228,7 +232,7 @@ ${servicesList}
   
   // Calculate the discounted price for express service (₹500 off)
   const getDiscountedPrice = () => {
-    if (isExpressService && vehicleSelected && actualPrice) {
+    if ((isExpressService || isExpressDentService) && vehicleSelected && actualPrice) {
       const originalPrice = parseFloat(actualPrice.replace(/[^\d.]/g, ''));
       const discountedPrice = Math.max(0, originalPrice - 500); // Ensure price doesn't go below 0
       return `₹${discountedPrice.toFixed(2)}`;
@@ -556,12 +560,12 @@ ${servicesList}
   return (
     <motion.div 
       className={`bg-white rounded-lg shadow-lg relative flex flex-col h-full overflow-hidden
-      ${isExpressService ? 'border-2 border-[#FF7200]' : ''}`}
+      ${isExpressService || isExpressDentService ? 'border-2 border-[#FF7200]' : ''}`}
       whileHover={{ y: -5 }}
       transition={{ duration: 0.3 }}
     >
-      {/* Express Service Banner - Only for Express Service */}
-      {isExpressService && (
+      {/* Express Service Banner - Only for Express Service or Express Dent */}
+      {(isExpressService || isExpressDentService) && (
         <div className="absolute top-0 right-0 bg-[#FF7200] text-white text-xs font-bold py-1.5 px-4 shadow-md transform rotate-45 translate-x-7 translate-y-2 z-10">
           EXPRESS
         </div>
@@ -570,14 +574,14 @@ ${servicesList}
       {/* Card content is organized into three main sections with consistent heights */}
       
       {/* Header Section */}
-      <div className={`p-6 ${isExpressService ? 'pb-3' : 'pb-4'}`}>
+      <div className={`p-6 ${isExpressService || isExpressDentService ? 'pb-3' : 'pb-4'}`}>
         {card.isBestseller && (
           <div className="absolute top-4 left-4 bg-[#FFF0E6] text-[#FF7200] text-xs font-semibold py-1 px-2 rounded">
             Bestseller
           </div>
         )}
         
-        <h3 className={`text-xl font-bold ${isExpressService ? 'text-[#FF7200]' : 'text-gray-900'}`}>{card.title}</h3>
+        <h3 className={`text-xl font-bold ${isExpressService || isExpressDentService ? 'text-[#FF7200]' : 'text-gray-900'}`}>{card.title}</h3>
         <p className="text-gray-600 text-sm min-h-[40px] mt-1">{card.description}</p>
       </div>
       
@@ -590,7 +594,7 @@ ${servicesList}
           </div>
           <span className="text-gray-500 text-sm ml-2">({card.reviewCount}+ reviews)</span>
           
-          {isExpressService ? (
+          {isExpressService || isExpressDentService ? (
             <div className="relative ml-auto flex items-center">
               <div className={`flex items-center px-3 py-1.5 rounded-full bg-red-50 ${highlightDuration ? 'ring-2 ring-red-400' : ''}`}>
                 <Clock className="w-4 h-4 text-[#FF7200] mr-1" />
@@ -602,7 +606,7 @@ ${servicesList}
           )}
         </div>
         
-        {isExpressService ? (
+        {isExpressService || isExpressDentService ? (
           <div className="mt-2 flex items-center justify-between border-t border-dashed border-green-200 pt-2">
             <div className="flex items-center">
               <div className="bg-green-100 p-1 rounded-full mr-1.5">
@@ -625,7 +629,7 @@ ${servicesList}
         {/* Price and Button */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-4">
           <div>
-            {isExpressService && vehicleSelected && actualPrice ? (
+            {(isExpressService || isExpressDentService) && vehicleSelected && actualPrice ? (
               <div className="flex flex-col">
                 <div className="flex items-center">
                   <div className="flex flex-col">
@@ -668,7 +672,7 @@ ${servicesList}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleBookNow}
-                className={`${isExpressService ? 
+                className={`${isExpressService || isExpressDentService ? 
                   'bg-[#FF7200] hover:bg-[#FF7200]/90 text-white' : 
                   'bg-[#FF7200] hover:bg-[#FF7200]/90 text-white'} 
                   px-6 py-3 rounded-md transition-colors flex items-center justify-center w-full sm:w-[170px] text-sm whitespace-nowrap font-bold shadow-md`}
@@ -722,8 +726,8 @@ ${servicesList}
                 <ul className="space-y-2">
                   {card.details.map((detail, index) => (
                     <li key={index} className="text-gray-700 flex items-start p-1.5 rounded hover:bg-gray-50">
-                      <div className={`${isExpressService ? 'bg-[#FFF0E6]' : 'bg-[#FFF0E6]'} rounded-full p-1 mr-2 flex-shrink-0`}>
-                        <Check className={`w-3 h-3 ${isExpressService ? 'text-[#FF7200]' : 'text-[#FF7200]'}`} strokeWidth={3} />
+                      <div className={`${isExpressService || isExpressDentService ? 'bg-[#FFF0E6]' : 'bg-[#FFF0E6]'} rounded-full p-1 mr-2 flex-shrink-0`}>
+                        <Check className={`w-3 h-3 ${isExpressService || isExpressDentService ? 'text-[#FF7200]' : 'text-[#FF7200]'}`} strokeWidth={3} />
                       </div>
                       <span className="mt-0.5">{detail}</span>
                     </li>
@@ -736,7 +740,7 @@ ${servicesList}
       </div>
       
       {/* Express Service Highlight - only for express service and on desktop */}
-      {isExpressService && (
+      {(isExpressService || isExpressDentService) && (
         <div className="absolute top-1/4 right-0 w-20 h-20 -rotate-45 hidden lg:block">
           <div className="w-full h-full bg-gradient-to-r from-transparent to-[#FFF0E6] opacity-40"></div>
         </div>
