@@ -16,6 +16,7 @@ import ExpressService from './pages/Express';
 import AdsExpressService from './pages/AdsExpress';
 import WorkshopPartner from './pages/WorkshopPartner';
 import FranchisePage from './pages/FranchisePage';
+import Feedback from './pages/Feedback';
 import Footer from './components/Footer';
 import CustomerForm from './components/CustomerForm';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
@@ -216,7 +217,7 @@ const AppContent = () => {
         <div className="min-h-screen bg-white">
           <Navbar />
           <AnimatePresence mode="wait">
-            <Routes>
+            <Routes location={location} key={location.pathname}>
               <Route path="/" element={<Home />} />
               <Route path="/services" element={<Services />} />
               <Route path="/ad-services" element={<AdServices />} />
@@ -227,6 +228,10 @@ const AppContent = () => {
               <Route path="/careers" element={<Careers />} />
               <Route path="/express" element={<ExpressService />} />
               <Route path="/ads-express" element={<AdsExpressService />} />
+              <Route path="/adservices" element={<AdServices />} />
+              <Route path="/workshop-partner" element={<WorkshopPartner />} />
+              <Route path="/franchise-partner" element={<FranchisePage />} />
+              <Route path="/feedback" element={<Feedback />} />
               
               {/* Service Routes */}
               <Route path="/services/periodic" element={<PeriodicService />} />
@@ -243,9 +248,7 @@ const AppContent = () => {
               <Route path="/terms" element={<Terms />} />
               <Route path="/refund-policy" element={<RefundPolicy />} />
               <Route path="/express-Service-TnCs" element={<ExpressServiceTnC />} />
-              <Route path="/workshop-partner" element={<WorkshopPartner />} />
               <Route path="/:citySlug" element={<CityPage />} />
-              <Route path="/franchise" element={<FranchisePage />} />
             </Routes>
           </AnimatePresence>
           <Footer />
@@ -269,7 +272,11 @@ const App = () => {
   return (
     <HelmetProvider>
       <Router>
-        <AppContent />
+        <AnimatePresence mode="wait">
+          <AnalyticsWrapper>
+            <AppContent />
+          </AnalyticsWrapper>
+        </AnimatePresence>
       </Router>
     </HelmetProvider>
   );
