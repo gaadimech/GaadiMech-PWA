@@ -5,8 +5,9 @@ export interface NpsFormData {
   category: NpsCategory;
   selectedFeatures: string;
   feedback: string;
-  name?: string;
-  mobileNumber?: string;
+  name: string;
+  mobileNumber: string;
+  carModel: string;
   serviceType?: number;
   serviceDate?: string;
   express90Mins: boolean;
@@ -23,6 +24,7 @@ export interface NpsResponse {
       feedback: string;
       name: string;
       mobileNumber: string;
+      carModel: string;
       serviceType: string;
       serviceDate: string;
       express90Mins: string;

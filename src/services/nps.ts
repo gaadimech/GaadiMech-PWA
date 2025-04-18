@@ -22,6 +22,7 @@ export const npsService = {
         feedback: formData.feedback || '',
         name: formData.name || '',
         mobileNumber: formData.mobileNumber || '',
+        carModel: formData.carModel || '',
         serviceType: formData.serviceType ? String(formData.serviceType) : '',
         serviceDate: formData.serviceDate || '',
         express90Mins: formData.express90Mins ? 'true' : 'false'
