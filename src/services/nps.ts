@@ -14,31 +14,36 @@ export const npsService = {
             : 'promoter'
         : 'passive';
       
-      // Create a new object with proper types matching Strapi's content type
-      const formattedData = {
-        score: Number(formData.score),
-        category,
-        selectedFeatures: formData.selectedFeatures || '',
-        feedback: formData.feedback || '',
-        name: formData.name || '',
-        mobileNumber: formData.mobileNumber || '',
-        carModel: formData.carModel || '',
-        serviceType: formData.serviceType ? String(formData.serviceType) : '',
-        serviceDate: formData.serviceDate || '',
-        express90Mins: formData.express90Mins ? 'true' : 'false'
+      // Format data to exactly match Strapi's expected structure
+      // Strapi requires a 'data' object with all fields
+      const payload = {
+        data: {
+          score: Number(formData.score),
+          category,
+          selectedFeatures: formData.selectedFeatures || '',
+          feedback: formData.feedback || '',
+          name: formData.name || '',
+          mobileNumber: formData.mobileNumber || '',
+          carmodel: formData.carModel || '',
+          serviceType: formData.serviceType ? String(formData.serviceType) : '',
+          serviceDate: formData.serviceDate || '',
+          express90Mins: formData.express90Mins ? 'true' : 'false'
+        }
       };
       
-      // Send the data in the same format as other working forms
-      const response = await apiClient.post<NpsResponse>('/nps-feedbacks', {
-        data: formattedData
-      });
+      // Debug log
+      console.log('Submitting NPS data to Strapi:', payload);
       
+      // Send the properly formatted request to Strapi
+      const response = await apiClient.post<NpsResponse>('/nps-feedbacks', payload);
       return response.data;
     } catch (error: any) {
-      // Enhance error handling for Strapi validation errors
-      if (error.response?.data?.error) {
+      // Enhanced error handling with more details
+      if (error.response?.data) {
+        console.error('NPS submission error details:', error.response.data);
         throw error.response.data;
       }
+      console.error('NPS submission error:', error);
       throw error;
     }
   },
@@ -49,6 +54,7 @@ export const npsService = {
       const response = await apiClient.get<{ data: ServiceType[] }>('/service-types');
       return response.data;
     } catch (error: any) {
+      console.error('Error fetching service types:', error.response?.data || error);
       if (error.response?.data?.error) {
         throw error.response.data;
       }

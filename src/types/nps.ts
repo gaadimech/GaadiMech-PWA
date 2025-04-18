@@ -24,7 +24,7 @@ export interface NpsResponse {
       feedback: string;
       name: string;
       mobileNumber: string;
-      carModel: string;
+      carmodel: string;
       serviceType: string;
       serviceDate: string;
       express90Mins: string;

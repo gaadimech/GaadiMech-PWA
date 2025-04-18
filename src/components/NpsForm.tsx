@@ -102,6 +102,9 @@ const NpsForm: React.FC = () => {
     setErrorMessage('');
 
     try {
+      // Log the data being submitted to help debug
+      console.log('Submitting form data:', formData);
+      
       await npsService.submit(formData);
       setStatus('success');
       setShowCouponPopup(true);
@@ -121,7 +124,24 @@ const NpsForm: React.FC = () => {
       });
     } catch (error: any) {
       setStatus('error');
-      setErrorMessage(error.message || 'An error occurred. Please try again.');
+      
+      // Extract a more helpful error message if possible
+      let errorMsg = 'An error occurred. Please try again.';
+      
+      if (error.error?.message) {
+        errorMsg = error.error.message;
+      } else if (error.message) {
+        errorMsg = error.message;
+      } else if (typeof error === 'string') {
+        errorMsg = error;
+      } else if (error.error?.details?.errors) {
+        // For Strapi validation errors
+        const errors = error.error.details.errors;
+        errorMsg = errors.map((err: any) => err.message).join(', ');
+      }
+      
+      console.error('Form submission error:', error);
+      setErrorMessage(errorMsg);
     }
   };
 
@@ -362,7 +382,7 @@ const NpsForm: React.FC = () => {
               className="w-full p-2 pl-8 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
               value={formData.carModel}
               onChange={handleChange}
-              placeholder="e.g. Swift, Baleno, i20"
+              placeholder="Swift, Baleno, i20"
             />
             <Car className="absolute top-2.5 left-2.5 text-gray-400" size={16} />
           </div>
