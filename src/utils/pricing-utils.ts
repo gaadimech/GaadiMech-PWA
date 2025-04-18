@@ -7,8 +7,10 @@ interface CSVRow {
   'Car Model': string;
   'Periodic Service Price GaadiMech': string;
   'Express Service Price GaadiMech': string;
+  'Discounted Price': string;
   'Dent & Paint Price GaadiMech': string;
   'Dent and Paint Full Body': string;
+  'AC Service': string;
 }
 
 // Format price as Indian currency
@@ -30,11 +32,41 @@ export const parseCSVData = async (): Promise<CSVRow[]> => {
     const csvText = await response.text();
     
     return new Promise((resolve, reject) => {
-      Papa.parse<CSVRow>(csvText, {
-        header: true,
-        complete: (results) => resolve(results.data),
-        error: (error: Error) => reject(error),
+      // Parse the CSV file
+      const results = Papa.parse(csvText, {
+        header: false,
+        skipEmptyLines: true,
       });
+      
+      if (results.data && Array.isArray(results.data) && results.data.length > 0) {
+        // Convert array data to objects with proper field names
+        const rows: CSVRow[] = [];
+        const data = results.data as string[][];
+        
+        // Skip the header row if it exists
+        const startIndex = data[0][0] === 'FuelType' ? 1 : 0;
+        
+        for (let i = startIndex; i < data.length; i++) {
+          const row = data[i];
+          if (row.length >= 8) {
+            rows.push({
+              'FuelType': row[0],
+              'Car Brand': row[1],
+              'Car Model': row[2],
+              'Periodic Service Price GaadiMech': row[3],
+              'Express Service Price GaadiMech': row[4],
+              'Discounted Price': row[5],
+              'Dent & Paint Price GaadiMech': row[6],
+              'Dent and Paint Full Body': row[7],
+              'AC Service': row[8] || ''
+            });
+          }
+        }
+        
+        resolve(rows);
+      } else {
+        reject(new Error('Failed to parse CSV data'));
+      }
     });
   } catch (error) {
     console.error('Error parsing CSV data:', error);
@@ -67,6 +99,7 @@ export const getFuelTypes = (data: CSVRow[], manufacturer: string, model: string
     (
       parseFloat(row['Periodic Service Price GaadiMech'] || '0') > 0 ||
       parseFloat(row['Express Service Price GaadiMech'] || '0') > 0 ||
+      parseFloat(row['Discounted Price'] || '0') > 0 ||
       parseFloat(row['Dent & Paint Price GaadiMech'] || '0') > 0
     )
   ).forEach(row => fuelTypes.add(row.FuelType));
@@ -84,10 +117,12 @@ export const getPricingData = (data: CSVRow[], vehicle: Vehicle): PricingData | 
   if (!row) return null;
   
   return {
-    periodicServicePrice: parseFloat(row['Periodic Service Price GaadiMech']),
-    expressServicePrice: parseFloat(row['Express Service Price GaadiMech']),
-    dentingPaintPrice: parseFloat(row['Dent & Paint Price GaadiMech']),
-    fullBodyPaintPrice: parseFloat(row['Dent and Paint Full Body']),
+    periodicServicePrice: parseFloat(row['Periodic Service Price GaadiMech']) || 0,
+    expressServicePrice: parseFloat(row['Express Service Price GaadiMech']) || 0,
+    discountedExpressPrice: parseFloat(row['Discounted Price']) || 0,
+    dentingPaintPrice: parseFloat(row['Dent & Paint Price GaadiMech']) || 0,
+    fullBodyPaintPrice: parseFloat(row['Dent and Paint Full Body']) || 0,
+    acServicePrice: parseFloat(row['AC Service']) || 0,
   };
 };
 

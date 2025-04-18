@@ -9,8 +9,10 @@ export interface Vehicle {
 export interface PricingData {
   periodicServicePrice: number;
   expressServicePrice: number;
+  discountedExpressPrice: number;
   dentingPaintPrice: number;
   fullBodyPaintPrice: number;
+  acServicePrice: number;
 }
 
 export interface ServiceTypeOption {

@@ -3,8 +3,9 @@ import { motion } from 'framer-motion';
 import { CheckCircle, Clock, Calendar, ArrowRight, ArrowUp, ArrowDown, Shield, AlertTriangle, X, Car, Phone, Tag } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { expressService } from '../services/expressService';
-import { getVehicleFromSession } from '../utils/pricing-utils';
+import { getVehicleFromSession, parseCSVData, getPricingData } from '../utils/pricing-utils';
 import { Link, useNavigate } from 'react-router-dom';
+import { PricingData } from '../types/services';
 
 const ExpressBetaATCCart = () => {
   const navigate = useNavigate();
@@ -16,9 +17,10 @@ const ExpressBetaATCCart = () => {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [finalPrice, setFinalPrice] = useState(3899);
-  const [discountedPrice, setDiscountedPrice] = useState(3399);
   const [showDateTimeSection, setShowDateTimeSection] = useState(false);
+  
+  // Loading state for pricing data
+  const [isLoadingPricingData, setIsLoadingPricingData] = useState(true);
   
   // Vehicle details from session
   const [carBrand, setCarBrand] = useState('');
@@ -36,16 +38,15 @@ const ExpressBetaATCCart = () => {
   const [appliedCoupon, setAppliedCoupon] = useState<{code: string, discount: number} | null>(null);
   const [showCouponInput, setShowCouponInput] = useState(false);
   
-  // Updated price states
-  const [originalPrice] = useState(4199);
-  const [autoDiscountAmount] = useState(500);
+  // Updated price states using data from CSV
+  const [originalPrice, setOriginalPrice] = useState(0);
+  const [discountedPrice, setDiscountedPrice] = useState(0);
+  const [autoDiscountAmount, setAutoDiscountAmount] = useState(0);
   const [additionalDiscount, setAdditionalDiscount] = useState(0);
+  const [finalPrice, setFinalPrice] = useState(0);
   
   // Add new state for workshop price calculation
-  const [workshopPrice] = useState(() => {
-    // Workshop price is typically 2.5x the original price
-    return Math.round(originalPrice * 2.5);
-  });
+  const [workshopPrice, setWorkshopPrice] = useState(0);
 
   // Add state for highlighting mobile input
   const [showMobileHighlight, setShowMobileHighlight] = useState(true);
@@ -60,6 +61,57 @@ const ExpressBetaATCCart = () => {
   // WhatsApp information
   const [whatsappRedirectTimeout, setWhatsappRedirectTimeout] = useState<NodeJS.Timeout | null>(null);
   const WHATSAPP_PHONE_NUMBER = '917300042410';
+
+  // Load pricing data on component mount
+  useEffect(() => {
+    const loadPricingData = async () => {
+      setIsLoadingPricingData(true);
+      try {
+        // Load vehicle details from session
+        const savedVehicle = getVehicleFromSession();
+        if (savedVehicle) {
+          setCarBrand(savedVehicle.manufacturer);
+          setCarModel(savedVehicle.model);
+          setFuelType(savedVehicle.fuelType);
+
+          // Load CSV data
+          const csvData = await parseCSVData();
+          
+          // Get pricing for this specific vehicle
+          const pricing = getPricingData(csvData, savedVehicle);
+          
+          if (pricing) {
+            // Set pricing data from CSV
+            setOriginalPrice(pricing.expressServicePrice);
+            setDiscountedPrice(pricing.discountedExpressPrice);
+            
+            // Calculate auto discount (original - discounted)
+            const autoDiscount = pricing.expressServicePrice - pricing.discountedExpressPrice;
+            setAutoDiscountAmount(autoDiscount);
+            
+            // Set final price (discounted price by default - before any coupon)
+            setFinalPrice(pricing.discountedExpressPrice);
+            
+            // Set workshop price (2.5x for demonstration, or use actual workshop price if available)
+            setWorkshopPrice(Math.round(pricing.expressServicePrice * 2.5));
+          } else {
+            console.error('No pricing data found for vehicle:', savedVehicle);
+            // Redirect back if no pricing data
+            navigate('/express-beta-atc');
+          }
+        } else {
+          // If no vehicle details found, redirect back to express-beta-atc
+          navigate('/express-beta-atc');
+        }
+      } catch (error) {
+        console.error('Error loading pricing data:', error);
+      } finally {
+        setIsLoadingPricingData(false);
+      }
+    };
+
+    loadPricingData();
+  }, [navigate]);
 
   // Effect to handle mobile input highlight animation
   useEffect(() => {
@@ -117,17 +169,6 @@ const ExpressBetaATCCart = () => {
   };
   
   useEffect(() => {
-    // Load vehicle details from session
-    const savedVehicle = getVehicleFromSession();
-    if (savedVehicle) {
-      setCarBrand(savedVehicle.manufacturer);
-      setCarModel(savedVehicle.model);
-      setFuelType(savedVehicle.fuelType);
-    } else {
-      // If no vehicle details found, redirect back to express-beta-atc
-      navigate('/express-beta-atc');
-    }
-    
     // Generate available dates
     setAvailableDates(generateDates());
     // Set default date to today
@@ -214,16 +255,16 @@ const ExpressBetaATCCart = () => {
       // Prepare service type
       const serviceTypeName = "Express Service";
       
-      // Create the lead with mobile and vehicle details
+      // Create the lead with all info
       const response = await expressService.submitLead({
         mobileNumber: mobileNumber,
         serviceType: serviceTypeName,
         carBrand: carBrand,
         carModel: carModel,
         fuel_type: fuelType,
-        servicePrice: originalPrice, // This is the original price before any discounts
-        couponCode: appliedCoupon ? appliedCoupon.code : null, // Add coupon code if applied
-        finalPrice: finalPrice // Add final price after all discounts
+        servicePrice: originalPrice, // Original price from CSV
+        couponCode: appliedCoupon ? appliedCoupon.code : null,
+        finalPrice: finalPrice // Final price after all discounts
       } as any);
       
       if (!response || !response.data || !response.data.id) {
@@ -370,7 +411,7 @@ const ExpressBetaATCCart = () => {
     
     // For this example, we'll implement the TEST-10OFF coupon
     if (couponCode.toUpperCase() === 'TEST-10OFF') {
-      const basePrice = originalPrice - autoDiscountAmount; // Price after auto discount
+      const basePrice = discountedPrice; // Use the already discounted price as base
       const couponDiscount = Math.round(basePrice * 0.1); // 10% of base price
       setAdditionalDiscount(couponDiscount);
       setFinalPrice(basePrice - couponDiscount);
@@ -390,7 +431,7 @@ const ExpressBetaATCCart = () => {
     setAppliedCoupon(null);
     setCouponCode('');
     setAdditionalDiscount(0);
-    setFinalPrice(originalPrice - autoDiscountAmount);
+    setFinalPrice(discountedPrice); // Reset to discounted price without coupon
     setDiscountApplied(false);
   };
 
@@ -443,7 +484,7 @@ Coupon Discount: -₹${couponDiscount}`;
 
     // Show final calculation result
     message += `
-Final Price: ₹${totalPrice} (${originalPrice} - ${websiteDiscount}${appliedCoupon ? ` - ${couponDiscount}` : ''})
+Final Price: ₹${totalPrice}
 Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
     
     // Encode the message for URL
@@ -464,6 +505,18 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
       }
     };
   }, [whatsappRedirectTimeout]);
+
+  // Conditional rendering while loading
+  if (isLoadingPricingData) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="p-4 text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7200] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading pricing data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-50 min-h-screen pb-24 hide-whatsapp-button">
@@ -545,7 +598,7 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
                   </div>
                 </div>
                 
-                {/* Express Service - Compact version */}
+                {/* Express Service - Compact version with dynamic pricing */}
                 <div className="bg-[#FFF8F0] p-3 rounded-lg">
                   <div className="flex justify-between items-center">
                     <div>
