@@ -42,6 +42,9 @@ import ExpressServiceTnC from './pages/legal/ExpressServiceTnC';
 
 import CityPage from './pages/CityPage';
 
+import ExpressBetaATC from './pages/ExpressBetaATC';
+import ExpressBetaATCCart from './pages/ExpressBetaATCCart';
+
 Modal.setAppElement('#root');
 
 // Create a new component to use the hook
@@ -227,6 +230,8 @@ const AppContent = () => {
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/careers" element={<Careers />} />
               <Route path="/express" element={<ExpressService />} />
+              <Route path="/express-beta-atc" element={<ExpressBetaATC />} />
+              <Route path="/express-beta-atc/cart" element={<ExpressBetaATCCart />} />
               <Route path="/ads-express" element={<AdsExpressService />} />
               <Route path="/adservices" element={<AdServices />} />
               <Route path="/workshop-partner" element={<WorkshopPartner />} />
@@ -248,7 +253,9 @@ const AppContent = () => {
               <Route path="/terms" element={<Terms />} />
               <Route path="/refund-policy" element={<RefundPolicy />} />
               <Route path="/express-Service-TnCs" element={<ExpressServiceTnC />} />
-              <Route path="/:citySlug" element={<CityPage />} />
+
+              {/* City Routes */}
+              <Route path="/city/:cityName" element={<CityPage />} />
             </Routes>
           </AnimatePresence>
           <Footer />

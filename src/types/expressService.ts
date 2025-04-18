@@ -7,6 +7,8 @@ export interface ExpressServiceFormData {
   carModel?: string;
   fuelType?: string;
   servicePrice?: number;
+  couponCode?: string | null;
+  finalPrice?: number;
 }
 
 export interface ExpressServiceResponse {
@@ -21,6 +23,8 @@ export interface ExpressServiceResponse {
       carModel?: string;
       fuelType?: string;
       servicePrice?: number;
+      couponCode?: string | null;
+      finalPrice?: number;
       createdAt: string;
       updatedAt: string;
     };
