@@ -13,7 +13,6 @@ import Modal from 'react-modal';
 import { useLocation } from 'react-router-dom';
 import { getVehicleFromSession } from '../utils/pricing-utils';
 import { Link } from 'react-router-dom';
-import Breadcrumb from '../components/Breadcrumb';
 
 const steps = [
   {
@@ -250,19 +249,25 @@ const ExpressBetaATC = () => {
 
   const handleMobileModalClose = () => {
     setIsMobileInputModalOpen(false);
+    setMobile('');
+    setError('');
+    // Don't reset other data as we want to preserve car selection
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
+    handleScheduleClick();
   };
 
   const handleCarSelectionModalClose = () => {
+    // Close the modal without losing data
     setIsCarSelectionModalOpen(false);
+    // Keep car selection data in session storage if any
   };
-
+  
   const handlePricingModalClose = () => {
     setIsPricingModalOpen(false);
+    // Keep all data for potential future use
   };
 
   const handleTimeSlotSubmit = async (date: string, timeSlot: string) => {
@@ -305,7 +310,18 @@ const ExpressBetaATC = () => {
   };
 
   const handleTimeSlotModalClose = () => {
+    // Close the modal without updating the lead
     setIsTimeSlotModalOpen(false);
+    
+    // Store user's mobile number in session storage before resetting the form
+    if (mobile) {
+      sessionStorage.setItem('userMobileNumber', mobile);
+    }
+    
+    // IMPORTANT: Unlike the car selection cancel, DO NOT reset the current lead ID
+    // This ensures we don't create duplicate leads if the user goes back
+    
+    // We also don't reset car selection details to maintain state between modals
   };
 
   // Use effect to load service types when component mounts
@@ -322,6 +338,46 @@ const ExpressBetaATC = () => {
     if (showSuccessFromParams) {
       // Handle showing success message if redirected back with success=true
       setShowSuccessMessage(true);
+    }
+    
+    // Check for saved vehicle
+    const savedVehicle = getVehicleFromSession();
+    if (savedVehicle) {
+      setSelectedCarBrand(savedVehicle.manufacturer);
+      setSelectedCarModel(savedVehicle.model);
+      setSelectedFuelType(savedVehicle.fuelType);
+      console.log("Loaded saved vehicle:", savedVehicle);
+    }
+    
+    // Check for saved lead ID
+    const savedLeadId = sessionStorage.getItem('expressServiceLeadId');
+    if (savedLeadId) {
+      const leadId = parseInt(savedLeadId, 10);
+      if (!isNaN(leadId)) {
+        console.log("Found existing lead ID:", leadId);
+        setCurrentLeadId(leadId);
+      }
+    }
+    
+    // Check if we have everything needed to auto-start the flow
+    const storedMobile = sessionStorage.getItem('userMobileNumber');
+    
+    // If we have both vehicle and mobile info but no active modals yet,
+    // we can prompt user to continue their booking
+    if (savedVehicle && storedMobile && !isTimeSlotModalOpen && !isCarSelectionModalOpen && !isSubmitting) {
+      console.log("Found both vehicle and mobile in session. Setting up for booking continuation.");
+      setMobile(storedMobile);
+      
+      // Wait a bit to ensure component is fully mounted
+      setTimeout(() => {
+        // If we have a lead ID, we can open car selection directly
+        if (savedLeadId) {
+          setIsCarSelectionModalOpen(true);
+        } else {
+          // Otherwise, prompt the user to start booking
+          handleScheduleClick();
+        }
+      }, 500);
     }
   }, []);
 
@@ -348,57 +404,203 @@ const ExpressBetaATC = () => {
   };
 
   return (
-    <div className="bg-white">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="pt-20"
+    >
       <Helmet>
-        <title>Express Car Service in 90 Minutes - GaadiMech</title>
-        <meta name="description" content="Book a complete car service in just 90 minutes. Express service includes engine oil change, filters replacement, car wash, and 15-point inspection at competitive rates." />
+        <title>GaadiMech Express: 90-Minute Car Service | Fast & Professional Car Repair</title>
+        <meta name="description" content="Experience the future of car servicing with GaadiMech Express. Get your car serviced in just 90 minutes with our expert mechanics and state-of-the-art technology." />
       </Helmet>
-      
-      {/* Breadcrumb */}
-      <Breadcrumb serviceName="Express Service" />
-      
+
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-b from-gray-50 to-white py-20 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
+            >
+              Car Servicing Done in
+              <span className="text-[#FF7200]"> 90 Minutes</span>
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-xl text-gray-600 mb-8"
+            >
+              Skip the all-day wait. Get your car serviced by expert mechanics using
+              state-of-the-art technology – all while you enjoy a coffee.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="max-w-md mx-auto"
+            >
+              <button
+                onClick={handleScheduleClick}
+                className="w-64 bg-[#FF7200] text-white px-8 py-4 rounded-lg hover:bg-[#FF8000] transition-colors text-lg font-semibold flex items-center justify-center gap-2 mx-auto shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
+              >
+                <Calendar className="w-5 h-5" />
+                Schedule Slot Now
+              </button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Mobile Input Modal */}
+      <Modal
+        isOpen={isMobileInputModalOpen}
+        onRequestClose={handleMobileModalClose}
+        className="modal-content max-w-md mx-auto bg-white p-6 rounded-xl shadow-2xl relative"
+        overlayClassName="modal-overlay fixed inset-0 bg-black/60 flex items-center justify-center overflow-y-auto z-50"
+        contentLabel="Mobile Input Modal"
+      >
+        <button
+          onClick={handleMobileModalClose}
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 z-10"
+        >
+          <X className="w-6 h-6" />
+        </button>
+        
+        <div className="pt-2">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <Phone className="w-6 h-6 text-[#FF7200]" />
+            Enter Your Mobile Number
+          </h2>
+          
+          <form onSubmit={handleMobileSubmit}>
+            <div className="mb-4">
+              <input
+                type="tel"
+                value={mobile}
+                onChange={(e) => setMobile(e.target.value)}
+                placeholder="Enter your 10-digit mobile number"
+                className={`w-full px-4 py-3 rounded-lg border ${
+                  error ? 'border-red-500' : 'border-gray-300'
+                } focus:ring-2 focus:ring-[#FF7200] focus:border-transparent`}
+                required
+              />
+              {error && (
+                <p className="text-red-500 text-sm mt-1">{error}</p>
+              )}
+            </div>
+            
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-[#FF7200] text-white py-3 rounded-lg hover:bg-[#FF8000] transition-colors disabled:opacity-50 font-semibold"
+            >
+              {isSubmitting ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  Processing...
+                </div>
+              ) : 'Continue'}
+            </button>
+          </form>
+        </div>
+      </Modal>
+
+      {/* Modals */}
+      <CarSelectionModal
+        isOpen={isCarSelectionModalOpen}
+        onClose={handleCarSelectionModalClose}
+        onSubmit={handleCarSelectionSubmit}
+        mobileNumber={mobile}
+        leadId={currentLeadId || undefined}
+      />
+
+      <TimeSlotModal
+        isOpen={isTimeSlotModalOpen}
+        onClose={handleTimeSlotModalClose}
+        onSubmit={handleTimeSlotSubmit}
+        mobileNumber={mobile}
+        servicePrice={selectedServicePrice || 0}
+      />
+
+      <PricingInfoModal
+        isOpen={isPricingModalOpen}
+        onClose={handlePricingModalClose}
+        onBookNow={handleBookSlotNowClick}
+        carBrand={selectedCarBrand}
+        carModel={selectedCarModel}
+        fuelType={selectedFuelType}
+        servicePrice={selectedServicePrice || 0}
+        initialMobileNumber={mobile}
+      />
+
+      {/* Success Notification */}
+      {showSuccessMessage && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 p-4">
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full relative"
+          >
+            <button 
+              onClick={() => setShowSuccessMessage(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-green-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h3>
+              <p className="text-gray-600 mb-6">
+                Your Express Service has been scheduled successfully. We'll see you at the selected time!
+              </p>
+              
+              <div className="bg-gray-50 p-4 rounded-md mb-6 text-left">
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div className="text-gray-500">Service:</div>
+                  <div className="font-medium">Express Service</div>
+                  
+                  <div className="text-gray-500">Vehicle:</div>
+                  <div className="font-medium">{selectedCarBrand} {selectedCarModel}</div>
+                  
+                  <div className="text-gray-500">Date:</div>
+                  <div className="font-medium">{selectedDate}</div>
+                  
+                  <div className="text-gray-500">Time:</div>
+                  <div className="font-medium">{selectedTimeSlot}</div>
+                </div>
+              </div>
+              
+              <button 
+                onClick={() => setShowSuccessMessage(false)}
+                className="px-6 py-3 bg-[#FF7200] text-white font-bold rounded-md hover:bg-[#E56500] transition-colors duration-300 w-full"
+              >
+                Close
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
       {/* Timelapse Video Section */}
-      <section className="pt-16 pb-8 bg-white">
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-extrabold text-gray-900 mb-3">
-              Express Service in 90 Minutes
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Complete car service in just 90 minutes, not 4-8 hours. Same quality, faster service.
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              See Express Service in Action
+            </h2>
+            <p className="text-xl text-gray-600">
+              Watch how we complete your car service in just 90 minutes
             </p>
           </div>
-          
-          <div className="flex justify-center mb-4">
-            <button 
-              onClick={handleScheduleClick}
-              className="px-6 py-3 bg-[#FF7200] text-white font-bold rounded-md text-lg shadow-lg hover:bg-[#E56500] transition-colors duration-300 flex items-center space-x-2"
-            >
-              <span>Book Express Service Now</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
-          </div>
-          
-          {/* Brief advantages beneath CTA */}
-          <div className="flex flex-wrap justify-center items-center gap-5 mb-8 text-sm md:text-base">
-            <div className="flex items-center text-gray-700">
-              <CheckCircle className="w-5 h-5 text-green-600 mr-1" />
-              <span>1-Month Warranty</span>
-            </div>
-            <div className="flex items-center text-gray-700">
-              <CheckCircle className="w-5 h-5 text-green-600 mr-1" />
-              <span>90-Minute Turnaround</span>
-            </div>
-            <div className="flex items-center text-gray-700">
-              <CheckCircle className="w-5 h-5 text-green-600 mr-1" />
-              <span>Save Up to 60%</span>
-            </div>
-            <div className="flex items-center text-gray-700">
-              <CheckCircle className="w-5 h-5 text-green-600 mr-1" />
-              <span>Free Post-Service Support</span>
-            </div>
-          </div>
-          
           <div className="relative overflow-hidden pb-[56.25%] rounded-lg shadow-xl">
             <iframe 
               className="absolute top-0 left-0 w-full h-full"
@@ -534,84 +736,21 @@ const ExpressBetaATC = () => {
         </div>
       </section>
 
-      {/* Modals */}
-      <CarSelectionModal
-        isOpen={isCarSelectionModalOpen}
-        onClose={handleCarSelectionModalClose}
-        onSubmit={handleCarSelectionSubmit}
-        mobileNumber={mobile}
-      />
-
-      <TimeSlotModal
-        isOpen={isTimeSlotModalOpen}
-        onClose={handleTimeSlotModalClose}
-        onSubmit={handleTimeSlotSubmit}
-        mobileNumber={mobile}
-        servicePrice={selectedServicePrice || 0}
-      />
-
-      <PricingInfoModal
-        isOpen={isPricingModalOpen}
-        onClose={handlePricingModalClose}
-        onBookNow={handleBookSlotNowClick}
-        carBrand={selectedCarBrand}
-        carModel={selectedCarModel}
-        fuelType={selectedFuelType}
-        servicePrice={selectedServicePrice || 0}
-        initialMobileNumber={mobile}
-      />
-
-      {/* Success Notification */}
-      {showSuccessMessage && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 p-4">
-          <motion.div 
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full relative"
-          >
-            <button 
-              onClick={() => setShowSuccessMessage(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-8 h-8 text-green-600" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h3>
-              <p className="text-gray-600 mb-6">
-                Your Express Service has been scheduled successfully. We'll see you at the selected time!
-              </p>
-              
-              <div className="bg-gray-50 p-4 rounded-md mb-6 text-left">
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div className="text-gray-500">Service:</div>
-                  <div className="font-medium">Express Service</div>
-                  
-                  <div className="text-gray-500">Vehicle:</div>
-                  <div className="font-medium">{selectedCarBrand} {selectedCarModel}</div>
-                  
-                  <div className="text-gray-500">Date:</div>
-                  <div className="font-medium">{selectedDate}</div>
-                  
-                  <div className="text-gray-500">Time:</div>
-                  <div className="font-medium">{selectedTimeSlot}</div>
-                </div>
-              </div>
-              
-              <button 
-                onClick={() => setShowSuccessMessage(false)}
-                className="px-6 py-3 bg-[#FF7200] text-white font-bold rounded-md hover:bg-[#E56500] transition-colors duration-300 w-full"
-              >
-                Close
-              </button>
-            </div>
-          </motion.div>
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ReviewCarousel reviews={serviceReviews} />
         </div>
-      )}
-    </div>
+      </section>
+
+      {/* Terms and Conditions Note */}
+      <section className="py-6 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-sm text-gray-500">
+            *Terms and conditions apply. For complete details, visit our <Link to="/express-Service-TnCs" className="text-[#FF7200] hover:underline">Express Service Terms and Conditions</Link> page.
+          </p>
+        </div>
+      </section>
+    </motion.div>
   );
 };
 
