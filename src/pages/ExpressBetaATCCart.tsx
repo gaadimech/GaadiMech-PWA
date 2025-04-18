@@ -560,62 +560,62 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
         {/* Main content grid with different orders for mobile/desktop */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Main Content - Left Column */}
-          <div className="lg:col-span-8 space-y-6">
+          <div className="lg:col-span-8 space-y-4">
             {/* Vehicle Details Card - Order 1 on mobile */}
-            <div className="bg-white rounded-lg shadow-sm p-4 lg:p-6 order-1 lg:order-none">
+            <div className="bg-white rounded-lg shadow-sm p-3 lg:p-4 order-1 lg:order-none">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3 lg:space-x-4">
-                  <Car className="w-10 h-10 lg:w-12 lg:h-12 text-gray-700" />
+                <div className="flex items-center space-x-2 lg:space-x-3">
+                  <Car className="w-8 h-8 lg:w-9 lg:h-9 text-gray-700" />
                   <div>
-                    <h2 className="text-xl lg:text-2xl font-bold text-gray-900">{carBrand} {carModel}</h2>
-                    <p className="text-gray-600">{fuelType}</p>
+                    <h2 className="text-lg lg:text-xl font-bold text-gray-900">{carBrand} {carModel}</h2>
+                    <p className="text-sm text-gray-600">{fuelType}</p>
                   </div>
                 </div>
                 <Link 
                   to="/express-beta-atc" 
-                  className="text-[#FF7200] hover:text-[#FF6000] font-medium flex items-center"
+                  className="text-[#FF7200] hover:text-[#FF6000] font-medium flex items-center text-sm"
                 >
                   Change Vehicle
-                  <ArrowRight className="w-4 h-4 ml-1" />
+                  <ArrowRight className="w-3 h-3 ml-1" />
                 </Link>
               </div>
             </div>
 
             {/* Compare & Save Section - Order 2 on mobile - Optimized height */}
-            <div className="bg-white rounded-lg shadow-sm p-4 lg:p-6 order-2 lg:order-none">
-              <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4">Compare & Save</h2>
+            <div className="bg-white rounded-lg shadow-sm p-3 lg:p-4 order-2 lg:order-none">
+              <h2 className="text-lg lg:text-xl font-bold text-gray-900 mb-2">Compare & Save</h2>
               
-              <div className="flex flex-col space-y-3">
+              <div className="flex flex-col space-y-2">
                 {/* Regular Workshop Service */}
-                <div className="flex justify-between items-center bg-gray-100 p-3 rounded-lg border-l-4 border-[#FF8A3D]">
+                <div className="flex justify-between items-center bg-gray-100 p-2 rounded-lg border-l-4 border-[#FF8A3D]">
                   <div>
-                    <h3 className="text-gray-700 font-medium">Regular Workshop Service</h3>
-                    <p className="text-gray-500 text-sm">Authorized Service Center</p>
+                    <h3 className="text-gray-700 font-medium text-sm">Regular Workshop Service</h3>
+                    <p className="text-gray-500 text-xs">Authorized Service Center</p>
                   </div>
                   <div className="text-right">
-                    <span className="text-lg font-bold text-gray-900">₹{workshopPrice}</span>
+                    <span className="text-base font-bold text-gray-900">₹{workshopPrice}</span>
                     <p className="text-gray-500 text-xs">4-8 hours service time</p>
                   </div>
                 </div>
                 
                 {/* Express Service - Compact version with dynamic pricing */}
-                <div className="bg-[#FFF8F0] p-3 rounded-lg">
+                <div className="bg-[#FFF8F0] p-2 rounded-lg">
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-lg font-bold text-gray-900">Express Service</h3>
-                        <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">
+                      <div className="flex items-center gap-1">
+                        <h3 className="text-base font-bold text-gray-900">Express Service</h3>
+                        <span className="bg-green-100 text-green-700 text-xs px-1.5 py-0.5 rounded-full">
                           Save ₹{workshopPrice - finalPrice}
                         </span>
                       </div>
-                      <div className="flex items-center text-[#FF8A3D] text-sm mt-1">
-                        <Clock className="w-4 h-4 mr-1" />
+                      <div className="flex items-center text-[#FF8A3D] text-xs mt-1">
+                        <Clock className="w-3 h-3 mr-1" />
                         <span>90-Minute Service</span>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-gray-500 line-through text-sm">₹{originalPrice}</div>
-                      <div className="font-bold text-xl text-[#FF8A3D]">₹{finalPrice}</div>
+                      <div className="text-gray-500 line-through text-xs">₹{originalPrice}</div>
+                      <div className="font-bold text-lg text-[#FF8A3D]">₹{finalPrice}</div>
                       <div className="text-green-600 text-xs">Auto discount: ₹{autoDiscountAmount} OFF</div>
                       {appliedCoupon && (
                         <div className="text-blue-600 text-xs">Coupon: ₹{additionalDiscount} OFF</div>
