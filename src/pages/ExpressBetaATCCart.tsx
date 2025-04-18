@@ -586,59 +586,40 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
               </div>
 
               {!appliedCoupon ? (
-                <>
-                  {!showCouponInput ? (
-                    <button
-                      onClick={() => setShowCouponInput(true)}
-                      className="flex items-center justify-center w-full py-3 px-4 bg-gradient-to-r from-[#FFF8F0] to-[#FFEDE0] text-[#FF7200] hover:from-[#FFEFE0] hover:to-[#FFE4D0] rounded-lg border border-[#FFD7BD] shadow-sm transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-md"
-                    >
-                      <div className="relative mr-2">
-                        <Tag className="w-5 h-5" />
-                        <span className="absolute -top-1 -right-1 flex h-2 w-2">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF7200] opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FF7200]"></span>
-                        </span>
-                      </div>
-                      <span className="font-medium">Apply Coupon Code</span>
-                      <span className="ml-2 text-xs bg-[#FF7200] text-white py-0.5 px-2 rounded-full">SAVE MORE</span>
-                    </button>
-                  ) : (
-                    <div className="space-y-3">
-                      <div className="flex flex-col sm:flex-row gap-3">
-                        <div className="relative flex-1">
-                          <input
-                            type="text"
-                            value={couponCode}
-                            onChange={(e) => setCouponCode(e.target.value)}
-                            placeholder="Enter coupon code"
-                            className="w-full border border-gray-300 rounded-lg px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-[#FF7200] transition-all duration-300 uppercase"
-                          />
-                          {couponCode && (
-                            <button 
-                              onClick={() => setCouponCode('')}
-                              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                            >
-                              <X className="w-5 h-5" />
-                            </button>
-                          )}
-                        </div>
-                        <button
-                          onClick={validateAndApplyCoupon}
-                          className="bg-[#FF7200] text-white px-6 py-3 rounded-lg hover:bg-[#FF6000] text-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center"
+                <div className="space-y-3">
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="relative flex-1">
+                      <input
+                        type="text"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value)}
+                        placeholder="ENTER COUPON CODE"
+                        className="w-full border border-gray-300 rounded-lg px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-[#FF7200] transition-all duration-300 uppercase"
+                      />
+                      {couponCode && (
+                        <button 
+                          onClick={() => setCouponCode('')}
+                          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                         >
-                          <span>Apply</span>
-                          <ArrowRight className="w-5 h-5 ml-2" />
+                          <X className="w-5 h-5" />
                         </button>
-                      </div>
-                      {couponError && (
-                        <p className="text-red-500 text-sm bg-red-50 p-2 rounded flex items-center">
-                          <AlertTriangle className="w-4 h-4 mr-1" />
-                          {couponError}
-                        </p>
                       )}
                     </div>
+                    <button
+                      onClick={validateAndApplyCoupon}
+                      className="bg-[#FF7200] text-white px-6 py-3 rounded-lg hover:bg-[#FF6000] text-lg font-medium transition-all flex items-center justify-center whitespace-nowrap"
+                    >
+                      <span>Apply</span>
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </button>
+                  </div>
+                  {couponError && (
+                    <p className="text-red-500 text-sm bg-red-50 p-2 rounded flex items-center">
+                      <AlertTriangle className="w-4 h-4 mr-1" />
+                      {couponError}
+                    </p>
                   )}
-                </>
+                </div>
               ) : (
                 <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 shadow-sm">
                   <div className="flex justify-between items-center">
