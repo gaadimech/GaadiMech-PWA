@@ -235,7 +235,7 @@ const AppContent = () => {
               <Route path="/ads-express" element={<AdsExpressService />} />
               <Route path="/adservices" element={<AdServices />} />
               <Route path="/workshop-partner" element={<WorkshopPartner />} />
-              <Route path="/franchise-partner" element={<FranchisePage />} />
+              <Route path="/franchise" element={<FranchisePage />} />
               <Route path="/feedback" element={<Feedback />} />
               
               {/* Service Routes */}
