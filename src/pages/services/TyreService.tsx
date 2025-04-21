@@ -15,7 +15,7 @@ import {
   Award,
   Truck
 } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
+
 import ReviewCarousel from '../../components/ReviewCarousel';
 import { getReviewsByService } from '../../data/reviews';
 
@@ -130,11 +130,6 @@ const TyreService = () => {
       transition={{ duration: 0.5 }}
       className="pt-20 overflow-x-hidden"
     >
-      <Helmet>
-        <title>Tyre Replacement & Wheel Alignment Services | GaadiMech</title>
-        <meta name="description" content="Professional tyre services including replacement, alignment, balancing, and puncture repair. Keep your car running safely and efficiently." />
-      </Helmet>
-
       {/* Hero Section with Custom Design Background */}
       <div className="relative h-[90vh] sm:h-[80vh] overflow-hidden">
         {/* Custom designed background */}

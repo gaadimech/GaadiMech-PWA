@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Car, PenTool as Tool, Phone, CheckCircle, ArrowRight, Share2, Gift, Wrench, Sparkles, Timer, Calendar, Image, MessageSquare, User, Shield, X } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
+
 import { expressService } from '../services/expressService';
 import TimeSlotModal from '../components/TimeSlotModal';
 import CarSelectionModal from '../components/CarSelectionModal';
@@ -437,10 +437,6 @@ Booking Slot: ${new Date(date).toLocaleDateString('en-IN', { day: 'numeric', mon
       transition={{ duration: 0.5 }}
       className="pt-20"
     >
-      <Helmet>
-        <title>GaadiMech Express: 90-Minute Car Service | Fast & Professional Car Repair</title>
-        <meta name="description" content="Experience the future of car servicing with GaadiMech Express. Get your car serviced in just 90 minutes with our expert mechanics and state-of-the-art technology." />
-      </Helmet>
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-b from-gray-50 to-white py-20 overflow-hidden">

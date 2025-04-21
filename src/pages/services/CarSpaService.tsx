@@ -15,7 +15,7 @@ import {
   Award,
   Truck
 } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
+
 import ReviewCarousel from '../../components/ReviewCarousel';
 import { getReviewsByService } from '../../data/reviews';
 
@@ -130,11 +130,6 @@ const CarSpaService = () => {
       transition={{ duration: 0.5 }}
       className="pt-20 overflow-x-hidden"
     >
-      <Helmet>
-        <title>Car Spa & Cleaning Services | GaadiMech</title>
-        <meta name="description" content="Professional car cleaning and detailing services. Get your car looking brand new with our expert cleaning solutions." />
-      </Helmet>
-
       {/* Hero Section with Custom Design Background */}
       <div className="relative h-[90vh] sm:h-[80vh] overflow-hidden">
         {/* Custom designed background */}

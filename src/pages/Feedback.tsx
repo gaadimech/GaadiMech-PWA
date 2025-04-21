@@ -1,15 +1,10 @@
 import React from 'react';
 import NpsForm from '../components/NpsForm';
-import { Helmet } from 'react-helmet-async';
+
 
 const Feedback: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <Helmet>
-        <title>Customer Feedback | GaadiMech</title>
-        <meta name="description" content="Share your feedback with GaadiMech to help us improve our automotive services. Your opinion matters to us!" />
-        <meta name="keywords" content="GaadiMech feedback, customer feedback, car repair feedback, automotive service review" />
-      </Helmet>
       
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">

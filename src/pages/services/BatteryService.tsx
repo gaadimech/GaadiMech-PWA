@@ -15,7 +15,7 @@ import {
   Award,
   Truck
 } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
+
 import ReviewCarousel from '../../components/ReviewCarousel';
 import { getReviewsByService } from '../../data/reviews';
 
@@ -130,10 +130,6 @@ const BatteryService = () => {
       transition={{ duration: 0.5 }}
       className="pt-20 overflow-x-hidden"
     >
-      <Helmet>
-        <title>Car Battery Service & Replacement | GaadiMech</title>
-        <meta name="description" content="Professional car battery services including testing, repair, and replacement. Get reliable battery solutions from expert technicians." />
-      </Helmet>
 
       {/* Hero Section with Custom Design Background */}
       <div className="relative h-[90vh] sm:h-[80vh] overflow-hidden">

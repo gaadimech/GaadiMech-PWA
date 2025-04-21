@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { blogService } from '../services/blog';
 import type { BlogPostAttributes } from '../types/blog';
-import { Helmet } from 'react-helmet-async';
+
 
 const Blog = () => {
   const [posts, setPosts] = useState<BlogPostAttributes[]>([]);
@@ -45,11 +45,6 @@ const Blog = () => {
       transition={{ duration: 0.5 }}
       className="pt-20"
     >
-      <Helmet>
-        <title>Blog - GaadiMech | Car Maintenance Tips & Automotive Insights</title>
-        <meta name="description" content="Read expert automotive tips, car maintenance guides, and industry insights from GaadiMech's professional mechanics." />
-        <meta name="keywords" content="car maintenance tips, automotive blog, car repair guide, vehicle maintenance blog" />
-      </Helmet>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <h1 className="text-4xl font-bold text-gray-900 mb-12">GaadiMech Blogs</h1>

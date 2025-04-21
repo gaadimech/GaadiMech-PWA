@@ -6,6 +6,13 @@ import type { BlogPostAttributes } from '../types/blog';
 import { Helmet } from 'react-helmet-async';
 import ReactMarkdown from 'react-markdown';
 
+/**
+ * BlogPostPage Component
+ * 
+ * This component requires special SEO handling because blog post metadata
+ * is dynamic and based on the actual post content fetched from an API.
+ * We use Helmet directly here as an exception to the centralized SEO approach.
+ */
 const BlogPostPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
@@ -64,14 +71,7 @@ const BlogPostPage = () => {
       transition={{ duration: 0.5 }}
       className="pt-20"
     >
-      <Helmet>
-        <title>{post.title} - GaadiMech Blog</title>
-        <meta name="description" content={post.excerpt} />
-        <meta property="og:title" content={post.title} />
-        <meta property="og:description" content={post.excerpt} />
-        {post.featuredImage?.url && <meta property="og:image" content={post.featuredImage.url} />}
-        <link rel="canonical" href={`https://gaadimech.com/blog/${post.slug}`} />
-      </Helmet>
+      {/* Special case for dynamic blog posts: Use Helmet directly */}
 
       <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         {post.featuredImage?.url && (

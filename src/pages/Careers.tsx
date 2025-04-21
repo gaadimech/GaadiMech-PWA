@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Briefcase, ArrowRight, GraduationCap, Users, Clock, Wrench, Mail } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
+
 
 interface JobPosition {
   title: string;
@@ -118,10 +118,6 @@ const Careers = () => {
       transition={{ duration: 0.5 }}
       className="pt-20"
     >
-      <Helmet>
-        <title>Careers at GaadiMech | Join the 90-Minute Revolution in Car Care</title>
-        <meta name="description" content="Join GaadiMech's innovative team and be part of revolutionizing the car service industry. Explore exciting career opportunities in automotive technology, operations, and more." />
-      </Helmet>
 
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-gray-50 to-white py-20">

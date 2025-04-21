@@ -45,6 +45,12 @@ import CityPage from './pages/CityPage';
 import ExpressBetaATC from './pages/ExpressBetaATC';
 import ExpressBetaATCCart from './pages/ExpressBetaATCCart';
 
+import CarServiceInJaipur from './pages/CarServiceInJaipur';
+import CarACServiceInJaipur from './pages/CarACServiceInJaipur';
+import CarDentPaintServiceInJaipur from './pages/CarDentPaintServiceInJaipur';
+import CarRepairServiceInJaipur from './pages/CarRepairServiceInJaipur';
+import CarMechanicShopInJaipur from './pages/CarMechanicShopInJaipur';
+
 Modal.setAppElement('#root');
 
 // Create a new component to use the hook
@@ -256,6 +262,13 @@ const AppContent = () => {
 
               {/* City Routes */}
               <Route path="/city/:cityName" element={<CityPage />} />
+
+              {/* SEO Routes */}
+              <Route path="/car-service-in-jaipur" element={<CarServiceInJaipur />} />
+              <Route path="/car-ac-service-in-jaipur" element={<CarACServiceInJaipur />} />
+              <Route path="/car-dent-paint-service-in-jaipur" element={<CarDentPaintServiceInJaipur />} />
+              <Route path="/car-repair-service-in-jaipur" element={<CarRepairServiceInJaipur />} />
+              <Route path="/car-mechanic-shop-in-jaipur" element={<CarMechanicShopInJaipur />} />
             </Routes>
           </AnimatePresence>
           <Footer />

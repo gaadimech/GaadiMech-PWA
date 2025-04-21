@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, Clock, Calendar, ArrowRight, ArrowUp, ArrowDown, Shield, AlertTriangle, X, Car, Phone, Tag } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
+
 import { expressService } from '../services/expressService';
 import { getVehicleFromSession, parseCSVData, getPricingData } from '../utils/pricing-utils';
 import { Link, useNavigate } from 'react-router-dom';
@@ -520,25 +520,6 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
 
   return (
     <div className="bg-gray-50 min-h-screen pb-24 hide-whatsapp-button">
-      <Helmet>
-        <title>Complete Your Express Service Booking - GaadiMech</title>
-        <meta name="description" content="Complete your express car service booking. Choose your service date and time, view pricing details, and confirm your booking." />
-        <style>
-          {`
-            /* Hide WhatsApp button on this page */
-            .hide-whatsapp-button .whatsapp-button {
-              display: none !important;
-            }
-
-            /* Ensure proper bottom padding for content */
-            @media (max-width: 1024px) {
-              .hide-whatsapp-button {
-                padding-bottom: 88px !important;
-              }
-            }
-          `}
-        </style>
-      </Helmet>
 
       {/* Header with Breadcrumb */}
       <div className="bg-white shadow-sm">

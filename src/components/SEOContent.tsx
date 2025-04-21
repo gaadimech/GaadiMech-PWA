@@ -39,7 +39,32 @@ const SEOContent = () => {
         <meta property="twitter:image" content={seoConfig.image} />
 
         {/* Canonical URL */}
-        <link rel="canonical" href={`https://gaadimech.com${path}`} />
+        <link rel="canonical" href={seoConfig.canonicalUrl || `https://gaadimech.com${path}`} />
+        
+        {/* Robots meta tag if specified */}
+        {seoConfig.robots && <meta name="robots" content={seoConfig.robots} />}
+        
+        {/* Hreflang tags if available */}
+        {seoConfig.hreflang && seoConfig.hreflang.map((item) => (
+          <link 
+            key={item.lang}
+            rel="alternate" 
+            hrefLang={item.lang} 
+            href={item.url} 
+          />
+        ))}
+        
+        {/* Pagination links if available */}
+        {seoConfig.pagination && (
+          <>
+            {seoConfig.pagination.prev && 
+              <link rel="prev" href={seoConfig.pagination.prev} />
+            }
+            {seoConfig.pagination.next && 
+              <link rel="next" href={seoConfig.pagination.next} />
+            }
+          </>
+        )}
         
         {/* Custom structured data if available */}
         {seoConfig.structuredData && (

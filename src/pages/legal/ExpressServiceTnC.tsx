@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FileText } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
+
 
 const ExpressServiceTnC = () => {
   return (
@@ -12,10 +12,6 @@ const ExpressServiceTnC = () => {
       transition={{ duration: 0.5 }}
       className="pt-20"
     >
-      <Helmet>
-        <title>Express Service Terms and Conditions | GaadiMech</title>
-        <meta name="description" content="Terms and conditions for GaadiMech's Express 90 MINS Car Service package." />
-      </Helmet>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-8">

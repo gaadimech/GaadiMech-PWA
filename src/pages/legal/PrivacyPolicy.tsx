@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Shield } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
 
 const PrivacyPolicy = () => {
   return (
@@ -12,11 +11,6 @@ const PrivacyPolicy = () => {
       transition={{ duration: 0.5 }}
       className="pt-20"
     >
-      <Helmet>
-        <title>Privacy Policy | GaadiMech</title>
-        <meta name="description" content="GaadiMech's privacy policy explains how we collect, use, and protect your personal information." />
-      </Helmet>
-
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-8">
           <Shield className="w-16 h-16 text-[#FF7200] mx-auto mb-4" />

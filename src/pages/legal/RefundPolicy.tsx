@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { RefreshCcw } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
+
 
 const RefundPolicy = () => {
   return (
@@ -12,10 +12,6 @@ const RefundPolicy = () => {
       transition={{ duration: 0.5 }}
       className="pt-20"
     >
-      <Helmet>
-        <title>Refund Policy | GaadiMech</title>
-        <meta name="description" content="Learn about GaadiMech's refund policy for car services and products." />
-      </Helmet>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-8">

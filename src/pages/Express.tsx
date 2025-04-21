@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Car, PenTool as Tool, Phone, CheckCircle, ArrowRight, Share2, Gift, Wrench, Sparkles, Timer, Calendar, Image, MessageSquare, User, Shield, X } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
 import { expressService } from '../services/expressService';
 import TimeSlotModal from '../components/TimeSlotModal';
 import CarSelectionModal from '../components/CarSelectionModal';
@@ -448,326 +447,321 @@ Booking Slot: ${new Date(date).toLocaleDateString('en-IN', { day: 'numeric', mon
       transition={{ duration: 0.5 }}
       className="pt-20"
     >
-      <Helmet>
-        <title>GaadiMech Express: 90-Minute Car Service | Fast & Professional Car Repair</title>
-        <meta name="description" content="Experience the future of car servicing with GaadiMech Express. Get your car serviced in just 90 minutes with our expert mechanics and state-of-the-art technology." />
-      </Helmet>
-
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-b from-gray-50 to-white py-20 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
-            >
-              Car Servicing Done in
-              <span className="text-[#FF7200]"> 90 Minutes</span>
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-xl text-gray-600 mb-8"
-            >
-              Skip the all-day wait. Get your car serviced by expert mechanics using
-              state-of-the-art technology – all while you enjoy a coffee.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="max-w-md mx-auto"
-            >
-              <button
-                onClick={handleScheduleClick}
-                className="w-64 bg-[#FF7200] text-white px-8 py-4 rounded-lg hover:bg-[#FF8000] transition-colors text-lg font-semibold flex items-center justify-center gap-2 mx-auto shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
-              >
-                <Calendar className="w-5 h-5" />
-                Schedule Slot Now
-              </button>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Mobile Input Modal */}
-      <Modal
-        isOpen={isMobileInputModalOpen}
-        onRequestClose={handleMobileModalClose}
-        className="modal-content max-w-md mx-auto bg-white p-6 rounded-xl shadow-2xl relative"
-        overlayClassName="modal-overlay fixed inset-0 bg-black/60 flex items-center justify-center overflow-y-auto z-50"
-        contentLabel="Mobile Input Modal"
-      >
-        <button
-          onClick={handleMobileModalClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 z-10"
-        >
-          <X className="w-6 h-6" />
-        </button>
-        
-        <div className="pt-2">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <Phone className="w-6 h-6 text-[#FF7200]" />
-            Enter Your Mobile Number
-          </h2>
-          
-          <form onSubmit={handleMobileSubmit}>
-            <div className="mb-4">
-              <input
-                type="tel"
-                value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
-                placeholder="Enter your 10-digit mobile number"
-                className={`w-full px-4 py-3 rounded-lg border ${
-                  error ? 'border-red-500' : 'border-gray-300'
-                } focus:ring-2 focus:ring-[#FF7200] focus:border-transparent`}
-                required
-              />
-              {error && (
-                <p className="text-red-500 text-sm mt-1">{error}</p>
-              )}
-            </div>
-            
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-[#FF7200] text-white py-3 rounded-lg hover:bg-[#FF8000] transition-colors disabled:opacity-50 font-semibold"
-            >
-              {isSubmitting ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Processing...
-                </div>
-              ) : 'Continue'}
-            </button>
-          </form>
-        </div>
-      </Modal>
-
-      {/* Success Message Modal */}
-      <Modal
-        isOpen={showSuccessMessage}
-        onRequestClose={() => setShowSuccessMessage(false)}
-        className="modal-content max-w-md mx-auto bg-white p-4 sm:p-6 rounded-xl shadow-2xl w-[90%]"
-        overlayClassName="modal-overlay fixed inset-0 bg-black/60 flex items-center justify-center overflow-y-auto z-50"
-        contentLabel="Success Message Modal"
-      >
-        <div className="text-center">
-          <div className="flex justify-center mb-3 sm:mb-4">
-            <CheckCircle className="w-12 h-12 sm:w-16 sm:h-16 text-green-500" />
-          </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h2>
-          <p className="text-base sm:text-lg text-gray-600 mb-3">Your ₹500 discount has been locked in successfully!</p>
-          <div className="flex items-center justify-center">
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#25D366] mr-2"></div>
-            <p className="text-sm text-gray-700">Redirecting to WhatsApp...</p>
-          </div>
-        </div>
-      </Modal>
-
-      {/* Car Selection Modal */}
-      <CarSelectionModal
-        isOpen={isCarSelectionModalOpen}
-        onClose={handleCarSelectionModalClose}
-        onSubmit={handleCarSelectionSubmit}
-        mobileNumber={mobile}
-        leadId={currentLeadId || undefined}
-      />
-
-      {/* Time Slot Modal */}
-      <TimeSlotModal
-        isOpen={isTimeSlotModalOpen}
-        onClose={handleTimeSlotModalClose}
-        onSubmit={handleTimeSlotSubmit}
-        mobileNumber={mobile}
-        servicePrice={selectedServicePrice || 0}
-      />
-
-      {/* Pricing Info Modal */}
-      <PricingInfoModal
-        isOpen={isPricingModalOpen}
-        onClose={handlePricingModalClose}
-        onBookNow={handleBookSlotNowClick}
-        carBrand={selectedCarBrand}
-        carModel={selectedCarModel}
-        fuelType={selectedFuelType}
-        servicePrice={selectedServicePrice || 0}
-        initialMobileNumber={mobile}
-      />
-
-      {/* Timelapse Video Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              See Express Service in Action
-            </h2>
-            <p className="text-xl text-gray-600">
-              Watch how we complete your car service in just 90 minutes
-            </p>
-          </div>
-          <div className="relative overflow-hidden pb-[56.25%] rounded-lg shadow-xl">
-            <iframe 
-              className="absolute top-0 left-0 w-full h-full"
-              src="https://www.youtube.com/embed/unRdRJJypR4?si=yDPoz_MREFH_Zsyi" 
-              title="YouTube video player" 
-              frameBorder="0" 
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-              referrerPolicy="strict-origin-when-cross-origin" 
-              allowFullScreen
-            ></iframe>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            How It Works
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
-            {steps.map((step, index) => (
-              <motion.div
-                key={index}
+      <div className="min-h-screen bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          {/* Hero Section */}
+          <section className="relative bg-gradient-to-b from-gray-50 to-white py-20 overflow-hidden">
+            <div className="text-center max-w-3xl mx-auto">
+              <motion.h1
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="text-center bg-white rounded-lg p-4 md:p-6 shadow-sm md:shadow-none border border-gray-100 md:border-0 hover:shadow-md transition-shadow duration-300"
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
               >
-                <div className="flex justify-center mb-4">
-                  <div className="bg-orange-50 p-2 md:p-0 rounded-full md:rounded-none">
-                    {step.icon}
-                  </div>
-                </div>
-                <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2">
-                  {step.title}
-                </h3>
-                <p className="text-gray-600 hidden md:block">
-                  {step.description}
-                </p>
+                Car Servicing Done in
+                <span className="text-[#FF7200]"> 90 Minutes</span>
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-xl text-gray-600 mb-8"
+              >
+                Skip the all-day wait. Get your car serviced by expert mechanics using
+                state-of-the-art technology – all while you enjoy a coffee.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="max-w-md mx-auto"
+              >
+                <button
+                  onClick={handleScheduleClick}
+                  className="w-64 bg-[#FF7200] text-white px-8 py-4 rounded-lg hover:bg-[#FF8000] transition-colors text-lg font-semibold flex items-center justify-center gap-2 mx-auto shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
+                >
+                  <Calendar className="w-5 h-5" />
+                  Schedule Slot Now
+                </button>
               </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+            </div>
+          </section>
 
-      {/* Service Process Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Our 90-Minute Service Process
-            </h2>
-            <p className="text-xl text-gray-600">
-              Speed meets precision with our innovative parallel processing system
-            </p>
-          </div>
+          {/* Mobile Input Modal */}
+          <Modal
+            isOpen={isMobileInputModalOpen}
+            onRequestClose={handleMobileModalClose}
+            className="modal-content max-w-md mx-auto bg-white p-6 rounded-xl shadow-2xl relative"
+            overlayClassName="modal-overlay fixed inset-0 bg-black/60 flex items-center justify-center overflow-y-auto z-50"
+            contentLabel="Mobile Input Modal"
+          >
+            <button
+              onClick={handleMobileModalClose}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 z-10"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            
+            <div className="pt-2">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <Phone className="w-6 h-6 text-[#FF7200]" />
+                Enter Your Mobile Number
+              </h2>
+              
+              <form onSubmit={handleMobileSubmit}>
+                <div className="mb-4">
+                  <input
+                    type="tel"
+                    value={mobile}
+                    onChange={(e) => setMobile(e.target.value)}
+                    placeholder="Enter your 10-digit mobile number"
+                    className={`w-full px-4 py-3 rounded-lg border ${
+                      error ? 'border-red-500' : 'border-gray-300'
+                    } focus:ring-2 focus:ring-[#FF7200] focus:border-transparent`}
+                    required
+                  />
+                  {error && (
+                    <p className="text-red-500 text-sm mt-1">{error}</p>
+                  )}
+                </div>
+                
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-[#FF7200] text-white py-3 rounded-lg hover:bg-[#FF8000] transition-colors disabled:opacity-50 font-semibold"
+                >
+                  {isSubmitting ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                      Processing...
+                    </div>
+                  ) : 'Continue'}
+                </button>
+              </form>
+            </div>
+          </Modal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {processSteps.map((step, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white p-6 rounded-lg shadow-md"
-              >
-                <div className="flex items-center mb-4">
-                  <div className="bg-orange-50 p-3 rounded-lg">
-                    {step.icon}
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-gray-900">
+          {/* Success Message Modal */}
+          <Modal
+            isOpen={showSuccessMessage}
+            onRequestClose={() => setShowSuccessMessage(false)}
+            className="modal-content max-w-md mx-auto bg-white p-4 sm:p-6 rounded-xl shadow-2xl w-[90%]"
+            overlayClassName="modal-overlay fixed inset-0 bg-black/60 flex items-center justify-center overflow-y-auto z-50"
+            contentLabel="Success Message Modal"
+          >
+            <div className="text-center">
+              <div className="flex justify-center mb-3 sm:mb-4">
+                <CheckCircle className="w-12 h-12 sm:w-16 sm:h-16 text-green-500" />
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h2>
+              <p className="text-base sm:text-lg text-gray-600 mb-3">Your ₹500 discount has been locked in successfully!</p>
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#25D366] mr-2"></div>
+                <p className="text-sm text-gray-700">Redirecting to WhatsApp...</p>
+              </div>
+            </div>
+          </Modal>
+
+          {/* Car Selection Modal */}
+          <CarSelectionModal
+            isOpen={isCarSelectionModalOpen}
+            onClose={handleCarSelectionModalClose}
+            onSubmit={handleCarSelectionSubmit}
+            mobileNumber={mobile}
+            leadId={currentLeadId || undefined}
+          />
+
+          {/* Time Slot Modal */}
+          <TimeSlotModal
+            isOpen={isTimeSlotModalOpen}
+            onClose={handleTimeSlotModalClose}
+            onSubmit={handleTimeSlotSubmit}
+            mobileNumber={mobile}
+            servicePrice={selectedServicePrice || 0}
+          />
+
+          {/* Pricing Info Modal */}
+          <PricingInfoModal
+            isOpen={isPricingModalOpen}
+            onClose={handlePricingModalClose}
+            onBookNow={handleBookSlotNowClick}
+            carBrand={selectedCarBrand}
+            carModel={selectedCarModel}
+            fuelType={selectedFuelType}
+            servicePrice={selectedServicePrice || 0}
+            initialMobileNumber={mobile}
+          />
+
+          {/* Timelapse Video Section */}
+          <section className="py-16 bg-white">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                See Express Service in Action
+              </h2>
+              <p className="text-xl text-gray-600">
+                Watch how we complete your car service in just 90 minutes
+              </p>
+            </div>
+            <div className="relative overflow-hidden pb-[56.25%] rounded-lg shadow-xl">
+              <iframe 
+                className="absolute top-0 left-0 w-full h-full"
+                src="https://www.youtube.com/embed/unRdRJJypR4?si=yDPoz_MREFH_Zsyi" 
+                title="YouTube video player" 
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                referrerPolicy="strict-origin-when-cross-origin" 
+                allowFullScreen
+              ></iframe>
+            </div>
+          </section>
+
+          {/* How It Works */}
+          <section className="py-20 bg-gray-50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+                How It Works
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+                {steps.map((step, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="text-center bg-white rounded-lg p-4 md:p-6 shadow-sm md:shadow-none border border-gray-100 md:border-0 hover:shadow-md transition-shadow duration-300"
+                  >
+                    <div className="flex justify-center mb-4">
+                      <div className="bg-orange-50 p-2 md:p-0 rounded-full md:rounded-none">
+                        {step.icon}
+                      </div>
+                    </div>
+                    <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2">
                       {step.title}
                     </h3>
-                    <span className="text-[#FF7200] font-medium">
-                      {step.time}
-                    </span>
-                  </div>
-                </div>
-                <p className="text-gray-600">
-                  {step.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+                    <p className="text-gray-600 hidden md:block">
+                      {step.description}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </section>
 
-      {/* Quality Features */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            Quality Assurance
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {qualityFeatures.map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="text-center"
+          {/* Service Process Section */}
+          <section className="py-20 bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-16">
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                  Our 90-Minute Service Process
+                </h2>
+                <p className="text-xl text-gray-600">
+                  Speed meets precision with our innovative parallel processing system
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {processSteps.map((step, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="bg-white p-6 rounded-lg shadow-md"
+                  >
+                    <div className="flex items-center mb-4">
+                      <div className="bg-orange-50 p-3 rounded-lg">
+                        {step.icon}
+                      </div>
+                      <div className="ml-4">
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          {step.title}
+                        </h3>
+                        <span className="text-[#FF7200] font-medium">
+                          {step.time}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-gray-600">
+                      {step.description}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Quality Features */}
+          <section className="py-20 bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+                Quality Assurance
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {qualityFeatures.map((feature, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="text-center"
+                  >
+                    <div className="inline-flex items-center justify-center p-3 bg-orange-50 rounded-full mb-4">
+                      {React.cloneElement(feature.icon, {
+                        className: "w-6 h-6 text-[#FF7200]"
+                      })}
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                      {feature.title}
+                    </h4>
+                    <p className="text-gray-600">
+                      {feature.description}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* CTA */}
+          <section className="py-20 bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+                Ready for the Fastest Car Service in Town?
+              </h2>
+              <p className="text-xl text-gray-600 mb-8">
+                Book your 90-minute express service now and experience the future of car care.
+              </p>
+              <motion.a
+                href="https://api.whatsapp.com/send/?phone=917300042410&text=Hi%2C%20I%27d%20like%20to%20book%20an%20Express%20Service."
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-[#FF7200] hover:bg-[#25D366] text-white px-8 py-3 rounded-md transition-colors inline-flex items-center gap-2"
               >
-                <div className="inline-flex items-center justify-center p-3 bg-orange-50 rounded-full mb-4">
-                  {React.cloneElement(feature.icon, {
-                    className: "w-6 h-6 text-[#FF7200]"
-                  })}
-                </div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                  {feature.title}
-                </h4>
-                <p className="text-gray-600">
-                  {feature.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+                <MessageSquare className="w-5 h-5" />
+                Connect on WhatsApp
+              </motion.a>
+            </div>
+          </section>
 
-      {/* CTA */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">
-            Ready for the Fastest Car Service in Town?
-          </h2>
-          <p className="text-xl text-gray-600 mb-8">
-            Book your 90-minute express service now and experience the future of car care.
-          </p>
-          <motion.a
-            href="https://api.whatsapp.com/send/?phone=917300042410&text=Hi%2C%20I%27d%20like%20to%20book%20an%20Express%20Service."
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-[#FF7200] hover:bg-[#25D366] text-white px-8 py-3 rounded-md transition-colors inline-flex items-center gap-2"
-          >
-            <MessageSquare className="w-5 h-5" />
-            Connect on WhatsApp
-          </motion.a>
-        </div>
-      </section>
+          <section className="py-20 bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <ReviewCarousel reviews={serviceReviews} />
+            </div>
+          </section>
 
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ReviewCarousel reviews={serviceReviews} />
+          {/* Terms and Conditions Note */}
+          <section className="py-6 bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <p className="text-sm text-gray-500">
+                *Terms and conditions apply. For complete details, visit our <Link to="/express-Service-TnCs" className="text-[#FF7200] hover:underline">Express Service Terms and Conditions</Link> page.
+              </p>
+            </div>
+          </section>
         </div>
-      </section>
-
-      {/* Terms and Conditions Note */}
-      <section className="py-6 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-sm text-gray-500">
-            *Terms and conditions apply. For complete details, visit our <Link to="/express-Service-TnCs" className="text-[#FF7200] hover:underline">Express Service Terms and Conditions</Link> page.
-          </p>
-        </div>
-      </section>
+      </div>
     </motion.div>
   );
 };

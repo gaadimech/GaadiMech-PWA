@@ -15,7 +15,7 @@ import {
   Sun,
   Droplets
 } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
+
 import ReviewCarousel from '../../components/ReviewCarousel';
 import { getReviewsByService } from '../../data/reviews';
 
@@ -130,10 +130,6 @@ const WindshieldService = () => {
       transition={{ duration: 0.5 }}
       className="pt-20 overflow-x-hidden"
     >
-      <Helmet>
-        <title>Windshield Replacement & Repair Services | GaadiMech</title>
-        <meta name="description" content="Professional windshield repair and replacement services. From small chips to complete replacements, we ensure safe and clear visibility." />
-      </Helmet>
 
       {/* Hero Section with Custom Design Background */}
       <div className="relative h-[90vh] sm:h-[80vh] overflow-hidden">
