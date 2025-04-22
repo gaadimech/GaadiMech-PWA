@@ -3,15 +3,35 @@ import { ArrowRight, Phone, Clock, Home, IndianRupee, Check, Star } from 'lucide
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
+// Google Analytics events added:
+// 1. conversion_event_book_appointment - Triggered when user clicks "Book Now" (WhatsApp)
+// 2. conversion_event_phone_call_lead - Triggered when user clicks "Call Us"
+
 const Hero = () => {
   const navigate = useNavigate();
 
   const handleBookService = () => {
+    // Track conversion event for Book Now (WhatsApp)
+    if (window.gtag) {
+      window.gtag('event', 'conversion_event_book_appointment', {
+        'event_category': 'engagement',
+        'event_label': 'hero_whatsapp_booking'
+      });
+    }
+    
     const message = encodeURIComponent("Hi, I'd like to book an Express Car Service through GaadiMech.");
     window.open(`https://wa.me/917300042410?text=${message}`, '_blank');
   };
 
   const handleContact = () => {
+    // Track conversion event for Call Us
+    if (window.gtag) {
+      window.gtag('event', 'conversion_event_phone_call_lead', {
+        'event_category': 'engagement',
+        'event_label': 'hero_phone_call'
+      });
+    }
+    
     window.location.href = `tel:+918448285289`;
   };
 

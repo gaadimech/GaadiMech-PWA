@@ -13,6 +13,10 @@ import { useLocation } from 'react-router-dom';
 import { getVehicleFromSession } from '../utils/pricing-utils';
 import { Link } from 'react-router-dom';
 
+// Google Analytics events added:
+// 1. conversion_event_add_to_cart - Triggered when user clicks "Schedule Slot Now"
+// 2. conversion_event_purchase - Triggered when user confirms booking with discount
+
 const steps = [
   {
     icon: <Clock className="w-12 h-12 text-[#FF7200]" />,
@@ -127,6 +131,14 @@ const ExpressService = () => {
     // Clear previous errors
     setError('');
     
+    // Track conversion event for Schedule Slot (Add to Cart)
+    if (window.gtag) {
+      window.gtag('event', 'conversion_event_add_to_cart', {
+        'event_category': 'engagement',
+        'event_label': 'express_schedule_slot'
+      });
+    }
+    
     // First check if we have vehicle details in session
     const savedVehicle = getVehicleFromSession();
     
@@ -159,9 +171,19 @@ const ExpressService = () => {
     setIsPricingModalOpen(true);
   };
 
-  // Handle "Book Slot Now" click from pricing modal
+  // Handle "Book Slot Now" click from pricing modal (This is the Get Rs500 off button)
   const handleBookSlotNowClick = (providedMobileNumber?: string) => {
     setIsPricingModalOpen(false);
+    
+    // Track purchase conversion event
+    if (window.gtag) {
+      window.gtag('event', 'conversion_event_purchase', {
+        'event_category': 'conversion',
+        'event_label': 'express_book_with_discount',
+        'value': selectedServicePrice ? selectedServicePrice - 500 : 0,
+        'currency': 'INR'
+      });
+    }
     
     // Since mobile validation now happens in PricingInfoModal, providedMobileNumber should always be valid
     // We can skip the validation and mobile input modal step
