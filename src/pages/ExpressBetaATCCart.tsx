@@ -62,6 +62,9 @@ const ExpressBetaATCCart = () => {
   const [whatsappRedirectTimeout, setWhatsappRedirectTimeout] = useState<NodeJS.Timeout | null>(null);
   const WHATSAPP_PHONE_NUMBER = '917300042410';
 
+  // Add state to track if coupon has been applied already
+  const [couponApplied, setCouponApplied] = useState(false);
+
   // Update the setCouponError function to ensure it always sets a string
   const setCouponErrorSafe = (error: unknown): void => {
     if (typeof error === 'string') {
@@ -351,8 +354,66 @@ const ExpressBetaATCCart = () => {
 
     try {
       // Create lead in Strapi if not already created
-      if (!leadId) {
-        await createLead(mobileNumber);
+      let currentLeadId = leadId;
+      if (!currentLeadId) {
+        currentLeadId = await createLead(mobileNumber);
+        // Make sure to update the leadId state
+        setLeadId(currentLeadId);
+      }
+      
+      // Apply the coupon if one is being used
+      if (appliedCoupon && !couponApplied) {
+        try {
+          console.log('Attempting to apply coupon during mobile submission:', appliedCoupon.code);
+          
+          const payload = {
+            code: appliedCoupon.code,
+            userId: mobileNumber, // Using mobile number as user ID
+            orderInfo: {
+              leadId: currentLeadId,
+              amount: discountedPrice,
+              finalAmount: finalPrice,
+              discount: appliedCoupon.discount,
+              carBrand,
+              carModel,
+              fuelType,
+              service: 'Express Service'
+              // No booking date or time slot at this point
+            }
+          };
+          
+          console.log('Early coupon application payload:', JSON.stringify(payload));
+          
+          const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:1337'}/api/coupons/apply`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+          });
+          
+          const responseData = await response.json().catch(e => {
+            console.error('Error parsing coupon apply response:', e);
+            return null;
+          });
+          
+          console.log('Coupon application response:', response.status, responseData);
+          
+          if (!response.ok) {
+            const errorMessage = responseData?.error 
+              ? (typeof responseData.error === 'string' ? responseData.error : JSON.stringify(responseData.error)) 
+              : `Failed to apply coupon (Status: ${response.status})`;
+            console.warn('Coupon application issue:', errorMessage);
+          } else {
+            console.log('Coupon successfully applied with response:', responseData);
+            setCouponApplied(true); // Mark coupon as applied
+          }
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'Error applying coupon';
+          console.error('Error applying coupon during mobile submission:', errorMessage, error);
+          // Continue with the booking process even if coupon application fails
+        }
       }
       
       // Set mobile as submitted
@@ -401,8 +462,8 @@ const ExpressBetaATCCart = () => {
       // Update the lead with time slot information
       await updateLeadWithTimeSlot(currentLeadId, selectedDate, selectedTimeSlot);
       
-      // Apply the coupon if one is being used
-      if (appliedCoupon) {
+      // Only apply the coupon if it hasn't been applied already
+      if (appliedCoupon && !couponApplied) {
         try {
           console.log('Attempting to apply coupon:', appliedCoupon.code);
           
@@ -449,6 +510,7 @@ const ExpressBetaATCCart = () => {
             console.warn('Coupon application issue:', errorMessage);
           } else {
             console.log('Coupon successfully applied with response:', responseData);
+            setCouponApplied(true); // Mark coupon as applied
           }
         } catch (error) {
           // Log error but continue with booking
@@ -456,6 +518,8 @@ const ExpressBetaATCCart = () => {
           console.error('Error applying coupon:', errorMessage, error);
           // Continue with booking even if coupon application fails
         }
+      } else if (appliedCoupon && couponApplied) {
+        console.log('Coupon already applied, skipping coupon application step');
       }
       
       // Show success modal
@@ -534,6 +598,9 @@ const ExpressBetaATCCart = () => {
         });
         setShowCouponInput(false);
         setDiscountApplied(true);
+        
+        // Reset coupon applied state when a new coupon is validated
+        setCouponApplied(false);
       } else {
         // Handle error from API
         let errorMessage = 'Invalid or expired coupon code';
@@ -568,6 +635,9 @@ const ExpressBetaATCCart = () => {
     setAdditionalDiscount(0);
     setFinalPrice(discountedPrice); // Reset to discounted price without coupon
     setDiscountApplied(false);
+    
+    // Reset coupon applied state
+    setCouponApplied(false);
   };
 
   // Function to format date for WhatsApp message
