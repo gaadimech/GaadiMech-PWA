@@ -94,18 +94,14 @@ const CouponAdmin = () => {
   const fetchCouponStats = async () => {
     try {
       setIsLoadingStats(true);
-      const basicAuthCredentials = btoa('admin-coupon:admin@coupon');
-      
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:1337'}/api/coupons/stats`, {
+      // Use the new public endpoint that doesn't require authentication
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:1337'}/api/coupons/public-stats`, {
         method: 'GET',
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Basic ${basicAuthCredentials}`
-        }
       });
       
       if (!response.ok) {
+        console.error('Failed to fetch stats:', response.status);
         throw new Error('Failed to fetch coupon statistics');
       }
       

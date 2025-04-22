@@ -404,42 +404,56 @@ const ExpressBetaATCCart = () => {
       // Apply the coupon if one is being used
       if (appliedCoupon) {
         try {
+          console.log('Attempting to apply coupon:', appliedCoupon.code);
+          
+          const payload = {
+            code: appliedCoupon.code,
+            userId: mobileNumber, // Using mobile number as user ID
+            orderInfo: {
+              leadId: currentLeadId,
+              amount: discountedPrice,
+              finalAmount: finalPrice,
+              discount: appliedCoupon.discount,
+              carBrand,
+              carModel,
+              fuelType,
+              service: 'Express Service',
+              bookingDate: selectedDate,
+              bookingTimeSlot: selectedTimeSlot
+            }
+          };
+          
+          console.log('Coupon payload:', JSON.stringify(payload));
+          
           const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:1337'}/api/coupons/apply`, {
             method: 'POST',
             credentials: 'include',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-              code: appliedCoupon.code,
-              userId: mobileNumber, // Using mobile number as user ID
-              orderInfo: {
-                leadId: currentLeadId,
-                amount: discountedPrice,
-                finalAmount: finalPrice,
-                discount: appliedCoupon.discount,
-                carBrand,
-                carModel,
-                fuelType,
-                service: 'Express Service',
-                bookingDate: selectedDate,
-                bookingTimeSlot: selectedTimeSlot
-              }
-            }),
+            body: JSON.stringify(payload),
           });
+          
+          const responseData = await response.json().catch(e => {
+            console.error('Error parsing coupon apply response:', e);
+            return null;
+          });
+          
+          console.log('Coupon application response:', response.status, responseData);
           
           if (!response.ok) {
             // Log warning but continue with booking
-            const errorData = await response.json().catch(() => ({}));
-            const errorMessage = errorData?.error 
-              ? (typeof errorData.error === 'string' ? errorData.error : 'Failed to apply coupon') 
-              : 'Failed to apply coupon';
+            const errorMessage = responseData?.error 
+              ? (typeof responseData.error === 'string' ? responseData.error : JSON.stringify(responseData.error)) 
+              : `Failed to apply coupon (Status: ${response.status})`;
             console.warn('Coupon application issue:', errorMessage);
+          } else {
+            console.log('Coupon successfully applied with response:', responseData);
           }
         } catch (error) {
           // Log error but continue with booking
           const errorMessage = error instanceof Error ? error.message : 'Error applying coupon';
-          console.error('Error applying coupon:', errorMessage);
+          console.error('Error applying coupon:', errorMessage, error);
           // Continue with booking even if coupon application fails
         }
       }
