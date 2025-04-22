@@ -788,7 +788,7 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-24 hide-whatsapp-button">
+    <div className="bg-gray-50 min-h-screen pb-24 hide-whatsapp-button hide-enquiry-form">
 
       {/* Header with Breadcrumb */}
       <div className="bg-white shadow-sm">
