@@ -34,7 +34,7 @@ const ExpressBetaATCCart = () => {
   const [availableSlots, setAvailableSlots] = useState<number>(2);
   
   const [couponCode, setCouponCode] = useState('');
-  const [couponError, setCouponError] = useState('');
+  const [couponError, setCouponError] = useState<string>('');
   const [appliedCoupon, setAppliedCoupon] = useState<{code: string, discount: number} | null>(null);
   const [showCouponInput, setShowCouponInput] = useState(false);
   
@@ -61,6 +61,24 @@ const ExpressBetaATCCart = () => {
   // WhatsApp information
   const [whatsappRedirectTimeout, setWhatsappRedirectTimeout] = useState<NodeJS.Timeout | null>(null);
   const WHATSAPP_PHONE_NUMBER = '917300042410';
+
+  // Update the setCouponError function to ensure it always sets a string
+  const setCouponErrorSafe = (error: unknown): void => {
+    if (typeof error === 'string') {
+      setCouponError(error);
+    } else if (error && typeof error === 'object') {
+      // Handle object errors
+      if ('message' in error && typeof error.message === 'string') {
+        setCouponError(error.message);
+      } else if ('error' in error && typeof error.error === 'string') {
+        setCouponError(error.error);
+      } else {
+        setCouponError('An error occurred with the coupon');
+      }
+    } else {
+      setCouponError('An unexpected error occurred');
+    }
+  };
 
   // Load pricing data on component mount
   useEffect(() => {
@@ -383,6 +401,49 @@ const ExpressBetaATCCart = () => {
       // Update the lead with time slot information
       await updateLeadWithTimeSlot(currentLeadId, selectedDate, selectedTimeSlot);
       
+      // Apply the coupon if one is being used
+      if (appliedCoupon) {
+        try {
+          const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:1337'}/api/coupons/apply`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              code: appliedCoupon.code,
+              userId: mobileNumber, // Using mobile number as user ID
+              orderInfo: {
+                leadId: currentLeadId,
+                amount: discountedPrice,
+                finalAmount: finalPrice,
+                discount: appliedCoupon.discount,
+                carBrand,
+                carModel,
+                fuelType,
+                service: 'Express Service',
+                bookingDate: selectedDate,
+                bookingTimeSlot: selectedTimeSlot
+              }
+            }),
+          });
+          
+          if (!response.ok) {
+            // Log warning but continue with booking
+            const errorData = await response.json().catch(() => ({}));
+            const errorMessage = errorData?.error 
+              ? (typeof errorData.error === 'string' ? errorData.error : 'Failed to apply coupon') 
+              : 'Failed to apply coupon';
+            console.warn('Coupon application issue:', errorMessage);
+          }
+        } catch (error) {
+          // Log error but continue with booking
+          const errorMessage = error instanceof Error ? error.message : 'Error applying coupon';
+          console.error('Error applying coupon:', errorMessage);
+          // Continue with booking even if coupon application fails
+        }
+      }
+      
       // Show success modal
       setSuccess(true);
       setIsSubmitting(false);
@@ -406,23 +467,83 @@ const ExpressBetaATCCart = () => {
   };
 
   // Function to validate and apply coupon
-  const validateAndApplyCoupon = () => {
+  const validateAndApplyCoupon = async () => {
     setCouponError('');
     
-    // For this example, we'll implement the TEST-10OFF coupon
-    if (couponCode.toUpperCase() === 'TEST-10OFF') {
-      const basePrice = discountedPrice; // Use the already discounted price as base
-      const couponDiscount = Math.round(basePrice * 0.1); // 10% of base price
-      setAdditionalDiscount(couponDiscount);
-      setFinalPrice(basePrice - couponDiscount);
-      setAppliedCoupon({
-        code: couponCode.toUpperCase(),
-        discount: couponDiscount
+    if (!couponCode) {
+      setCouponErrorSafe('Please enter a coupon code');
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:1337'}/api/coupons/validate`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          code: couponCode,
+          amount: discountedPrice // Send the current discounted price to validate any minimum purchase requirements
+        }),
       });
-      setShowCouponInput(false);
-      setDiscountApplied(true);
-    } else {
-      setCouponError('Invalid coupon code');
+      
+      const data = await response.json();
+      
+      if (response.ok && data.valid) {
+        const couponDetails = data.coupon;
+        
+        // Apply the coupon discount
+        let couponDiscount = 0;
+        
+        if (couponDetails.discountType === 'percentage') {
+          // For percentage discounts, use the provided discountAmount which includes any maximums
+          couponDiscount = couponDetails.discountAmount;
+        } else if (couponDetails.discountType === 'fixed') {
+          // For fixed discounts, use the discount value directly
+          couponDiscount = couponDetails.discountValue;
+        } else if (couponDetails.discountType === 'free_shipping') {
+          // For free shipping, we would handle this differently
+          // Not applicable in this case, but included for completeness
+          couponDiscount = 0;
+        }
+        
+        // Round discount to nearest integer
+        couponDiscount = Math.round(couponDiscount);
+        
+        // Update state
+        setAdditionalDiscount(couponDiscount);
+        setFinalPrice(discountedPrice - couponDiscount);
+        setAppliedCoupon({
+          code: couponDetails.code,
+          discount: couponDiscount
+        });
+        setShowCouponInput(false);
+        setDiscountApplied(true);
+      } else {
+        // Handle error from API
+        let errorMessage = 'Invalid or expired coupon code';
+        
+        // Safely extract error message if it exists
+        if (data && data.error) {
+          errorMessage = typeof data.error === 'string' 
+            ? data.error 
+            : (data.error.message || 'Invalid coupon code');
+        }
+        
+        setCouponErrorSafe(errorMessage);
+        
+        // Reset any partial state
+        setAdditionalDiscount(0);
+        setAppliedCoupon(null);
+      }
+    } catch (error) {
+      console.error('Error validating coupon:', error);
+      setCouponErrorSafe(error);
+      
+      // Reset any partial state
+      setAdditionalDiscount(0);
+      setAppliedCoupon(null);
     }
   };
 

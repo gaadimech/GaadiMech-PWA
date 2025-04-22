@@ -44,6 +44,7 @@ import CityPage from './pages/CityPage';
 
 import ExpressBetaATC from './pages/ExpressBetaATC';
 import ExpressBetaATCCart from './pages/ExpressBetaATCCart';
+import CouponAdmin from './pages/CouponAdmin';
 
 import CarServiceInJaipur from './pages/CarServiceInJaipur';
 import CarACServiceInJaipur from './pages/CarACServiceInJaipur';
@@ -269,6 +270,9 @@ const AppContent = () => {
               <Route path="/car-dent-paint-service-in-jaipur" element={<CarDentPaintServiceInJaipur />} />
               <Route path="/car-repair-service-in-jaipur" element={<CarRepairServiceInJaipur />} />
               <Route path="/car-mechanic-shop-in-jaipur" element={<CarMechanicShopInJaipur />} />
+
+              {/* New Routes */}
+              <Route path="/coupon-admin" element={<CouponAdmin />} />
             </Routes>
           </AnimatePresence>
           <Footer />
