@@ -59,3 +59,12 @@ input, textarea {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;     /* Firefox */
 }
+
+/* Hide WhatsApp button and enquiry form */
+.hide-whatsapp-button [aria-label="Chat on WhatsApp"] {
+  display: none !important;
+}
+
+.hide-enquiry-form .customer-form-modal {
+  display: none !important;
+}

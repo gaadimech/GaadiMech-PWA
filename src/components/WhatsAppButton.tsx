@@ -4,15 +4,39 @@ import styles from './WhatsAppButton.module.css';
 
 const WhatsAppButton = () => {
   const [visible, setVisible] = useState(false);
+  const [shouldShow, setShouldShow] = useState(true);
   
   useEffect(() => {
+    // Check if the page has the hide-whatsapp-button class
+    const checkIfShouldHide = () => {
+      const bodyElement = document.body;
+      const hasHideClass = bodyElement.classList.contains('hide-whatsapp-button') ||
+                           document.querySelector('.hide-whatsapp-button') !== null;
+      setShouldShow(!hasHideClass);
+    };
+    
+    // Initial check
+    checkIfShouldHide();
+    
+    // Create a mutation observer to watch for class changes
+    const observer = new MutationObserver(checkIfShouldHide);
+    observer.observe(document.body, { 
+      attributes: true, 
+      attributeFilter: ['class'],
+      childList: true,
+      subtree: true
+    });
+    
     // Set a timeout to show the button after 25 seconds
     const timer = setTimeout(() => {
       setVisible(true);
     }, 25000); // 25 seconds in milliseconds
     
-    // Cleanup the timer when component unmounts
-    return () => clearTimeout(timer);
+    // Cleanup the timer and observer when component unmounts
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+    };
   }, []);
   
   const handleClick = () => {
@@ -20,8 +44,8 @@ const WhatsAppButton = () => {
     window.open(`https://wa.me/917300042410?text=${message}`, '_blank');
   };
 
-  // If not visible yet, don't render anything
-  if (!visible) return null;
+  // Don't render if not visible yet or shouldn't show based on class
+  if (!visible || !shouldShow) return null;
 
   return (
     <motion.button

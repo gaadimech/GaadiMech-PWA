@@ -409,7 +409,7 @@ const ExpressBetaATC = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="pt-20"
+      className="pt-20 hide-whatsapp-button hide-enquiry-form"
     >
 
       {/* Hero Section */}
