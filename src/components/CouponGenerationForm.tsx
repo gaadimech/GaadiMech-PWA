@@ -4,6 +4,16 @@ interface CouponGenerationFormProps {
   onCouponsGenerated: (coupons: any[]) => void;
 }
 
+interface PatternOptions {
+  includeLetters: boolean;
+  includeNumbers: boolean;
+  includeSymbols: boolean;
+  length: number;
+  uppercase: boolean;
+  customText: string;
+  customTextPosition: 'start' | 'end' | 'middle' | 'none';
+}
+
 const CouponGenerationForm: React.FC<CouponGenerationFormProps> = ({ onCouponsGenerated }) => {
   const [prefix, setPrefix] = useState('');
   const [suffix, setSuffix] = useState('');
@@ -25,6 +35,93 @@ const CouponGenerationForm: React.FC<CouponGenerationFormProps> = ({ onCouponsGe
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState('');
   const [csrfToken, setCsrfToken] = useState('');
+  
+  // Pattern system options
+  const [useCustomPattern, setUseCustomPattern] = useState(false);
+  const [patternOptions, setPatternOptions] = useState<PatternOptions>({
+    includeLetters: true,
+    includeNumbers: true,
+    includeSymbols: false,
+    length: 8,
+    uppercase: true,
+    customText: '',
+    customTextPosition: 'none'
+  });
+  
+  // Pattern preview
+  const [patternPreview, setPatternPreview] = useState('');
+  
+  // Generate pattern preview
+  useEffect(() => {
+    if (useCustomPattern) {
+      generatePatternPreview();
+    }
+  }, [patternOptions, useCustomPattern]);
+  
+  // Generate a pattern preview
+  const generatePatternPreview = () => {
+    if (!useCustomPattern) return;
+    
+    let characters = '';
+    if (patternOptions.includeLetters) {
+      characters += 'abcdefghijklmnopqrstuvwxyz';
+    }
+    if (patternOptions.includeNumbers) {
+      characters += '0123456789';
+    }
+    if (patternOptions.includeSymbols) {
+      characters += '!@#$%^&*()-_=+';
+    }
+    
+    if (characters.length === 0 && patternOptions.customTextPosition === 'none') {
+      setPatternPreview('No characters selected');
+      return;
+    }
+    
+    // Generate random part
+    const generateRandomPart = (length: number) => {
+      if (characters.length === 0) return '';
+      
+      let result = '';
+      for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        let char = characters[randomIndex];
+        
+        if (patternOptions.uppercase && patternOptions.includeLetters && /[a-z]/.test(char)) {
+          // 50% chance to uppercase a letter
+          if (Math.random() > 0.5) {
+            char = char.toUpperCase();
+          }
+        }
+        
+        result += char;
+      }
+      return result;
+    };
+    
+    // Construct the preview based on custom text position
+    let preview = '';
+    const customText = patternOptions.customText.trim();
+    
+    if (patternOptions.customTextPosition === 'start' && customText) {
+      const randomPart = generateRandomPart(patternOptions.length);
+      preview = customText + (randomPart ? '-' + randomPart : '');
+    } else if (patternOptions.customTextPosition === 'end' && customText) {
+      const randomPart = generateRandomPart(patternOptions.length);
+      preview = (randomPart ? randomPart + '-' : '') + customText;
+    } else if (patternOptions.customTextPosition === 'middle' && customText) {
+      // Split the random length roughly in half for before and after the custom text
+      const halfLength = Math.floor(patternOptions.length / 2);
+      const firstPart = generateRandomPart(halfLength);
+      const secondPart = generateRandomPart(patternOptions.length - halfLength);
+      
+      preview = firstPart + '-' + customText + '-' + secondPart;
+    } else {
+      preview = generateRandomPart(patternOptions.length);
+    }
+    
+    setPatternPreview(preview);
+  };
   
   // Fetch CSRF token when component mounts
   useEffect(() => {
@@ -88,7 +185,7 @@ const CouponGenerationForm: React.FC<CouponGenerationFormProps> = ({ onCouponsGe
         body: JSON.stringify({
           prefix,
           suffix,
-          pattern,
+          pattern: useCustomPattern ? JSON.stringify(patternOptions) : pattern,
           count,
           discountType,
           discountValue,
@@ -99,7 +196,8 @@ const CouponGenerationForm: React.FC<CouponGenerationFormProps> = ({ onCouponsGe
           isPersonalized,
           minPurchaseAmount: minPurchaseAmount ? Number(minPurchaseAmount) : undefined,
           maxDiscountAmount: maxDiscountAmount ? Number(maxDiscountAmount) : undefined,
-          description
+          description,
+          useCustomPattern
         })
       });
       
@@ -122,6 +220,24 @@ const CouponGenerationForm: React.FC<CouponGenerationFormProps> = ({ onCouponsGe
     } finally {
       setIsGenerating(false);
     }
+  };
+  
+  // Handle pattern option changes
+  const handlePatternOptionChange = (option: keyof PatternOptions, value: boolean | number | string) => {
+    setPatternOptions(prev => ({ ...prev, [option]: value }));
+  };
+  
+  // Handle pattern length change
+  const handleLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    if (!isNaN(value) && value > 0 && value <= 20) {
+      handlePatternOptionChange('length', value);
+    }
+  };
+  
+  // Regenerate pattern preview
+  const handleRegeneratePreview = () => {
+    generatePatternPreview();
   };
   
   return (
@@ -164,20 +280,175 @@ const CouponGenerationForm: React.FC<CouponGenerationFormProps> = ({ onCouponsGe
         </div>
         
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Pattern (optional, currently not implemented)
-          </label>
-          <input
-            type="text"
-            value={pattern}
-            onChange={(e) => setPattern(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            placeholder="Custom pattern for code generation"
-            disabled
-          />
-          <p className="text-xs text-gray-500 mt-1">
-            Custom pattern generation is not yet implemented. Codes will use prefix-RANDOM-suffix format.
-          </p>
+          <div className="flex items-center mb-2">
+            <input
+              type="checkbox"
+              id="useCustomPattern"
+              checked={useCustomPattern}
+              onChange={(e) => setUseCustomPattern(e.target.checked)}
+              className="h-4 w-4 text-[#FF7200] focus:ring-[#FF7200] border-gray-300 rounded"
+            />
+            <label htmlFor="useCustomPattern" className="ml-2 block text-sm font-medium text-gray-700">
+              Use Custom Pattern Generator
+            </label>
+          </div>
+          
+          {!useCustomPattern ? (
+            <>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Pattern (optional, currently not implemented)
+              </label>
+              <input
+                type="text"
+                value={pattern}
+                onChange={(e) => setPattern(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                placeholder="Custom pattern for code generation"
+                disabled
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Custom pattern generation is not yet implemented. Codes will use prefix-RANDOM-suffix format.
+              </p>
+            </>
+          ) : (
+            <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
+              <h3 className="text-md font-medium mb-2">Custom Pattern Options</h3>
+              
+              {/* Custom text input */}
+              <div className="mb-4 border-b border-gray-200 pb-4">
+                <h4 className="text-sm font-medium mb-2">Custom Text</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="customText" className="block text-sm text-gray-700 mb-1">
+                      Custom Text (e.g. name, promo code)
+                    </label>
+                    <input
+                      type="text"
+                      id="customText"
+                      value={patternOptions.customText}
+                      onChange={(e) => handlePatternOptionChange('customText', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      placeholder="Enter custom text"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="customTextPosition" className="block text-sm text-gray-700 mb-1">
+                      Custom Text Position
+                    </label>
+                    <select
+                      id="customTextPosition"
+                      value={patternOptions.customTextPosition}
+                      onChange={(e) => handlePatternOptionChange('customTextPosition', e.target.value as 'start' | 'end' | 'middle' | 'none')}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    >
+                      <option value="none">Don't use custom text</option>
+                      <option value="start">At Start</option>
+                      <option value="middle">In Middle</option>
+                      <option value="end">At End</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                <div className="flex flex-col">
+                  <div className="flex items-center mb-2">
+                    <input
+                      type="checkbox"
+                      id="includeLetters"
+                      checked={patternOptions.includeLetters}
+                      onChange={(e) => handlePatternOptionChange('includeLetters', e.target.checked)}
+                      className="h-4 w-4 text-[#FF7200] focus:ring-[#FF7200] border-gray-300 rounded"
+                    />
+                    <label htmlFor="includeLetters" className="ml-2 block text-sm text-gray-700">
+                      Include Letters (a-z)
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center mb-2">
+                    <input
+                      type="checkbox"
+                      id="includeNumbers"
+                      checked={patternOptions.includeNumbers}
+                      onChange={(e) => handlePatternOptionChange('includeNumbers', e.target.checked)}
+                      className="h-4 w-4 text-[#FF7200] focus:ring-[#FF7200] border-gray-300 rounded"
+                    />
+                    <label htmlFor="includeNumbers" className="ml-2 block text-sm text-gray-700">
+                      Include Numbers (0-9)
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center mb-2">
+                    <input
+                      type="checkbox"
+                      id="includeSymbols"
+                      checked={patternOptions.includeSymbols}
+                      onChange={(e) => handlePatternOptionChange('includeSymbols', e.target.checked)}
+                      className="h-4 w-4 text-[#FF7200] focus:ring-[#FF7200] border-gray-300 rounded"
+                    />
+                    <label htmlFor="includeSymbols" className="ml-2 block text-sm text-gray-700">
+                      Include Symbols (!@#$%^&*-_=+)
+                    </label>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col">
+                  <div className="mb-2">
+                    <label htmlFor="length" className="block text-sm text-gray-700 mb-1">
+                      Random Part Length (1-20 characters)
+                    </label>
+                    <input
+                      type="number"
+                      id="length"
+                      min="1"
+                      max="20"
+                      value={patternOptions.length}
+                      onChange={handleLengthChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center mt-2">
+                    <input
+                      type="checkbox"
+                      id="uppercase"
+                      checked={patternOptions.uppercase}
+                      onChange={(e) => handlePatternOptionChange('uppercase', e.target.checked)}
+                      className="h-4 w-4 text-[#FF7200] focus:ring-[#FF7200] border-gray-300 rounded"
+                      disabled={!patternOptions.includeLetters}
+                    />
+                    <label 
+                      htmlFor="uppercase" 
+                      className={`ml-2 block text-sm ${!patternOptions.includeLetters ? 'text-gray-400' : 'text-gray-700'}`}
+                    >
+                      Include Uppercase Letters
+                    </label>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between p-3 bg-gray-100 rounded-md">
+                <div>
+                  <span className="text-sm font-medium text-gray-700">Preview: </span>
+                  <span className="font-mono text-sm">{patternPreview}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleRegeneratePreview}
+                  className="text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300"
+                >
+                  Regenerate
+                </button>
+              </div>
+              
+              <p className="text-xs text-gray-500 mt-2">
+                Final code will be: {prefix ? <span className="font-semibold">{prefix}-</span> : ""}
+                <span className="font-semibold">[PATTERN]</span>
+                {suffix ? <span className="font-semibold">-{suffix}</span> : ""}
+              </p>
+            </div>
+          )}
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
