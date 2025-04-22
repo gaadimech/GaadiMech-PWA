@@ -7,6 +7,15 @@ import { getVehicleFromSession, parseCSVData, getPricingData } from '../utils/pr
 import { Link, useNavigate } from 'react-router-dom';
 import { PricingData } from '../types/services';
 
+// Add new interface for time slots
+interface TimeSlot {
+  id: string;
+  display: string;
+  available: boolean;
+  start: string;
+  end: string;
+}
+
 const ExpressBetaATCCart = () => {
   const navigate = useNavigate();
   const dateTimeRef = useRef<HTMLDivElement>(null);
@@ -29,7 +38,7 @@ const ExpressBetaATCCart = () => {
   
   // Time slot data
   const [availableDates, setAvailableDates] = useState<string[]>([]);
-  const [availableTimeSlots, setAvailableTimeSlots] = useState<{id: string, display: string, available: boolean}[]>([]);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<TimeSlot[]>([]);
   const [bookedSlots, setBookedSlots] = useState<number>(0);
   const [availableSlots, setAvailableSlots] = useState<number>(2);
   
@@ -142,13 +151,25 @@ const ExpressBetaATCCart = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Helper function to get current time in IST
+  const getCurrentTimeIST = () => {
+    // Get current time in UTC
+    const now = new Date();
+    // Convert to IST (UTC+5:30)
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const istTime = new Date(utc + (3600000 * 5.5));
+    return istTime;
+  };
+
   const generateDates = () => {
-    const today = new Date();
+    // Get current IST date and time
+    const todayIST = getCurrentTimeIST();
     const dates = [];
     
+    // Generate 7 dates starting from today
     for (let i = 0; i < 7; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
+      const date = new Date(todayIST);
+      date.setDate(todayIST.getDate() + i);
       
       // Format: YYYY-MM-DD
       const formattedDate = date.toISOString().split('T')[0];
@@ -161,18 +182,26 @@ const ExpressBetaATCCart = () => {
   const formatDateDisplay = (dateStr: string): string => {
     if (!dateStr) return '';
     
-    const date = new Date(dateStr);
-    const today = new Date();
+    const todayIST = getCurrentTimeIST();
+    const today = new Date(todayIST);
     today.setHours(0, 0, 0, 0);
     
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
     
-    // Compare dates without time
-    if (date.toDateString() === today.toDateString()) return 'Today';
-    if (date.toDateString() === tomorrow.toDateString()) return 'Tomorrow';
+    const inputDate = new Date(dateStr + 'T00:00:00');
     
-    return date.toLocaleDateString('en-US', { 
+    // Compare dates without time
+    const compareDate = (date1: Date, date2: Date) => {
+      return date1.getFullYear() === date2.getFullYear() &&
+             date1.getMonth() === date2.getMonth() &&
+             date1.getDate() === date2.getDate();
+    };
+    
+    if (compareDate(inputDate, today)) return 'Today';
+    if (compareDate(inputDate, tomorrow)) return 'Tomorrow';
+    
+    return inputDate.toLocaleDateString('en-US', { 
       weekday: 'short', 
       month: 'short', 
       day: 'numeric' 
@@ -181,19 +210,26 @@ const ExpressBetaATCCart = () => {
   
   const generateTimeSlots = () => {
     return [
-      { id: '09:00-11:00', display: '9:00 AM - 11:00 AM', available: true },
-      { id: '11:00-13:00', display: '11:00 AM - 1:00 PM', available: true },
-      { id: '13:00-15:00', display: '1:00 PM - 3:00 PM', available: true },
-      { id: '15:00-17:00', display: '3:00 PM - 5:00 PM', available: true },
-      { id: '17:00-19:00', display: '5:00 PM - 7:00 PM', available: true }
+      { id: '09:00-11:00', display: '9:00 AM - 11:00 AM', available: true, start: '09:00', end: '11:00' },
+      { id: '11:00-13:00', display: '11:00 AM - 1:00 PM', available: true, start: '11:00', end: '13:00' },
+      { id: '13:00-15:00', display: '1:00 PM - 3:00 PM', available: true, start: '13:00', end: '15:00' },
+      { id: '15:00-17:00', display: '3:00 PM - 5:00 PM', available: true, start: '15:00', end: '17:00' },
+      { id: '17:00-19:00', display: '5:00 PM - 7:00 PM', available: true, start: '17:00', end: '19:00' }
     ];
   };
   
   useEffect(() => {
     // Generate available dates
-    setAvailableDates(generateDates());
-    // Set default date to today
-    setSelectedDate(generateDates()[0]);
+    const dates = generateDates();
+    setAvailableDates(dates);
+    
+    // Check if after 5 PM - if yes, select tomorrow as default
+    const todayIST = getCurrentTimeIST();
+    const currentHourIST = todayIST.getHours();
+    const isAfterLastSlot = currentHourIST >= 17;
+    
+    // Set default date to tomorrow if after 5 PM, otherwise today
+    setSelectedDate(isAfterLastSlot ? dates[1] : dates[0]);
     
     // Generate time slots
     setAvailableTimeSlots(generateTimeSlots());
@@ -241,13 +277,41 @@ const ExpressBetaATCCart = () => {
         return slot;
       });
       
-      // Calculate actual counts based on the slots' availability
-      const actualBooked = updatedSlots.filter(slot => !slot.available).length;
-      const actualAvailable = updatedSlots.filter(slot => slot.available).length;
+      // Get current time in IST
+      const todayIST = getCurrentTimeIST();
+      const selectedDateObj = new Date(selectedDate);
+      const isToday = selectedDateObj.toDateString() === todayIST.toDateString();
       
-      setBookedSlots(actualBooked);
-      setAvailableSlots(actualAvailable);
-      setAvailableTimeSlots(updatedSlots);
+      // For today, filter out time slots that have already started
+      if (isToday) {
+        const currentTimeIST = todayIST.getHours() * 60 + todayIST.getMinutes();
+        
+        // Filter out time slots that have already started
+        const filteredSlots = updatedSlots.map(slot => {
+          const slotStartTime = parseInt(slot.start.split(':')[0]) * 60 + parseInt(slot.start.split(':')[1]);
+          // If slot has already started, mark it as unavailable
+          if (slotStartTime <= currentTimeIST) {
+            return { ...slot, available: false };
+          }
+          return slot;
+        });
+        
+        // Calculate actual counts based on the slots' availability
+        const actualBooked = filteredSlots.filter(slot => !slot.available).length;
+        const actualAvailable = filteredSlots.filter(slot => slot.available).length;
+        
+        setBookedSlots(actualBooked);
+        setAvailableSlots(actualAvailable);
+        setAvailableTimeSlots(filteredSlots);
+      } else {
+        // For future dates, use the original updatedSlots
+        const actualBooked = updatedSlots.filter(slot => !slot.available).length;
+        const actualAvailable = updatedSlots.filter(slot => slot.available).length;
+        
+        setBookedSlots(actualBooked);
+        setAvailableSlots(actualAvailable);
+        setAvailableTimeSlots(updatedSlots);
+      }
     }
   }, [selectedDate]);
   
