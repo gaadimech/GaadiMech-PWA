@@ -115,6 +115,18 @@ const ExpressBetaATC = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const serviceReviews = getReviewsByService('express');
 
+  // Extract coupon code from URL if present
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const couponParam = params.get('coupon');
+    
+    if (couponParam) {
+      // Store the coupon code in session storage for use in the cart page
+      sessionStorage.setItem('pendingCoupon', couponParam);
+      console.log('Coupon code stored from URL:', couponParam);
+    }
+  }, [location]);
+
   // State for selected time slot
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
@@ -156,7 +168,7 @@ const ExpressBetaATC = () => {
     // Close car selection modal
     setIsCarSelectionModalOpen(false);
     
-    // Instead of showing pricing modal, navigate to the cart page
+    // Navigate to the cart page
     window.location.href = '/express-beta-atc/cart';
   };
 

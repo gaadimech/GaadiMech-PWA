@@ -4,7 +4,7 @@ import { CheckCircle, Clock, Calendar, ArrowRight, ArrowUp, ArrowDown, Shield, A
 
 import { expressService } from '../services/expressService';
 import { getVehicleFromSession, parseCSVData, getPricingData } from '../utils/pricing-utils';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { PricingData } from '../types/services';
 
 // Add new interface for time slots
@@ -18,6 +18,7 @@ interface TimeSlot {
 
 const ExpressBetaATCCart = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dateTimeRef = useRef<HTMLDivElement>(null);
   const [mobileNumber, setMobileNumber] = useState('');
   const [mobileError, setMobileError] = useState('');
@@ -142,6 +143,40 @@ const ExpressBetaATCCart = () => {
 
     loadPricingData();
   }, [navigate]);
+
+  // Extract coupon code from URL parameters
+  useEffect(() => {
+    // First check if there's a coupon parameter in the URL
+    const params = new URLSearchParams(location.search);
+    const couponParam = params.get('coupon');
+    
+    // Then check if there's a coupon code in session storage (from the previous page)
+    const sessionCoupon = sessionStorage.getItem('pendingCoupon');
+    
+    // Prioritize URL parameter over session storage
+    const couponToApply = couponParam || sessionCoupon;
+    
+    if (couponToApply) {
+      // Set the coupon code
+      setCouponCode(couponToApply);
+      
+      // Clear from session storage after reading it
+      if (sessionCoupon) {
+        sessionStorage.removeItem('pendingCoupon');
+      }
+      
+      // Auto-apply the coupon after a short delay
+      // The delay ensures that component state is fully initialized
+      const timer = setTimeout(() => {
+        if (couponToApply) {
+          validateAndApplyCoupon();
+        }
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location]);
 
   // Effect to handle mobile input highlight animation
   useEffect(() => {
