@@ -8,6 +8,7 @@ interface CSVRow {
   'Periodic Service Price GaadiMech': string;
   'Express Service Price GaadiMech': string;
   'Discounted Price': string;
+  'Comprehensive Service Price GaadiMech': string;
   'Dent & Paint Price GaadiMech': string;
   'Dent and Paint Full Body': string;
   'AC Service': string;
@@ -48,7 +49,7 @@ export const parseCSVData = async (): Promise<CSVRow[]> => {
         
         for (let i = startIndex; i < data.length; i++) {
           const row = data[i];
-          if (row.length >= 8) {
+          if (row.length >= 9) {
             rows.push({
               'FuelType': row[0],
               'Car Brand': row[1],
@@ -56,9 +57,10 @@ export const parseCSVData = async (): Promise<CSVRow[]> => {
               'Periodic Service Price GaadiMech': row[3],
               'Express Service Price GaadiMech': row[4],
               'Discounted Price': row[5],
-              'Dent & Paint Price GaadiMech': row[6],
-              'Dent and Paint Full Body': row[7],
-              'AC Service': row[8] || ''
+              'Comprehensive Service Price GaadiMech': row[6],
+              'Dent & Paint Price GaadiMech': row[7],
+              'Dent and Paint Full Body': row[8],
+              'AC Service': row[9] || ''
             });
           }
         }
@@ -117,11 +119,22 @@ export const getPricingData = (data: CSVRow[], vehicle: Vehicle): PricingData | 
   if (!row) return null;
   
   return {
+    // Periodic Service price from column 4
     periodicServicePrice: parseFloat(row['Periodic Service Price GaadiMech']) || 0,
+    
+    // Express Service price from column 5
     expressServicePrice: parseFloat(row['Express Service Price GaadiMech']) || 0,
+    
+    // Discounted Express Service price from column 6
     discountedExpressPrice: parseFloat(row['Discounted Price']) || 0,
+    
+    // Express Dent & Paint price from column 8 (Dent & Paint Price GaadiMech)
     dentingPaintPrice: parseFloat(row['Dent & Paint Price GaadiMech']) || 0,
+    
+    // Full Body Paint price from column 9 (Dent and Paint Full Body)
     fullBodyPaintPrice: parseFloat(row['Dent and Paint Full Body']) || 0,
+    
+    // AC Service price from column 10
     acServicePrice: parseFloat(row['AC Service']) || 0,
   };
 };

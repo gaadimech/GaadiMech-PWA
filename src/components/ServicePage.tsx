@@ -97,14 +97,22 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
       return 'Price not available';
     }
     
+    // Add debugging for denting services
+    if (cardId.includes('denting')) {
+      console.log(`Denting card: ${cardId}`);
+      console.log(`Price data: dentingPaintPrice=${pricingData.dentingPaintPrice}, fullBodyPaintPrice=${pricingData.fullBodyPaintPrice}`);
+    }
+    
     // Map the card ID to the corresponding price
     if (cardId.includes('periodic-basic')) {
       return formatPrice(pricingData.periodicServicePrice);
     } else if (cardId.includes('periodic-express')) {
       return formatPrice(pricingData.expressServicePrice);
     } else if (cardId.includes('denting-door')) {
+      // Express Dent & Paint price from Dent & Paint Price GaadiMech column
       return formatPrice(pricingData.dentingPaintPrice);
     } else if (cardId.includes('denting-full')) {
+      // Full Body Paint price from Dent and Paint Full Body column
       return formatPrice(pricingData.fullBodyPaintPrice);
     }
     
@@ -214,6 +222,9 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
           {filteredCards.map((card, index) => {
             // Get the actual price for this vehicle and service
             const actualPrice = getServiceTypePrice(card.id);
+            
+            // Debug log to see what's being passed to ServiceCard
+            console.log(`Card: ${card.id}, Title: ${card.title}, Actual Price: ${actualPrice}`);
             
             // Find the periodic service card to get its price
             const periodicServiceCard = servicesData['periodic']?.serviceCards.find(c => c.id === 'periodic-basic');

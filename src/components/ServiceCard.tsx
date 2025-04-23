@@ -220,7 +220,11 @@ ${servicesList}
         // When no vehicle is selected, show the card's default price
         return card.price;
       }
-    } else if ((isExpressService || isExpressDentService) && vehicleSelected && actualPrice) {
+    } else if (isExpressDentService && vehicleSelected && actualPrice) {
+      // For express dent services with selected vehicle, return the original price without discount
+      // The discount will be applied in the UI
+      return actualPrice;
+    } else if (isExpressService && vehicleSelected && actualPrice) {
       // For express services with selected vehicle, return the original price without discount
       // The discount will be applied in the UI
       return actualPrice;
