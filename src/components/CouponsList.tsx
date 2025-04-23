@@ -1,5 +1,6 @@
-import React from 'react';
-import { Tag, Clipboard, CheckCircle, XCircle, Clock } from 'lucide-react';
+import React, { useState } from 'react';
+import { Tag, Clipboard, CheckCircle, XCircle, Clock, MessageSquare } from 'lucide-react';
+import WhatsAppShareModal from './WhatsAppShareModal';
 
 interface Coupon {
   id: number;
@@ -27,7 +28,10 @@ interface CouponsListProps {
 }
 
 const CouponsList: React.FC<CouponsListProps> = ({ coupons, title = "Coupons" }) => {
-  const [copiedCode, setCopiedCode] = React.useState<string | null>(null);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  // State for WhatsApp share modal
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [selectedCouponCode, setSelectedCouponCode] = useState('');
   
   const handleCopyCode = (code: string) => {
     navigator.clipboard.writeText(code);
@@ -37,6 +41,17 @@ const CouponsList: React.FC<CouponsListProps> = ({ coupons, title = "Coupons" })
     setTimeout(() => {
       setCopiedCode(null);
     }, 2000);
+  };
+  
+  // Handle opening WhatsApp share modal
+  const handleOpenShareModal = (couponCode: string) => {
+    setSelectedCouponCode(couponCode);
+    setIsShareModalOpen(true);
+  };
+  
+  // Close the WhatsApp share modal
+  const handleCloseShareModal = () => {
+    setIsShareModalOpen(false);
   };
   
   const formatDate = (dateString: string) => {
@@ -133,6 +148,9 @@ const CouponsList: React.FC<CouponsListProps> = ({ coupons, title = "Coupons" })
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Details
               </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -204,11 +222,27 @@ const CouponsList: React.FC<CouponsListProps> = ({ coupons, title = "Coupons" })
                     </span>
                   )}
                 </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <button
+                    onClick={() => handleOpenShareModal(coupon.code)}
+                    className="inline-flex items-center justify-center p-2 rounded-full bg-[#25D366] text-white hover:bg-[#128C7E] focus:outline-none transition-colors"
+                    title="Share via WhatsApp"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      
+      {/* WhatsApp Share Modal */}
+      <WhatsAppShareModal
+        isOpen={isShareModalOpen}
+        onClose={handleCloseShareModal}
+        couponCode={selectedCouponCode}
+      />
     </div>
   );
 };
