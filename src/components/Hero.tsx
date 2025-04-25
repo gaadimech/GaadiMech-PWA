@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowRight, Phone, Clock, Home, IndianRupee, Check, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,23 @@ import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if the device is mobile
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    // Initial check
+    checkIfMobile();
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', checkIfMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkIfMobile);
+  }, []);
 
   const handleBookService = () => {
     // Track conversion event for Book Now (WhatsApp)
@@ -84,7 +101,7 @@ const Hero = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-20 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+        <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'} gap-8 md:gap-12 items-center`}>
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -271,78 +288,81 @@ const Hero = () => {
             </motion.div>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative mt-8 md:mt-0 hidden md:block"
-          >
-            {/* Enhanced badge with better visibility */}
-            <motion.div 
-              className="absolute top-0 right-0 bg-gradient-to-r from-[#FF7200] to-[#FF9500] text-white px-3 py-2 rounded-tr-lg rounded-bl-lg font-bold z-10 shadow-lg"
-              whileHover={{ scale: 1.05 }}
+          {/* Desktop video only (hidden on mobile) */}
+          {!isMobile && (
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="relative mt-8 md:mt-0 hidden md:block"
             >
-              <div className="flex items-center">
-                <Clock size={25} className="mr-1" />
-                <span>SUPER FAST</span>
-              </div>
-            </motion.div>
-            
-            {/* Image with enhanced frame effect */}
-            <div className="relative">
-              {/* Frame overlay */}
-              <div className="absolute inset-0 border-[8px] border-white rounded-lg shadow-xl"></div>
-              
-              <iframe
-                src="https://www.youtube.com/embed/unRdRJJypR4?si=V9CFOHrq8EU6WEzB&autoplay=1&mute=1&loop=1&playlist=unRdRJJypR4"
-                title="Car Service Timelapse"
-                className="rounded-lg shadow-xl w-full max-w-2xl mx-auto"
-                width="800"
-                height="600"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              ></iframe>
-
-              {/* Animated review badge overlay */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8, duration: 0.5 }}
-                className="absolute top-4 left-4 bg-white p-3 rounded-lg shadow-lg"
+              {/* Enhanced badge with better visibility */}
+              <motion.div 
+                className="absolute top-0 right-0 bg-gradient-to-r from-[#FF7200] to-[#FF9500] text-white px-3 py-2 rounded-tr-lg rounded-bl-lg font-bold z-10 shadow-lg"
+                whileHover={{ scale: 1.05 }}
               >
                 <div className="flex items-center">
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={14} className="text-yellow-400 fill-yellow-400 mr-0.5" />
-                    ))}
-                  </div>
-                  <span className="ml-1 text-sm font-medium">4.8/5 (120+ reviews)</span>
+                  <Clock size={25} className="mr-1" />
+                  <span>SUPER FAST</span>
                 </div>
               </motion.div>
-            </div>
-            
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
-              whileHover={{ scale: 1.05 }}
-              className="absolute -bottom-6 -left-6 bg-white p-4 md:p-6 rounded-lg shadow-xl w-auto cursor-pointer"
-              onClick={handleContact}
-            >
-              <div className="flex items-center gap-4">
-                <div className="bg-gradient-to-r from-[#FF7200] to-[#FF9500] rounded-full p-3">
-                  <Phone className="text-white" size={24} />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Emergency Service</p>
-                  <a href="tel:+918448285289" className="text-lg font-bold text-gray-900 hover:text-[#FF7200] transition-colors">
-                    +91 844 828 5289
-                  </a>
-                </div>
+              
+              {/* Image with enhanced frame effect */}
+              <div className="relative">
+                {/* Frame overlay */}
+                <div className="absolute inset-0 border-[8px] border-white rounded-lg shadow-xl"></div>
+                
+                <iframe
+                  src="https://www.youtube.com/embed/unRdRJJypR4?si=V9CFOHrq8EU6WEzB&autoplay=1&mute=1&loop=1&playlist=unRdRJJypR4"
+                  title="Car Service Timelapse"
+                  className="rounded-lg shadow-xl w-full max-w-2xl mx-auto"
+                  width="800"
+                  height="600"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                ></iframe>
+
+                {/* Animated review badge overlay */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8, duration: 0.5 }}
+                  className="absolute top-4 left-4 bg-white p-3 rounded-lg shadow-lg"
+                >
+                  <div className="flex items-center">
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} size={14} className="text-yellow-400 fill-yellow-400 mr-0.5" />
+                      ))}
+                    </div>
+                    <span className="ml-1 text-sm font-medium">4.8/5 (120+ reviews)</span>
+                  </div>
+                </motion.div>
               </div>
+              
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+                whileHover={{ scale: 1.05 }}
+                className="absolute -bottom-6 -left-6 bg-white p-4 md:p-6 rounded-lg shadow-xl w-auto cursor-pointer"
+                onClick={handleContact}
+              >
+                <div className="flex items-center gap-4">
+                  <div className="bg-gradient-to-r from-[#FF7200] to-[#FF9500] rounded-full p-3">
+                    <Phone className="text-white" size={24} />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Emergency Service</p>
+                    <a href="tel:+918448285289" className="text-lg font-bold text-gray-900 hover:text-[#FF7200] transition-colors">
+                      +91 844 828 5289
+                    </a>
+                  </div>
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
+          )}
         </div>
       </div>
     </section>
