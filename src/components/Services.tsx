@@ -35,7 +35,7 @@ const services = [
       </motion.div>
     ),
     title: 'Why Wait All Day?',
-    description: 'Get Premium Car Service in 90 Minutes for 20% Less',
+    description: 'Car Service in 90 MINS, Nahi to FREEEE',
     tagline: 'Fast, Affordable, Done Right!',
     highlight: true,
     link: '/express',
@@ -162,7 +162,7 @@ const Services = () => {
                     {featuredService.title}
                   </h3>
                   <p className="text-base md:text-lg text-gray-800 mb-1 font-semibold">
-                    {featuredService.description}
+                    Car Service in <span className="text-[#FF7200]">90 MINS</span>, Nahi to <span className="text-[#FF7200] font-extrabold text-lg md:text-xl animate-pulse">FREEEE</span>
                   </p>
                   {featuredService.tagline && (
                     <p className="text-xs md:text-sm text-[#FF7200] font-medium mb-2 italic">
@@ -172,7 +172,7 @@ const Services = () => {
                   <div className="flex flex-wrap gap-3 justify-center md:justify-start mt-3">
                     <div className="flex items-center text-gray-700 bg-orange-50 px-2 py-1 rounded-full">
                       <Clock className="w-4 h-4 mr-1 text-[#FF7200]" />
-                      <span className="font-bold text-sm">90-Minute Service</span>
+                      <span className="font-bold text-sm">90-MIN Guarantee</span>
                     </div>
                     <motion.button
                       onClick={handleScheduleClick}
