@@ -215,7 +215,7 @@ const AppContent = () => {
 
   // Close form when navigating to express page
   useEffect(() => {
-    if (location.pathname === '/express' || location.pathname === '/ads-express') {
+    if (location.pathname === '/express' || location.pathname === '/express-beta-atc' || location.pathname === '/ads-express') {
       setShowForm(false);
     }
   }, [location.pathname]);

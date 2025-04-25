@@ -51,9 +51,9 @@ const Navbar = () => {
               Services
             </Link>
             <Link
-              to="/express"
+              to="/express-beta-atc"
               onClick={handleLinkClick}
-              className={`text-gray-700 hover:text-[#FF7200] ${location.pathname === '/express' ? 'text-[#FF7200]' : ''}`}
+              className={`text-gray-700 hover:text-[#FF7200] ${location.pathname === '/express' || location.pathname === '/express-beta-atc' ? 'text-[#FF7200]' : ''}`}
             >
               Express
             </Link>
@@ -110,7 +110,7 @@ const Navbar = () => {
               Services
             </Link>
             <Link 
-              to="/express" 
+              to="/express-beta-atc" 
               onClick={handleLinkClick}
               className="block px-3 py-2 text-gray-700 hover:text-[#FF7200]"
             >

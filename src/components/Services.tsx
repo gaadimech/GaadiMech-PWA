@@ -38,7 +38,7 @@ const services = [
     description: 'Car Service in 90 MINS, Nahi to FREEEE',
     tagline: 'Fast, Affordable, Done Right!',
     highlight: true,
-    link: '/express',
+    link: '/express-beta-atc',
     featured: true
   },
   {
@@ -96,9 +96,9 @@ const Services = () => {
 
   const handleServiceClick = (service: typeof services[0]) => {
     if (service.link) {
-      if (service.link === '/express') {
+      if (service.link === '/express-beta-atc') {
         window.scrollTo(0, 0);
-        navigate('/express?openModal=true');
+        navigate('/express-beta-atc');
       } else {
         navigate(service.link);
       }
@@ -107,7 +107,7 @@ const Services = () => {
 
   const handleScheduleClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent the card click event from firing
-    navigate('/express?openModal=true');
+    navigate('/express-beta-atc');
     window.scrollTo(0, 0);
   };
 

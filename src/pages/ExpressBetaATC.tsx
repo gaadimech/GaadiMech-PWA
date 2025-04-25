@@ -102,7 +102,7 @@ const ExpressBetaATC = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const [isTimeSlotModalOpen, setIsTimeSlotModalOpen] = useState(false);
-  const [isCarSelectionModalOpen, setIsCarSelectionModalOpen] = useState(false);
+  const [isCarSelectionModalOpen, setIsCarSelectionModalOpen] = useState(true);
   const [isMobileInputModalOpen, setIsMobileInputModalOpen] = useState(false);
   const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
   const [selectedServiceType, setSelectedServiceType] = useState<number | null>(null);
