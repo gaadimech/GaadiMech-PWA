@@ -24,16 +24,31 @@ const BlogPostPage = () => {
     const fetchPost = async () => {
       try {
         setLoading(true);
-        if (!slug) throw new Error('No slug provided');
+        if (!slug) {
+          console.error('No slug provided in URL parameters');
+          throw new Error('No slug provided');
+        }
+        
+        console.log('Fetching blog post with slug:', slug);
+        
         const response = await blogService.getPostBySlug(slug);
-        console.log('Fetched post:', response); // Debug log
+        console.log('Fetched post successfully:', response); 
         setPost(response);
         setError(null);
       } catch (error) {
         console.error('Error fetching blog post:', error);
-        setError('Failed to load blog post. Please try again later.');
+        
+        // Check if error is due to post not found
         if (error instanceof Error && error.message === 'Post not found') {
-          navigate('/blog');
+          console.error(`Blog post with slug "${slug}" not found in database`);
+          setError(`Blog post "${slug}" not found. Please check the URL or return to the blog listing.`);
+          
+          // Set a timeout before redirecting to give the user some context
+          setTimeout(() => {
+            navigate('/blog');
+          }, 3000);
+        } else {
+          setError('Failed to load blog post. Please try again later.');
         }
       } finally {
         setLoading(false);
@@ -53,8 +68,14 @@ const BlogPostPage = () => {
 
   if (error) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-red-600">{error}</div>
+      <div className="flex justify-center items-center min-h-screen flex-col">
+        <div className="text-red-600 mb-4">{error}</div>
+        <button 
+          onClick={() => navigate('/blog')}
+          className="bg-[#FF7200] text-white px-4 py-2 rounded hover:bg-[#0e5aa8] transition-colors"
+        >
+          Return to Blog
+        </button>
       </div>
     );
   }

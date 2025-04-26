@@ -87,10 +87,13 @@ export const blogService = {
         `/articles?filters[slug][$eq]=${slug}&populate=*`
       );
       
-      // Add debugging
+      // Enhanced debugging
       console.log('Raw post response:', JSON.stringify(response.data, null, 2));
+      console.log('Response data array length:', response.data.data ? response.data.data.length : 0);
+      console.log('Response status:', response.status);
       
       if (!response?.data?.data || !Array.isArray(response.data.data) || response.data.data.length === 0) {
+        console.error('Blog post not found for slug:', slug);
         throw new Error('Post not found');
       }
       
