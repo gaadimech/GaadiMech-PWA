@@ -41,6 +41,7 @@ const defaultSeoConfig: SeoConfig = {
   description: 'GaadiMech provides reliable car repair, maintenance, and servicing across India. Book car services, AC repairs, denting & painting, and more from expert mechanics.',
   keywords: 'car service, car repair, car mechanic, car ac repair, denting painting, car maintenance',
   image: 'https://gaadimech.com/og-image.jpg',
+  canonicalUrl: 'https://www.gaadimech.com',
   hiddenContent: {
     h1: 'Best Car Repair Services in Jaipur',
     h2: 'Professional Car Mechanics Near You',
@@ -108,6 +109,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     description: 'Explore GaadiMech\'s comprehensive car services including regular maintenance, AC repair, denting & painting, and more. Book professional car services today.',
     keywords: 'car services, car maintenance, car ac repair, denting painting, car care, professional car service',
     image: 'https://gaadimech.com/services-image.jpg',
+    canonicalUrl: 'https://www.gaadimech.com/services',
     hiddenContent: {
       h1: 'Professional Car Services by GaadiMech',
       h2: 'Comprehensive Car Maintenance & Repair Services',
@@ -488,7 +490,10 @@ const seoConfigs: Record<string, SeoConfig> = {
 export const getSeoConfig = (path: string): SeoConfig => {
   // First try exact path match
   if (seoConfigs[path]) {
-    return seoConfigs[path];
+    return {
+      ...seoConfigs[path],
+      canonicalUrl: seoConfigs[path].canonicalUrl || `https://www.gaadimech.com${path}`
+    };
   }
   
   // For service pages, try to match the service type
@@ -497,7 +502,10 @@ export const getSeoConfig = (path: string): SeoConfig => {
     const servicePath = `/services/${serviceType}`;
     
     if (seoConfigs[servicePath]) {
-      return seoConfigs[servicePath];
+      return {
+        ...seoConfigs[servicePath],
+        canonicalUrl: seoConfigs[servicePath].canonicalUrl || `https://www.gaadimech.com${path}`
+      };
     }
   }
   
@@ -509,6 +517,7 @@ export const getSeoConfig = (path: string): SeoConfig => {
       description: 'Read expert automotive tips and insights on the GaadiMech blog.',
       keywords: 'automotive blog, car maintenance blog, car repair tips',
       image: 'https://gaadimech.com/blog-image.jpg',
+      canonicalUrl: `https://www.gaadimech.com${path}`,
       // Note: The actual SEO meta will be set by the BlogPost component
     };
   }
@@ -526,6 +535,7 @@ export const getSeoConfig = (path: string): SeoConfig => {
       description: `Professional car service and repair in ${cityNameCapitalized}. GaadiMech offers expert car mechanics, AC repair, denting & painting services in ${cityNameCapitalized}.`,
       keywords: `car service ${cityNameCapitalized}, car repair ${cityNameCapitalized}, car mechanic ${cityNameCapitalized}, car ac repair ${cityNameCapitalized}`,
       image: 'https://gaadimech.com/og-image.jpg',
+      canonicalUrl: `https://www.gaadimech.com${path}`,
       hiddenContent: {
         h1: `Best Car Repair Services in ${cityNameCapitalized}`,
         h2: `Professional Car Mechanics in ${cityNameCapitalized}`,
@@ -544,6 +554,9 @@ export const getSeoConfig = (path: string): SeoConfig => {
     };
   }
   
-  // Return default config if no specific config found
-  return defaultSeoConfig;
+  // Add default canonical URL to default config
+  return {
+    ...defaultSeoConfig,
+    canonicalUrl: `https://www.gaadimech.com${path === '/' ? '' : path}`
+  };
 }; 
