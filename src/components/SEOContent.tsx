@@ -26,20 +26,20 @@ const SEOContent = () => {
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={`https://gaadimech.com${path}`} />
+        <meta property="og:url" content={seoConfig.canonicalUrl || `https://www.gaadimech.com${path}`} />
         <meta property="og:title" content={seoConfig.title} />
         <meta property="og:description" content={seoConfig.description} />
         <meta property="og:image" content={seoConfig.image} />
 
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content={`https://gaadimech.com${path}`} />
+        <meta property="twitter:url" content={seoConfig.canonicalUrl || `https://www.gaadimech.com${path}`} />
         <meta property="twitter:title" content={seoConfig.title} />
         <meta property="twitter:description" content={seoConfig.description} />
         <meta property="twitter:image" content={seoConfig.image} />
 
         {/* Canonical URL */}
-        <link rel="canonical" href={seoConfig.canonicalUrl || `https://gaadimech.com${path}`} />
+        <link rel="canonical" href={seoConfig.canonicalUrl || `https://www.gaadimech.com${path}`} />
         
         {/* Robots meta tag if specified */}
         {seoConfig.robots && <meta name="robots" content={seoConfig.robots} />}

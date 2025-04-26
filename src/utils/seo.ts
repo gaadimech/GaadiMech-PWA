@@ -40,7 +40,7 @@ const defaultSeoConfig: SeoConfig = {
   title: 'GaadiMech - Professional Car Service & Repair in India',
   description: 'GaadiMech provides reliable car repair, maintenance, and servicing across India. Book car services, AC repairs, denting & painting, and more from expert mechanics.',
   keywords: 'car service, car repair, car mechanic, car ac repair, denting painting, car maintenance',
-  image: 'https://gaadimech.com/og-image.jpg',
+  image: 'https://www.gaadimech.com/og-image.jpg',
   canonicalUrl: 'https://www.gaadimech.com',
   robots: 'index, follow',  // Default robots meta tag
   hiddenContent: {
@@ -66,16 +66,16 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'GaadiMech - Professional Car Service & Repair in India',
     description: 'GaadiMech provides reliable car repair, maintenance, and servicing across India. Book car services, AC repairs, denting & painting, and more from expert mechanics.',
     keywords: 'car service, car repair, car mechanic, car ac repair, denting painting, car maintenance',
-    image: 'https://gaadimech.com/og-image.jpg',
+    image: 'https://www.gaadimech.com/og-image.jpg',
     robots: 'index, follow',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'LocalBusiness',
       'name': 'GaadiMech',
       'description': 'Professional car repair and service company',
-      'url': 'https://gaadimech.com',
-      'logo': 'https://gaadimech.com/logo.png',
-      'image': 'https://gaadimech.com/og-image.jpg',
+      'url': 'https://www.gaadimech.com',
+      'logo': 'https://www.gaadimech.com/logo.png',
+      'image': 'https://www.gaadimech.com/og-image.jpg',
       'telephone': '+919876543210',
       'priceRange': '₹₹',
       'address': {
@@ -110,7 +110,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'Car Services & Repair - GaadiMech',
     description: 'Explore GaadiMech\'s comprehensive car services including regular maintenance, AC repair, denting & painting, and more. Book professional car services today.',
     keywords: 'car services, car maintenance, car ac repair, denting painting, car care, professional car service',
-    image: 'https://gaadimech.com/services-image.jpg',
+    image: 'https://www.gaadimech.com/services-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/services',
     robots: 'index, follow',
     hiddenContent: {
@@ -133,7 +133,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'Car Periodic Service & Maintenance - GaadiMech',
     description: 'Keep your car running smoothly with GaadiMech\'s periodic maintenance services. Our expert mechanics provide comprehensive car inspections and servicing.',
     keywords: 'car periodic service, car maintenance, regular car service, car inspection, car engine oil change',
-    image: 'https://gaadimech.com/periodic-service-image.jpg',
+    image: 'https://www.gaadimech.com/periodic-service-image.jpg',
     robots: 'index, follow',
     hiddenContent: {
       h1: 'Professional Car Periodic Maintenance Services',
@@ -155,7 +155,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'Car AC Service & Repair - GaadiMech',
     description: 'Expert car AC repair and service by GaadiMech. Get AC gas refilling, compressor repair, cooling system maintenance and more by certified technicians.',
     keywords: 'car ac repair, car ac service, ac gas refilling, car ac not cooling, car ac maintenance',
-    image: 'https://gaadimech.com/ac-service-image.jpg',
+    image: 'https://www.gaadimech.com/ac-service-image.jpg',
     robots: 'index, follow',
     hiddenContent: {
       h1: 'Professional Car AC Service & Repair',
@@ -178,7 +178,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'Car Service in Jaipur | Best Car Servicing in Jaipur - GaadiMech',
     description: 'Looking for the best car servicing in Jaipur? GaadiMech offers affordable car service in Jaipur with expert mechanics, doorstep service, and genuine parts. Book now!',
     keywords: 'Car Service in Jaipur, Best Car Service in Jaipur, Car Maintenance in Jaipur, Car Service Jaipur',
-    image: 'https://gaadimech.com/services-image.jpg',
+    image: 'https://www.gaadimech.com/services-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/car-service-in-jaipur',
     robots: 'index, follow',
     hiddenContent: {
@@ -201,7 +201,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'Car Repair Service in Jaipur | Car Repairing Services in Jaipur - GaadiMech',
     description: 'Looking for best car repair service in Jaipur? GaadiMech offers expert car repairing services in Jaipur at affordable prices. Book your car repair in Jaipur today!',
     keywords: 'Car Repair Service in Jaipur, Car Repairing Services in Jaipur, Car Repairing in Jaipur, doorstep Car Repair Service in Jaipur, Affordable car repair service in Jaipur',
-    image: 'https://gaadimech.com/services-image.jpg',
+    image: 'https://www.gaadimech.com/services-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/car-repair-service-in-jaipur',
     hiddenContent: {
       h1: 'Professional Car Repair Services in Jaipur',
@@ -223,7 +223,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'Best Car Mechanic in Jaipur | Local Car Mechanic Shop in Jaipur - GaadiMech',
     description: 'Need the best car mechanic in Jaipur? GaadiMech is your trusted local car mechanic shop in Jaipur offering experienced, doorstep car repair and maintenance services.',
     keywords: 'Car Mechanic in Jaipur, Car Mechanic Shop in Jaipur, Nearby Car Mechanic Jaipur, Car Repair Mechanic in Jaipur, Car Mechanic Shop Jaipur, Local car mechanic shop in Jaipur, Doorstep car mechanic in Jaipur',
-    image: 'https://gaadimech.com/services-image.jpg',
+    image: 'https://www.gaadimech.com/services-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/car-mechanic-shop-in-jaipur',
     hiddenContent: {
       h1: 'Best Car Mechanic Shop in Jaipur',
@@ -245,7 +245,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'Car AC Service in Jaipur | Doorstep AC Repairing in Jaipur - GaadiMech',
     description: 'Get expert car AC service in Jaipur with GaadiMech. We fix AC cooling issues, compressor faults, gas filling & more. Doorstep AC repairing in Jaipur by local mechanics.',
     keywords: 'Car AC Service in Jaipur, Doorstep AC Repairing in Jaipur, AC Repairing in Jaipur, Car Air Conditioning Service Jaipur, Car AC Mechanic in Jaipur, Car AC gas filling service in Jaipur, Car AC compressor repair in Jaipur, Car AC servicing near me Jaipur, Doorstep car AC service in Jaipur',
-    image: 'https://gaadimech.com/ac-service-image.jpg',
+    image: 'https://www.gaadimech.com/ac-service-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/car-ac-service-in-jaipur',
     hiddenContent: {
       h1: 'Expert Car AC Service in Jaipur',
@@ -267,7 +267,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'Car Dent Paint Service in Jaipur | Car Denting Services in Jaipur - GaadiMech',
     description: 'Get professional car dent paint service in Jaipur at GaadiMech. We offer car denting services in Jaipur like, car dent repair, bumper dent fixes, paint touch-ups, and accident body repairs.',
     keywords: 'Car Dent Paint Service in Jaipur, Car Denting and Painting in Jaipur, Car Dent Repair in Jaipur, Car Body Repair in Jaipur, Car full body paint service in Jaipur, Car bumper dent repair in Jaipur, Car paint touch-up service in Jaipur, Car door dent repair in Jaipur, Car accident body repair in Jaipur',
-    image: 'https://gaadimech.com/denting-service-image.jpg',
+    image: 'https://www.gaadimech.com/denting-service-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/car-dent-paint-service-in-jaipur',
     hiddenContent: {
       h1: 'Professional Car Dent Paint Service in Jaipur',
@@ -290,7 +290,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'Car Spa & Cleaning Services | GaadiMech',
     description: 'Professional car cleaning and detailing services. Get your car looking brand new with our expert cleaning solutions.',
     keywords: 'car spa, car cleaning, car detailing, car wash, professional car cleaning, car interior cleaning',
-    image: 'https://gaadimech.com/services-image.jpg',
+    image: 'https://www.gaadimech.com/services-image.jpg',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
@@ -307,7 +307,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'Tyre Replacement & Wheel Alignment Services | GaadiMech',
     description: 'Professional tyre services including replacement, alignment, balancing, and puncture repair. Keep your car running safely and efficiently.',
     keywords: 'tyre replacement, wheel alignment, tyre balancing, puncture repair, car tyre services',
-    image: 'https://gaadimech.com/services-image.jpg',
+    image: 'https://www.gaadimech.com/services-image.jpg',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
@@ -324,7 +324,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'Premium Car Detailing Services | GaadiMech',
     description: 'Professional car detailing services that restore your car\'s beauty. From paint correction to interior detailing, we make your car look new again.',
     keywords: 'car detailing, premium car detailing, paint correction, interior detailing, exterior detailing',
-    image: 'https://gaadimech.com/services-image.jpg',
+    image: 'https://www.gaadimech.com/services-image.jpg',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
@@ -341,7 +341,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'Windshield Replacement & Repair Services | GaadiMech',
     description: 'Professional windshield repair and replacement services. From small chips to complete replacements, we ensure safe and clear visibility.',
     keywords: 'windshield replacement, windshield repair, car glass repair, windshield chip repair',
-    image: 'https://gaadimech.com/services-image.jpg',
+    image: 'https://www.gaadimech.com/services-image.jpg',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
@@ -358,7 +358,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'Car Battery Service & Replacement | GaadiMech',
     description: 'Professional car battery services including testing, repair, and replacement. Get reliable battery solutions from expert technicians.',
     keywords: 'car battery service, car battery replacement, battery testing, car battery repair',
-    image: 'https://gaadimech.com/services-image.jpg',
+    image: 'https://www.gaadimech.com/services-image.jpg',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
@@ -375,7 +375,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'Car Denting & Painting Services | GaadiMech',
     description: 'Expert car denting and painting services to restore your vehicle\'s appearance. Professional dent repair and high-quality painting solutions.',
     keywords: 'car denting, car painting, dent repair, scratches removal, body repair',
-    image: 'https://gaadimech.com/services-image.jpg',
+    image: 'https://www.gaadimech.com/services-image.jpg',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
@@ -394,28 +394,28 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'Privacy Policy | GaadiMech',
     description: 'GaadiMech\'s privacy policy explains how we collect, use, and protect your personal information.',
     keywords: 'privacy policy, data protection, personal information, gaadimech privacy',
-    image: 'https://gaadimech.com/og-image.jpg',
+    image: 'https://www.gaadimech.com/og-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/privacy-policy'
   },
   '/terms': {
     title: 'Terms and Conditions | GaadiMech',
     description: 'Read GaadiMech\'s terms and conditions for using our car service platform and services.',
     keywords: 'terms and conditions, terms of use, service terms, gaadimech terms',
-    image: 'https://gaadimech.com/og-image.jpg',
+    image: 'https://www.gaadimech.com/og-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/terms'
   },
   '/refund-policy': {
     title: 'Refund Policy | GaadiMech',
     description: 'Learn about GaadiMech\'s refund policy for car services and products.',
     keywords: 'refund policy, return policy, cancellation policy, gaadimech refunds',
-    image: 'https://gaadimech.com/og-image.jpg',
+    image: 'https://www.gaadimech.com/og-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/refund-policy'
   },
   '/express-service-TnCs': {
     title: 'Express Service Terms and Conditions | GaadiMech',
     description: 'Terms and conditions for GaadiMech\'s Express 90 MINS Car Service package.',
     keywords: 'express service terms, 90 minute service terms, express service conditions',
-    image: 'https://gaadimech.com/og-image.jpg',
+    image: 'https://www.gaadimech.com/og-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/express-service-TnCs'
   },
   
@@ -424,21 +424,21 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'Careers at GaadiMech | Join the 90-Minute Revolution in Car Care',
     description: 'Join GaadiMech\'s innovative team and be part of revolutionizing the car service industry. Explore exciting career opportunities in automotive technology, operations, and more.',
     keywords: 'careers, jobs, automotive careers, car service jobs, gaadimech careers',
-    image: 'https://gaadimech.com/og-image.jpg',
+    image: 'https://www.gaadimech.com/og-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/careers'
   },
   '/feedback': {
     title: 'Customer Feedback | GaadiMech',
     description: 'Share your feedback with GaadiMech to help us improve our automotive services. Your opinion matters to us!',
     keywords: 'GaadiMech feedback, customer feedback, car repair feedback, automotive service review',
-    image: 'https://gaadimech.com/og-image.jpg',
+    image: 'https://www.gaadimech.com/og-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/feedback'
   },
   '/express': {
     title: 'GaadiMech Express: 90-Minute Car Service | Fast & Professional Car Repair',
     description: 'Experience the future of car servicing with GaadiMech Express. Get your car serviced in just 90 minutes with our expert mechanics and state-of-the-art technology.',
     keywords: 'express car service, 90 minute car service, quick car service, fast car repair',
-    image: 'https://gaadimech.com/og-image.jpg',
+    image: 'https://www.gaadimech.com/og-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/express',
     structuredData: {
       '@context': 'https://schema.org',
@@ -461,14 +461,14 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'GaadiMech Express: 90-Minute Car Service | Fast & Professional Car Repair',
     description: 'Experience the future of car servicing with GaadiMech Express. Get your car serviced in just 90 minutes with our expert mechanics and state-of-the-art technology.',
     keywords: 'express car service, 90 minute car service, quick car service, fast car repair',
-    image: 'https://gaadimech.com/og-image.jpg',
+    image: 'https://www.gaadimech.com/og-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/express'
   },
   '/blog': {
     title: 'Blog - GaadiMech | Car Maintenance Tips & Automotive Insights',
     description: 'Read expert automotive tips, car maintenance guides, and industry insights from GaadiMech\'s professional mechanics.',
     keywords: 'car maintenance tips, automotive blog, car repair guide, vehicle maintenance blog',
-    image: 'https://gaadimech.com/blog-image.jpg',
+    image: 'https://www.gaadimech.com/blog-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/blog',
     robots: 'index, follow',
     structuredData: {
@@ -481,7 +481,7 @@ const seoConfigs: Record<string, SeoConfig> = {
         'name': 'GaadiMech',
         'logo': {
           '@type': 'ImageObject',
-          'url': 'https://gaadimech.com/logo.png'
+          'url': 'https://www.gaadimech.com/logo.png'
         }
       }
     }
@@ -492,7 +492,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     title: 'Admin Dashboard - GaadiMech',
     description: 'Internal admin dashboard for GaadiMech team members.',
     keywords: 'admin dashboard, internal tool',
-    image: 'https://gaadimech.com/og-image.jpg',
+    image: 'https://www.gaadimech.com/og-image.jpg',
     robots: 'noindex, nofollow', // Prevent search engines from indexing this page
   },
   
@@ -535,7 +535,7 @@ export const getSeoConfig = (path: string): SeoConfig => {
       title: 'GaadiMech Blog',
       description: 'Read expert automotive tips and insights on the GaadiMech blog.',
       keywords: 'automotive blog, car maintenance blog, car repair tips',
-      image: 'https://gaadimech.com/blog-image.jpg',
+      image: 'https://www.gaadimech.com/blog-image.jpg',
       canonicalUrl: `https://www.gaadimech.com${path}`,
       // Note: The actual SEO meta will be set by the BlogPost component
     };
@@ -553,7 +553,7 @@ export const getSeoConfig = (path: string): SeoConfig => {
       title: `Best Car Service & Repair in ${cityNameCapitalized} - GaadiMech`,
       description: `Professional car service and repair in ${cityNameCapitalized}. GaadiMech offers expert car mechanics, AC repair, denting & painting services in ${cityNameCapitalized}.`,
       keywords: `car service ${cityNameCapitalized}, car repair ${cityNameCapitalized}, car mechanic ${cityNameCapitalized}, car ac repair ${cityNameCapitalized}`,
-      image: 'https://gaadimech.com/og-image.jpg',
+      image: 'https://www.gaadimech.com/og-image.jpg',
       canonicalUrl: `https://www.gaadimech.com${path}`,
       hiddenContent: {
         h1: `Best Car Repair Services in ${cityNameCapitalized}`,
