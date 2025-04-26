@@ -42,6 +42,7 @@ const defaultSeoConfig: SeoConfig = {
   keywords: 'car service, car repair, car mechanic, car ac repair, denting painting, car maintenance',
   image: 'https://gaadimech.com/og-image.jpg',
   canonicalUrl: 'https://www.gaadimech.com',
+  robots: 'index, follow',  // Default robots meta tag
   hiddenContent: {
     h1: 'Best Car Repair Services in Jaipur',
     h2: 'Professional Car Mechanics Near You',
@@ -66,6 +67,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     description: 'GaadiMech provides reliable car repair, maintenance, and servicing across India. Book car services, AC repairs, denting & painting, and more from expert mechanics.',
     keywords: 'car service, car repair, car mechanic, car ac repair, denting painting, car maintenance',
     image: 'https://gaadimech.com/og-image.jpg',
+    robots: 'index, follow',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'LocalBusiness',
@@ -110,6 +112,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     keywords: 'car services, car maintenance, car ac repair, denting painting, car care, professional car service',
     image: 'https://gaadimech.com/services-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/services',
+    robots: 'index, follow',
     hiddenContent: {
       h1: 'Professional Car Services by GaadiMech',
       h2: 'Comprehensive Car Maintenance & Repair Services',
@@ -131,6 +134,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     description: 'Keep your car running smoothly with GaadiMech\'s periodic maintenance services. Our expert mechanics provide comprehensive car inspections and servicing.',
     keywords: 'car periodic service, car maintenance, regular car service, car inspection, car engine oil change',
     image: 'https://gaadimech.com/periodic-service-image.jpg',
+    robots: 'index, follow',
     hiddenContent: {
       h1: 'Professional Car Periodic Maintenance Services',
       h2: 'Keep Your Car Running Smoothly With Expert Maintenance',
@@ -152,6 +156,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     description: 'Expert car AC repair and service by GaadiMech. Get AC gas refilling, compressor repair, cooling system maintenance and more by certified technicians.',
     keywords: 'car ac repair, car ac service, ac gas refilling, car ac not cooling, car ac maintenance',
     image: 'https://gaadimech.com/ac-service-image.jpg',
+    robots: 'index, follow',
     hiddenContent: {
       h1: 'Professional Car AC Service & Repair',
       h2: 'Expert AC Maintenance and Troubleshooting',
@@ -175,6 +180,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     keywords: 'Car Service in Jaipur, Best Car Service in Jaipur, Car Maintenance in Jaipur, Car Service Jaipur',
     image: 'https://gaadimech.com/services-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/car-service-in-jaipur',
+    robots: 'index, follow',
     hiddenContent: {
       h1: 'Professional Car Service in Jaipur',
       h2: 'Comprehensive Car Maintenance & Repair Services in Jaipur',
@@ -464,6 +470,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     keywords: 'car maintenance tips, automotive blog, car repair guide, vehicle maintenance blog',
     image: 'https://gaadimech.com/blog-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/blog',
+    robots: 'index, follow',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Blog',
@@ -480,6 +487,15 @@ const seoConfigs: Record<string, SeoConfig> = {
     }
   },
   
+  // Example of a private page that shouldn't be indexed
+  '/admin-dashboard': {
+    title: 'Admin Dashboard - GaadiMech',
+    description: 'Internal admin dashboard for GaadiMech team members.',
+    keywords: 'admin dashboard, internal tool',
+    image: 'https://gaadimech.com/og-image.jpg',
+    robots: 'noindex, nofollow', // Prevent search engines from indexing this page
+  },
+  
   // Add more page-specific SEO configs as needed
 };
 
@@ -491,7 +507,8 @@ export const getSeoConfig = (path: string): SeoConfig => {
   // First try exact path match
   if (seoConfigs[path]) {
     return {
-      ...seoConfigs[path],
+      ...defaultSeoConfig, // First apply default values
+      ...seoConfigs[path], // Then override with page-specific values
       canonicalUrl: seoConfigs[path].canonicalUrl || `https://www.gaadimech.com${path}`
     };
   }
@@ -503,7 +520,8 @@ export const getSeoConfig = (path: string): SeoConfig => {
     
     if (seoConfigs[servicePath]) {
       return {
-        ...seoConfigs[servicePath],
+        ...defaultSeoConfig, // First apply default values
+        ...seoConfigs[servicePath], // Then override with page-specific values
         canonicalUrl: seoConfigs[servicePath].canonicalUrl || `https://www.gaadimech.com${path}`
       };
     }
@@ -513,6 +531,7 @@ export const getSeoConfig = (path: string): SeoConfig => {
   // This ensures that blog post SEO is based on the actual content
   if (path.startsWith('/blog/') && path !== '/blog') {
     return {
+      ...defaultSeoConfig, // Include default values like robots tag
       title: 'GaadiMech Blog',
       description: 'Read expert automotive tips and insights on the GaadiMech blog.',
       keywords: 'automotive blog, car maintenance blog, car repair tips',
@@ -554,9 +573,9 @@ export const getSeoConfig = (path: string): SeoConfig => {
     };
   }
   
-  // Add default canonical URL to default config
+  // Return default SEO configuration if no other match is found
   return {
     ...defaultSeoConfig,
-    canonicalUrl: `https://www.gaadimech.com${path === '/' ? '' : path}`
+    canonicalUrl: `https://www.gaadimech.com${path}`
   };
 }; 
