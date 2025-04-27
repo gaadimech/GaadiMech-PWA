@@ -1,4 +1,4 @@
-# GaadiMech Website SEO Guide
+# GaadiMech Website SEO Guidee
 
 This comprehensive guide explains the GaadiMech website's SEO implementation, providing practical instructions and use cases for optimizing the site's search engine performance. After reading this guide, you'll understand exactly where to find and modify all SEO-related elements across the website.
 
