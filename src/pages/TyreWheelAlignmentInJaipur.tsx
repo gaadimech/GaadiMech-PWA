@@ -140,7 +140,6 @@ const TyreWheelAlignmentInJaipur: React.FC = () => {
                   onClick={handleBookService}
                   className="w-1/2 bg-gradient-to-r from-[#FF7200] to-[#FF9500] text-white px-2 sm:px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base font-medium hover:from-[#25D366] hover:to-[#128C7E]"
                 >
-                  <img src="https://i.ibb.co/gM65t7Z/whatsapp-icon.png" alt="WhatsApp" className="mr-2" style={{ width: '36px', height: '36px' }} />
                   Book Service
                   <ArrowRight className="ml-1 sm:ml-2 h-4 w-4" />
                 </motion.button>
@@ -172,14 +171,6 @@ const TyreWheelAlignmentInJaipur: React.FC = () => {
               
               <div className="relative">
                 <div className="absolute inset-0 border-[8px] border-white rounded-lg shadow-xl"></div>
-                <img
-                  src="https://i.ibb.co/zHG5HLK/wheel-alignment.jpg"
-                  alt={`Professional wheel alignment service in ${cityName}`}
-                  className="rounded-lg shadow-xl w-full max-w-2xl mx-auto hover:opacity-90 transition-opacity"
-                  loading="lazy"
-                  width="800"
-                  height="600"
-                />
               </div>
               
               <div className="absolute -bottom-6 -left-6 bg-white p-4 md:p-6 rounded-lg shadow-xl w-auto">
