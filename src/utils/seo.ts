@@ -421,15 +421,15 @@ const seoConfigs: Record<string, SeoConfig> = {
   
   // Jaipur Landing Pages
   '/tyre-wheel-alignment-in-jaipur': {
-    title: 'Tyre & Wheel Alignment in Jaipur | GaadiMech',
-    description: 'Expert tyre and wheel alignment services in Jaipur. Precise alignment, balancing and rotation for your car. Book online for doorstep service with GaadiMech.',
-    keywords: 'tyre wheel alignment jaipur, wheel balancing jaipur, car alignment jaipur, wheel rotation jaipur, tyre services jaipur',
+    title: 'Wheel Alignment & Tyre Services in Jaipur | GaadiMech',
+    description: 'Precise wheel alignment, tyre replacement, balancing and rotation services in Jaipur. Book expert car service and repair at GaadiMech.',
+    keywords: 'wheel alignment jaipur, tyre service jaipur, car tyre replacement jaipur, car wheel balancing jaipur, car repair jaipur, car service jaipur, car mistri jaipur',
     image: 'https://www.gaadimech.com/og-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/tyre-wheel-alignment-in-jaipur',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      'name': 'Tyre & Wheel Alignment Service in Jaipur',
+      'name': 'Wheel Alignment & Tyre Service in Jaipur',
       'provider': {
         '@type': 'LocalBusiness',
         'name': 'GaadiMech',
@@ -440,7 +440,7 @@ const seoConfigs: Record<string, SeoConfig> = {
           'addressCountry': 'IN'
         }
       },
-      'serviceType': 'Wheel Alignment',
+      'serviceType': 'Car Tyre & Alignment Service',
       'areaServed': {
         '@type': 'City',
         'name': 'Jaipur'
@@ -448,15 +448,15 @@ const seoConfigs: Record<string, SeoConfig> = {
     }
   },
   '/windshield-replacement-in-jaipur': {
-    title: 'Windshield Replacement in Jaipur | GaadiMech',
-    description: 'Professional windshield replacement services in Jaipur. Fast, reliable and at your doorstep. Book online for instant service with GaadiMech.',
-    keywords: 'windshield replacement jaipur, car glass replacement jaipur, car windshield service jaipur, windshield crack repair jaipur, auto glass replacement jaipur',
+    title: 'Windshield Repair & Replacement in Jaipur | GaadiMech',
+    description: 'Cracked or broken windshield? GaadiMech offers professional car glass repair and windshield replacement service in Jaipur with doorstep convenience.',
+    keywords: 'windshield replacement jaipur, car glass repair jaipur, auto glass repair jaipur, windshield crack repair jaipur, car mistri jaipur, car service jaipur',
     image: 'https://www.gaadimech.com/og-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/windshield-replacement-in-jaipur',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      'name': 'Windshield Replacement Service in Jaipur',
+      'name': 'Windshield Repair & Replacement Service in Jaipur',
       'provider': {
         '@type': 'LocalBusiness',
         'name': 'GaadiMech',
@@ -467,7 +467,7 @@ const seoConfigs: Record<string, SeoConfig> = {
           'addressCountry': 'IN'
         }
       },
-      'serviceType': 'Windshield Replacement',
+      'serviceType': 'Car Glass & Windshield Service',
       'areaServed': {
         '@type': 'City',
         'name': 'Jaipur'
@@ -475,15 +475,15 @@ const seoConfigs: Record<string, SeoConfig> = {
     }
   },
   '/car-battery-replacement-in-jaipur': {
-    title: 'Car Battery Replacement in Jaipur | GaadiMech',
-    description: 'Emergency car battery replacement services in Jaipur. 24/7 doorstep service with free installation. Get instant battery replacement with GaadiMech.',
-    keywords: 'car battery replacement jaipur, car battery service jaipur, battery delivery jaipur, car battery jumpstart jaipur, car battery dead jaipur',
+    title: 'Car Battery Replacement & Jumpstart Service in Jaipur | GaadiMech',
+    description: 'Facing a dead battery? Call GaadiMech for instant car battery replacement, delivery and jumpstart services across Jaipur.',
+    keywords: 'car battery replacement jaipur, car battery jumpstart jaipur, emergency battery service jaipur, car service jaipur, car repair jaipur, car mistri jaipur',
     image: 'https://www.gaadimech.com/og-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/car-battery-replacement-in-jaipur',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      'name': 'Car Battery Replacement Service in Jaipur',
+      'name': 'Car Battery Replacement & Jumpstart Service in Jaipur',
       'provider': {
         '@type': 'LocalBusiness',
         'name': 'GaadiMech',
@@ -494,7 +494,7 @@ const seoConfigs: Record<string, SeoConfig> = {
           'addressCountry': 'IN'
         }
       },
-      'serviceType': 'Battery Replacement',
+      'serviceType': 'Battery Replacement & Electrical Service',
       'areaServed': {
         '@type': 'City',
         'name': 'Jaipur'
@@ -502,9 +502,9 @@ const seoConfigs: Record<string, SeoConfig> = {
     }
   },
   '/doorstep-car-service-in-jaipur': {
-    title: 'Doorstep Car Service in Jaipur | GaadiMech',
-    description: 'Professional doorstep car service in Jaipur. Get your car serviced at home by certified mechanics. Book online for same-day service with GaadiMech.',
-    keywords: 'doorstep car service jaipur, car service at home jaipur, mobile car service jaipur, home car service jaipur, car repair at home jaipur',
+    title: 'Doorstep Car Service & Mechanic in Jaipur | GaadiMech',
+    description: 'Car service at your home in Jaipur. GaadiMech provides doorstep mechanic visits for car repair, AC service, dent paint and periodic maintenance.',
+    keywords: 'doorstep car service jaipur, car service at home jaipur, home car mechanic jaipur, doorstep car repair jaipur, car ac service jaipur, car mistri jaipur, car service jaipur',
     image: 'https://www.gaadimech.com/og-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/doorstep-car-service-in-jaipur',
     structuredData: {
@@ -521,7 +521,7 @@ const seoConfigs: Record<string, SeoConfig> = {
           'addressCountry': 'IN'
         }
       },
-      'serviceType': 'Mobile Car Service',
+      'serviceType': 'Mobile Car Service & Repair',
       'areaServed': {
         '@type': 'City',
         'name': 'Jaipur'
@@ -529,15 +529,15 @@ const seoConfigs: Record<string, SeoConfig> = {
     }
   },
   '/90-minute-car-service-in-jaipur': {
-    title: '90-Minute Car Service in Jaipur | GaadiMech',
-    description: 'Quick and efficient 90-minute car service in Jaipur. Professional service by expert mechanics. Book now for fast service with GaadiMech.',
-    keywords: '90 minute car service jaipur, quick car service jaipur, express car service jaipur, fast car service jaipur, rapid car service jaipur',
+    title: '90-Minute Car Service, Repair & Dent Paint in Jaipur | GaadiMech',
+    description: 'Quick 90-minute express car service in Jaipur including periodic service, dent paint, car AC repair & battery service by expert GaadiMech mechanics.',
+    keywords: '90 minute car service jaipur, express car service jaipur, quick car repair jaipur, dent paint service jaipur, car ac service jaipur, car mistri jaipur, car mechanic jaipur',
     image: 'https://www.gaadimech.com/og-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/90-minute-car-service-in-jaipur',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      'name': '90-Minute Car Service in Jaipur',
+      'name': '90-Minute Car Service & Repair in Jaipur',
       'provider': {
         '@type': 'LocalBusiness',
         'name': 'GaadiMech',
@@ -548,7 +548,7 @@ const seoConfigs: Record<string, SeoConfig> = {
           'addressCountry': 'IN'
         }
       },
-      'serviceType': 'Express Car Service',
+      'serviceType': 'Express Car Service, Repair & Dent Paint',
       'areaServed': {
         '@type': 'City',
         'name': 'Jaipur'
