@@ -52,6 +52,13 @@ import CarDentPaintServiceInJaipur from './pages/CarDentPaintServiceInJaipur';
 import CarRepairServiceInJaipur from './pages/CarRepairServiceInJaipur';
 import CarMechanicShopInJaipur from './pages/CarMechanicShopInJaipur';
 
+// New Landing Pages
+import WindshieldReplacementInJaipur from './pages/WindshieldReplacementInJaipur';
+import TyreWheelAlignmentInJaipur from './pages/TyreWheelAlignmentInJaipur'; 
+import CarBatteryReplacementInJaipur from './pages/CarBatteryReplacementInJaipur';
+import DoorstepCarServiceInJaipur from './pages/DoorstepCarServiceInJaipur'; 
+import NinetyMinuteCarServiceInJaipur from './pages/90MinuteCarServiceInJaipur';
+
 Modal.setAppElement('#root');
 
 // Create a new component to use the hook
@@ -270,6 +277,13 @@ const AppContent = () => {
               <Route path="/car-dent-paint-service-in-jaipur" element={<CarDentPaintServiceInJaipur />} />
               <Route path="/car-repair-service-in-jaipur" element={<CarRepairServiceInJaipur />} />
               <Route path="/car-mechanic-shop-in-jaipur" element={<CarMechanicShopInJaipur />} />
+              
+              {/* New SEO Landing Pages */}
+              <Route path="/windshield-replacement-in-jaipur" element={<WindshieldReplacementInJaipur />} />
+              <Route path="/tyre-wheel-alignment-in-jaipur" element={<TyreWheelAlignmentInJaipur />} />
+              <Route path="/car-battery-replacement-in-jaipur" element={<CarBatteryReplacementInJaipur />} />
+              <Route path="/doorstep-car-service-in-jaipur" element={<DoorstepCarServiceInJaipur />} />
+              <Route path="/90-minute-car-service-in-jaipur" element={<NinetyMinuteCarServiceInJaipur />} />
 
               {/* New Routes */}
               <Route path="/coupon-admin" element={<CouponAdmin />} />
