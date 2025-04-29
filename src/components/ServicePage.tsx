@@ -8,6 +8,7 @@ import ServiceCard from './ServiceCard';
 import { getReviewsByService } from '../data/reviews';
 import servicesData from '../data/services-data';
 import { ServiceType, Vehicle, PricingData } from '../types/services';
+import { getSeoConfig } from '../utils/seo';
 import { 
   parseCSVData, 
   getPricingData, 
@@ -29,6 +30,15 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
   
   const serviceData = servicesData[serviceType];
   const serviceReviews = getReviewsByService(serviceType);
+  
+  // Get SEO content from seo.ts
+  const seoPath = `/services/${serviceType}`;
+  const seoConfig = getSeoConfig(seoPath);
+  const landingPageSeoPath = serviceType === 'ac' ? '/car-ac-service-in-jaipur' : 
+                            serviceType === 'denting' ? '/car-dent-paint-service-in-jaipur' :
+                            `/services/${serviceType}`;
+  const landingPageSeoConfig = getSeoConfig(landingPageSeoPath);
+  const seoContent = landingPageSeoConfig.hiddenContent || seoConfig.hiddenContent;
   
   // Filter cards based on active tab and visibility
   const filteredCards = serviceData.serviceCards.filter(card => {
@@ -133,14 +143,16 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
       className="pt-20"
     >
       <Helmet>
-        <title>{serviceData.title} | GaadiMech - Professional Car Maintenance</title>
-        <meta name="description" content={serviceData.subtitle} />
+        <title>{seoConfig.title}</title>
+        <meta name="description" content={seoConfig.description} />
+        <meta name="keywords" content={seoConfig.keywords} />
+        <link rel="canonical" href={seoConfig.canonicalUrl || window.location.href} />
       </Helmet>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">{serviceData.title}</h1>
-          <p className="text-xl text-gray-600">{serviceData.subtitle}</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">{seoContent?.h1 || serviceData.title}</h1>
+          <p className="text-xl text-gray-600">{seoConfig.description}</p>
         </div>
         
         {/* Vehicle selection banner */}
@@ -218,35 +230,71 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
         </div>
         
         {/* Service cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {filteredCards.map((card, index) => {
-            // Get the actual price for this vehicle and service
-            const actualPrice = getServiceTypePrice(card.id);
-            
-            // Debug log to see what's being passed to ServiceCard
-            console.log(`Card: ${card.id}, Title: ${card.title}, Actual Price: ${actualPrice}`);
-            
-            // Find the periodic service card to get its price
-            const periodicServiceCard = servicesData['periodic']?.serviceCards.find(c => c.id === 'periodic-basic');
-            const periodicServicePrice = periodicServiceCard ? getServiceTypePrice('periodic-basic') : undefined;
-            
-            return (
-              <ServiceCard
-                key={`${card.id}-${index}`}
-                card={card}
-                vehicleSelected={!!selectedVehicle}
-                actualPrice={actualPrice}
-                onSelectCar={() => setShowVehicleModal(true)}
-                selectedVehicle={selectedVehicle}
-                serviceType={serviceType}
-                periodicServicePrice={card.id === 'customizable-service' ? periodicServicePrice : undefined}
-              />
-            );
-          })}
-        </div>
+        {filteredCards.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {filteredCards.map((card, index) => {
+              // Get the actual price for this vehicle and service
+              const actualPrice = getServiceTypePrice(card.id);
+              
+              // Find the periodic service card to get its price
+              const periodicServiceCard = servicesData['periodic']?.serviceCards.find(c => c.id === 'periodic-basic');
+              const periodicServicePrice = periodicServiceCard ? getServiceTypePrice('periodic-basic') : undefined;
+              
+              return (
+                <ServiceCard
+                  key={`${card.id}-${index}`}
+                  card={card}
+                  vehicleSelected={!!selectedVehicle}
+                  actualPrice={actualPrice}
+                  onSelectCar={() => setShowVehicleModal(true)}
+                  selectedVehicle={selectedVehicle}
+                  serviceType={serviceType}
+                  periodicServicePrice={card.id === 'customizable-service' ? periodicServicePrice : undefined}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <div className="mb-12 flex justify-center">
+            <button
+              onClick={() => window.open(`https://wa.me/917300042410?text=I'd%20like%20to%20inquire%20about%20your%20${seoContent?.h1 || serviceData.title}%20in%20Jaipur.`, '_blank')}
+              className="bg-[#FF7200] hover:bg-[#e56700] text-white font-bold py-3 px-6 rounded-lg shadow-md transition-colors flex items-center space-x-2"
+            >
+              <span>Get a Quote</span>
+            </button>
+          </div>
+        )}
         
         {/* Customer reviews */}
         <ReviewCarousel reviews={serviceReviews} />
+
+        {/* SEO Content Section - Small and nearly invisible */}
+        {seoContent && (
+          <div className="mt-16 opacity-30 hover:opacity-80 transition-opacity text-xs overflow-hidden max-h-40 text-gray-600">
+            <div className="text-center mb-2">
+              <h2 className="text-sm font-semibold text-gray-700">{seoContent.h2}</h2>
+            </div>
+            <div className="space-y-2">
+              {seoContent.paragraphs && seoContent.paragraphs.map((paragraph, idx) => (
+                <p key={idx} className="text-xs">{paragraph}</p>
+              ))}
+              {seoContent.listItems && seoContent.listItems.length > 0 && (
+                <ul className="list-disc list-inside pl-2 space-y-1">
+                  {seoContent.listItems.map((item, idx) => (
+                    <li key={idx} className="text-xs">{item}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Minimal Version of Rich Service Description Content */}
+        {serviceData.description && (
+          <div className="mt-6 opacity-30 hover:opacity-80 transition-opacity overflow-hidden max-h-32 text-xs">
+            <div className="prose prose-xs max-w-none" dangerouslySetInnerHTML={{ __html: serviceData.description }} />
+          </div>
+        )}
       </div>
       
       {/* Vehicle selection modal */}

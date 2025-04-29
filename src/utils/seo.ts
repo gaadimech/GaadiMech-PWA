@@ -130,53 +130,56 @@ const seoConfigs: Record<string, SeoConfig> = {
     }
   },
   '/services/periodic': {
-    title: 'Periodic Car Service Jaipur',
-    description: 'Professional periodic car service in Jaipur. Get engine oil change, filter replacement & complete car inspection by certified mechanics.',
-    keywords: 'periodic car service jaipur, car oil change jaipur, full car service jaipur, scheduled car maintenance jaipur',
+    title: 'Expert Car Periodic Service in Jaipur',
+    description: 'Regular maintenance is vital for your vehicle\'s longevity and performance. GaadiMech offers comprehensive periodic car service in Jaipur, designed to keep your vehicle running at its best.',
+    keywords: 'periodic car service jaipur, car oil change jaipur, full car service jaipur, scheduled car maintenance jaipur, engine oil replacement, filter replacement, car inspection jaipur',
     image: 'https://www.gaadimech.com/periodic-service-image.jpg',
     hiddenContent: {
-      h1: 'Periodic Car Maintenance in Jaipur',
-      h2: 'Keep Your Car Running Smoothly With Expert Maintenance',
+      h1: 'Expert Car Periodic Service in Jaipur',
+      h2: 'What Our Car Periodic Service Includes',
       paragraphs: [
-        'Regular periodic maintenance is crucial for your car\'s performance and longevity. GaadiMech offers comprehensive periodic service packages that include oil changes, filter replacements, fluid top-ups, and detailed vehicle inspections. Our certified mechanics use genuine parts and follow manufacturer guidelines to ensure your car performs at its best.'
+        'Regular maintenance is vital for your vehicle\'s longevity and performance. GaadiMech offers comprehensive periodic car service in Jaipur, designed to keep your vehicle running at its best while preventing costly breakdowns and extending its lifespan. Our skilled technicians perform thorough inspections and maintenance according to manufacturer specifications.',
+        'Jaipur\'s climate and road conditions can put additional stress on your vehicle\'s systems. Our periodic maintenance service addresses these specific challenges, providing customized care that goes beyond basic oil changes to ensure all critical components are properly maintained for optimal performance and reliability.'
       ],
       listItems: [
-        'Engine Oil & Filter Replacement',
-        'Air Filter Cleaning & Replacement',
-        'Comprehensive Multi-Point Inspection',
-        'Brake System Check & Service',
-        'Fluid Level Check & Top-up',
-        'Battery Health Inspection'
+        'Engine Oil Replacement: Draining old oil and replacing with manufacturer-recommended grade and quantity.',
+        'Oil Filter Replacement: Installing a new oil filter to maintain clean oil circulation.',
+        'Air Filter Inspection/Replacement: Checking and replacing air filter to ensure proper engine breathing and fuel efficiency.',
+        'Brake System Inspection: Checking brake pads, discs, and fluid levels for safety and performance.',
+        'Cooling System Check: Inspecting radiator, hoses, and coolant level with top-up as needed.',
+        'Battery Inspection: Testing battery health and cleaning terminals to prevent starting issues.',
+        'Comprehensive Inspection: 25-point check of all critical vehicle systems and components.',
+        'Fluids Top-up: Checking and topping up brake fluid, power steering fluid, and washer fluid.'
       ]
     }
   },
   '/services/ac': {
-    title: 'Car AC Repair Jaipur',
-    description: 'Restore icy cooling: AC gas refill, compressor repair, condenser clean & leak check at your doorstep in Jaipur. Book GaadiMech today.',
-    keywords: 'car ac repair jaipur, car ac gas refill jaipur, car ac service jaipur, car ac not cooling jaipur, ac compressor repair jaipur',
+    title: 'Professional Car AC Service & Repair in Jaipur',
+    description: 'Is your car\'s air conditioning not cooling properly? GaadiMech offers comprehensive car AC services in Jaipur designed to restore your vehicle\'s cooling system to peak performance.',
+    keywords: 'car ac repair jaipur, car ac gas refill jaipur, car ac service jaipur, car ac not cooling jaipur, ac compressor repair jaipur, condenser cleaning, leak detection',
     image: 'https://www.gaadimech.com/ac-service-image.jpg',
     robots: 'index, follow',
     hiddenContent: {
-      h1: 'Professional Car AC Service & Repair',
-      h2: 'Expert AC Maintenance and Troubleshooting',
+      h1: 'Professional Car AC Service & Repair in Jaipur',
+      h2: 'What Our Car AC Service Includes',
       paragraphs: [
-        'Is your car AC not cooling properly in the Jaipur heat? GaadiMech provides comprehensive AC services including gas refilling, compressor repair, condenser cleaning, and complete system diagnostics. Our certified technicians identify and fix all AC issues to restore optimal cooling performance.'
+        'Is your car\'s air conditioning not cooling properly or emitting unpleasant odors? GaadiMech offers comprehensive car AC services in Jaipur designed to restore your vehicle\'s cooling system to peak performance. Our expert technicians diagnose and fix common AC issues including refrigerant leaks, compressor problems, and electrical faults, ensuring you stay comfortable during Jaipur\'s hot summer months.',
+        'Regular AC maintenance is essential in Jaipur\'s climate to prevent more serious problems and extend the life of your AC system. Our doorstep car AC service saves you time and hassle while ensuring your vehicle\'s cooling system works efficiently throughout the year.'
       ],
       listItems: [
-        'AC Gas Refilling',
-        'Compressor Repair & Replacement',
-        'Condenser Cleaning & Repair',
-        'Cooling Coil Servicing',
-        'Complete AC System Diagnosis',
-        'AC Performance Optimization'
+        'AC Gas Refilling: Checking refrigerant levels and refilling to restore optimal cooling performance.',
+        'Leak Detection: Thorough inspection of the AC system to identify and repair any refrigerant leaks.',
+        'Condenser Cleaning: Removing dust and debris from the condenser to improve heat exchange efficiency.',
+        'Compressor Inspection: Checking the compressor\'s operation and ensuring proper pressure levels.',
+        'AC Filter Cleaning: Cleaning or replacing filters to improve air quality and system efficiency.'
       ]
     }
   },
   '/services/denting': {
-    title: 'Car Denting & Painting Jaipur',
-    description: 'Expert car denting and painting services in Jaipur. Get professional dent repair, scratch removal & full body paint by skilled technicians.',
-    keywords: 'car dent repair jaipur, car painting jaipur, scratch removal jaipur, bumper repair jaipur, full body paint jaipur',
-    image: 'https://www.gaadimech.com/services-image.jpg',
+    title: 'Professional Car Denting & Painting Services in Jaipur',
+    description: 'GaadiMech provides expert car denting and painting services in Jaipur to restore your vehicle\'s appearance to showroom condition.',
+    keywords: 'car dent repair jaipur, car painting jaipur, scratch removal jaipur, bumper repair jaipur, full body paint jaipur, panel alignment, color matching',
+    image: 'https://www.gaadimech.com/denting-service-image.jpg',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
@@ -187,13 +190,29 @@ const seoConfigs: Record<string, SeoConfig> = {
       },
       'serviceType': 'Denting & Painting',
       'description': 'Expert car denting and painting services to restore your vehicle\'s appearance.'
+    },
+    hiddenContent: {
+      h1: 'Professional Car Denting & Painting Services in Jaipur',
+      h2: 'What Our Car Denting & Painting Service Includes',
+      paragraphs: [
+        'Has your car suffered dents, scratches, or paint damage? GaadiMech provides expert car denting and painting services in Jaipur to restore your vehicle\'s appearance to showroom condition. Our skilled technicians use advanced techniques and premium materials to repair everything from minor dings to major collision damage, ensuring flawless results.',
+        'We understand that your car\'s appearance matters to you. Whether it\'s fixing a small parking lot dent or performing complete body restoration after an accident, our Jaipur-based denting and painting professionals deliver exceptional quality with attention to detail and perfect color matching.'
+      ],
+      listItems: [
+        'Dent Repair: Removal of dents using specialized tools and techniques without damaging the original paint.',
+        'Panel Alignment: Precise realignment of body panels for proper fit and appearance.',
+        'Surface Preparation: Thorough cleaning, sanding, and priming to ensure paint adhesion.',
+        'Premium Paint Application: Using high-quality paints with 100% color matching to your vehicle.',
+        'Rubbing & Polishing: Professional finishing to restore gloss and protect the new paint.',
+        'Clear Coat Application: Applying protective clear coat for durability and UV protection.'
+      ]
     }
   },
   '/services/battery': {
-    title: 'Car Battery Replacement Jaipur',
-    description: 'Quick car battery replacement in Jaipur. Get battery testing, jump start service & new battery installation at your doorstep.',
-    keywords: 'car battery replacement jaipur, car battery service jaipur, jump start jaipur, battery testing jaipur',
-    image: 'https://www.gaadimech.com/services-image.jpg',
+    title: 'Professional Car Battery Replacement Services in Jaipur',
+    description: 'Experiencing starting problems or electrical issues with your vehicle? GaadiMech offers reliable car battery replacement services across Jaipur, delivered right to your doorstep.',
+    keywords: 'car battery replacement jaipur, car battery service jaipur, jump start jaipur, battery testing jaipur, doorstep battery service, battery health check',
+    image: 'https://www.gaadimech.com/battery-service-image.jpg',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
@@ -204,13 +223,29 @@ const seoConfigs: Record<string, SeoConfig> = {
       },
       'serviceType': 'Battery Service',
       'description': 'Professional car battery services including testing, repair, and replacement.'
+    },
+    hiddenContent: {
+      h1: 'Professional Car Battery Replacement Services in Jaipur',
+      h2: 'What Our Car Battery Service Includes',
+      paragraphs: [
+        'Experiencing starting problems or electrical issues with your vehicle? GaadiMech offers reliable car battery replacement services across Jaipur, delivered right to your doorstep. Our expert technicians will diagnose your battery\'s condition, recommend the best replacement options, and install a new battery with minimal downtime.',
+        'Car batteries typically last 2-3 years in Jaipur\'s climate conditions before performance begins to decline. Don\'t wait for a complete breakdown - our preventive battery replacement service ensures you\'re never stranded with a vehicle that won\'t start, especially during extreme weather conditions.'
+      ],
+      listItems: [
+        'Battery Health Check: Comprehensive testing of your current battery\'s condition and charging system.',
+        'Expert Recommendation: Suggesting the right battery type and capacity based on your vehicle specifications.',
+        'Doorstep Installation: Professional removal of old battery and installation of new battery at your location in Jaipur.',
+        'Terminal Cleaning: Cleaning battery terminals to ensure proper connection and prevent corrosion.',
+        'Electrical System Check: Verifying proper functioning of your vehicle\'s charging system after battery replacement.',
+        'Old Battery Disposal: Environmentally responsible disposal of your old battery.'
+      ]
     }
   },
   '/services/tyre': {
-    title: 'Tyre Replacement & Wheel Alignment Jaipur – GaadiMech',
-    description: 'Professional tyre services in Jaipur including replacement, wheel alignment, balancing & puncture repair. Get expert service at your location.',
-    keywords: 'tyre replacement jaipur, wheel alignment jaipur, tyre balancing jaipur, puncture repair jaipur',
-    image: 'https://www.gaadimech.com/services-image.jpg',
+    title: 'Professional Tyre Services & Wheel Alignment in Jaipur',
+    description: 'Are your tyres showing signs of wear or damage? GaadiMech delivers comprehensive tyre services in Jaipur including replacement, rotation, balancing, and wheel alignment.',
+    keywords: 'tyre replacement jaipur, wheel alignment jaipur, tyre balancing jaipur, puncture repair jaipur, tyre rotation, wheel balancing, tyre pressure monitoring',
+    image: 'https://www.gaadimech.com/tyre-service-image.jpg',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
@@ -221,13 +256,29 @@ const seoConfigs: Record<string, SeoConfig> = {
       },
       'serviceType': 'Tyre Service',
       'description': 'Professional tyre services including replacement, alignment, balancing, and puncture repair.'
+    },
+    hiddenContent: {
+      h1: 'Professional Tyre Services & Wheel Alignment in Jaipur',
+      h2: 'What Our Tyre Services Include',
+      paragraphs: [
+        'Are your tyres showing signs of wear or damage? GaadiMech delivers comprehensive tyre services in Jaipur including replacement, rotation, balancing, and wheel alignment. Our mobile tyre services bring expert technicians to your location with all the necessary equipment to keep your vehicle running safely and efficiently.',
+        'Properly maintained tyres are crucial for safety, fuel efficiency, and vehicle handling, especially on Jaipur\'s varied road conditions. Our professional tyre services help extend the life of your tyres while ensuring optimal performance and preventing costly vehicle damage caused by worn or improperly aligned tyres.'
+      ],
+      listItems: [
+        'Tyre Replacement: Supply and installation of new tyres from leading brands suited to your vehicle and driving needs.',
+        'Wheel Balancing: Precision balancing to eliminate vibration and ensure even tyre wear.',
+        'Wheel Alignment: Computer-assisted alignment to correct suspension angles for proper handling and tyre longevity.',
+        'Tyre Rotation: Regular rotation to ensure even wear across all tyres.',
+        'Puncture Repair: Professional repair of punctures and minor damages where safe to do so.',
+        'Tyre Pressure Monitoring: Checking and adjusting pressure to recommended levels for safety and efficiency.'
+      ]
     }
   },
   '/services/windshield': {
-    title: 'Windshield Repair & Replacement Jaipur – GaadiMech',
-    description: 'Expert windshield repair & replacement in Jaipur. Get chip repair, crack fixing & complete windshield replacement with warranty.',
-    keywords: 'windshield replacement jaipur, windshield repair jaipur, car glass repair jaipur, windshield chip repair jaipur',
-    image: 'https://www.gaadimech.com/services-image.jpg',
+    title: 'Windshield Replacement & Repair Services in Jaipur',
+    description: 'Dealing with a chipped, cracked, or shattered windshield? GaadiMech provides professional windshield replacement and repair services across Jaipur, ensuring your safety and restoring clear visibility.',
+    keywords: 'windshield replacement jaipur, windshield repair jaipur, car glass repair jaipur, windshield chip repair jaipur, ADAS calibration, OEM glass',
+    image: 'https://www.gaadimech.com/windshield-service-image.jpg',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
@@ -238,6 +289,90 @@ const seoConfigs: Record<string, SeoConfig> = {
       },
       'serviceType': 'Windshield Service',
       'description': 'Professional windshield repair and replacement services.'
+    },
+    hiddenContent: {
+      h1: 'Windshield Replacement & Repair Services in Jaipur',
+      h2: 'What Our Windshield Services Include',
+      paragraphs: [
+        'Dealing with a chipped, cracked, or shattered windshield? GaadiMech provides professional windshield replacement and repair services across Jaipur, ensuring your safety and restoring clear visibility. Our team uses high-quality glass that meets all safety standards, with precise installation techniques for a perfect fit.',
+        'Even small chips or cracks in your windshield can compromise structural integrity and quickly spread into larger problems. Our prompt repair services in Jaipur can address minor damage before replacement becomes necessary, saving you time and money while maintaining your vehicle\'s safety standards.'
+      ],
+      listItems: [
+        'Damage Assessment: Expert evaluation to determine if repair or replacement is needed.',
+        'Chip Repair: Advanced resin filling for small chips to prevent spreading.',
+        'Full Windshield Replacement: Complete removal of damaged glass and installation of new windshield.',
+        'OEM Quality Glass: Using manufacturer-specified glass with proper thickness and specifications.',
+        'Professional Installation: Proper sealing and setting techniques to prevent leaks and wind noise.',
+        'ADAS Calibration: Recalibration of Advanced Driver Assistance Systems after windshield replacement when applicable.'
+      ]
+    }
+  },
+  '/services/detailing': {
+    title: 'Professional Car Detailing Services in Jaipur',
+    description: 'Want your car to look and feel like new again? GaadiMech offers premium car detailing services in Jaipur that go far beyond a regular car wash.',
+    keywords: 'car detailing jaipur, premium car detailing, paint correction, interior detailing, exterior detailing, ceramic coating, engine bay cleaning',
+    image: 'https://www.gaadimech.com/detailing-service-image.jpg',
+    structuredData: {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      'name': 'Premium Car Detailing Services',
+      'provider': {
+        '@type': 'LocalBusiness',
+        'name': 'GaadiMech'
+      },
+      'serviceType': 'Car Detailing',
+      'description': 'Professional car detailing services that restore your car\'s beauty.'
+    },
+    hiddenContent: {
+      h1: 'Professional Car Detailing Services in Jaipur',
+      h2: 'What Our Car Detailing Service Includes',
+      paragraphs: [
+        'Want your car to look and feel like new again? GaadiMech offers premium car detailing services in Jaipur that go far beyond a regular car wash. Our comprehensive detailing packages include deep cleaning, polishing, and protection treatments for both exterior and interior, restoring your vehicle\'s showroom shine and preserving its value.',
+        'Jaipur\'s climate, with its dust, heat, and occasional heavy rains, can take a toll on your vehicle\'s appearance. Our professional detailing services remove accumulated contaminants, correct minor paint imperfections, and apply protective treatments to shield your car from environmental damage.'
+      ],
+      listItems: [
+        'Exterior Detailing: Clay bar treatment, paint correction, machine polishing, and protective wax or sealant application.',
+        'Interior Detailing: Deep cleaning of upholstery, carpet shampooing, leather conditioning, and dashboard treatment.',
+        'Engine Bay Cleaning: Careful degreasing and detailing of engine components for improved performance and aesthetics.',
+        'Wheel and Tire Detailing: Deep cleaning of wheels, wheel wells, and tire dressing for a complete look.',
+        'Glass Treatment: Special cleaning and water-repellent application for improved visibility.',
+        'Premium Coating Options: Ceramic coating and paint protection film for long-lasting shine and protection.'
+      ]
+    }
+  },
+  '/services/carspa': {
+    title: 'Premium Car Spa & Cleaning Services in Jaipur',
+    description: 'Give your car the pampering it deserves with GaadiMech\'s professional car spa services in Jaipur. Our specialized cleaning treatments go beyond regular washing to deeply clean, refresh, and protect both your car\'s exterior and interior.',
+    keywords: 'car spa jaipur, car cleaning jaipur, car detailing jaipur, car wash jaipur, interior cleaning, dashboard treatment, odor removal',
+    image: 'https://www.gaadimech.com/carspa-service-image.jpg',
+    structuredData: {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      'name': 'Car Spa & Cleaning Services',
+      'provider': {
+        '@type': 'LocalBusiness',
+        'name': 'GaadiMech'
+      },
+      'serviceType': 'Car Cleaning',
+      'description': 'Professional car cleaning and detailing services. Get your car looking brand new with our expert cleaning solutions.'
+    },
+    hiddenContent: {
+      h1: 'Premium Car Spa & Cleaning Services in Jaipur',
+      h2: 'What Our Car Spa Services Include',
+      paragraphs: [
+        'Give your car the pampering it deserves with GaadiMech\'s professional car spa services in Jaipur. Our specialized cleaning treatments go beyond regular washing to deeply clean, refresh, and protect both your car\'s exterior and interior, leaving it looking and smelling like new again.',
+        'Jaipur\'s dusty environment can quickly affect your vehicle\'s appearance. Our comprehensive car spa services remove accumulated dirt, grime, and pollutants while applying protective treatments that help maintain your car\'s cleanliness and appearance for longer periods.'
+      ],
+      listItems: [
+        'Exterior Foam Wash: Gentle yet effective foam cleaning that lifts dirt without scratching paint.',
+        'Interior Vacuum & Cleaning: Deep vacuuming and cleaning of all interior surfaces including hard-to-reach areas.',
+        'Dashboard & Plastic Treatment: Cleaning and applying UV protection to prevent cracking and fading.',
+        'Seat Cleaning: Specialized cleaning for fabric, leather, or vinyl seats with appropriate conditioners.',
+        'Glass Treatment: Streak-free cleaning of all windows and mirrors for optimal visibility.',
+        'Tyre & Rim Cleaning: Thorough cleaning and dressing of tyres and wheel rims.',
+        'Engine Bay Cleaning: Careful cleaning of engine compartment to remove oil and dirt buildup.',
+        'Odor Elimination: Treatment to remove unpleasant odors and leave your car smelling fresh.'
+      ]
     }
   },
   '/express': {
@@ -390,23 +525,6 @@ const seoConfigs: Record<string, SeoConfig> = {
       },
       'serviceType': 'Car Cleaning',
       'description': 'Professional car cleaning and detailing services. Get your car looking brand new with our expert cleaning solutions.'
-    }
-  },
-  '/services/detailing': {
-    title: 'Premium Car Detailing Services | GaadiMech',
-    description: 'Professional car detailing services that restore your car\'s beauty. From paint correction to interior detailing, we make your car look new again.',
-    keywords: 'car detailing, premium car detailing, paint correction, interior detailing, exterior detailing',
-    image: 'https://www.gaadimech.com/services-image.jpg',
-    structuredData: {
-      '@context': 'https://schema.org',
-      '@type': 'Service',
-      'name': 'Premium Car Detailing Services',
-      'provider': {
-        '@type': 'LocalBusiness',
-        'name': 'GaadiMech'
-      },
-      'serviceType': 'Car Detailing',
-      'description': 'Professional car detailing services that restore your car\'s beauty.'
     }
   },
   
