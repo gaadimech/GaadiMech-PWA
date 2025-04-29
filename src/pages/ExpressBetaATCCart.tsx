@@ -901,7 +901,7 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
                     <div className="text-right">
                       <div className="text-gray-500 line-through text-xs">₹{originalPrice}</div>
                       <div className="font-bold text-lg text-[#FF8A3D]">₹{finalPrice}</div>
-                      <div className="text-green-600 text-xs">Auto discount: ₹{autoDiscountAmount} OFF</div>
+                      <div className="text-green-600 text-xs">Website discount: ₹{autoDiscountAmount} OFF</div>
                       {appliedCoupon && (
                         <div className="text-blue-600 text-xs">Coupon: ₹{additionalDiscount} OFF</div>
                       )}
@@ -1407,7 +1407,7 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
                     <span>₹{originalPrice}</span>
                   </div>
                   <div className="flex justify-between text-green-600">
-                    <span>Auto Discount</span>
+                    <span>Website Discount</span>
                     <span>-₹{autoDiscountAmount}</span>
                   </div>
                   {appliedCoupon && (
@@ -1436,7 +1436,7 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
               <div className="text-gray-600">Total Price</div>
               <div className="font-bold text-2xl text-[#FF7200]">₹{finalPrice}</div>
               <div className="text-green-600 text-xs">
-                Save ₹{workshopPrice - finalPrice} vs. Workshop
+                Save ₹{workshopPrice - finalPrice} vs. Company Workshops
               </div>
             </div>
             <button
