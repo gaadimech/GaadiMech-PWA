@@ -11,7 +11,7 @@ const Services = () => {
       transition={{ duration: 0.5 }}
       className="pt-20"
     >
-      <ServicesComponent />
+      <ServicesComponent showSeoContent={true} />
     </motion.div>
   );
 };

@@ -91,7 +91,7 @@ const services = [
   }
 ];
 
-const Services = () => {
+const Services = ({ showSeoContent = false }) => {
   const navigate = useNavigate();
 
   const handleServiceClick = (service: typeof services[0]) => {
@@ -254,71 +254,73 @@ const Services = () => {
           ))}
         </div>
         
-        {/* SEO Content Section */}
-        <div className="mt-12 pt-6 border-t border-gray-200">
-          <div className="text-sm text-gray-600 space-y-4">
-            <p className="mb-4">
-              GaadiMech offers comprehensive <strong>car services in Jaipur</strong> to keep your vehicle in optimal condition. 
-              Our skilled technicians provide quality maintenance and repair solutions using genuine parts and modern equipment.
-            </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3 text-xs">
-              <div>
-                <h3 className="font-medium text-gray-800 mb-1">
-                  <a href="/services/periodic" className="hover:text-[#FF7200] transition-colors">
-                    Periodic Service in Jaipur
-                  </a>
-                </h3>
-                <p>Regular maintenance packages including oil change, filter replacement, and multi-point inspections in Jaipur.</p>
-              </div>
+        {/* SEO Content Section - Only show when showSeoContent is true */}
+        {showSeoContent && (
+          <div className="mt-12 pt-6 border-t border-gray-200">
+            <div className="text-sm text-gray-600 space-y-4">
+              <p className="mb-4">
+                GaadiMech offers comprehensive <strong>car services in Jaipur</strong> to keep your vehicle in optimal condition. 
+                Our skilled technicians provide quality maintenance and repair solutions using genuine parts and modern equipment.
+              </p>
               
-              <div>
-                <h3 className="font-medium text-gray-800 mb-1">
-                  <a href="/services/ac" className="hover:text-[#FF7200] transition-colors">
-                    AC Repair in Jaipur
-                  </a>
-                </h3>
-                <p>Complete car AC service from gas refills to compressor fixes to keep you cool in Jaipur's heat.</p>
-              </div>
-              
-              <div>
-                <h3 className="font-medium text-gray-800 mb-1">
-                  <a href="/services/denting" className="hover:text-[#FF7200] transition-colors">
-                    Dent & Paint Services in Jaipur
-                  </a>
-                </h3>
-                <p>Body repairs, scratch removal, and painting services to fix dents and restore your car's look.</p>
-              </div>
-              
-              <div>
-                <h3 className="font-medium text-gray-800 mb-1">
-                  <a href="/services/battery" className="hover:text-[#FF7200] transition-colors">
-                    Battery Replacement in Jaipur
-                  </a>
-                </h3>
-                <p>On-site battery testing and replacement, including jumpstart assistance for dead batteries.</p>
-              </div>
-              
-              <div>
-                <h3 className="font-medium text-gray-800 mb-1">
-                  <a href="/services/tyre" className="hover:text-[#FF7200] transition-colors">
-                    Tyres & Alignment in Jaipur
-                  </a>
-                </h3>
-                <p>Tyre replacement, wheel alignment, and balancing for smooth and safe driving.</p>
-              </div>
-              
-              <div>
-                <h3 className="font-medium text-gray-800 mb-1">
-                  <a href="/services/windshield" className="hover:text-[#FF7200] transition-colors">
-                    Windshield Repair in Jaipur
-                  </a>
-                </h3>
-                <p>Windshield crack repair and full replacement with insurance claim support available.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3 text-xs">
+                <div>
+                  <h3 className="font-medium text-gray-800 mb-1">
+                    <a href="/services/periodic" className="hover:text-[#FF7200] transition-colors">
+                      Periodic Service in Jaipur
+                    </a>
+                  </h3>
+                  <p>Regular maintenance packages including oil change, filter replacement, and multi-point inspections in Jaipur.</p>
+                </div>
+                
+                <div>
+                  <h3 className="font-medium text-gray-800 mb-1">
+                    <a href="/services/ac" className="hover:text-[#FF7200] transition-colors">
+                      AC Repair in Jaipur
+                    </a>
+                  </h3>
+                  <p>Complete car AC service from gas refills to compressor fixes to keep you cool in Jaipur's heat.</p>
+                </div>
+                
+                <div>
+                  <h3 className="font-medium text-gray-800 mb-1">
+                    <a href="/services/denting" className="hover:text-[#FF7200] transition-colors">
+                      Dent & Paint Services in Jaipur
+                    </a>
+                  </h3>
+                  <p>Body repairs, scratch removal, and painting services to fix dents and restore your car's look.</p>
+                </div>
+                
+                <div>
+                  <h3 className="font-medium text-gray-800 mb-1">
+                    <a href="/services/battery" className="hover:text-[#FF7200] transition-colors">
+                      Battery Replacement in Jaipur
+                    </a>
+                  </h3>
+                  <p>On-site battery testing and replacement, including jumpstart assistance for dead batteries.</p>
+                </div>
+                
+                <div>
+                  <h3 className="font-medium text-gray-800 mb-1">
+                    <a href="/services/tyre" className="hover:text-[#FF7200] transition-colors">
+                      Tyres & Alignment in Jaipur
+                    </a>
+                  </h3>
+                  <p>Tyre replacement, wheel alignment, and balancing for smooth and safe driving.</p>
+                </div>
+                
+                <div>
+                  <h3 className="font-medium text-gray-800 mb-1">
+                    <a href="/services/windshield" className="hover:text-[#FF7200] transition-colors">
+                      Windshield Repair in Jaipur
+                    </a>
+                  </h3>
+                  <p>Windshield crack repair and full replacement with insurance claim support available.</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );
