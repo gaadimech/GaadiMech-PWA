@@ -713,10 +713,10 @@ const seoConfigs: Record<string, SeoConfig> = {
   },
   '/express-beta-atc': {
     title: 'GaadiMech Express: 90-Minute Car Service | Fast & Professional Car Repair',
-    description: 'Experience the future of car servicing with GaadiMech Express. Get your car serviced in just 90 minutes with our expert mechanics and state-of-the-art technology.',
+    description: 'Experience the future of car servicing with GaadiMech Express. Get your car serviced in just 90 minutes with our expert mechanics and latest technology.',
     keywords: 'express car service, 90 minute car service, quick car service, fast car repair',
     image: 'https://www.gaadimech.com/og-image.jpg',
-    canonicalUrl: 'https://www.gaadimech.com/express'
+    canonicalUrl: 'https://www.gaadimech.com/express-beta-atc'
   },
   '/blog': {
     title: 'Blog - GaadiMech | Car Maintenance Tips & Automotive Insights',
