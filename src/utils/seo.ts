@@ -38,8 +38,8 @@ export interface SeoConfig {
 // Default SEO configuration
 const defaultSeoConfig: SeoConfig = {
   title: 'GaadiMech - Professional Car Service & Repair in India',
-  description: 'GaadiMech provides reliable car repair, maintenance, and servicing across India. Book car services, AC repairs, denting & painting, and more from expert mechanics.',
-  keywords: 'car service jaipur, car repair jaipur, car mechanic jaipur, 90 minute car service, car ac repair jaipur, denting painting jaipur, doorstep car service jaipur',
+  description: 'Book car services at GaadiMech - expert mechanics, genuine parts & free pickup-drop. AC repair, denting, tyres & batteries with transparent pricing.',
+  keywords: 'car service, car repair, car mechanic, 90 minute car service, car ac repair, denting painting, doorstep car service',
   image: 'https://www.gaadimech.com/og-image.jpg',
   canonicalUrl: 'https://www.gaadimech.com',
   robots: 'index, follow',  // Default robots meta tag
@@ -63,7 +63,7 @@ const defaultSeoConfig: SeoConfig = {
 // Page-specific SEO configurations
 const seoConfigs: Record<string, SeoConfig> = {
   '/': {
-    title: 'GaadiMech®',
+    title: 'GaadiMech® - Car Service & Repair in Jaipur | GaadiMech (90-Minute Service)',
     description: 'Book 90-minute car service, AC repair, dent-paint, tyres & batteries at GaadiMech Jaipur. Certified mechanics, genuine parts & free pickup-drop.',
     keywords: 'car service jaipur, car repair jaipur, car mechanic jaipur, 90 minute car service, car ac repair jaipur, denting painting jaipur, doorstep car service jaipur',
     image: 'https://www.gaadimech.com/og-image.jpg',
@@ -91,7 +91,7 @@ const seoConfigs: Record<string, SeoConfig> = {
       ]
     },
     hiddenContent: {
-      h1: '90-Minute Car Service in Jaipur',
+      h1: 'Car Service & Repair in Jaipur',
       h2: 'Certified Mechanics • Genuine Parts • Free Pickup',
       paragraphs: [
         'Looking for reliable car repair services in India? GaadiMech provides expert car mechanics, professional car service, and emergency car repair near you. Our services include car AC repair, denting & painting, towing service, and complete car maintenance solutions. Find the best car mechanic shop near you with our network of certified automotive experts.'
@@ -107,14 +107,14 @@ const seoConfigs: Record<string, SeoConfig> = {
     }
   },
   '/services': {
-    title: 'Car Services in Jaipur',
+    title: 'All Car Services in Jaipur | One-Stop Car Care – GaadiMech',
     description: 'All car services under one roof – periodic, AC, dent-paint, tyres, battery, detailing. Book online & enjoy free pickup in Jaipur.',
     keywords: 'car services jaipur, car maintenance jaipur, car ac service jaipur, car dent paint jaipur, tyre replacement jaipur, battery replacement jaipur, car detailing jaipur',
     image: 'https://www.gaadimech.com/services-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/services',
     robots: 'index, follow',
     hiddenContent: {
-      h1: 'Professional Car Services by GaadiMech',
+      h1: 'Professional Car Services in Jaipur',
       h2: 'Comprehensive Car Maintenance & Repair Services',
       paragraphs: [
         'GaadiMech offers a wide range of professional car services to keep your vehicle in top condition. From routine maintenance to specialized repairs, our certified mechanics deliver quality service using genuine parts and modern techniques. Explore our service offerings including periodic maintenance, AC service & repair, denting & painting, car spa, battery replacement, and more.'
@@ -130,8 +130,8 @@ const seoConfigs: Record<string, SeoConfig> = {
     }
   },
   '/services/periodic': {
-    title: 'Expert Car Periodic Service in Jaipur',
-    description: 'Regular maintenance is vital for your vehicle\'s longevity and performance. GaadiMech offers comprehensive periodic car service in Jaipur, designed to keep your vehicle running at its best.',
+    title: 'Periodic Car Service in Jaipur | Scheduled Maintenance – GaadiMech',
+    description: 'Regular maintenance to keep your car running at its best. Book our comprehensive periodic car service in Jaipur with free pickup & drop.',
     keywords: 'periodic car service jaipur, car oil change jaipur, full car service jaipur, scheduled car maintenance jaipur, engine oil replacement, filter replacement, car inspection jaipur',
     image: 'https://www.gaadimech.com/periodic-service-image.jpg',
     hiddenContent: {
@@ -154,13 +154,13 @@ const seoConfigs: Record<string, SeoConfig> = {
     }
   },
   '/services/ac': {
-    title: 'Professional Car AC Service & Repair in Jaipur',
-    description: 'Is your car\'s air conditioning not cooling properly? GaadiMech offers comprehensive car AC services in Jaipur designed to restore your vehicle\'s cooling system to peak performance.',
+    title: 'Car AC Repair in Jaipur | AC Service at Doorstep – GaadiMech',
+    description: 'Is your car AC not cooling? Get doorstep AC service – gas refill, compressor repair, leak fixing by certified mechanics. Beat the heat with fast, guaranteed AC repair.',
     keywords: 'car ac repair jaipur, car ac gas refill jaipur, car ac service jaipur, car ac not cooling jaipur, ac compressor repair jaipur, condenser cleaning, leak detection',
     image: 'https://www.gaadimech.com/ac-service-image.jpg',
     robots: 'index, follow',
     hiddenContent: {
-      h1: 'Professional Car AC Service & Repair in Jaipur',
+      h1: 'Car AC Repair in Jaipur – Doorstep Service',
       h2: 'What Our Car AC Service Includes',
       paragraphs: [
         'Is your car\'s air conditioning not cooling properly or emitting unpleasant odors? GaadiMech offers comprehensive car AC services in Jaipur designed to restore your vehicle\'s cooling system to peak performance. Our expert technicians diagnose and fix common AC issues including refrigerant leaks, compressor problems, and electrical faults, ensuring you stay comfortable during Jaipur\'s hot summer months.',
@@ -176,8 +176,8 @@ const seoConfigs: Record<string, SeoConfig> = {
     }
   },
   '/services/denting': {
-    title: 'Professional Car Denting & Painting Services in Jaipur',
-    description: 'GaadiMech provides expert car denting and painting services in Jaipur to restore your vehicle\'s appearance to showroom condition.',
+    title: 'Car Denting & Painting in Jaipur | Dent & Scratch Repair – GaadiMech',
+    description: 'Restore your car\'s look with professional denting & painting in Jaipur. From scratch removal to full body paint, we make your car look new – affordable & fast.',
     keywords: 'car dent repair jaipur, car painting jaipur, scratch removal jaipur, bumper repair jaipur, full body paint jaipur, panel alignment, color matching',
     image: 'https://www.gaadimech.com/denting-service-image.jpg',
     structuredData: {
@@ -209,8 +209,8 @@ const seoConfigs: Record<string, SeoConfig> = {
     }
   },
   '/services/battery': {
-    title: 'Professional Car Battery Replacement Services in Jaipur',
-    description: 'Experiencing starting problems or electrical issues with your vehicle? GaadiMech offers reliable car battery replacement services across Jaipur, delivered right to your doorstep.',
+    title: 'Car Battery Replacement in Jaipur | Jumpstart & New Battery – GaadiMech',
+    description: 'Dead battery? Get instant car battery replacement with free delivery & installation. GaadiMech offers quick jumpstart service and new batteries with warranty.',
     keywords: 'car battery replacement jaipur, car battery service jaipur, jump start jaipur, battery testing jaipur, doorstep battery service, battery health check',
     image: 'https://www.gaadimech.com/battery-service-image.jpg',
     structuredData: {
@@ -225,7 +225,7 @@ const seoConfigs: Record<string, SeoConfig> = {
       'description': 'Professional car battery services including testing, repair, and replacement.'
     },
     hiddenContent: {
-      h1: 'Professional Car Battery Replacement Services in Jaipur',
+      h1: 'Car Battery Replacement in Jaipur',
       h2: 'What Our Car Battery Service Includes',
       paragraphs: [
         'Experiencing starting problems or electrical issues with your vehicle? GaadiMech offers reliable car battery replacement services across Jaipur, delivered right to your doorstep. Our expert technicians will diagnose your battery\'s condition, recommend the best replacement options, and install a new battery with minimal downtime.',
@@ -242,8 +242,8 @@ const seoConfigs: Record<string, SeoConfig> = {
     }
   },
   '/services/tyre': {
-    title: 'Professional Tyre Services & Wheel Alignment in Jaipur',
-    description: 'Are your tyres showing signs of wear or damage? GaadiMech delivers comprehensive tyre services in Jaipur including replacement, rotation, balancing, and wheel alignment.',
+    title: 'Tyre Replacement & Wheel Alignment in Jaipur – GaadiMech',
+    description: 'Need new tyres or wheel alignment? Book our mobile tyre services in Jaipur for replacement, rotation, balancing & alignment with expert technicians.',
     keywords: 'tyre replacement jaipur, wheel alignment jaipur, tyre balancing jaipur, puncture repair jaipur, tyre rotation, wheel balancing, tyre pressure monitoring',
     image: 'https://www.gaadimech.com/tyre-service-image.jpg',
     structuredData: {
@@ -258,7 +258,7 @@ const seoConfigs: Record<string, SeoConfig> = {
       'description': 'Professional tyre services including replacement, alignment, balancing, and puncture repair.'
     },
     hiddenContent: {
-      h1: 'Professional Tyre Services & Wheel Alignment in Jaipur',
+      h1: 'Tyre Replacement & Wheel Alignment in Jaipur',
       h2: 'What Our Tyre Services Include',
       paragraphs: [
         'Are your tyres showing signs of wear or damage? GaadiMech delivers comprehensive tyre services in Jaipur including replacement, rotation, balancing, and wheel alignment. Our mobile tyre services bring expert technicians to your location with all the necessary equipment to keep your vehicle running safely and efficiently.',
@@ -275,8 +275,8 @@ const seoConfigs: Record<string, SeoConfig> = {
     }
   },
   '/services/windshield': {
-    title: 'Windshield Replacement & Repair Services in Jaipur',
-    description: 'Dealing with a chipped, cracked, or shattered windshield? GaadiMech provides professional windshield replacement and repair services across Jaipur, ensuring your safety and restoring clear visibility.',
+    title: 'Windshield Replacement in Jaipur | Car Glass Repair – GaadiMech',
+    description: 'Cracked or broken windshield? Get professional windshield replacement and repair in Jaipur with high-quality glass, precise installation, and ADAS calibration.',
     keywords: 'windshield replacement jaipur, windshield repair jaipur, car glass repair jaipur, windshield chip repair jaipur, ADAS calibration, OEM glass',
     image: 'https://www.gaadimech.com/windshield-service-image.jpg',
     structuredData: {
@@ -291,7 +291,7 @@ const seoConfigs: Record<string, SeoConfig> = {
       'description': 'Professional windshield repair and replacement services.'
     },
     hiddenContent: {
-      h1: 'Windshield Replacement & Repair Services in Jaipur',
+      h1: 'Windshield Replacement in Jaipur',
       h2: 'What Our Windshield Services Include',
       paragraphs: [
         'Dealing with a chipped, cracked, or shattered windshield? GaadiMech provides professional windshield replacement and repair services across Jaipur, ensuring your safety and restoring clear visibility. Our team uses high-quality glass that meets all safety standards, with precise installation techniques for a perfect fit.',
@@ -380,11 +380,11 @@ const seoConfigs: Record<string, SeoConfig> = {
     description: 'Experience Formula 1 style quick car service in Jaipur. Get your car serviced in just 90 minutes with expert mechanics & genuine parts.',
     keywords: '90 minute car service jaipur, express car service jaipur, quick car repair jaipur, formula 1 style service',
     image: 'https://www.gaadimech.com/og-image.jpg',
-    canonicalUrl: 'https://www.gaadimech.com/express',
+    canonicalUrl: 'https://www.gaadimech.com/90-minute-car-service-in-jaipur',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      'name': 'GaadiMech Express',
+      'name': '90-Minute Car Service & Repair in Jaipur',
       'provider': {
         '@type': 'LocalBusiness',
         'name': 'GaadiMech'
@@ -428,10 +428,11 @@ const seoConfigs: Record<string, SeoConfig> = {
     image: 'https://www.gaadimech.com/services-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/car-repair-service-in-jaipur',
     hiddenContent: {
-      h1: 'Professional Car Repair Services in Jaipur',
-      h2: 'Expert Car Repairing Services in Jaipur',
+      h1: '90-Minute Car Service in Jaipur',
+      h2: 'Quick & Professional Car Repair',
       paragraphs: [
-        'GaadiMech offers comprehensive car repair services in Jaipur with expert mechanics. Our services include engine repair, electrical system diagnostics, transmission repair, brake system maintenance, and much more. We use genuine parts and provide doorstep service for your convenience.'
+        'Experience Formula 1 style pit stop service for your car in Jaipur. Our 90-minute express car service provides efficient, high-quality maintenance without the long wait times. Skilled mechanics work simultaneously to complete your service in record time without compromising on quality.',
+        'Perfect for busy professionals and families who can\'t afford to be without their vehicle for extended periods. Our express service covers essential maintenance tasks that keep your car running smoothly while saving you valuable time.'
       ],
       listItems: [
         'Engine Repair in Jaipur',
@@ -655,7 +656,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      'name': '90-Minute Car Service & Repair in Jaipur',
+      'name': 'Emergency Car Repair & Towing Service in Jaipur',
       'provider': {
         '@type': 'LocalBusiness',
         'name': 'GaadiMech',
@@ -666,7 +667,7 @@ const seoConfigs: Record<string, SeoConfig> = {
           'addressCountry': 'IN'
         }
       },
-      'serviceType': 'Express Car Service, Repair & Dent Paint',
+      'serviceType': 'Emergency Roadside Assistance & Towing',
       'areaServed': {
         '@type': 'City',
         'name': 'Jaipur'
@@ -719,9 +720,9 @@ const seoConfigs: Record<string, SeoConfig> = {
     canonicalUrl: 'https://www.gaadimech.com/express-beta-atc'
   },
   '/blog': {
-    title: 'Blog - GaadiMech | Car Maintenance Tips & Automotive Insights',
-    description: 'Read expert automotive tips, car maintenance guides, and industry insights from GaadiMech\'s professional mechanics.',
-    keywords: 'car maintenance tips, automotive blog, car repair guide, vehicle maintenance blog',
+    title: 'Car Maintenance Tips & Automotive Guides | GaadiMech Blog',
+    description: 'Get expert car maintenance tips, auto repair guides, and industry insights from GaadiMech\'s professional mechanics to keep your vehicle running at its best.',
+    keywords: 'car maintenance tips, automotive blog, car repair guide, vehicle maintenance blog, car care tips, car service guide',
     image: 'https://www.gaadimech.com/blog-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/blog',
     robots: 'index, follow',
@@ -738,6 +739,21 @@ const seoConfigs: Record<string, SeoConfig> = {
           'url': 'https://www.gaadimech.com/logo.png'
         }
       }
+    },
+    hiddenContent: {
+      h1: 'Car Maintenance & Repair Guides',
+      h2: 'Expert Tips from Professional Mechanics',
+      paragraphs: [
+        'Welcome to the GaadiMech blog, your source for practical automotive advice and insights. Our team of certified mechanics shares professional guidance on car maintenance, troubleshooting common problems, understanding warning signs, and making informed decisions about your vehicle\'s care and repair.'
+      ],
+      listItems: [
+        'DIY Car Maintenance Tips',
+        'Understanding Car Warning Signs',
+        'Seasonal Car Care Guides',
+        'How to Extend Your Vehicle\'s Life',
+        'Common Car Problems & Solutions',
+        'Latest Automotive Technology Updates'
+      ]
     }
   },
   
@@ -786,9 +802,9 @@ export const getSeoConfig = (path: string): SeoConfig => {
   if (path.startsWith('/blog/') && path !== '/blog') {
     return {
       ...defaultSeoConfig, // Include default values like robots tag
-      title: 'GaadiMech Blog',
-      description: 'Read expert automotive tips and insights on the GaadiMech blog.',
-      keywords: 'automotive blog, car maintenance blog, car repair tips',
+      title: 'GaadiMech Blog - Car Maintenance & Repair Guides',
+      description: 'Expert automotive tips and insights from professional car mechanics. Learn about car maintenance, repair, and care in our detailed guides.',
+      keywords: 'automotive blog, car maintenance, car repair tips, vehicle care guides',
       image: 'https://www.gaadimech.com/blog-image.jpg',
       canonicalUrl: `https://www.gaadimech.com${path}`,
       // Note: The actual SEO meta will be set by the BlogPost component
@@ -804,24 +820,24 @@ export const getSeoConfig = (path: string): SeoConfig => {
       .join(' ');
       
     return {
-      title: `Best Car Service & Repair in ${cityNameCapitalized} - GaadiMech`,
-      description: `Professional car service and repair in ${cityNameCapitalized}. GaadiMech offers expert car mechanics, AC repair, denting & painting services in ${cityNameCapitalized}.`,
-      keywords: `car service ${cityNameCapitalized}, car repair ${cityNameCapitalized}, car mechanic ${cityNameCapitalized}, car ac repair ${cityNameCapitalized}`,
+      title: `Car Service & Repair in ${cityNameCapitalized} | 90-Minute Service – GaadiMech`,
+      description: `Book car service in ${cityNameCapitalized} with free pickup-drop. Expert mechanics for AC repair, denting, battery replacement & all car services. Best rates guaranteed.`,
+      keywords: `car service ${cityNameCapitalized}, car repair ${cityNameCapitalized}, car mechanic ${cityNameCapitalized}, car ac repair ${cityNameCapitalized}, denting painting ${cityNameCapitalized}`,
       image: 'https://www.gaadimech.com/og-image.jpg',
       canonicalUrl: `https://www.gaadimech.com${path}`,
       hiddenContent: {
-        h1: `Best Car Repair Services in ${cityNameCapitalized}`,
-        h2: `Professional Car Mechanics in ${cityNameCapitalized}`,
+        h1: `Professional Car Repair Services in ${cityNameCapitalized}`,
+        h2: `Trusted Car Mechanics in ${cityNameCapitalized}`,
         paragraphs: [
           `Looking for reliable car repair services in ${cityNameCapitalized}? GaadiMech provides expert car mechanics, professional car service, and emergency car repair in ${cityNameCapitalized}. Our services include car AC repair, denting & painting, towing service, and complete car maintenance solutions.`
         ],
         listItems: [
           `24/7 Emergency Car Repair Services in ${cityNameCapitalized}`,
-          'Professional Car AC Service & Repair',
-          'Expert Denting & Painting Solutions',
-          'Complete Car Maintenance Services',
-          'Certified Car Mechanics',
-          'Affordable Car Repair Solutions'
+          `Professional Car AC Service & Repair in ${cityNameCapitalized}`,
+          `Expert Denting & Painting Solutions in ${cityNameCapitalized}`,
+          `Complete Car Maintenance Services in ${cityNameCapitalized}`,
+          `Certified Car Mechanics in ${cityNameCapitalized}`,
+          `Affordable Car Repair Solutions in ${cityNameCapitalized}`
         ]
       }
     };
