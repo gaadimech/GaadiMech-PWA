@@ -129,3 +129,13 @@ All implemented changes have been thoroughly tested, and the pages are working a
 All requested SEO changes have been successfully implemented. The GaadiMech website now has improved SEO for the Jaipur market with properly optimized meta information and canonical URLs. The included guide will help your SEO team make future updates easily.
 
 For any questions or additional changes, please contact the development team. 
+
+
+
+
+
+https://www.gaadimech.com/car-service-in-jaipur
+https://www.gaadimech.com/car-repair-service-in-jaipur
+https://www.gaadimech.com/car-mechanic-shop-in-jaipur
+https://www.gaadimech.com/car-ac-service-in-jaipur 
+https://www.gaadimech.com/car-dent-paint-service-in-jaipur

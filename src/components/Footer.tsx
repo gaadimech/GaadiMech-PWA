@@ -44,7 +44,12 @@ const categories: CategorySection[] = [
       { text: "Car Service in Mumbai", url: "/mumbai" },
       { text: "Car Service in Bangalore", url: "/bangalore" },
       { text: "Car Service in Hyderabad", url: "/hyderabad" },
-      { text: "Car Service in Chennai", url: "/chennai" }
+      { text: "Car Service in Chennai", url: "/chennai" },
+      { text: "Car Service in Jaipur", url: "/car-service-in-jaipur" },
+      { text: "Car Repair Service in Jaipur", url: "/car-repair-service-in-jaipur" },
+      { text: "Car Mechanic Shop in Jaipur", url: "/car-mechanic-shop-in-jaipur" },
+      { text: "Car AC Service in Jaipur", url: "/car-ac-service-in-jaipur" },
+      { text: "Car Dent Paint Service in Jaipur", url: "/car-dent-paint-service-in-jaipur" }
     ]
   }
 ];

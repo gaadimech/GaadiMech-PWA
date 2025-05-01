@@ -400,8 +400,8 @@ const seoConfigs: Record<string, SeoConfig> = {
   },
   '/car-service-in-jaipur': {
     title: 'Car Service in Jaipur | Best Car Servicing in Jaipur - GaadiMech',
-    description: 'Affordable car service in Jaipur with genuine parts, 90-minute turnaround & transparent pricing. GaadiMech – book online now.',
-    keywords: 'car service jaipur, best car service jaipur, doorstep car service jaipur, quick car service jaipur, car maintenance jaipur',
+    description: 'Looking for the best car servicing in Jaipur? GaadiMech offers affordable car service in Jaipur with expert mechanics, doorstep service, and genuine parts. Book now!',
+    keywords: 'Car Service in Jaipur, Best Car Service in Jaipur, Car Maintenance in Jaipur, Car Service Jaipur',
     image: 'https://www.gaadimech.com/services-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/car-service-in-jaipur',
     robots: 'index, follow',
@@ -424,7 +424,7 @@ const seoConfigs: Record<string, SeoConfig> = {
   '/car-repair-service-in-jaipur': {
     title: 'Car Repair Service in Jaipur | Car Repairing Services in Jaipur - GaadiMech',
     description: 'Looking for best car repair service in Jaipur? GaadiMech offers expert car repairing services in Jaipur at affordable prices. Book your car repair in Jaipur today!',
-    keywords: 'car repair jaipur, engine repair jaipur, transmission repair jaipur, brake repair jaipur, affordable car repair jaipur',
+    keywords: 'Car Repair Service in Jaipur, Car Repairing Services in Jaipur, Car Repairing in Jaipur, doorstep Car Repair Service in Jaipur, Affordable car repair service in Jaipur',
     image: 'https://www.gaadimech.com/services-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/car-repair-service-in-jaipur',
     hiddenContent: {
@@ -447,7 +447,7 @@ const seoConfigs: Record<string, SeoConfig> = {
   '/car-mechanic-shop-in-jaipur': {
     title: 'Best Car Mechanic in Jaipur | Local Car Mechanic Shop in Jaipur - GaadiMech',
     description: 'Need the best car mechanic in Jaipur? GaadiMech is your trusted local car mechanic shop in Jaipur offering experienced, doorstep car repair and maintenance services.',
-    keywords: 'car mechanic jaipur, local car mechanic jaipur, doorstep car mechanic jaipur, certified mechanic jaipur, mechanic shop jaipur',
+    keywords: 'Car Mechanic in Jaipur, Car Mechanic Shop in Jaipur, Nearby Car Mechanic Jaipur, Car Repair Mechanic in Jaipur, Car Mechanic Shop Jaipur, Local car mechanic shop in Jaipur, Doorstep car mechanic in Jaipur',
     image: 'https://www.gaadimech.com/services-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/car-mechanic-shop-in-jaipur',
     hiddenContent: {
@@ -469,7 +469,7 @@ const seoConfigs: Record<string, SeoConfig> = {
   '/car-ac-service-in-jaipur': {
     title: 'Car AC Service in Jaipur | Doorstep AC Repairing in Jaipur - GaadiMech',
     description: 'Get expert car AC service in Jaipur with GaadiMech. We fix AC cooling issues, compressor faults, gas filling & more. Doorstep AC repairing in Jaipur by local mechanics.',
-    keywords: 'car ac service jaipur, car ac repair jaipur, ac gas refill jaipur, ac compressor repair jaipur, car ac mechanic jaipur',
+    keywords: 'Car AC Service in Jaipur, Doorstep AC Repairing in Jaipur, AC Repairing in Jaipur, Car Air Conditioning Service Jaipur, Car AC Mechanic in Jaipur, Car AC gas filling service in Jaipur, Car AC compressor repair in Jaipur, Car AC servicing near me Jaipur, Doorstep car AC service in Jaipur',
     image: 'https://www.gaadimech.com/ac-service-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/car-ac-service-in-jaipur',
     hiddenContent: {
@@ -491,7 +491,7 @@ const seoConfigs: Record<string, SeoConfig> = {
   '/car-dent-paint-service-in-jaipur': {
     title: 'Car Dent Paint Service in Jaipur | Car Denting Services in Jaipur - GaadiMech',
     description: 'Get professional car dent paint service in Jaipur at GaadiMech. We offer car denting services in Jaipur like, car dent repair, bumper dent fixes, paint touch-ups, and accident body repairs.',
-    keywords: 'car dent paint jaipur, denting painting jaipur, scratch removal jaipur, bumper dent repair jaipur, accident repair jaipur',
+    keywords: 'Car Dent Paint Service in Jaipur, Car Denting and Painting in Jaipur, Car Dent Repair in Jaipur, Car Body Repair in Jaipur, Car full body paint service in Jaipur, Car bumper dent repair in Jaipur, Car paint touch-up service in Jaipur, Car door dent repair in Jaipur, Car accident body repair in Jaipur',
     image: 'https://www.gaadimech.com/denting-service-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/car-dent-paint-service-in-jaipur',
     hiddenContent: {

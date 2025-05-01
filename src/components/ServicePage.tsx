@@ -19,9 +19,10 @@ import {
 
 interface ServicePageProps {
   serviceType: ServiceType;
+  skipSeo?: boolean;
 }
 
-const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
+const ServicePage: React.FC<ServicePageProps> = ({ serviceType, skipSeo = false }) => {
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [showVehicleModal, setShowVehicleModal] = useState(false);
   const [csvData, setCsvData] = useState<any[]>([]);
@@ -142,12 +143,14 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
       transition={{ duration: 0.5 }}
       className="pt-20"
     >
-      <Helmet>
-        <title>{seoConfig.title}</title>
-        <meta name="description" content={seoConfig.description} />
-        <meta name="keywords" content={seoConfig.keywords} />
-        <link rel="canonical" href={seoConfig.canonicalUrl || window.location.href} />
-      </Helmet>
+      {!skipSeo && (
+        <Helmet>
+          <title>{seoConfig.title}</title>
+          <meta name="description" content={seoConfig.description} />
+          <meta name="keywords" content={seoConfig.keywords} />
+          <link rel="canonical" href={seoConfig.canonicalUrl || window.location.href} />
+        </Helmet>
+      )}
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
