@@ -157,8 +157,8 @@ const ExpressBetaATCCart = () => {
     const couponToApply = couponParam || sessionCoupon;
     
     if (couponToApply) {
-      // Set the coupon code
-      setCouponCode(couponToApply);
+      // Set the coupon code (convert to uppercase)
+      setCouponCode(couponToApply.toUpperCase());
       
       // Clear from session storage after reading it
       if (sessionCoupon) {
@@ -652,6 +652,9 @@ const ExpressBetaATCCart = () => {
       return;
     }
     
+    // Ensure coupon code is uppercase
+    const upperCouponCode = couponCode.toUpperCase();
+    
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:1337'}/api/coupons/validate`, {
         method: 'POST',
@@ -660,7 +663,7 @@ const ExpressBetaATCCart = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          code: couponCode,
+          code: upperCouponCode,
           amount: discountedPrice // Send the current discounted price to validate any minimum purchase requirements
         }),
       });
@@ -933,7 +936,7 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
                           <input
                             type="text"
                             value={couponCode}
-                            onChange={(e) => setCouponCode(e.target.value)}
+                            onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                             placeholder="ENTER COUPON CODE"
                             className="w-full border border-gray-300 rounded-lg px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-[#FF7200] transition-all duration-300 uppercase"
                           />
