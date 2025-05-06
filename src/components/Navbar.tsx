@@ -26,10 +26,10 @@ const Navbar = () => {
     <nav className="bg-white shadow-lg fixed w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex items-center">
+          <div className="flex-1 flex items-center justify-center md:justify-start">
             <Link to="/" onClick={handleLinkClick} className="flex-shrink-0">
               <img
-                src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=186,fit=crop,q=95/Y4Lpj7xVzXTezB99/gaadimech-no-background-m6LwGQnga1sp6V1n.png"
+                src="/images/logo1.png"
                 alt="GaadiMech"
                 className="h-16 w-auto"
               />
