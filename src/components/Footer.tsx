@@ -199,7 +199,7 @@ const Footer = () => {
               <a 
                 href="https://www.facebook.com/GaadiMech.India/" 
                 target="_blank" 
-                rel="noopener noreferrer" 
+                rel="noopener noreferrer nofollow" 
                 className="text-gray-400 hover:text-[#FF7200]"
               >
                 <Facebook size={24} />
@@ -207,7 +207,7 @@ const Footer = () => {
               <a 
                 href="https://www.instagram.com/gaadimech/" 
                 target="_blank" 
-                rel="noopener noreferrer" 
+                rel="noopener noreferrer nofollow" 
                 className="text-gray-400 hover:text-[#FF7200]"
               >
                 <Instagram size={24} />
@@ -215,7 +215,7 @@ const Footer = () => {
               <a 
                 href="https://www.youtube.com/@GaadiMech" 
                 target="_blank" 
-                rel="noopener noreferrer" 
+                rel="noopener noreferrer nofollow" 
                 className="text-gray-400 hover:text-[#FF7200]"
               >
                 <Youtube size={24} />

@@ -14,7 +14,8 @@ const Navbar = () => {
 
   const handleBookNow = () => {
     setIsOpen(false); // Close menu when Book Now is clicked
-    window.open(`https://wa.me/917300042410`, '_blank');
+    // Open WhatsApp link in a new window with noopener and nofollow attributes
+    window.open(`https://wa.me/917300042410`, '_blank', 'noopener,noreferrer');
   };
 
   const handleLinkClick = () => {

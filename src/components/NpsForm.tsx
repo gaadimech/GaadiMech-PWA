@@ -284,7 +284,7 @@ const NpsForm: React.FC = () => {
             <a 
               className="share-button facebook" 
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer nofollow"
               href="https://www.facebook.com/sharer/sharer.php?u=https://www.gaadimech.com"
             >
               <FaFacebook /> Share
@@ -292,7 +292,7 @@ const NpsForm: React.FC = () => {
             <a 
               className="share-button twitter" 
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer nofollow"
               href={`https://twitter.com/intent/tweet?text=I just had a great experience with GaadiMech!&url=https://www.gaadimech.com`}
             >
               <FaTwitter /> Tweet
@@ -300,7 +300,7 @@ const NpsForm: React.FC = () => {
             <a 
               className="share-button whatsapp" 
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer nofollow"
               href="https://wa.me/?text=I just had a great experience with GaadiMech! Check them out at https://www.gaadimech.com"
             >
               <FaWhatsapp /> Share
