@@ -986,8 +986,8 @@ const FranchisePartner = () => {
                   </motion.div>
                   
                   <div className="text-white text-sm flex flex-col md:flex-row items-center justify-center gap-4">
-                    <a href="tel:+917300042410" className="flex items-center hover:underline">
-                      <Phone className="w-4 h-4 mr-1" /> +91-7300042410
+                    <a href="tel:+917300042414" className="flex items-center hover:underline">
+                      <Phone className="w-4 h-4 mr-1" /> +91-7300042414
                     </a>
                     <a href="mailto:contact@gaadimech.com" className="flex items-center hover:underline">
                       <Mail className="w-4 h-4 mr-1" /> contact@gaadimech.com

@@ -35,7 +35,7 @@ const DoorstepCarServiceInJaipur: React.FC = () => {
 
   const handleBookService = () => {
     const message = encodeURIComponent(`Hi, I'd like to book a Doorstep Car Service in ${cityName} through GaadiMech.`);
-    window.open(`https://wa.me/917300042410?text=${message}`, '_blank');
+    window.open(`https://wa.me/917300042414?text=${message}`, '_blank');
   };
 
   const handleContact = () => {

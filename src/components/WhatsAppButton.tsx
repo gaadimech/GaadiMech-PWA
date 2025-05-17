@@ -41,7 +41,7 @@ const WhatsAppButton = () => {
   
   const handleClick = () => {
     const message = encodeURIComponent("Hi, I'd like to book a Car Service through GaadiMech.");
-    window.open(`https://wa.me/917300042410?text=${message}`, '_blank');
+    window.open(`https://wa.me/917300042414?text=${message}`, '_blank');
   };
 
   // Don't render if not visible yet or shouldn't show based on class

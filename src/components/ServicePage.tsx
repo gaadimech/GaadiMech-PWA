@@ -260,7 +260,7 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType, skipSeo = false 
         ) : (
           <div className="mb-12 flex justify-center">
             <button
-              onClick={() => window.open(`https://wa.me/917300042410?text=I'd%20like%20to%20inquire%20about%20your%20${seoContent?.h1 || serviceData.title}%20in%20Jaipur.`, '_blank')}
+              onClick={() => window.open(`https://wa.me/917300042414?text=I'd%20like%20to%20inquire%20about%20your%20${seoContent?.h1 || serviceData.title}%20in%20Jaipur.`, '_blank')}
               className="bg-[#FF7200] hover:bg-[#e56700] text-white font-bold py-3 px-6 rounded-lg shadow-md transition-colors flex items-center space-x-2"
             >
               <span>Get a Quote</span>

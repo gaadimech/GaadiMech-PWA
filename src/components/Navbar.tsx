@@ -14,8 +14,10 @@ const Navbar = () => {
 
   const handleBookNow = () => {
     setIsOpen(false); // Close menu when Book Now is clicked
+    // Prefilled message added to match Hero.tsx
+    const message = encodeURIComponent("Hi, I'd like to book an Express Car Service through GaadiMech.");
     // Open WhatsApp link in a new window with noopener and nofollow attributes
-    window.open(`https://wa.me/917300042410`, '_blank', 'noopener,noreferrer');
+    window.open(`https://wa.me/917300042414?text=${message}`, '_blank', 'noopener,noreferrer');
   };
 
   const handleLinkClick = () => {
