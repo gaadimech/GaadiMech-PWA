@@ -226,6 +226,7 @@ const Footer = () => {
               >
                 <Mail size={24} />
               </a>
+              <a href="tel:+917300042410" className="hover:text-blue-600">+91 7300042410</a>
             </div>
           </div>
         </div>

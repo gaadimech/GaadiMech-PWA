@@ -1,6 +1,6 @@
 export const CONTACT_INFO = {
   phone: '+918448285289',
-  whatsapp: '+917300042414',
+  whatsapp: '+917300042410',
   email: 'contact@gaadimech.com',
   address: 'Jaipur, Rajasthan, India'
 };

@@ -462,7 +462,7 @@ const WorkshopPartner = () => {
                   </button>
                 </motion.div>
                 <p className="text-white/80 mt-6">
-                  Questions? Contact our partnership team at <a href="mailto:contact@gaadimech.com" className="underline">contact@gaadimech.com</a> or call <a href="tel:+917300042414" className="underline">+91 7300042414</a>
+                  Questions? Contact our partnership team at <a href="mailto:contact@gaadimech.com" className="underline">contact@gaadimech.com</a> or call <a href="tel:+917300042410" className="underline">+91 7300042410</a>
                 </p>
               </div>
             </div>

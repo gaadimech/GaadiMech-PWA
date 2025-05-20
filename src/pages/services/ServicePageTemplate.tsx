@@ -43,7 +43,7 @@ const ServicePageTemplate: React.FC = () => {
     if (!selectedService) return;
     
     const message = encodeURIComponent(selectedService.whatsappMessage);
-    window.open(`https://wa.me/917300042414?text=${message}`, '_blank');
+    window.open(`https://wa.me/917300042410?text=${message}`, '_blank');
   };
   
   return (

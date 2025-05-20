@@ -70,7 +70,7 @@ const ExpressBetaATCCart = () => {
 
   // WhatsApp information
   const [whatsappRedirectTimeout, setWhatsappRedirectTimeout] = useState<NodeJS.Timeout | null>(null);
-  const WHATSAPP_PHONE_NUMBER = '917300042414';
+  const WHATSAPP_PHONE_NUMBER = '917300042410';
 
   // Add state to track if coupon has been applied already
   const [couponApplied, setCouponApplied] = useState(false);

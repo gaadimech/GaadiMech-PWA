@@ -37,7 +37,7 @@ const Hero = () => {
     }
     
     const message = encodeURIComponent("Hi, I'd like to book an Express Car Service through GaadiMech.");
-    window.open(`https://wa.me/917300042414?text=${message}`, '_blank');
+    window.open(`https://wa.me/917300042410?text=${message}`, '_blank');
   };
 
   const handleContact = () => {

@@ -181,7 +181,7 @@ ${servicesList}
     }
     
     // Open WhatsApp with the detailed message
-    window.open(`https://wa.me/917300042414?text=${encodeURIComponent(customMessage)}`, '_blank');
+    window.open(`https://wa.me/917300042410?text=${encodeURIComponent(customMessage)}`, '_blank');
   };
   
   const toggleDetails = (e: React.MouseEvent) => {

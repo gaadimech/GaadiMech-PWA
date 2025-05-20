@@ -89,11 +89,11 @@ const DetailingService = () => {
     if (packageName) {
       message += `%20(%${packageName.replace(' ', '%20')})`;
     }
-    window.open(`https://wa.me/917300042414?text=${message}`, '_blank');
+    window.open(`https://wa.me/917300042410?text=${message}`, '_blank');
   };
 
   const handleBookAppointment = () => {
-    window.open(`https://wa.me/917300042414?text=I%27d%20like%20to%20book%20a%20Car%20Detailing%20Service.`, '_blank');
+    window.open(`https://wa.me/917300042410?text=I%27d%20like%20to%20book%20a%20Car%20Detailing%20Service.`, '_blank');
   };
 
   const serviceReviews = getReviewsByService('car_detailing');
