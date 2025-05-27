@@ -67,7 +67,7 @@ const AnalyticsWrapper: React.FC<{ children: React.ReactNode }> = ({ children })
   return <>{children}</>;
 };
 
-const WhatsAppButton = lazy(() => import('./components/WhatsAppButton'));
+const WatiWidget = lazy(() => import('./components/WatiWidget'));
 
 // Create a wrapper component to handle location-based logic
 const AppContent = () => {
@@ -298,7 +298,7 @@ const AppContent = () => {
             />
           )}
           <Suspense fallback={<div>Loading...</div>}>
-            {location.pathname !== '/franchise' && <WhatsAppButton />}
+            {location.pathname !== '/franchise' && <WatiWidget />}
           </Suspense>
         </div>
       </AnalyticsWrapper>
