@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, MessageCircle, Phone, Car, MapPin, Calendar, Clock, User, CheckCircle, AlertCircle } from 'lucide-react';
 
 // Strapi API configuration
-const STRAPI_API_URL = import.meta.env.VITE_STRAPI_API_URL || 'http://localhost:1337/api';
+const STRAPI_API_URL = import.meta.env.VITE_STRAPI_API_URL || 'http://localhost:1337/api';  // Use direct URL for now
 const STRAPI_API_TOKEN = import.meta.env.VITE_STRAPI_API_TOKEN || '';
 
 // Debug environment variables
@@ -14,25 +14,28 @@ console.log('STRAPI_API_URL:', STRAPI_API_URL);
 console.log('STRAPI_API_TOKEN:', STRAPI_API_TOKEN ? 'Token available ✅' : 'Token missing ❌');
 console.log('🔑 Full token (first 50 chars):', STRAPI_API_TOKEN ? STRAPI_API_TOKEN.substring(0, 50) + '...' : 'No token');
 console.log('🔑 Token length:', STRAPI_API_TOKEN ? STRAPI_API_TOKEN.length : 0);
+console.log('🔑 Expected token length: 256');
+console.log('🔑 Token matches expected:', STRAPI_API_TOKEN.length === 256 ? '✅' : '❌');
 
 interface StrapiBooking {
   id?: number;
+  documentId?: string;  // Add documentId for Strapi v5
   manufacturer?: string;
   model?: string;
-  fueltype?: string;
+  fuelType?: string;
   location?: string;
   area?: string;
   address?: string;
-  serviceType?: string;        // camelCase as shown in Strapi
-  servicePreference?: string;  // camelCase as shown in Strapi
+  serviceType?: string;
+  servicePreference?: string;
   date?: string;
-  timeSlot?: string;          // camelCase as shown in Strapi
-  fullName?: string;          // camelCase as shown in Strapi
-  mobileNumber?: string;      // camelCase as shown in Strapi
-  bookingid?: string;
-  servicePrice?: string;      // camelCase as shown in Strapi
+  timeSlot?: string;
+  fullName?: string;
+  mobileNumber?: string;
+  bookingId?: string;
+  servicePrice?: string;
   booking_status?: 'in_progress' | 'completed' | 'cancelled';
-  sessionId?: string;         // camelCase to match Strapi pattern
+  sessionId?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -124,6 +127,7 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
   const [isProcessingSelection, setIsProcessingSelection] = useState(false);
   const [selectedButtonId, setSelectedButtonId] = useState<string | null>(null);
   const [strapiBookingId, setStrapiBookingId] = useState<number | null>(null);
+  const [strapiDocumentId, setStrapiDocumentId] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -133,20 +137,23 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
     setSessionId(newSessionId);
   }, []);
 
+  // Generate unique session ID
+  const generateSessionId = (): string => {
+    return sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  };
+
   // Strapi API functions
-  const createStrapiBooking = async (data: Partial<StrapiBooking>): Promise<number | null> => {
+  const createStrapiBooking = async (data: Partial<StrapiBooking>): Promise<{id: number, documentId: string} | null> => {
     try {
       // Remove undefined/null values to avoid validation errors
       const cleanData = Object.fromEntries(
         Object.entries(data).filter(([_, value]) => value !== undefined && value !== null && value !== '')
       );
 
-      // Try multiple possible API endpoints
+      // Try different possible endpoints
       const possibleEndpoints = [
-        'chatbot-bookings',
-        'chatbot-booking', 
-        'chatbotbookings',
-        'chatbotbooking'
+        'chatbot-bookings',  // ✅ CONFIRMED WORKING
+        'chatbot-booking'    // Backup option
       ];
 
       console.log('Creating Strapi booking with data:', cleanData);
@@ -183,7 +190,11 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
           if (response.ok) {
             const result = await response.json();
             console.log('✅ Strapi booking created successfully:', result);
-            return result.data.id;
+            // Return both id and documentId for Strapi v5 compatibility
+            return {
+              id: result.data.id,
+              documentId: result.data.documentId
+            };
           } else if (response.status === 404) {
             console.log(`❌ Endpoint ${endpoint} not found, trying next...`);
             continue;
@@ -212,7 +223,7 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
     }
   };
 
-  const updateStrapiBooking = async (id: number, data: Partial<StrapiBooking>): Promise<boolean> => {
+  const updateStrapiBooking = async (documentId: string, data: Partial<StrapiBooking>): Promise<boolean> => {
     try {
       // Remove undefined/null values to avoid validation errors
       const cleanData = Object.fromEntries(
@@ -223,17 +234,15 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
 
       // Use the same endpoint that worked for creation
       const possibleEndpoints = [
-        'chatbot-bookings',
-        'chatbot-booking', 
-        'chatbotbookings',
-        'chatbotbooking'
+        'chatbot-bookings',  // ✅ CONFIRMED WORKING
+        'chatbot-booking'    // Backup option
       ];
 
       // Try the most likely endpoint first (based on your Strapi setup)
       const primaryEndpoint = 'chatbot-bookings';
-      const apiUrl = `${STRAPI_API_URL}/${primaryEndpoint}/${id}`;
+      const apiUrl = `${STRAPI_API_URL}/${primaryEndpoint}/${documentId}`;
       
-      console.log(`🔄 Updating booking ID ${id} at: ${apiUrl}`);
+      console.log(`🔄 Updating booking documentId ${documentId} at: ${apiUrl}`);
       console.log(`🔄 Update payload:`, JSON.stringify({ data: cleanData }, null, 2));
       
       try {
@@ -260,7 +269,7 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
           
           // Try other endpoints if primary fails
           for (const endpoint of possibleEndpoints.filter(e => e !== primaryEndpoint)) {
-            const fallbackUrl = `${STRAPI_API_URL}/${endpoint}/${id}`;
+            const fallbackUrl = `${STRAPI_API_URL}/${endpoint}/${documentId}`;
             console.log(`🔄 Trying fallback endpoint: ${fallbackUrl}`);
             
             try {
@@ -309,13 +318,13 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
     }
 
     try {
-      // Convert booking data to Strapi format
+      // Convert booking data to Strapi format - matching your exact field names
       const strapiData: Partial<StrapiBooking> = {};
       
-      // Include all available fields from the complete booking data
+      // Map fields to match your Strapi content type exactly
       if (newData.manufacturer) strapiData.manufacturer = newData.manufacturer;
       if (newData.model) strapiData.model = newData.model;
-      if (newData.fuelType) strapiData.fueltype = newData.fuelType;
+      if (newData.fuelType) strapiData.fuelType = newData.fuelType;
       if (newData.location) strapiData.location = newData.location;
       if (newData.area) strapiData.area = newData.area;
       if (newData.address) strapiData.address = newData.address;
@@ -328,7 +337,11 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
       if (newData.timeSlot) strapiData.timeSlot = newData.timeSlot;
       if (newData.fullName) strapiData.fullName = newData.fullName;
       if (newData.mobileNumber) strapiData.mobileNumber = newData.mobileNumber;
-      if (newData.bookingId) strapiData.bookingid = newData.bookingId;
+      if (newData.bookingId) strapiData.bookingId = newData.bookingId;
+      
+      // Add session tracking and status
+      strapiData.sessionId = generateSessionId();
+      strapiData.booking_status = 'in_progress';
 
       console.log('📝 Saving to Strapi - Data:', newData);
       console.log('📝 Converted Strapi data:', strapiData);
@@ -338,19 +351,32 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
       if (strapiBookingId && !forceCreate) {
         // Update existing booking
         console.log('🔄 Updating existing booking ID:', strapiBookingId);
-        const success = await updateStrapiBooking(strapiBookingId, strapiData);
-        if (success) {
-          console.log('✅ Strapi update successful');
+        console.log('🔄 Using documentId:', strapiDocumentId);
+        
+        if (strapiDocumentId) {
+          const success = await updateStrapiBooking(strapiDocumentId, strapiData);
+          if (success) {
+            console.log('✅ Strapi update successful');
+          } else {
+            console.log('⚠️ Strapi update failed, but chatbot will continue');
+          }
         } else {
-          console.log('⚠️ Strapi update failed, but chatbot will continue');
+          console.log('⚠️ No documentId available for update, creating new entry instead');
+          const newBookingId = await createStrapiBooking(strapiData);
+          if (newBookingId) {
+            setStrapiBookingId(newBookingId.id);
+            setStrapiDocumentId(newBookingId.documentId);
+            console.log('✅ Strapi entry created - booking ID:', newBookingId.id);
+          }
         }
       } else if (forceCreate || newData.mobileNumber) {
         // Create new booking when mobile number is provided or forced
         console.log('🆕 Creating new booking with complete data');
         const newBookingId = await createStrapiBooking(strapiData);
         if (newBookingId) {
-          setStrapiBookingId(newBookingId);
-          console.log('✅ Strapi entry created - booking ID:', newBookingId);
+          setStrapiBookingId(newBookingId.id);
+          setStrapiDocumentId(newBookingId.documentId);
+          console.log('✅ Strapi entry created - booking ID:', newBookingId.id);
         } else {
           console.log('⚠️ Strapi creation failed, but chatbot will continue');
         }
@@ -660,6 +686,7 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
     setIsProcessingSelection(false);
     setShowQuickReplies(true);
     setStrapiBookingId(null);
+    setStrapiDocumentId(null);
     processStep('welcome');
   };
 
@@ -926,7 +953,7 @@ Contact: ${fullContext.fullName} - ${fullContext.mobileNumber}
         // Save final booking data to Strapi and mark as completed
         saveToStrapi(updatedData).then(() => {
           if (strapiBookingId) {
-            updateStrapiBooking(strapiBookingId, { booking_status: 'completed' });
+            updateStrapiBooking(strapiDocumentId || '', { booking_status: 'completed' });
           }
         });
         
@@ -986,7 +1013,7 @@ Contact: ${fullContext.fullName} - ${fullContext.mobileNumber}
           // Save final booking data to Strapi and mark as completed
           saveToStrapi(finalData).then(() => {
             if (strapiBookingId) {
-              updateStrapiBooking(strapiBookingId, { booking_status: 'completed' });
+              updateStrapiBooking(strapiDocumentId || '', { booking_status: 'completed' });
             }
           });
           
@@ -1123,6 +1150,113 @@ Our team will contact you 30 minutes before the scheduled time.
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  // Test direct API call (bypass proxy) - for debugging only
+  const testDirectAPICall = async () => {
+    // Use the same token that's loaded from environment variables instead of hardcoded
+    const directToken = STRAPI_API_TOKEN;
+    
+    console.log('\n🧪 Testing DIRECT API call (bypass proxy)...');
+    console.log('🔑 Using environment token length:', directToken.length);
+    console.log('🔑 Environment token matches what we are using:', directToken === STRAPI_API_TOKEN ? '✅' : '❌');
+    
+    try {
+      // Test direct API call to localhost:1337
+      const directResponse = await fetch('http://localhost:1337/api/chatbot-bookings', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${directToken}`,
+          'Content-Type': 'application/json'
+        },
+      });
+      
+      console.log('🌐 Direct API call result:', directResponse.status, directResponse.statusText);
+      
+      if (directResponse.ok) {
+        const data = await directResponse.json();
+        console.log('✅ DIRECT API WORKS:', data);
+        console.log('✅ Both frontend and direct API use the same token');
+      } else {
+        const errorText = await directResponse.text();
+        console.log('❌ Direct API failed:', errorText);
+      }
+    } catch (error) {
+      console.log('❌ Direct API error:', (error as Error).message);
+    }
+
+    // Enhanced comparison
+    console.log('\n🔍 Frontend vs Direct comparison:');
+    console.log('Frontend URL:', STRAPI_API_URL);
+    console.log('Frontend Token Length:', STRAPI_API_TOKEN.length);
+    console.log('Direct URL: http://localhost:1337/api');
+    console.log('Direct Token Length:', directToken.length);
+    console.log('Tokens match:', STRAPI_API_TOKEN === directToken ? '✅' : '❌');
+    console.log('Both tokens are 256 chars:', STRAPI_API_TOKEN.length === 256 && directToken.length === 256 ? '✅' : '❌');
+  };
+
+  // Run API test on component mount (development only)
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      setTimeout(testDirectAPICall, 2000);
+    }
+  }, []);
+
+  // Test Strapi connection - for debugging only
+  const testStrapiConnection = async () => {
+    if (!STRAPI_API_URL || !STRAPI_API_TOKEN) {
+      console.log('❌ Missing API URL or token for testing');
+      return;
+    }
+
+    console.log('🧪 Testing Strapi connection...');
+    console.log('🔗 API URL:', STRAPI_API_URL);
+    console.log('🔑 Token length:', STRAPI_API_TOKEN.length);
+
+    // Test 1: Check if Strapi is responding
+    try {
+      const response = await fetch(`${STRAPI_API_URL.replace('/api', '')}`);
+      console.log('🌐 Strapi server status:', response.status, response.statusText);
+    } catch (error) {
+      console.error('❌ Strapi server not responding:', error);
+      return;
+    }
+
+    // Test 2: Try a simple GET request to find the correct endpoint
+    const possibleEndpoints = [
+      'chatbot-bookings',
+      'chatbot-booking',
+      'chatbotbookings', 
+      'chatbotbooking'
+    ];
+
+    for (const endpoint of possibleEndpoints) {
+      try {
+        const response = await fetch(`${STRAPI_API_URL}/${endpoint}`, {
+          headers: {
+            'Authorization': `Bearer ${STRAPI_API_TOKEN}`,
+          },
+        });
+        
+        console.log(`📋 GET ${endpoint}:`, response.status, response.statusText);
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log(`✅ Found working endpoint: ${endpoint}`);
+          console.log(`📊 Sample response:`, data);
+          break;
+        }
+      } catch (error) {
+        console.log(`❌ Error testing ${endpoint}:`, (error as Error).message);
+      }
+    }
+  };
+
+  // Run test on component mount (development only)
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      setTimeout(testStrapiConnection, 1000);
+    }
+  }, []);
 
   if (!isOpen) return null;
 

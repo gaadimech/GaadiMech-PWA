@@ -1,5 +1,12 @@
 import axios from 'axios';
 
+// Debug environment variables for API client
+console.log('🔧 API Client Environment Variables Debug:');
+console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
+console.log('VITE_API_TOKEN:', import.meta.env.VITE_API_TOKEN ? 'Token loaded ✅' : 'Token missing ❌');
+console.log('🔑 API Token length:', import.meta.env.VITE_API_TOKEN ? import.meta.env.VITE_API_TOKEN.length : 0);
+console.log('🔑 API Token (first 50 chars):', import.meta.env.VITE_API_TOKEN ? import.meta.env.VITE_API_TOKEN.substring(0, 50) + '...' : 'No token');
+
 // Create axios instance with base configuration
 export const apiClient = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL}/api`,
@@ -13,7 +20,13 @@ export const apiClient = axios.create({
 // Add request interceptor for logging and handling
 apiClient.interceptors.request.use(
   (config) => {
-    // You can add logging here if needed
+    // Log API requests for debugging
+    console.log('🌐 API Client Request:', {
+      url: config.url,
+      method: config.method,
+      baseURL: config.baseURL,
+      tokenLength: config.headers?.Authorization ? String(config.headers.Authorization).length : 0
+    });
     return config;
   },
   (error) => {
