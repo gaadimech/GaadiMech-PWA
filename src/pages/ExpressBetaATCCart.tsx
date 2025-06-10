@@ -452,6 +452,11 @@ const ExpressBetaATCCart = () => {
     }
 
     try {
+      // Track mobile number with Zepic
+      if (window.zepic) {
+        window.zepic.identify('mobile_number', mobileNumber);
+      }
+      
       // Create lead in Strapi if not already created
       let currentLeadId = leadId;
       if (!currentLeadId) {

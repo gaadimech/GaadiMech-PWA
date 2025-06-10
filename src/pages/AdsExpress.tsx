@@ -192,6 +192,12 @@ const AdsExpressService = () => {
     if (isSubmitting) return Promise.reject('Already submitting');
     
     setIsSubmitting(true);
+    
+    // Track mobile number with Zepic
+    if (window.zepic) {
+      window.zepic.identify('mobile_number', mobileNumber);
+    }
+    
     sessionStorage.setItem('userMobileNumber', mobileNumber);
     const serviceType = selectedServiceType || 4; // Default to "Express Service" (ID: 4)
     let serviceTypeName = "Express Service";

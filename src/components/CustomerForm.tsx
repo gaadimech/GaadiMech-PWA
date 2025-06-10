@@ -67,6 +67,11 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
       await enquiryService.submit(formData);
       setStatus('success');
       
+      // Track mobile number with Zepic
+      if (window.zepic) {
+        window.zepic.identify('mobile_number', formData.mobileNumber);
+      }
+      
       // Save mobile number to session storage
       sessionStorage.setItem('userMobileNumber', formData.mobileNumber);
       

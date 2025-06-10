@@ -8,6 +8,9 @@ declare global {
       action: string,
       params: { page_path?: string; [key: string]: any }
     ) => void;
+    zepic: {
+      identify: (key: string, value: string) => void;
+    };
   }
 }
 

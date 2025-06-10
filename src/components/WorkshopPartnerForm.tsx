@@ -324,6 +324,11 @@ const WorkshopPartnerForm: React.FC<WorkshopPartnerFormProps> = ({ isOpen, onClo
       // Set submitted state to true to show success message
       setIsSubmitted(true);
       
+      // Track mobile number with Zepic
+      if (window.zepic) {
+        window.zepic.identify('mobile_number', formData.ownerPhone);
+      }
+      
       // Reset form after 3 seconds and close
       setTimeout(() => {
         onClose();
