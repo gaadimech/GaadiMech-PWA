@@ -88,6 +88,7 @@ petrol,Mahindra,Nuvosport,4099,4399,3899,5499,2499,25000
 petrol,Mahindra,Logan,3599,3899,3399,5699,2499,25000
 petrol,Mahindra,Marazzo,#N/A,#N/A,,,2899,30000
 petrol,Mahindra,XUV300,3999,4199,3699,5499,2699,#N/A
+petrol,Mahindra,3XO,3999,4199,3699,5499,2699,#N/A
 petrol,Mahindra,Bolero Camper,#N/A,#N/A,,,2699,29000
 petrol,Mahindra,Bolero Pickup,#N/A,#N/A,,,2699,29000
 petrol,Tata,Aria,5299,5499,4999,7299,2599,27000
@@ -367,6 +368,7 @@ Diesel,Mahindra,Nuvosport,4499,4699,4199,6599,2499,25550
 Diesel,Mahindra,Logan,5199,5399,4899,7299,2499,27550
 Diesel,Mahindra,Marazzo,5299,5499,4999,7399,2899,30550
 Diesel,Mahindra,XUV300,4199,4399,3899,6399,2699,#N/A
+Diesel,Mahindra,3XO,4199,4399,3899,6399,2699,#N/A
 Diesel,Mahindra,Bolero Camper,4999,5099,4599,7399,2699,28550
 Diesel,Mahindra,Bolero Pickup,4999,5099,4599,7399,2699,28550
 Diesel,Tata,Aria,5299,5499,4999,7299,2599,28450
@@ -393,7 +395,7 @@ Diesel,Tata,Zest,4399,4599,4099,6999,2499,25550
 Diesel,Tata,Tiago,3699,3899,3399,5699,2599,25550
 Diesel,Tata,Nexon,4299,4399,3899,6599,2499,25550
 Diesel,Tata,Tigor,4099,4399,3899,5799,2499,25750
-Diesel,Tata,Hexa,5999,5699,5199,11599,2599,28450
+Diesel,Tata,Hexa,5999,6499,5999,11599,2599,28450
 Diesel,Tata,Venture,4899,5099,4599,6999,2699,28550
 Diesel,Tata,Winger,4799,4999,4499,6699,2499,29550
 Diesel,Tata,Harrier,5299,5499,4999,7199,2799,30450
