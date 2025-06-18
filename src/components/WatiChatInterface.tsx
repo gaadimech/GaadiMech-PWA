@@ -153,8 +153,12 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
       console.log('Creating Strapi booking with data:', cleanData);
 
       // Use apiClient like the working express-service
+      // Also set published: true in case draftAndPublish is still enabled
       const response = await apiClient.post('/chatbot-bookings', {
-        data: cleanData,
+        data: {
+          ...cleanData,
+          published: true
+        }
       });
 
       console.log('✅ Strapi booking created successfully:', response.data);
