@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, MessageCircle, Phone, Car, MapPin, Calendar, Clock, User, CheckCircle, AlertCircle } from 'lucide-react';
+import { apiClient } from '../services/api-client';
 
-// Strapi API configuration
-const STRAPI_API_URL = import.meta.env.VITE_STRAPI_API_URL || 'http://localhost:1337/api';  // Use direct URL for now
-const STRAPI_API_TOKEN = import.meta.env.VITE_STRAPI_API_TOKEN || '';
+// Use the same API configuration as the rest of the application
+const STRAPI_API_URL = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : 'http://localhost:1337/api';
+const STRAPI_API_TOKEN = import.meta.env.VITE_API_TOKEN || '';
 
 // Debug environment variables
 console.log('🔧 Environment Variables Debug:');
-console.log('VITE_STRAPI_API_URL:', import.meta.env.VITE_STRAPI_API_URL);
-console.log('VITE_STRAPI_API_TOKEN:', import.meta.env.VITE_STRAPI_API_TOKEN ? 'Token loaded ✅' : 'Token missing ❌');
+console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
+console.log('VITE_API_TOKEN:', import.meta.env.VITE_API_TOKEN ? 'Token loaded ✅' : 'Token missing ❌');
 console.log('STRAPI_API_URL:', STRAPI_API_URL);
 console.log('STRAPI_API_TOKEN:', STRAPI_API_TOKEN ? 'Token available ✅' : 'Token missing ❌');
 console.log('🔑 Full token (first 50 chars):', STRAPI_API_TOKEN ? STRAPI_API_TOKEN.substring(0, 50) + '...' : 'No token');
 console.log('🔑 Token length:', STRAPI_API_TOKEN ? STRAPI_API_TOKEN.length : 0);
-console.log('🔑 Expected token length: 256');
 console.log('🔑 Token matches expected:', STRAPI_API_TOKEN.length === 256 ? '✅' : '❌');
 
 interface StrapiBooking {
@@ -142,7 +142,7 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
     return sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   };
 
-  // Strapi API functions
+  // Strapi API functions using apiClient (like working express-service)
   const createStrapiBooking = async (data: Partial<StrapiBooking>): Promise<{id: number, documentId: string} | null> => {
     try {
       // Remove undefined/null values to avoid validation errors
@@ -150,75 +150,25 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
         Object.entries(data).filter(([_, value]) => value !== undefined && value !== null && value !== '')
       );
 
-      // Try different possible endpoints
-      const possibleEndpoints = [
-        'chatbot-bookings',  // ✅ CONFIRMED WORKING
-        'chatbot-booking'    // Backup option
-      ];
-
       console.log('Creating Strapi booking with data:', cleanData);
-      console.log('Available API URL:', STRAPI_API_URL);
-      console.log('Available API Token:', STRAPI_API_TOKEN ? 'Token provided' : 'No token');
 
-      for (const endpoint of possibleEndpoints) {
-        const apiUrl = `${STRAPI_API_URL}/${endpoint}`;
-        console.log(`Trying endpoint: ${apiUrl}`);
-        
-        try {
-          const requestHeaders = {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${STRAPI_API_TOKEN}`,
-          };
-          
-          const requestBody = JSON.stringify({
-            data: cleanData,
-          });
-          
-          console.log(`🔍 Request details for ${endpoint}:`);
-          console.log(`🔗 URL: ${apiUrl}`);
-          console.log(`🔑 Authorization header: Bearer ${STRAPI_API_TOKEN.substring(0, 20)}...`);
-          console.log(`📦 Request body:`, requestBody);
-          
-          const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: requestHeaders,
-            body: requestBody,
-          });
+      // Use apiClient like the working express-service
+      const response = await apiClient.post('/chatbot-bookings', {
+        data: cleanData,
+      });
 
-          console.log(`Response for ${endpoint}:`, response.status, response.statusText);
-
-          if (response.ok) {
-            const result = await response.json();
-            console.log('✅ Strapi booking created successfully:', result);
-            // Return both id and documentId for Strapi v5 compatibility
-            return {
-              id: result.data.id,
-              documentId: result.data.documentId
-            };
-          } else if (response.status === 404) {
-            console.log(`❌ Endpoint ${endpoint} not found, trying next...`);
-            continue;
-          } else {
-            const errorText = await response.text();
-            console.error(`❌ Error with ${endpoint}:`, response.status, errorText);
-            // Don't continue if it's not a 404 - this means the endpoint exists but has other issues
-            return null;
-          }
-        } catch (fetchError) {
-          console.error(`❌ Network error with ${endpoint}:`, fetchError);
-          continue;
-        }
-      }
-
-      console.error('❌ All endpoints failed. Please check:');
-      console.error('1. Strapi is running on localhost:1337');
-      console.error('2. Content type exists in Strapi');
-      console.error('3. API token is correct');
-      console.error('4. Permissions are set correctly');
-      return null;
+      console.log('✅ Strapi booking created successfully:', response.data);
+      
+      // Return both id and documentId for Strapi v5 compatibility
+      const responseData = response.data as any;
+      return {
+        id: responseData.data.id,
+        documentId: responseData.data.documentId
+      };
 
     } catch (error) {
       console.error('❌ Error creating Strapi booking:', error);
+      console.error('Full error details:', error);
       return null;
     }
   };
@@ -231,80 +181,19 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
       );
 
       console.log('Updating Strapi booking with data:', cleanData);
-
-      // Use the same endpoint that worked for creation
-      const possibleEndpoints = [
-        'chatbot-bookings',  // ✅ CONFIRMED WORKING
-        'chatbot-booking'    // Backup option
-      ];
-
-      // Try the most likely endpoint first (based on your Strapi setup)
-      const primaryEndpoint = 'chatbot-bookings';
-      const apiUrl = `${STRAPI_API_URL}/${primaryEndpoint}/${documentId}`;
+      console.log(`🔄 Updating booking documentId ${documentId}`);
       
-      console.log(`🔄 Updating booking documentId ${documentId} at: ${apiUrl}`);
-      console.log(`🔄 Update payload:`, JSON.stringify({ data: cleanData }, null, 2));
-      
-      try {
-        const response = await fetch(apiUrl, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${STRAPI_API_TOKEN}`,
-          },
-          body: JSON.stringify({
-            data: cleanData,
-          }),
-        });
+      // Use apiClient like the working express-service
+      const response = await apiClient.put(`/chatbot-bookings/${documentId}`, {
+        data: cleanData,
+      });
 
-        console.log(`🔄 Update response:`, response.status, response.statusText);
+      console.log('✅ Strapi booking updated successfully:', response.data);
+      return true;
 
-        if (response.ok) {
-          const result = await response.json();
-          console.log('✅ Strapi booking updated successfully:', result);
-          return true;
-        } else {
-          const errorText = await response.text();
-          console.error(`❌ Update failed:`, response.status, errorText);
-          
-          // Try other endpoints if primary fails
-          for (const endpoint of possibleEndpoints.filter(e => e !== primaryEndpoint)) {
-            const fallbackUrl = `${STRAPI_API_URL}/${endpoint}/${documentId}`;
-            console.log(`🔄 Trying fallback endpoint: ${fallbackUrl}`);
-            
-            try {
-              const fallbackResponse = await fetch(fallbackUrl, {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${STRAPI_API_TOKEN}`,
-                },
-                body: JSON.stringify({
-                  data: cleanData,
-                }),
-              });
-
-              if (fallbackResponse.ok) {
-                const fallbackResult = await fallbackResponse.json();
-                console.log('✅ Strapi booking updated via fallback:', fallbackResult);
-                return true;
-              }
-            } catch (fallbackError) {
-              console.log(`❌ Fallback ${endpoint} failed:`, fallbackError);
-              continue;
-            }
-          }
-          return false;
-        }
-      } catch (fetchError) {
-        console.error(`❌ Network error updating:`, fetchError);
-        return false;
-      }
-
-      console.error('❌ All update endpoints failed');
-      return false;
     } catch (error) {
       console.error('❌ Error updating Strapi booking:', error);
+      console.error('Full error details:', error);
       return false;
     }
   };

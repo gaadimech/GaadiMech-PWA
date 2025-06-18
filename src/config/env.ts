@@ -1,6 +1,6 @@
 const env = {
-  STRAPI_URL: import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337',
-  STRAPI_API_TOKEN: import.meta.env.VITE_STRAPI_API_TOKEN,
+  STRAPI_URL: import.meta.env.VITE_API_URL || 'http://localhost:1337',
+  STRAPI_API_TOKEN: import.meta.env.VITE_API_TOKEN,
   IS_PROD: import.meta.env.PROD,
 };
 
