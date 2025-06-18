@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Clock, Calendar, ArrowRight, ArrowUp, ArrowDown, Shield, AlertTriangle, X, Car, Phone, Tag } from 'lucide-react';
+import { CheckCircle, Clock, Calendar, ArrowRight, ArrowUp, ArrowDown, Shield, AlertTriangle, X, Car, Phone, Tag, ChevronDown } from 'lucide-react';
 
 import { expressService } from '../services/expressService';
 import { getVehicleFromSession, parseCSVData, getPricingData } from '../utils/pricing-utils';
@@ -58,8 +58,6 @@ const ExpressBetaATCCart = () => {
   // Add new state for workshop price calculation
   const [workshopPrice, setWorkshopPrice] = useState(0);
 
-  // Add state for highlighting mobile input
-  const [showMobileHighlight, setShowMobileHighlight] = useState(true);
   const [showSlotBookingGuide, setShowSlotBookingGuide] = useState(false);
 
   // Add new state for tracking if mobile number is submitted
@@ -74,6 +72,9 @@ const ExpressBetaATCCart = () => {
 
   // Add state to track if coupon has been applied already
   const [couponApplied, setCouponApplied] = useState(false);
+
+  // Add state for collapsible coupon section
+  const [showCouponSection, setShowCouponSection] = useState(false);
 
   // Update the setCouponError function to ensure it always sets a string
   const setCouponErrorSafe = (error: unknown): void => {
@@ -160,6 +161,9 @@ const ExpressBetaATCCart = () => {
       // Set the coupon code (convert to uppercase)
       setCouponCode(couponToApply.toUpperCase());
       
+      // Show the coupon section when there's a coupon to apply
+      setShowCouponSection(true);
+      
       // Clear from session storage after reading it
       if (sessionCoupon) {
         sessionStorage.removeItem('pendingCoupon');
@@ -178,13 +182,7 @@ const ExpressBetaATCCart = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 
-  // Effect to handle mobile input highlight animation
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setShowMobileHighlight(prev => !prev);
-    }, 3000);
-    return () => clearInterval(timer);
-  }, []);
+
 
   // Helper function to get current time in IST
   const getCurrentTimeIST = () => {
@@ -901,10 +899,7 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
                           Save ₹{workshopPrice - finalPrice}
                         </span>
                       </div>
-                      <div className="flex items-center text-[#FF8A3D] text-xs mt-1">
-                        <Clock className="w-3 h-3 mr-1" />
-                        <span>90-Minute Service</span>
-                      </div>
+                      
                     </div>
                     <div className="text-right">
                       <div className="text-gray-500 line-through text-xs">₹{originalPrice}</div>
@@ -922,82 +917,107 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
             {/* Combined Coupon Code and Mobile Number Section */}
             <div className="bg-white rounded-lg shadow-sm p-4 lg:p-6 order-3 lg:order-none">
               <div className="space-y-6">
-                {/* Coupon Code Section */}
-                <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold text-gray-900">Have a Coupon Code?</h2>
-                    {appliedCoupon && (
-                      <div className="text-green-600 font-medium text-sm flex items-center">
-                        <CheckCircle className="w-5 h-5 mr-2" />
-                        Coupon Applied
-                      </div>
-                    )}
-                  </div>
-
-                  {!appliedCoupon ? (
-                    <div className="space-y-3">
-                      <div className="flex flex-col sm:flex-row gap-3">
-                        <div className="relative flex-1">
-                          <input
-                            type="text"
-                            value={couponCode}
-                            onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                            placeholder="ENTER COUPON CODE"
-                            className="w-full border border-gray-300 rounded-lg px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-[#FF7200] transition-all duration-300 uppercase"
-                          />
-                          {couponCode && (
-                            <button 
-                              onClick={() => setCouponCode('')}
-                              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                            >
-                              <X className="w-5 h-5" />
-                            </button>
-                          )}
+                {/* Collapsible Coupon Code Section */}
+                <div className="border border-gray-200 rounded-lg p-3">
+                  <button 
+                    onClick={() => setShowCouponSection(!showCouponSection)}
+                    className="w-full flex items-center justify-between text-left hover:bg-gray-50 p-1 rounded transition-colors"
+                  >
+                    <div className="flex items-center">
+                      <span className="text-lg font-medium text-gray-700">Have a coupon code?</span>
+                      {appliedCoupon && (
+                        <div className="ml-3 text-green-600 font-medium text-sm flex items-center">
+                          <CheckCircle className="w-4 h-4 mr-1" />
+                          Applied
                         </div>
-                        <button
-                          onClick={validateAndApplyCoupon}
-                          className="bg-[#FF7200] text-white px-6 py-3 rounded-lg hover:bg-[#FF6000] text-lg font-medium transition-all duration-300 flex items-center justify-center whitespace-nowrap"
-                        >
-                          <span>Apply</span>
-                          <ArrowRight className="w-5 h-5 ml-2" />
-                        </button>
-                      </div>
-                      {couponError && (
-                        <p className="text-red-500 text-sm bg-red-50 p-2 rounded flex items-center">
-                          <AlertTriangle className="w-4 h-4 mr-1" />
-                          {couponError}
-                        </p>
                       )}
                     </div>
-                  ) : (
-                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 shadow-sm">
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <div className="flex items-center">
-                            <Tag className="w-5 h-5 text-blue-600 mr-2" />
-                            <p className="font-medium text-blue-800 text-lg">{appliedCoupon.code}</p>
+                    <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${showCouponSection ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  {showCouponSection && (
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      {!appliedCoupon ? (
+                        <div className="space-y-3">
+                          <div className="flex flex-col sm:flex-row gap-3">
+                            <div className="relative flex-1">
+                              <input
+                                type="text"
+                                value={couponCode}
+                                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                                placeholder="ENTER COUPON CODE"
+                                className="w-full border border-gray-300 rounded-lg px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-[#FF7200] transition-all duration-300 uppercase"
+                              />
+                              {couponCode && (
+                                <button 
+                                  onClick={() => setCouponCode('')}
+                                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                >
+                                  <X className="w-5 h-5" />
+                                </button>
+                              )}
+                            </div>
+                            <button
+                              onClick={validateAndApplyCoupon}
+                              className="bg-white border-2 border-[#FF7200] text-[#FF7200] px-6 py-3 rounded-lg hover:bg-[#FF7200] hover:text-white text-lg font-medium transition-all duration-300 flex items-center justify-center whitespace-nowrap"
+                            >
+                              <span>Apply Coupon</span>
+                              <ArrowRight className="w-5 h-5 ml-2" />
+                            </button>
                           </div>
-                          <p className="text-blue-600 flex items-center mt-1">
-                            <CheckCircle className="w-4 h-4 mr-1" />
-                            Additional ₹{additionalDiscount} OFF applied
-                          </p>
+                          {couponError && (
+                            <p className="text-red-500 text-sm bg-red-50 p-2 rounded flex items-center">
+                              <AlertTriangle className="w-4 h-4 mr-1" />
+                              {couponError}
+                            </p>
+                          )}
                         </div>
-                        <button
-                          onClick={removeCoupon}
-                          className="text-blue-600 hover:text-blue-800 font-medium bg-white py-1 px-3 rounded-lg border border-blue-200 hover:bg-blue-50 transition-colors duration-300"
-                        >
-                          Remove
-                        </button>
-                      </div>
+                      ) : (
+                        <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 shadow-sm">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <div className="flex items-center">
+                                <Tag className="w-5 h-5 text-blue-600 mr-2" />
+                                <p className="font-medium text-blue-800 text-lg">{appliedCoupon.code}</p>
+                              </div>
+                              <p className="text-blue-600 flex items-center mt-1">
+                                <CheckCircle className="w-4 h-4 mr-1" />
+                                Additional ₹{additionalDiscount} OFF applied
+                              </p>
+                            </div>
+                            <button
+                              onClick={removeCoupon}
+                              className="text-blue-600 hover:text-blue-800 font-medium bg-white py-1 px-3 rounded-lg border border-blue-200 hover:bg-blue-50 transition-colors duration-300"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
 
                 {/* Divider */}
-                <div className="border-t border-gray-100"></div>
+                <div className="border-t border-gray-200 my-4"></div>
+                
+                {/* Step indicator */}
+                <div className="flex items-center justify-center mb-4">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <div className="flex items-center">
+                      <div className="w-6 h-6 bg-[#FF7200] text-white rounded-full flex items-center justify-center text-xs font-bold mr-2">1</div>
+                      <span>Enter Mobile Number</span>
+                    </div>
+                    <ArrowRight className="w-4 h-4 mx-3 text-gray-400" />
+                    <div className="flex items-center">
+                      <div className="w-6 h-6 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-xs font-bold mr-2">2</div>
+                      <span>Select Date & Time</span>
+                    </div>
+                  </div>
+                </div>
 
                 {/* Mobile Number Section */}
-                <div className={`${showMobileHighlight ? 'ring-2 ring-[#FF7200] ring-opacity-50 bg-orange-50/30 p-4 rounded-lg -mx-4' : ''}`}>
+                <div>
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-bold text-gray-900">Enter Mobile Number</h2>
                     <div className="flex items-center text-[#FF7200]">
@@ -1025,7 +1045,7 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
                       className="w-full bg-[#FF7200] text-white font-bold py-4 rounded-lg hover:bg-[#FF6000] transition-colors text-lg flex items-center justify-center relative overflow-hidden group"
                     >
                       <span className="relative z-10 flex items-center">
-                        Continue to Book Slot
+                        Next: Select Your Slot
                         <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                       </span>
                       <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
@@ -1033,7 +1053,7 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
 
                     <div className="flex items-center justify-center space-x-2 text-gray-600 text-sm">
                       <Shield className="w-4 h-4" />
-                      <span>Your number is safe with us</span>
+                      <span>Your number is safe with us </span>
                     </div>
                   </div>
 
@@ -1043,10 +1063,7 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
                       <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
                       Book your slot in under 2 minutes
                     </p>
-                    <p className="text-gray-600 text-sm flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                      Get instant booking confirmation
-                    </p>
+                    
                     <p className="text-gray-600 text-sm flex items-center">
                       <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
                       No advance payment required
@@ -1216,7 +1233,7 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
                   <span>₹{originalPrice}</span>
                 </div>
                 <div className="flex justify-between text-green-600">
-                  <span>Auto Discount</span>
+                  <span>Website Offer</span>
                   <span>-₹{autoDiscountAmount}</span>
                 </div>
                 {appliedCoupon && (
@@ -1396,12 +1413,19 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
                     
                     <button
                       onClick={handleMobileSubmit}
-                      disabled={!mobileNumber}
-                      className={`w-full bg-[#FF7200] text-white font-bold py-4 rounded-lg hover:bg-[#FF6000] transition-colors text-lg flex items-center justify-center ${!mobileNumber ? 'opacity-70 cursor-not-allowed' : ''}`}
+                      className="w-full bg-[#FF7200] text-white font-bold py-4 rounded-lg hover:bg-[#FF6000] transition-colors text-lg flex items-center justify-center relative overflow-hidden group"
                     >
-                      Continue to Book Slot
-                      <ArrowRight className="w-5 h-5 ml-2" />
+                      <span className="relative z-10 flex items-center">
+                        Next: Select Your Slot
+                        <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                      </span>
+                      <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
                     </button>
+
+                    <div className="flex items-center justify-center space-x-2 text-gray-600 text-sm">
+                      <Shield className="w-4 h-4" />
+                      <span>Your number is safe with us • No payment required now</span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -1465,7 +1489,7 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
                   ? 'Processing...' 
                   : isMobileSubmitted 
                     ? 'Complete Booking'
-                    : 'Continue to Book Slot'}
+                    : 'Next: Select Your Slot'}
               </span>
               <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
             </button>
