@@ -17,6 +17,14 @@ console.log('🔑 Full token (first 50 chars):', STRAPI_API_TOKEN ? STRAPI_API_T
 console.log('🔑 Token length:', STRAPI_API_TOKEN ? STRAPI_API_TOKEN.length : 0);
 console.log('🔑 Token matches expected:', STRAPI_API_TOKEN.length === 256 ? '✅' : '❌');
 
+// Production-specific debug
+console.log('🌍 PRODUCTION DEBUG:');
+console.log('🌍 NODE_ENV:', import.meta.env.NODE_ENV);
+console.log('🌍 MODE:', import.meta.env.MODE);
+console.log('🌍 PROD:', import.meta.env.PROD);
+console.log('🌍 Current URL:', window.location.href);
+console.log('🌍 Constructed API URL:', STRAPI_API_URL);
+
 interface StrapiBooking {
   id?: number;
   documentId?: string;  // Add documentId for Strapi v5
@@ -151,6 +159,11 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
       );
 
       console.log('Creating Strapi booking with data:', cleanData);
+      console.log('🔍 API Request Details:');
+      console.log('🔍 Endpoint: /chatbot-bookings');
+      console.log('🔍 Base URL:', import.meta.env.VITE_API_URL);
+      console.log('🔍 Full URL:', `${import.meta.env.VITE_API_URL}/api/chatbot-bookings`);
+      console.log('🔍 Token available:', !!import.meta.env.VITE_API_TOKEN);
 
       // Use apiClient like the working express-service
       // Also set published: true in case draftAndPublish is still enabled
@@ -170,9 +183,22 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
         documentId: responseData.data.documentId
       };
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Error creating Strapi booking:', error);
       console.error('Full error details:', error);
+      
+      // Enhanced error debugging
+      if (error.response) {
+        console.error('🔍 Error Response Status:', error.response.status);
+        console.error('🔍 Error Response Data:', error.response.data);
+        console.error('🔍 Error Response Headers:', error.response.headers);
+      } else if (error.request) {
+        console.error('🔍 No response received:', error.request);
+      } else {
+        console.error('🔍 Error message:', error.message);
+      }
+      
+      console.error('🔍 Error config:', error.config);
       return null;
     }
   };
