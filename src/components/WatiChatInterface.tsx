@@ -266,7 +266,12 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
       if (newData.address) strapiData.address = newData.address;
       if (newData.serviceType) {
         strapiData.serviceType = newData.serviceType;
-        strapiData.servicePrice = getServicePrice(newData.serviceType);
+        strapiData.servicePrice = getServicePrice(
+          newData.serviceType, 
+          newData.manufacturer || bookingData.manufacturer, 
+          newData.model || bookingData.model, 
+          newData.fuelType || bookingData.fuelType
+        );
       }
       if (newData.servicePreference) strapiData.servicePreference = newData.servicePreference;
       if (newData.date) strapiData.date = newData.date;
@@ -325,14 +330,32 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
     }
   };
 
-  const getServicePrice = (serviceType?: string): string => {
-    if (serviceType === 'Express Service') {
-      return 'Rs.3299';
-    } else if (serviceType === 'Dent & Paint') {
-      return 'Rs.2499';
-    } else if (serviceType === 'AC Service') {
-      return 'Rs.1999';
+  const getServicePrice = (serviceType?: string, manufacturer?: string, model?: string, fuelType?: string): string => {
+    // If we don't have car details, return empty string
+    if (!manufacturer || !model || !fuelType) {
+      return '';
     }
+
+    // Find the specific car entry in the database
+    const carEntry = carDatabase.find(car => 
+      car.brand === manufacturer && 
+      car.model === model && 
+      car.fuelType === fuelType.toLowerCase()
+    );
+
+    if (!carEntry) {
+      return '';
+    }
+
+    // Return appropriate price based on service type
+    if (serviceType === 'Express Service') {
+      return carEntry.discountedPrice ? `Rs.${carEntry.discountedPrice}` : '';
+    } else if (serviceType === 'Dent & Paint') {
+      return carEntry.dentPaint ? `Rs.${carEntry.dentPaint}` : '';
+    } else if (serviceType === 'AC Service') {
+      return 'Rs.999'; // Fixed price as specified
+    }
+    
     return '';
   };
 
@@ -780,15 +803,13 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
 
       // Handle booking summary
       if (stepKey === 'booking_summary') {
-        // Get pricing based on service type
-        let servicePrice = '';
-        if (fullContext.serviceType === 'Express Service') {
-          servicePrice = 'Rs.3299';
-        } else if (fullContext.serviceType === 'Dent & Paint') {
-          servicePrice = 'Rs.2499';
-        } else if (fullContext.serviceType === 'AC Service') {
-          servicePrice = 'Rs.1999';
-        }
+        // Get pricing based on service type and car details
+        const servicePrice = getServicePrice(
+          fullContext.serviceType,
+          fullContext.manufacturer,
+          fullContext.model,
+          fullContext.fuelType
+        );
 
         const summaryText = `Please review your booking details:
 
@@ -800,7 +821,7 @@ Time: ${fullContext.timeSlot}
 Service Type: ${fullContext.servicePreference}
 Contact: ${fullContext.fullName} - ${fullContext.mobileNumber}
 
-**${fullContext.serviceType} Service: ${servicePrice}**`;
+**${fullContext.serviceType}: ${servicePrice}**`;
 
         const botMessage: Message = {
           id: Date.now().toString(),
@@ -1063,7 +1084,7 @@ Contact: ${fullContext.fullName} - ${fullContext.mobileNumber}
 • Time: ${bookingData.timeSlot || ''}
 • Service Type: ${bookingData.servicePreference || ''}
 • Contact: ${bookingData.fullName || ''} - ${bookingData.mobileNumber || ''}
-• Price: ${getServicePrice(bookingData.serviceType)}
+• Price: ${getServicePrice(bookingData.serviceType, bookingData.manufacturer, bookingData.model, bookingData.fuelType)}
 
 ✅ *Booking Confirmed!*
 Our team will contact you 30 minutes before the scheduled time.
@@ -1220,8 +1241,8 @@ Our team will contact you 30 minutes before the scheduled time.
                 <Car className="w-6 h-6 text-orange-500" />
               </div>
               <div>
-                <h3 className="font-semibold">Car Service Bot</h3>
-                <p className="text-sm opacity-90">Booking Assistant</p>
+                <h3 className="font-semibold">GaadiMech AI Assistant</h3>
+                <p className="text-sm opacity-90">Chat and Book</p>
               </div>
             </div>
             <button
