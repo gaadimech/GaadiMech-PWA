@@ -3,6 +3,13 @@ export interface ContactFormData {
   email: string;
   phone: string;
   message: string;
+  // Location fields
+  userCity?: string;
+  userState?: string;
+  userCountry?: string;
+  userLatitude?: number;
+  userLongitude?: number;
+  locationSource?: string;
 }
 
 export interface ContactResponse {

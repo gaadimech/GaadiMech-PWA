@@ -21,6 +21,7 @@ import Footer from './components/Footer';
 import CustomerForm from './components/CustomerForm';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 import { useAnalytics } from './hooks/useAnalytics';
+import { useLocation as useUserLocation } from './hooks/useLocation';
 
 // Service Pages
 import PeriodicService from './pages/services/PeriodicService';
@@ -73,6 +74,9 @@ const WatiWidget = lazy(() => import('./components/WatiWidget'));
 const AppContent = () => {
   const [showForm, setShowForm] = useState(false);
   const [isFormDataLoaded, setIsFormDataLoaded] = useState(false);
+  
+  // Global location detection for analytics and service area validation
+  const { location: userLocation } = useUserLocation(true);
   const [hasFilledForm, setHasFilledForm] = useState(() => {
     return sessionStorage.getItem('hasFilledForm') === 'true';
   });

@@ -9,6 +9,13 @@ export interface ExpressLeadFormData {
   servicePrice?: number;
   serviceDate?: string;
   timeSlot?: string;
+  // Location fields
+  userCity?: string;
+  userState?: string;
+  userCountry?: string;
+  userLatitude?: number;
+  userLongitude?: number;
+  locationSource?: string;
 }
 
 export interface ExpressLeadResponse {
@@ -25,6 +32,13 @@ export interface ExpressLeadResponse {
       servicePrice?: number;
       serviceDate?: string;
       timeSlot?: string;
+      // Location fields
+      userCity?: string;
+      userState?: string;
+      userCountry?: string;
+      userLatitude?: number;
+      userLongitude?: number;
+      locationSource?: string;
       createdAt: string;
       updatedAt: string;
     };
