@@ -45,6 +45,8 @@ import CityPage from './pages/CityPage';
 
 import ExpressBetaATC from './pages/ExpressBetaATC';
 import ExpressBetaATCCart from './pages/ExpressBetaATCCart';
+import ExpressRzpATC from './pages/ExpressRzpATC';
+import ExpressRzpATCCart from './pages/ExpressRzpATCCart';
 import CouponAdmin from './pages/CouponAdmin';
 
 import CarServiceInJaipur from './pages/CarServiceInJaipur';
@@ -250,6 +252,8 @@ const AppContent = () => {
               <Route path="/express" element={<ExpressService />} />
               <Route path="/express-beta-atc" element={<ExpressBetaATC />} />
               <Route path="/express-beta-atc/cart" element={<ExpressBetaATCCart />} />
+              <Route path="/express-rzp-atc" element={<ExpressRzpATC />} />
+              <Route path="/express-rzp-atc/cart" element={<ExpressRzpATCCart />} />
               <Route path="/ads-express" element={<AdsExpressService />} />
               <Route path="/adservices" element={<AdServices />} />
               <Route path="/workshop-partner" element={<WorkshopPartner />} />
