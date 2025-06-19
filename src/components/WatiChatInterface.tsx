@@ -44,6 +44,7 @@ interface StrapiBooking {
   servicePrice?: string;
   booking_status?: 'in_progress' | 'completed' | 'cancelled';
   sessionId?: string;
+  submissionTimestamp?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -164,14 +165,20 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
       console.log('🔍 Base URL:', import.meta.env.VITE_API_URL);
       console.log('🔍 Full URL:', `${import.meta.env.VITE_API_URL}/api/chatbot-bookings`);
       console.log('🔍 Token available:', !!import.meta.env.VITE_API_TOKEN);
+      console.log('🔍 Token length:', import.meta.env.VITE_API_TOKEN ? import.meta.env.VITE_API_TOKEN.length : 0);
+
+      // Check if environment variables are properly loaded
+      if (!import.meta.env.VITE_API_URL) {
+        throw new Error('VITE_API_URL environment variable is not set');
+      }
+      if (!import.meta.env.VITE_API_TOKEN) {
+        throw new Error('VITE_API_TOKEN environment variable is not set');
+      }
 
       // Use apiClient like the working express-service
-      // Also set published: true in case draftAndPublish is still enabled
+      // Note: chatbot-booking has draftAndPublish: false, so no published field needed
       const response = await apiClient.post('/chatbot-bookings', {
-        data: {
-          ...cleanData,
-          published: true
-        }
+        data: cleanData
       });
 
       console.log('✅ Strapi booking created successfully:', response.data);
@@ -187,13 +194,23 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
       console.error('❌ Error creating Strapi booking:', error);
       console.error('Full error details:', error);
       
+      // Enhanced error debugging for production
+      console.error('🔍 Environment Variables Status:');
+      console.error('🔍 VITE_API_URL:', import.meta.env.VITE_API_URL || 'MISSING');
+      console.error('🔍 VITE_API_TOKEN present:', !!import.meta.env.VITE_API_TOKEN);
+      console.error('🔍 Process env NODE_ENV:', import.meta.env.NODE_ENV);
+      console.error('🔍 Process env PROD:', import.meta.env.PROD);
+      
       // Enhanced error debugging
       if (error.response) {
         console.error('🔍 Error Response Status:', error.response.status);
         console.error('🔍 Error Response Data:', error.response.data);
         console.error('🔍 Error Response Headers:', error.response.headers);
+        console.error('🔍 Error Response URL:', error.response.config?.url);
       } else if (error.request) {
         console.error('🔍 No response received:', error.request);
+        console.error('🔍 Request URL:', error.request.responseURL);
+        console.error('🔍 Request Status:', error.request.status);
       } else {
         console.error('🔍 Error message:', error.message);
       }
@@ -258,9 +275,10 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
       if (newData.mobileNumber) strapiData.mobileNumber = newData.mobileNumber;
       if (newData.bookingId) strapiData.bookingId = newData.bookingId;
       
-      // Add session tracking and status
+      // Add session tracking, status, and required timestamp
       strapiData.sessionId = generateSessionId();
       strapiData.booking_status = 'in_progress';
+      strapiData.submissionTimestamp = new Date().toISOString();
 
       console.log('📝 Saving to Strapi - Data:', newData);
       console.log('📝 Converted Strapi data:', strapiData);
