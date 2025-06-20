@@ -647,7 +647,7 @@ Please confirm my booking. Thank you!`;
 
           {/* Promotional Banner - Only on Payment Page */}
           {showPaymentSection && !showBookingConfirmation && (
-            <div className="bg-gradient-to-r from-orange-400 to-red-500 rounded-lg shadow-md p-4 mb-4 text-white">
+            <div className="bg-gradient-to-r from-green-400 to-green-600 rounded-lg shadow-md p-4 mb-4 text-white">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <p className="text-base font-bold mb-1">
