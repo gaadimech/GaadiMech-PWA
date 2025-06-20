@@ -95,8 +95,12 @@ const ExpressRzpATCCart = () => {
   const [showPaymentSection, setShowPaymentSection] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [paymentFailed, setPaymentFailed] = useState(false);
+  const [paymentError, setPaymentError] = useState('');
   const [prePaidDiscount, setPrePaidDiscount] = useState(200); // Rs. 200 discount for paying Rs. 100
   const [bookingFee, setBookingFee] = useState(100); // Rs. 100 booking fee
+  const [whatsappRedirectCountdown, setWhatsappRedirectCountdown] = useState(3);
+  const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
 
   // Update the setCouponError function to ensure it always sets a string
   const setCouponErrorSafe = (error: unknown): void => {
@@ -336,6 +340,42 @@ const ExpressRzpATCCart = () => {
     }
   }, []);
 
+  // WhatsApp redirect countdown effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (showBookingConfirmation && paymentSuccess && whatsappRedirectCountdown > 0) {
+      interval = setInterval(() => {
+        setWhatsappRedirectCountdown(prev => {
+          if (prev <= 1) {
+            // Auto redirect to WhatsApp
+            const bookingDetails = sessionStorage.getItem('bookingDetails');
+            if (bookingDetails) {
+              const details = JSON.parse(bookingDetails);
+              const selectedSlot = availableTimeSlots.find(slot => slot.id === details.timeSlot);
+              const message = `Hi! I've successfully booked a Priority Express Service slot. Here are my booking details:
+
+🚗 Vehicle: ${details.vehicle}
+📅 Date: ${formatDateDisplay(details.date)}
+⏰ Time: ${selectedSlot?.display}
+💰 Booking Fee Paid: ₹${details.bookingFee}
+🆔 Payment ID: ${details.paymentId}
+
+Please confirm my booking. Thank you!`;
+              window.open(`https://wa.me/${WHATSAPP_PHONE_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+            }
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [showBookingConfirmation, paymentSuccess, whatsappRedirectCountdown, availableTimeSlots, WHATSAPP_PHONE_NUMBER]);
+
   // Simulate some slots being taken when a date is selected
   useEffect(() => {
     if (selectedDate) {
@@ -415,6 +455,8 @@ const ExpressRzpATCCart = () => {
     }
 
     setIsProcessingPayment(true);
+    setPaymentFailed(false);
+    setPaymentError('');
     console.log('Starting Razorpay payment with amount:', bookingFee * 100);
 
     const options = {
@@ -430,13 +472,23 @@ const ExpressRzpATCCart = () => {
         
         // Handle successful payment
         setPaymentSuccess(true);
-        setShowPaymentSection(false);
         setIsProcessingPayment(false);
+        setShowBookingConfirmation(true);
+        setShowPaymentSection(false);
         
         // Store payment details in session
         sessionStorage.setItem('rzpPaymentId', response.razorpay_payment_id);
         sessionStorage.setItem('rzpOrderId', response.razorpay_order_id || '');
         sessionStorage.setItem('rzpSignature', response.razorpay_signature || '');
+        
+        // Store booking details for WhatsApp message
+        sessionStorage.setItem('bookingDetails', JSON.stringify({
+          vehicle: `${carBrand} ${carModel}`,
+          date: selectedDate,
+          timeSlot: selectedTimeSlot,
+          bookingFee: bookingFee,
+          paymentId: response.razorpay_payment_id
+        }));
       },
       prefill: {
         name: 'Customer',
@@ -456,6 +508,14 @@ const ExpressRzpATCCart = () => {
         ondismiss: function() {
           setIsProcessingPayment(false);
           console.log('Payment modal closed');
+          // If payment was not successful and modal was dismissed, show retry option
+          if (!paymentSuccess) {
+            setPaymentFailed(true);
+            setPaymentError('Payment was cancelled or failed. Please try again.');
+          }
+        },
+        onhidden: function() {
+          console.log('Payment modal hidden');
         }
       }
     };
@@ -463,13 +523,31 @@ const ExpressRzpATCCart = () => {
     try {
       console.log('Creating Razorpay instance with options:', options);
       const rzp = new window.Razorpay(options);
+      
+      // Handle payment failure
+      rzp.on('payment.failed', function (response: any) {
+        console.error('Payment failed:', response.error);
+        setIsProcessingPayment(false);
+        setPaymentFailed(true);
+        setPaymentError(response.error.description || 'Payment failed. Please try again.');
+        setShowPaymentSection(false); // Go back to slot selection
+      });
+      
       console.log('Opening Razorpay checkout');
       rzp.open();
     } catch (error) {
       console.error('Error opening Razorpay:', error);
       setIsProcessingPayment(false);
-      alert('Error opening payment gateway. Please try again.');
+      setPaymentFailed(true);
+      setPaymentError('Error opening payment gateway. Please try again.');
     }
+  };
+
+  // Function to retry payment
+  const retryPayment = () => {
+    setPaymentFailed(false);
+    setPaymentError('');
+    setShowPaymentSection(true);
   };
 
   // Continue with the rest of the component...
@@ -527,7 +605,7 @@ const ExpressRzpATCCart = () => {
           </div>
 
           {/* Compare & Save Section - Hide when payment section is shown */}
-          {!showPaymentSection && (
+          {!showPaymentSection && !showBookingConfirmation && (
             <div className="bg-white rounded-lg shadow-sm p-4 lg:p-6 mb-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Compare & Save</h2>
               
@@ -568,7 +646,7 @@ const ExpressRzpATCCart = () => {
           )}
 
           {/* Compare & Save Section - Payment Phase with Additional Discount */}
-          {showPaymentSection && (
+          {showPaymentSection && !showBookingConfirmation && (
             <div className="bg-white rounded-lg shadow-sm p-4 lg:p-6 mb-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Compare & Save</h2>
               
@@ -674,8 +752,62 @@ const ExpressRzpATCCart = () => {
             </div>
           )}
 
+          {/* Payment Failure Section */}
+          {paymentFailed && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 lg:p-6 mb-6">
+              <div className="flex items-center justify-center mb-4">
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                  <AlertCircle className="w-10 h-10 text-red-500" />
+                </div>
+              </div>
+              <h2 className="text-xl font-bold text-red-800 text-center mb-2">Payment Failed</h2>
+              <p className="text-red-600 text-center mb-4">{paymentError}</p>
+              
+              <div className="bg-white p-4 rounded-lg mb-4">
+                <h4 className="font-bold text-gray-900 mb-2">Your Selected Details:</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Vehicle:</span>
+                    <span className="font-medium">{carBrand} {carModel}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Date:</span>
+                    <span className="font-medium">{formatDateDisplay(selectedDate)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Time:</span>
+                    <span className="font-medium">
+                      {availableTimeSlots.find(slot => slot.id === selectedTimeSlot)?.display}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex flex-col space-y-3">
+                <button
+                  onClick={retryPayment}
+                  className="w-full bg-[#FF7200] text-white font-bold py-3 rounded-lg hover:bg-[#FF6000] transition-colors flex items-center justify-center"
+                >
+                  <CreditCard className="w-5 h-5 mr-2" />
+                  Retry Payment
+                </button>
+                <button
+                  onClick={() => {
+                    setPaymentFailed(false);
+                    setPaymentError('');
+                    setSelectedDate('');
+                    setSelectedTimeSlot('');
+                  }}
+                  className="w-full bg-gray-200 text-gray-700 font-medium py-3 rounded-lg hover:bg-gray-300 transition-colors"
+                >
+                  Select Different Slot
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Date & Time Selection Section - Show when mobile submitted */}
-          {isMobileSubmitted && !showPaymentSection && (
+          {isMobileSubmitted && !showPaymentSection && !paymentFailed && !showBookingConfirmation && (
             <div ref={dateTimeRef} className="bg-white rounded-lg shadow-sm p-4 lg:p-6 mb-6 animate__animated animate__fadeIn">
               {/* Progress Indicator */}
               <div className="flex items-center justify-center mb-4">
@@ -802,7 +934,7 @@ const ExpressRzpATCCart = () => {
           )}
 
           {/* Service Inclusions Section - Show always */}
-          {!showPaymentSection && (
+          {!showPaymentSection && !showBookingConfirmation && !paymentFailed && (
             <div className="bg-white rounded-lg shadow-sm p-4 lg:p-6 mb-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Service Inclusions</h2>
               
@@ -884,7 +1016,7 @@ const ExpressRzpATCCart = () => {
 
 
           {/* PAYMENT SECTION */}
-          {showPaymentSection && selectedDate && selectedTimeSlot && (
+          {showPaymentSection && selectedDate && selectedTimeSlot && !showBookingConfirmation && (
             <div className="bg-white rounded-lg shadow-sm p-4 lg:p-6 mb-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Complete Your Booking</h2>
               
@@ -957,7 +1089,7 @@ const ExpressRzpATCCart = () => {
           )}
 
           {/* Terms & Conditions Section */}
-          {showPaymentSection && selectedDate && selectedTimeSlot && (
+          {showPaymentSection && selectedDate && selectedTimeSlot && !showBookingConfirmation && (
             <div className="bg-white rounded-lg shadow-sm p-4 lg:p-6 mb-6">
               <h3 className="text-lg font-bold text-gray-900 mb-4">Terms & Conditions</h3>
               
@@ -1001,106 +1133,193 @@ const ExpressRzpATCCart = () => {
             </div>
           )}
 
-          {/* Payment Success */}
-          {paymentSuccess && (
-            <div className="bg-white rounded-lg shadow-sm p-6 text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-10 h-10 text-green-500" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Payment Successful! 🎉</h2>
-              <p className="text-gray-600 mb-4">Your priority slot has been booked.</p>
+          {/* Booking Confirmation Page */}
+          {showBookingConfirmation && paymentSuccess && (
+            <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
+              <div className="max-w-2xl mx-auto pt-8">
+                <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+                  <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <CheckCircle className="w-16 h-16 text-green-500" />
+                  </div>
+                  <h1 className="text-4xl font-bold text-gray-800 mb-3">Payment Completed! 🎉</h1>
+                  <h2 className="text-2xl font-semibold text-green-600 mb-2">Booking Confirmed</h2>
+                  <p className="text-gray-600 mb-8 text-lg">Your priority express service slot has been successfully booked.</p>
               
-              <div className="bg-green-50 p-4 rounded-lg text-left mb-4">
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div className="text-gray-500">Booking ID:</div>
-                  <div className="font-medium">GM{Date.now().toString().slice(-6)}</div>
-                  <div className="text-gray-500">Amount Paid:</div>
-                  <div className="font-medium">₹{bookingFee}</div>
-                  <div className="text-gray-500">Total Savings:</div>
-                  <div className="font-medium text-green-600">₹{prePaidDiscount}</div>
+              {/* Booking Details Card */}
+              <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-6 mb-6">
+                <h3 className="text-lg font-bold text-gray-800 mb-4">📋 Booking Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 flex items-center">
+                        <Car className="w-4 h-4 mr-2" />
+                        Vehicle:
+                      </span>
+                      <span className="font-medium">{carBrand} {carModel}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 flex items-center">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Date:
+                      </span>
+                      <span className="font-medium">{formatDateDisplay(selectedDate)}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 flex items-center">
+                        <Clock className="w-4 h-4 mr-2" />
+                        Time:
+                      </span>
+                      <span className="font-medium">
+                        {availableTimeSlots.find(slot => slot.id === selectedTimeSlot)?.display}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 flex items-center">
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Booking Fee:
+                      </span>
+                      <span className="font-medium text-green-600">₹{bookingFee} Paid</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 flex items-center">
+                        <Tag className="w-4 h-4 mr-2" />
+                        Booking ID:
+                      </span>
+                      <span className="font-medium">GM{Date.now().toString().slice(-6)}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 flex items-center">
+                        <Star className="w-4 h-4 mr-2" />
+                        Total Savings:
+                      </span>
+                      <span className="font-medium text-green-600">₹{prePaidDiscount}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
+
+              {/* Payment Success Info */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <div className="flex items-center justify-center space-x-2 mb-2">
+                  <Shield className="w-5 h-5 text-blue-600" />
+                  <span className="font-medium text-blue-800">Priority Slot Secured</span>
+                </div>
+                <p className="text-blue-700 text-sm">
+                  Your ₹{bookingFee} booking fee will be adjusted from the final service amount. 
+                  You'll only pay ₹{discountedPrice - prePaidDiscount - bookingFee} at the workshop.
+                </p>
+              </div>
+
+              {/* WhatsApp Redirect Countdown */}
+              {whatsappRedirectCountdown > 0 && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                  <p className="text-green-800 font-medium mb-2">
+                    🚀 Redirecting to WhatsApp in {whatsappRedirectCountdown} seconds...
+                  </p>
+                  <p className="text-green-600 text-sm">
+                    We'll send you all booking details via WhatsApp for easy reference.
+                  </p>
+                </div>
+              )}
               
-              <p className="text-sm text-gray-500 mb-4">
-                We'll contact you on WhatsApp for further coordination.
-              </p>
-              
+              {/* Manual WhatsApp Button */}
               <button 
                 onClick={() => {
-                  // Redirect to WhatsApp
-                  const message = `Hi! I've successfully booked a Priority Express Service slot for ${formatDateDisplay(selectedDate)} at ${availableTimeSlots.find(slot => slot.id === selectedTimeSlot)?.display}. Booking fee paid: ₹${bookingFee}`;
-                  window.open(`https://wa.me/917300042410?text=${encodeURIComponent(message)}`, '_blank');
+                  const bookingDetails = sessionStorage.getItem('bookingDetails');
+                  if (bookingDetails) {
+                    const details = JSON.parse(bookingDetails);
+                    const selectedSlot = availableTimeSlots.find(slot => slot.id === details.timeSlot);
+                    const message = `Hi! I've successfully booked a Priority Express Service slot. Here are my booking details:
+
+🚗 Vehicle: ${details.vehicle}
+📅 Date: ${formatDateDisplay(details.date)}
+⏰ Time: ${selectedSlot?.display}
+💰 Booking Fee Paid: ₹${details.bookingFee}
+🆔 Payment ID: ${details.paymentId}
+
+Please confirm my booking. Thank you!`;
+                    window.open(`https://wa.me/${WHATSAPP_PHONE_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+                  }
                 }}
-                className="bg-green-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-600 transition-colors"
+                className="bg-green-500 text-white px-8 py-4 rounded-lg font-bold hover:bg-green-600 transition-colors flex items-center justify-center mx-auto space-x-2"
               >
-                Continue to WhatsApp
-              </button>
-            </div>
-          )}
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
+                </svg>
+                                 <span>Continue to WhatsApp</span>
+               </button>
+                 </div>
+               </div>
+             </div>
+           )}
         </div>
       )}
 
       {/* Add a gradient fade at the bottom before the sticky CTA */}
       <div className="h-24 bg-gradient-to-t from-gray-50 to-transparent fixed bottom-[72px] left-0 right-0 pointer-events-none lg:hidden"></div>
 
-      {/* Enhanced Mobile Bottom Bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white shadow-top p-4 border-t border-gray-200 z-50">
-        <div className="flex justify-between items-center">
-          <div>
-            <div className="text-gray-600">Total Price</div>
-            <div className="font-bold text-2xl text-[#FF7200]">
-              ₹{showPaymentSection ? (discountedPrice - prePaidDiscount) : discountedPrice}
+      {/* Enhanced Mobile Bottom Bar - Hide when booking is confirmed or payment failed */}
+      {!showBookingConfirmation && !paymentFailed && (
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white shadow-top p-4 border-t border-gray-200 z-50">
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="text-gray-600">Total Price</div>
+              <div className="font-bold text-2xl text-[#FF7200]">
+                ₹{showPaymentSection ? (discountedPrice - prePaidDiscount) : discountedPrice}
+              </div>
+              <div className="text-green-600 text-xs">
+                Save ₹{workshopPrice - (showPaymentSection ? (discountedPrice - prePaidDiscount) : discountedPrice)} vs Company Workshops
+              </div>
             </div>
-            <div className="text-green-600 text-xs">
-              Save ₹{workshopPrice - (showPaymentSection ? (discountedPrice - prePaidDiscount) : discountedPrice)} vs Company Workshops
-            </div>
+            <button
+              onClick={() => {
+                if (!isMobileSubmitted) {
+                  // Handle mobile submission
+                  if (!validateMobile(mobileNumber)) {
+                    setMobileError('Please enter a valid 10-digit mobile number');
+                    return;
+                  }
+                  setMobileError('');
+                  setIsMobileSubmitted(true);
+                  setShowSlotBookingGuide(true);
+                } else if (!selectedDate || !selectedTimeSlot) {
+                  // Scroll to date time section if not selected
+                  if (dateTimeRef.current) {
+                    dateTimeRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                } else if (!showPaymentSection) {
+                  // Show payment section
+                  setShowPaymentSection(true);
+                } else {
+                  // Handle payment
+                  handleRazorpayPayment();
+                }
+              }}
+              disabled={isProcessingPayment || (!isMobileSubmitted && !mobileNumber)}
+              className={`px-6 py-3 rounded-lg font-bold text-lg ${
+                (!isMobileSubmitted && !mobileNumber) || isProcessingPayment
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-[#FF7200] text-white hover:bg-[#FF6000]'
+              } relative overflow-hidden group`}
+            >
+              <span className="relative z-10">
+                {isProcessingPayment 
+                  ? 'Processing...' 
+                  : !isMobileSubmitted 
+                    ? 'Next: Select Your Slot'
+                    : !selectedDate || !selectedTimeSlot
+                      ? 'Select Date & Time'
+                      : !showPaymentSection
+                        ? 'Continue to Payment'
+                        : `Pay ₹${bookingFee} & Book Slot`}
+              </span>
+              <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
+            </button>
           </div>
-          <button
-            onClick={() => {
-              if (!isMobileSubmitted) {
-                // Handle mobile submission
-                if (!validateMobile(mobileNumber)) {
-                  setMobileError('Please enter a valid 10-digit mobile number');
-                  return;
-                }
-                setMobileError('');
-                setIsMobileSubmitted(true);
-                setShowSlotBookingGuide(true);
-              } else if (!selectedDate || !selectedTimeSlot) {
-                // Scroll to date time section if not selected
-                if (dateTimeRef.current) {
-                  dateTimeRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-              } else if (!showPaymentSection) {
-                // Show payment section
-                setShowPaymentSection(true);
-              } else {
-                // Handle payment
-                handleRazorpayPayment();
-              }
-            }}
-            disabled={isProcessingPayment || (!isMobileSubmitted && !mobileNumber)}
-            className={`px-6 py-3 rounded-lg font-bold text-lg ${
-              (!isMobileSubmitted && !mobileNumber) || isProcessingPayment
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-[#FF7200] text-white hover:bg-[#FF6000]'
-            } relative overflow-hidden group`}
-          >
-            <span className="relative z-10">
-              {isProcessingPayment 
-                ? 'Processing...' 
-                : !isMobileSubmitted 
-                  ? 'Next: Select Your Slot'
-                  : !selectedDate || !selectedTimeSlot
-                    ? 'Select Date & Time'
-                    : !showPaymentSection
-                      ? 'Continue to Payment'
-                      : `Pay ₹${bookingFee} & Book Slot`}
-            </span>
-            <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
-          </button>
         </div>
-      </div>
+      )}
     </div>
   );
 };
