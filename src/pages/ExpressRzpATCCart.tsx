@@ -645,41 +645,46 @@ Please confirm my booking. Thank you!`;
             </div>
           )}
 
-          {/* Compare & Save Section - Payment Phase with Additional Discount */}
+          {/* Promotional Banner - Only on Payment Page */}
           {showPaymentSection && !showBookingConfirmation && (
-            <div className="bg-white rounded-lg shadow-sm p-4 lg:p-6 mb-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Compare & Save</h2>
-              
-              <div className="flex flex-col space-y-4">
-                {/* Regular Workshop Service */}
-                <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg border-l-4 border-[#FF8A3D]">
-                  <div>
-                    <h3 className="text-gray-700 font-medium text-base">Regular Workshop Service</h3>
-                    <p className="text-gray-500 text-sm">Authorized Service Center</p>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-xl font-bold text-gray-900">₹{workshopPrice}</span>
-                    <p className="text-gray-500 text-sm">4-8 hours service time</p>
+            <div className="bg-gradient-to-r from-orange-400 to-red-500 rounded-lg shadow-md p-4 mb-4 text-white">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <p className="text-base font-bold mb-1">
+                    Express Service Package: <span className="text-yellow-200">₹{discountedPrice}</span>
+                  </p>
+                  <p className="text-base font-bold">
+                    🎉 Get Additional <span className="bg-white bg-opacity-25 px-2 py-1 rounded">₹{prePaidDiscount} OFF</span> on Booking Slot Now!
+                  </p>
+                </div>
+                <div className="text-right ml-3">
+                  <div className="bg-white bg-opacity-20 rounded-lg px-3 py-2">
+                    <p className="text-xs opacity-90">Final Price</p>
+                    <p className="text-xl font-bold text-yellow-200">₹{discountedPrice - prePaidDiscount}</p>
                   </div>
                 </div>
-                
-                {/* Express Service - Show reduced price with additional discount */}
-                <div className="bg-gradient-to-r from-[#FFF8F0] to-green-50 p-4 rounded-lg border-2 border-green-200">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-xl font-bold text-gray-900">Express Service</h3>
-                        
-                      </div>
-                      <p className="text-gray-600 text-sm">Priority booking</p>
+              </div>
+            </div>
+          )}
+
+          {/* Express Service Summary - Payment Phase */}
+          {showPaymentSection && !showBookingConfirmation && (
+            <div className="bg-white rounded-lg shadow-sm p-4 lg:p-6 mb-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Your Service Selection</h2>
+              
+              {/* Express Service - Show reduced price with additional discount */}
+              <div className="bg-gradient-to-r from-[#FFF8F0] to-green-50 p-4 rounded-lg border-2 border-green-200">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-xl font-bold text-gray-900">Express Service</h3>
                     </div>
-                    <div className="text-right">
-                      
-                      <div className="text-gray-600 line-through text-sm">₹{discountedPrice}</div>
-                      <div className="font-bold text-2xl text-[#FF8A3D]">₹{discountedPrice - prePaidDiscount}</div>
-                      
-                      <div className="text-blue-600 text-xs font-medium">Additional ₹{prePaidDiscount} OFF on Slot Booking</div>
-                    </div>
+                    <p className="text-gray-600 text-sm">Priority booking • 90-minute service</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-gray-600 line-through text-sm">₹{discountedPrice}</div>
+                    <div className="font-bold text-2xl text-[#FF8A3D]">₹{discountedPrice - prePaidDiscount}</div>
+                    <div className="text-blue-600 text-xs font-medium">Additional ₹{prePaidDiscount} OFF on Slot Booking</div>
                   </div>
                 </div>
               </div>
@@ -1312,7 +1317,7 @@ Please confirm my booking. Thank you!`;
                     : !selectedDate || !selectedTimeSlot
                       ? 'Select Date & Time'
                       : !showPaymentSection
-                        ? 'Continue to Payment'
+                        ? 'Continue Booking'
                         : `Pay ₹${bookingFee} & Book Slot`}
               </span>
               <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
