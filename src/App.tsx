@@ -40,6 +40,7 @@ import PrivacyPolicy from './pages/legal/PrivacyPolicy';
 import Terms from './pages/legal/Terms';
 import RefundPolicy from './pages/legal/RefundPolicy';
 import ExpressServiceTnC from './pages/legal/ExpressServiceTnC';
+import ExpressServiceTerms from './pages/legal/ExpressServiceTerms';
 
 import CityPage from './pages/CityPage';
 
@@ -275,6 +276,7 @@ const AppContent = () => {
               <Route path="/terms" element={<Terms />} />
               <Route path="/refund-policy" element={<RefundPolicy />} />
               <Route path="/express-Service-TnCs" element={<ExpressServiceTnC />} />
+              <Route path="/legal/express-service-terms" element={<ExpressServiceTerms />} />
 
               {/* City Routes */}
               <Route path="/city/:cityName" element={<CityPage />} />

@@ -645,7 +645,7 @@ Please confirm my booking. Thank you!`;
                       <h3 className="text-xl font-bold text-gray-900">Express Service</h3>
                       
                     </div>
-                    <p className="text-gray-600 text-sm">90-minute service</p>
+                    <p className="text-gray-600 text-sm">Save ₹{originalPrice - discountedPrice} on Slot Booking</p>
                   </div>
                   <div className="text-right">
                     <div className="text-gray-500 line-through text-base">₹{originalPrice}</div>
@@ -666,7 +666,7 @@ Please confirm my booking. Thank you!`;
                     Express Service Package: <span className="text-yellow-200">₹{discountedPrice}</span>
                   </p>
                   <p className="text-base font-bold">
-                    🎉 Pay ₹100 Now, Get <span className="bg-white bg-opacity-25 px-2 py-1 rounded">₹{prePaidDiscount} Extra OFF</span> on Booking Slot Now!
+                    Pay ₹100 Now, Get <span className="bg-white bg-opacity-25 px-2 py-1 rounded">₹{prePaidDiscount} Extra OFF</span> on Booking Slot Now!
                   </p>
                 </div>
                 <div className="text-right ml-3">
@@ -1123,43 +1123,17 @@ Please confirm my booking. Thank you!`;
           {/* Terms & Conditions Section */}
           {showPaymentSection && selectedDate && selectedTimeSlot && !showBookingConfirmation && (
             <div className="bg-white rounded-lg shadow-sm p-4 lg:p-6 mb-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Terms & Conditions</h3>
-              
-              <div className="space-y-3 text-sm text-gray-700">
-                <div className="flex items-start space-x-3">
-                  <div className="bg-blue-100 text-blue-600 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
-                    1
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-800 mb-1">Booking Amount Refund Policy</p>
-                    <p>The booking amount paid is fully refundable upon cancellation of the service. Customers may cancel their booking at any time prior to the commencement of service.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-3">
-                  <div className="bg-blue-100 text-blue-600 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
-                    2
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-800 mb-1">Refund Processing Timeline</p>
-                    <p>In the event of cancellation, refunds will be processed and credited back to the original payment method within three (3) business working days from the date of cancellation request.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-3">
-                  <div className="bg-blue-100 text-blue-600 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
-                    3
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-800 mb-1">Service Commitment</p>
-                    <p>By proceeding with the payment, you acknowledge and agree to the scheduled service appointment. Our team will contact you via WhatsApp for service coordination and confirmation.</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                <p className="text-xs text-gray-600">
-                  <span className="font-medium">Note:</span> For any queries regarding cancellation or refunds, please contact our customer support team. Terms are subject to GaadiMech's standard service agreement.
+              <div className="text-center">
+                <p className="text-sm text-gray-600">
+                  * Terms and Conditions Apply{' '}
+                  <Link 
+                    to="/legal/express-service-terms" 
+                    className="text-[#FF7200] hover:text-[#FF6000] underline font-medium"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Read More
+                  </Link>
                 </p>
               </div>
             </div>
