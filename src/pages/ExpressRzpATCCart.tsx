@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Clock, Calendar, ArrowRight, ArrowUp, ArrowDown, Shield, AlertTriangle, X, Car, Phone, Tag, ChevronDown, MapPin, AlertCircle, CreditCard, Star } from 'lucide-react';
+import { CheckCircle, Clock, Calendar, ArrowRight, ArrowUp, ArrowDown, Shield, AlertTriangle, X, Car, Phone, Tag, ChevronDown, MapPin, AlertCircle, CreditCard, Star, Gift, Download } from 'lucide-react';
 
 import { expressService } from '../services/expressService';
 import { getVehicleFromSession, parseCSVData, getPricingData } from '../utils/pricing-utils';
@@ -29,6 +29,7 @@ const ExpressRzpATCCart = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dateTimeRef = useRef<HTMLDivElement>(null);
+  const receiptRef = useRef<HTMLDivElement>(null);
   const [mobileNumber, setMobileNumber] = useState('');
   const [mobileError, setMobileError] = useState('');
   const [discountApplied, setDiscountApplied] = useState(false);
@@ -101,6 +102,7 @@ const ExpressRzpATCCart = () => {
   const [bookingFee, setBookingFee] = useState(100); // Rs. 100 booking fee
   const [whatsappRedirectCountdown, setWhatsappRedirectCountdown] = useState(3);
   const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
+  const [showRegularPriceModal, setShowRegularPriceModal] = useState(false);
 
   // Update the setCouponError function to ensure it always sets a string
   const setCouponErrorSafe = (error: unknown): void => {
@@ -550,6 +552,32 @@ Please confirm my booking. Thank you!`;
     setShowPaymentSection(true);
   };
 
+  // Function to download receipt
+  const downloadReceipt = async () => {
+    if (!receiptRef.current) return;
+
+    try {
+      // Dynamically import html2canvas
+      const html2canvas = (await import('html2canvas')).default;
+      
+      const canvas = await html2canvas(receiptRef.current, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+      });
+
+      // Create download link
+      const link = document.createElement('a');
+      link.download = `GaadiMech-${paymentSuccess ? 'Priority' : 'Regular'}-Booking-Receipt-${Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (error) {
+      console.error('Error downloading receipt:', error);
+      alert('Error downloading receipt. Please try again.');
+    }
+  };
+
   // Continue with the rest of the component...
   return (
     <div className="bg-gray-50 min-h-screen pb-24 hide-whatsapp-button hide-enquiry-form">
@@ -604,41 +632,25 @@ Please confirm my booking. Thank you!`;
             </div>
           </div>
 
-          {/* Compare & Save Section - Hide when payment section is shown */}
+          {/* Express Service Summary - Main Page */}
           {!showPaymentSection && !showBookingConfirmation && (
             <div className="bg-white rounded-lg shadow-sm p-4 lg:p-6 mb-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Compare & Save</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Your Express Service</h2>
               
-              <div className="flex flex-col space-y-4">
-                {/* Regular Workshop Service */}
-                <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg border-l-4 border-[#FF8A3D]">
+              {/* Express Service - Show actual discounted price from CSV */}
+              <div className="bg-[#FFF8F0] p-4 rounded-lg">
+                <div className="flex justify-between items-center">
                   <div>
-                    <h3 className="text-gray-700 font-medium text-base">Regular Workshop Service</h3>
-                    <p className="text-gray-500 text-sm">Authorized Service Center</p>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-xl font-bold text-gray-900">Express Service</h3>
+                      
+                    </div>
+                    <p className="text-gray-600 text-sm">90-minute service</p>
                   </div>
                   <div className="text-right">
-                    <span className="text-xl font-bold text-gray-900">₹{workshopPrice}</span>
-                    <p className="text-gray-500 text-sm">6-8 hours service time</p>
-                  </div>
-                </div>
-                
-                {/* Express Service - Show actual discounted price from CSV */}
-                <div className="bg-[#FFF8F0] p-4 rounded-lg">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-xl font-bold text-gray-900">Express Service</h3>
-                        <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-full font-medium">
-                          Save ₹{workshopPrice - discountedPrice}
-                        </span>
-                      </div>
-                      <p className="text-gray-600 text-sm">90-minute service</p>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-gray-500 line-through text-base">₹{originalPrice}</div>
-                      <div className="font-bold text-2xl text-[#FF8A3D]">₹{discountedPrice}</div>
-                      <div className="text-green-600 text-xs">Website discount: ₹{autoDiscountAmount} OFF</div>
-                    </div>
+                    <div className="text-gray-500 line-through text-base">₹{originalPrice}</div>
+                    <div className="font-bold text-2xl text-[#FF8A3D]">₹{discountedPrice}</div>
+                    
                   </div>
                 </div>
               </div>
@@ -654,7 +666,7 @@ Please confirm my booking. Thank you!`;
                     Express Service Package: <span className="text-yellow-200">₹{discountedPrice}</span>
                   </p>
                   <p className="text-base font-bold">
-                    🎉 Get Additional <span className="bg-white bg-opacity-25 px-2 py-1 rounded">₹{prePaidDiscount} OFF</span> on Booking Slot Now!
+                    🎉 Pay ₹100 Now, Get <span className="bg-white bg-opacity-25 px-2 py-1 rounded">₹{prePaidDiscount} Extra OFF</span> on Booking Slot Now!
                   </p>
                 </div>
                 <div className="text-right ml-3">
@@ -679,12 +691,12 @@ Please confirm my booking. Thank you!`;
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="text-xl font-bold text-gray-900">Express Service</h3>
                     </div>
-                    <p className="text-gray-600 text-sm">Priority booking • 90-minute service</p>
+                    <p className="text-gray-600 text-sm">Priority booking</p>
                   </div>
                   <div className="text-right">
                     <div className="text-gray-600 line-through text-sm">₹{discountedPrice}</div>
                     <div className="font-bold text-2xl text-[#FF8A3D]">₹{discountedPrice - prePaidDiscount}</div>
-                    <div className="text-blue-600 text-xs font-medium">Additional ₹{prePaidDiscount} OFF on Slot Booking</div>
+                    <div className="text-blue-600 text-xs font-medium">Applied: Extra ₹{prePaidDiscount} OFF </div>
                   </div>
                 </div>
               </div>
@@ -925,7 +937,11 @@ Please confirm my booking. Thank you!`;
                   {selectedDate && selectedTimeSlot && (
                     <div className="mt-6">
                       <button
-                        onClick={() => setShowPaymentSection(true)}
+                        onClick={() => {
+                          setShowPaymentSection(true);
+                          // Scroll to top when payment section is shown
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
                         className="w-full bg-[#FF7200] text-white font-bold py-4 rounded-lg hover:bg-[#FF6000] transition-colors text-lg flex items-center justify-center"
                       >
                         Confirm Booking
@@ -1044,7 +1060,7 @@ Please confirm my booking. Thank you!`;
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Booking Fee (Refundable):</span>
+                    <span className="text-gray-600">Booking Fee:</span>
                     <span className="font-medium">₹{bookingFee}</span>
                   </div>
                 </div>
@@ -1067,24 +1083,35 @@ Please confirm my booking. Thank you!`;
                 </div>
               </div>
 
-              {/* Payment Button */}
-              <button
-                onClick={handleRazorpayPayment}
-                disabled={isProcessingPayment}
-                className="w-full bg-green-600 text-white font-bold py-4 rounded-lg hover:bg-green-700 transition-colors text-lg flex items-center justify-center space-x-2"
-              >
-                {isProcessingPayment ? (
-                  <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    <span>Processing...</span>
-                  </>
-                ) : (
-                  <>
-                    <CreditCard className="w-5 h-5" />
-                    <span>Pay ₹{bookingFee} & Book Slot</span>
-                  </>
-                )}
-              </button>
+              {/* Payment Options - Two Buttons */}
+              <div className="space-y-4">
+                <button
+                  onClick={() => setShowRegularPriceModal(true)}
+                  className="w-full bg-gray-600 text-white font-bold py-4 rounded-lg hover:bg-gray-700 transition-colors text-lg flex items-center justify-center space-x-2"
+                >
+                  <span>Book at Regular Price</span>
+                  <span className="text-sm font-normal">(₹{discountedPrice})</span>
+                </button>
+                
+                <button
+                  onClick={handleRazorpayPayment}
+                  disabled={isProcessingPayment}
+                  className="w-full bg-green-600 text-white font-bold py-4 rounded-lg hover:bg-green-700 transition-colors text-lg flex items-center justify-center space-x-2"
+                >
+                  {isProcessingPayment ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <span>Processing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <CreditCard className="w-5 h-5" />
+                      <span>Pay ₹{bookingFee} & Get ₹{prePaidDiscount} OFF</span>
+                      <span className="text-sm font-normal">(₹{discountedPrice- prePaidDiscount})</span>
+                    </>
+                  )}
+                </button>
+              </div>
 
               <div className="flex items-center justify-center space-x-2 text-gray-600 text-sm mt-3">
                 <Shield className="w-4 h-4" />
@@ -1138,23 +1165,99 @@ Please confirm my booking. Thank you!`;
             </div>
           )}
 
+          {/* Regular Price Confirmation Modal */}
+          {showRegularPriceModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+                <div className="text-center mb-6">
+                  <AlertTriangle className="w-16 h-16 text-orange-500 mx-auto mb-4" />
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Are you sure?</h2>
+                  <p className="text-gray-600">You want to pay the regular price of ₹{discountedPrice}?</p>
+                </div>
+                
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                  <div className="flex items-center justify-center mb-2">
+                    <Gift className="w-5 h-5 text-yellow-600 mr-2" />
+                    <span className="font-medium text-yellow-800">Limited Time Offer!</span>
+                  </div>
+                  <p className="text-yellow-700 text-sm text-center">
+                    Pay just ₹{bookingFee} now and get ₹{prePaidDiscount} instant discount on your service!
+                  </p>
+                  <p className="text-yellow-700 text-sm text-center mt-1">
+                    Final price: ₹{discountedPrice - prePaidDiscount} (Save ₹{prePaidDiscount})
+                  </p>
+                </div>
+                
+                <div className="space-y-3">
+                  <button
+                    onClick={() => {
+                      setShowRegularPriceModal(false);
+                      handleRazorpayPayment();
+                    }}
+                    className="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-2"
+                  >
+                    <CreditCard className="w-5 h-5" />
+                    <span>Pay ₹{bookingFee} Now & Get ₹{prePaidDiscount} OFF</span>
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      setShowRegularPriceModal(false);
+                      // Handle regular price booking (redirect to WhatsApp or show booking confirmation)
+                      setShowBookingConfirmation(true);
+                      setPaymentSuccess(false); // No payment made for regular price
+                    }}
+                    className="w-full bg-gray-600 text-white font-bold py-3 rounded-lg hover:bg-gray-700 transition-colors"
+                  >
+                    Continue with Regular Price (₹{discountedPrice})
+                  </button>
+                  
+                  <button
+                    onClick={() => setShowRegularPriceModal(false)}
+                    className="w-full bg-gray-200 text-gray-700 font-medium py-3 rounded-lg hover:bg-gray-300 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Booking Confirmation Page */}
-          {showBookingConfirmation && paymentSuccess && (
+          {showBookingConfirmation && (
             <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
               <div className="max-w-2xl mx-auto pt-8">
-                <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+                <div ref={receiptRef} className="bg-white rounded-2xl shadow-xl p-8 text-center">
                   <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <CheckCircle className="w-16 h-16 text-green-500" />
                   </div>
-                  <h1 className="text-4xl font-bold text-gray-800 mb-3">Payment Completed! 🎉</h1>
-                  <h2 className="text-2xl font-semibold text-green-600 mb-2">Booking Confirmed</h2>
-                  <p className="text-gray-600 mb-8 text-lg">Your priority express service slot has been successfully booked.</p>
+                  {paymentSuccess ? (
+                    <>
+                      <h1 className="text-4xl font-bold text-gray-800 mb-3">Payment Completed! 🎉</h1>
+                      <h2 className="text-2xl font-semibold text-green-600 mb-2">Express Slot Confirmed</h2>
+                      <p className="text-gray-600 mb-8 text-lg">Your Express Slot has been confirmed.</p>
+                    </>
+                  ) : (
+                    <>
+                      <h1 className="text-4xl font-bold text-gray-800 mb-3">Booking Confirmed! 🎉</h1>
+                      <h2 className="text-2xl font-semibold text-green-600 mb-2">Regular Slot Confirmed</h2>
+                      <p className="text-gray-600 mb-8 text-lg">Your Regular Slot has been confirmed.</p>
+                    </>
+                  )}
               
               {/* Booking Details Card */}
               <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-6 mb-6">
                 <h3 className="text-lg font-bold text-gray-800 mb-4">📋 Booking Details</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                  <div className="space-y-3">
+                {paymentSuccess ? (
+                  // Priority Slot Details - Single Column Layout
+                  <div className="space-y-3 text-left">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 flex items-center">
+                        <Tag className="w-4 h-4 mr-2" />
+                        Booking ID:
+                      </span>
+                      <span className="font-medium">GM{Date.now().toString().slice(-6)}</span>
+                    </div>
                     <div className="flex items-center justify-between">
                       <span className="text-gray-600 flex items-center">
                         <Car className="w-4 h-4 mr-2" />
@@ -1178,47 +1281,108 @@ Please confirm my booking. Thank you!`;
                         {availableTimeSlots.find(slot => slot.id === selectedTimeSlot)?.display}
                       </span>
                     </div>
-                  </div>
-                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 flex items-center">
+                        <Star className="w-4 h-4 mr-2" />
+                        Express Service Package:
+                      </span>
+                      <span className="font-medium text-gray-600">₹{discountedPrice}</span>
+                    </div>
                     <div className="flex items-center justify-between">
                       <span className="text-gray-600 flex items-center">
                         <CreditCard className="w-4 h-4 mr-2" />
                         Booking Fee:
                       </span>
-                      <span className="font-medium text-green-600">₹{bookingFee} Paid</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600 flex items-center">
-                        <Tag className="w-4 h-4 mr-2" />
-                        Booking ID:
-                      </span>
-                      <span className="font-medium">GM{Date.now().toString().slice(-6)}</span>
+                      <span className="font-medium text-green-600">₹{bookingFee}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-gray-600 flex items-center">
                         <Star className="w-4 h-4 mr-2" />
-                        Total Savings:
+                        Additional Discount:
                       </span>
                       <span className="font-medium text-green-600">₹{prePaidDiscount}</span>
                     </div>
+                    <div className="flex items-center justify-between border-t pt-3 mt-3">
+                      <span className="text-gray-600 flex items-center font-bold">
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Priority Service Price:
+                      </span>
+                      <span className="font-bold text-green-600 text-lg">₹{discountedPrice - bookingFee - prePaidDiscount}</span>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  // Regular Slot Details - Grid Layout
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600 flex items-center">
+                          <Car className="w-4 h-4 mr-2" />
+                          Vehicle:
+                        </span>
+                        <span className="font-medium">{carBrand} {carModel}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600 flex items-center">
+                          <Calendar className="w-4 h-4 mr-2" />
+                          Date:
+                        </span>
+                        <span className="font-medium">{formatDateDisplay(selectedDate)}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600 flex items-center">
+                          <Clock className="w-4 h-4 mr-2" />
+                          Time:
+                        </span>
+                        <span className="font-medium">
+                          {availableTimeSlots.find(slot => slot.id === selectedTimeSlot)?.display}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600 flex items-center">
+                          <Tag className="w-4 h-4 mr-2" />
+                          Booking ID:
+                        </span>
+                        <span className="font-medium">GM{Date.now().toString().slice(-6)}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600 flex items-center">
+                          <CreditCard className="w-4 h-4 mr-2" />
+                          Regular Price:
+                        </span>
+                        <span className="font-medium text-green-600">₹{discountedPrice}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Payment Success Info */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                <div className="flex items-center justify-center space-x-2 mb-2">
-                  <Shield className="w-5 h-5 text-blue-600" />
-                  <span className="font-medium text-blue-800">Priority Slot Secured</span>
+              {paymentSuccess ? (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                  <div className="flex items-center justify-center space-x-2 mb-2">
+                    <Shield className="w-5 h-5 text-blue-600" />
+                    <span className="font-medium text-blue-800">Priority Slot Confirmed</span>
+                  </div>
+                  <p className="text-blue-700 text-sm">
+                    You'll Pay ₹{discountedPrice - prePaidDiscount - bookingFee} at the Workshop
+                  </p>
                 </div>
-                <p className="text-blue-700 text-sm">
-                  Your ₹{bookingFee} booking fee will be adjusted from the final service amount. 
-                  You'll only pay ₹{discountedPrice - prePaidDiscount - bookingFee} at the workshop.
-                </p>
-              </div>
+              ) : (
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
+                  <div className="flex items-center justify-center space-x-2 mb-2">
+                    <Calendar className="w-5 h-5 text-orange-600" />
+                    <span className="font-medium text-orange-800">Regular Slot Confirmed</span>
+                  </div>
+                  <p className="text-orange-700 text-sm">
+                    You'll pay the full service amount of ₹{discountedPrice} at the workshop.
+                  </p>
+                </div>
+              )}
 
               {/* WhatsApp Redirect Countdown */}
-              {whatsappRedirectCountdown > 0 && (
+              {paymentSuccess && whatsappRedirectCountdown > 0 && (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
                   <p className="text-green-800 font-medium mb-2">
                     🚀 Redirecting to WhatsApp in {whatsappRedirectCountdown} seconds...
@@ -1229,22 +1393,48 @@ Please confirm my booking. Thank you!`;
                 </div>
               )}
               
+              {/* Download Receipt Button */}
+              <button 
+                onClick={downloadReceipt}
+                className="bg-blue-500 text-white px-8 py-4 rounded-lg font-bold hover:bg-blue-600 transition-colors flex items-center justify-center mx-auto space-x-2 mb-4"
+              >
+                <Download className="w-5 h-5" />
+                <span>Download Receipt</span>
+              </button>
+
               {/* Manual WhatsApp Button */}
               <button 
                 onClick={() => {
-                  const bookingDetails = sessionStorage.getItem('bookingDetails');
-                  if (bookingDetails) {
-                    const details = JSON.parse(bookingDetails);
-                    const selectedSlot = availableTimeSlots.find(slot => slot.id === details.timeSlot);
-                    const message = `Hi! I've successfully booked a Priority Express Service slot. Here are my booking details:
+                  const selectedSlot = availableTimeSlots.find(slot => slot.id === selectedTimeSlot);
+                  let message;
+                  
+                  if (paymentSuccess) {
+                    const bookingDetails = sessionStorage.getItem('bookingDetails');
+                    if (bookingDetails) {
+                      const details = JSON.parse(bookingDetails);
+                      message = `Hi! I've successfully booked a Priority Express Service slot. Here are my booking details:
 
-🚗 Vehicle: ${details.vehicle}
-📅 Date: ${formatDateDisplay(details.date)}
+🚗 Vehicle: ${carBrand} ${carModel}
+📅 Date: ${formatDateDisplay(selectedDate)}
 ⏰ Time: ${selectedSlot?.display}
 💰 Booking Fee Paid: ₹${details.bookingFee}
 🆔 Payment ID: ${details.paymentId}
+💵 Final Amount: ₹${discountedPrice - prePaidDiscount - bookingFee} (to be paid at workshop)
 
 Please confirm my booking. Thank you!`;
+                    }
+                  } else {
+                    message = `Hi! I've booked an Express Service slot at regular price. Here are my booking details:
+
+🚗 Vehicle: ${carBrand} ${carModel}
+📅 Date: ${formatDateDisplay(selectedDate)}
+⏰ Time: ${selectedSlot?.display}
+💵 Service Amount: ₹${discountedPrice} (to be paid at workshop)
+
+Please confirm my booking. Thank you!`;
+                  }
+                  
+                  if (message) {
                     window.open(`https://wa.me/${WHATSAPP_PHONE_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
                   }
                 }}
@@ -1253,8 +1443,8 @@ Please confirm my booking. Thank you!`;
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
                 </svg>
-                                 <span>Continue to WhatsApp</span>
-               </button>
+                <span>Continue to WhatsApp</span>
+              </button>
                  </div>
                </div>
              </div>
@@ -1272,56 +1462,62 @@ Please confirm my booking. Thank you!`;
             <div>
               <div className="text-gray-600">Total Price</div>
               <div className="font-bold text-2xl text-[#FF7200]">
-                ₹{showPaymentSection ? (discountedPrice - prePaidDiscount) : discountedPrice}
+                {showPaymentSection ? `₹${discountedPrice - prePaidDiscount}` : `₹${discountedPrice}`}
               </div>
-              <div className="text-green-600 text-xs">
-                Save ₹{workshopPrice - (showPaymentSection ? (discountedPrice - prePaidDiscount) : discountedPrice)} vs Company Workshops
-              </div>
+              {showPaymentSection && (
+                <div className="text-green-600 text-xs">
+                  Pay ₹{bookingFee} now & get ₹{prePaidDiscount} OFF
+                </div>
+              )}
             </div>
-            <button
-              onClick={() => {
-                if (!isMobileSubmitted) {
-                  // Handle mobile submission
-                  if (!validateMobile(mobileNumber)) {
-                    setMobileError('Please enter a valid 10-digit mobile number');
-                    return;
+            {showPaymentSection ? (
+              <button
+                onClick={handleRazorpayPayment}
+                disabled={isProcessingPayment}
+                className="bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors text-sm"
+              >
+                {isProcessingPayment ? 'Processing...' : `Pay ₹${bookingFee} & Get ₹${prePaidDiscount} OFF`}
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  if (!isMobileSubmitted) {
+                    // Handle mobile submission
+                    if (!validateMobile(mobileNumber)) {
+                      setMobileError('Please enter a valid 10-digit mobile number');
+                      return;
+                    }
+                    setMobileError('');
+                    setIsMobileSubmitted(true);
+                    setShowSlotBookingGuide(true);
+                  } else if (!selectedDate || !selectedTimeSlot) {
+                    // Scroll to date time section if not selected
+                    if (dateTimeRef.current) {
+                      dateTimeRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  } else {
+                    // Show payment section
+                    setShowPaymentSection(true);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                   }
-                  setMobileError('');
-                  setIsMobileSubmitted(true);
-                  setShowSlotBookingGuide(true);
-                } else if (!selectedDate || !selectedTimeSlot) {
-                  // Scroll to date time section if not selected
-                  if (dateTimeRef.current) {
-                    dateTimeRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                } else if (!showPaymentSection) {
-                  // Show payment section
-                  setShowPaymentSection(true);
-                } else {
-                  // Handle payment
-                  handleRazorpayPayment();
-                }
-              }}
-              disabled={isProcessingPayment || (!isMobileSubmitted && !mobileNumber)}
-              className={`px-6 py-3 rounded-lg font-bold text-lg ${
-                (!isMobileSubmitted && !mobileNumber) || isProcessingPayment
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-[#FF7200] text-white hover:bg-[#FF6000]'
-              } relative overflow-hidden group`}
-            >
-              <span className="relative z-10">
-                {isProcessingPayment 
-                  ? 'Processing...' 
-                  : !isMobileSubmitted 
+                }}
+                disabled={!isMobileSubmitted && !mobileNumber}
+                className={`px-6 py-3 rounded-lg font-bold text-lg ${
+                  (!isMobileSubmitted && !mobileNumber)
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-[#FF7200] text-white hover:bg-[#FF6000]'
+                } relative overflow-hidden group`}
+              >
+                <span className="relative z-10">
+                  {!isMobileSubmitted 
                     ? 'Next: Select Your Slot'
                     : !selectedDate || !selectedTimeSlot
                       ? 'Select Date & Time'
-                      : !showPaymentSection
-                        ? 'Continue Booking'
-                        : `Pay ₹${bookingFee} & Book Slot`}
-              </span>
-              <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
-            </button>
+                      : 'Continue Booking'}
+                </span>
+                <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
+              </button>
+            )}
           </div>
         </div>
       )}

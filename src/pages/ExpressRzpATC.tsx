@@ -740,7 +740,7 @@ const ExpressRzpATC = () => {
           >
             Book Your Express Service
           </button>
-          <p className="mt-4 opacity-80">No prepayment required. Book now, pay after service.</p>
+          <p className="mt-4 opacity-80">Secure Your Slot with Priority Booking</p>
         </div>
       </section>
 
