@@ -5,6 +5,7 @@ import { X, Calendar, User, Phone, Car, Wrench } from 'lucide-react';
 import { enquiryService } from '../services/enquiry';
 import type { EnquiryFormData, ServiceType } from '../types/enquiry';
 import { getVehicleFromSession } from '../utils/pricing-utils';
+import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
 
 interface CustomerFormProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ interface CustomerFormProps {
 }
 
 const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultServiceType, onSubmitSuccess }) => {
+  const { trackLead } = useMetaAnalytics();
   const [formData, setFormData] = useState<EnquiryFormData>({
     name: '',
     mobileNumber: '',
@@ -56,38 +58,62 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isOpen, onClose, defaultSer
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) {
-      return;
-    }
-
+    if (!validateForm()) return;
+    
     setStatus('loading');
-    setErrorMessage('');
-
+    setErrors({});
+    
     try {
-      await enquiryService.submit(formData);
-      setStatus('success');
-      
-      // Track mobile number with Zepic
-      if (window.zepic) {
-        window.zepic.identify('mobile_number', formData.mobileNumber);
-      }
-      
-      // Save mobile number to session storage
-      sessionStorage.setItem('userMobileNumber', formData.mobileNumber);
-      
-      setFormData({
-        name: '',
-        mobileNumber: '',
-        carModel: '',
-        preferredDate: '',
+      // Track Schedule Service button as Lead
+      await trackLead(
+        { 
+          phone: formData.mobileNumber,
+          firstName: formData.name.split(' ')[0],
+          lastName: formData.name.split(' ').slice(1).join(' ') || undefined
+        },
+        {
+          content_name: 'Schedule Service Form Submission',
+          content_type: 'service_inquiry',
+          currency: 'INR'
+        }
+      );
+
+      const response = await enquiryService.submit({
+        name: formData.name,
+        mobileNumber: formData.mobileNumber,
+        carModel: formData.carModel,
+        preferredDate: formData.preferredDate,
         message: '',
-        serviceType: undefined
+        serviceType: formData.serviceType!
       });
-      // Call onSubmitSuccess callback if provided
-      onSubmitSuccess?.();
-    } catch (error) {
+      
+      if (response.data) {
+        setStatus('success');
+        // Clear form data on success
+        setFormData({
+          name: '',
+          mobileNumber: '',
+          carModel: '',
+          preferredDate: '',
+          message: '',
+          serviceType: defaultServiceType || undefined
+        });
+        
+        // Call success callback if provided
+        if (onSubmitSuccess) {
+          onSubmitSuccess();
+        }
+        
+        // Auto-close after 2 seconds
+        setTimeout(() => {
+          onClose();
+          setStatus('idle');
+        }, 2000);
+      }
+    } catch (error: any) {
+      console.error('Error submitting form:', error);
       setStatus('error');
-      setErrorMessage(error instanceof Error ? error.message : 'An error occurred. Please try again.');
+      setErrorMessage(error.response?.data?.error?.message || 'Failed to submit form. Please try again.');
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Calendar, Clock, Gift, CheckCircle, Award, Users } from 'lucide-react';
+import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
 
 interface TimeSlotModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ interface TimeSlot {
 }
 
 const TimeSlotModal: React.FC<TimeSlotModalProps> = ({ isOpen, onClose, onSubmit, mobileNumber, servicePrice = 0 }) => {
+  const { trackPurchase } = useMetaAnalytics();
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [availableDates, setAvailableDates] = useState<string[]>([]);
@@ -178,7 +180,7 @@ const TimeSlotModal: React.FC<TimeSlotModalProps> = ({ isOpen, onClose, onSubmit
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedDate) {
       alert('Please select a date');
       return;
@@ -190,6 +192,17 @@ const TimeSlotModal: React.FC<TimeSlotModalProps> = ({ isOpen, onClose, onSubmit
     }
     
     try {
+      // Track Complete Booking button as Purchase
+      await trackPurchase(
+        { phone: mobileNumber },
+        {
+          currency: 'INR',
+          value: servicePrice > 0 ? servicePrice - 500 : 0, // Discounted price
+          content_name: 'Time Slot Booking Complete',
+          content_type: 'service_booking'
+        }
+      );
+
       onSubmit(selectedDate, selectedTimeSlot);
     } catch (error) {
       console.error('Error submitting time slot:', error);

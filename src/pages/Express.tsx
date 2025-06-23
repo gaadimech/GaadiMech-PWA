@@ -12,6 +12,7 @@ import Modal from 'react-modal';
 import { useLocation } from 'react-router-dom';
 import { getVehicleFromSession } from '../utils/pricing-utils';
 import { Link } from 'react-router-dom';
+import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
 
 // Google Analytics events added:
 // 1. conversion_event_add_to_cart - Triggered when user clicks "Schedule Slot Now"
@@ -97,6 +98,7 @@ const qualityFeatures = [
 
 const ExpressService = () => {
   const location = useLocation();
+  const { trackAddToCart, trackInitiateCheckout, trackPurchase, trackLead, trackSchedule } = useMetaAnalytics();
   const [mobile, setMobile] = useState(() => {
     // Initialize mobile number from session storage if available
     return sessionStorage.getItem('userMobileNumber') || '';
@@ -127,7 +129,7 @@ const ExpressService = () => {
     return mobileRegex.test(number);
   };
 
-  const handleScheduleClick = () => {
+  const handleScheduleClick = async () => {
     // Clear previous errors
     setError('');
     
@@ -138,6 +140,12 @@ const ExpressService = () => {
         'event_label': 'express_schedule_slot'
       });
     }
+    
+    // Track with Meta Conversion API
+    await trackAddToCart(undefined, {
+      content_name: 'Express Service Schedule',
+      content_type: 'service_booking'
+    });
     
     // First check if we have vehicle details in session
     const savedVehicle = getVehicleFromSession();
@@ -172,7 +180,7 @@ const ExpressService = () => {
   };
 
   // Handle "Book Slot Now" click from pricing modal (This is the Get Rs500 off button)
-  const handleBookSlotNowClick = (providedMobileNumber?: string) => {
+  const handleBookSlotNowClick = async (providedMobileNumber?: string) => {
     setIsPricingModalOpen(false);
     
     // Track purchase conversion event
@@ -184,6 +192,17 @@ const ExpressService = () => {
         'currency': 'INR'
       });
     }
+    
+    // Track with Meta Conversion API - InitiateCheckout
+    await trackInitiateCheckout(
+      { phone: providedMobileNumber },
+      {
+        currency: 'INR',
+        value: selectedServicePrice ? selectedServicePrice - 500 : 0,
+        content_name: 'Express Service Booking',
+        content_type: 'service'
+      }
+    );
     
     // Since mobile validation now happens in PricingInfoModal, providedMobileNumber should always be valid
     // We can skip the validation and mobile input modal step
@@ -218,6 +237,17 @@ const ExpressService = () => {
     if (window.zepic) {
       window.zepic.identify('mobile_number', mobileNumber);
     }
+    
+    // Track with Meta Conversion API - Lead
+    await trackLead(
+      { phone: mobileNumber },
+      {
+        content_name: 'Express Service Lead',
+        content_type: 'service_inquiry',
+        value: price,
+        currency: 'INR'
+      }
+    );
     
     sessionStorage.setItem('userMobileNumber', mobileNumber);
     const serviceType = selectedServiceType || 4; // Default to "Express Service" (ID: 4)
@@ -307,6 +337,28 @@ const ExpressService = () => {
 
     try {
       console.log('Updating lead with date and time slot:', { id: currentLeadId, date, timeSlot });
+      
+      // Track with Meta Conversion API - Schedule
+      await trackSchedule(
+        { phone: mobile },
+        {
+          content_name: 'Express Service Schedule',
+          content_type: 'appointment',
+          value: selectedServicePrice ? selectedServicePrice - 500 : 0,
+          currency: 'INR'
+        }
+      );
+      
+      // Track with Meta Conversion API - Purchase (final conversion)
+      await trackPurchase(
+        { phone: mobile },
+        {
+          currency: 'INR',
+          value: selectedServicePrice ? selectedServicePrice - 500 : 0,
+          content_name: 'Express Service Purchase',
+          content_type: 'service'
+        }
+      );
       
       // Update the lead with the selected date and time slot
       const response = await expressService.updateLead(currentLeadId, {

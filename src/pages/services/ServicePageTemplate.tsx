@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { Button } from '../../components/ui/button';
 import { ArrowRight, Star, Check, X } from 'lucide-react';
 import { ServiceType } from '../../types/services';
+import { useMetaAnalytics } from '../../hooks/useMetaAnalytics';
 
 /**
  * Service Page Template
@@ -20,6 +21,7 @@ import { ServiceType } from '../../types/services';
 const ServicePageTemplate: React.FC = () => {
   const { serviceType } = useParams<{ serviceType: string }>();
   const [selectedService, setSelectedService] = useState<ServiceCard | null>(null);
+  const { trackLead } = useMetaAnalytics();
   
   // Convert serviceType to a valid ServiceType
   const normalizedServiceType = serviceType as ServiceType || 'periodic';
@@ -39,8 +41,18 @@ const ServicePageTemplate: React.FC = () => {
   }
   
   // Handler for "Book Service" button
-  const handleBookService = () => {
+  const handleBookService = async () => {
     if (!selectedService) return;
+    
+    // Track Book Now button as Lead
+    await trackLead(
+      undefined, // No customer info available at this point
+      {
+        content_name: `Service Page Booking - ${selectedService.title}`,
+        content_type: 'service_inquiry',
+        currency: 'INR'
+      }
+    );
     
     const message = encodeURIComponent(selectedService.whatsappMessage);
     window.open(`https://wa.me/917300042410?text=${message}`, '_blank');

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { ArrowRight, Phone, Clock, Home, IndianRupee, Check, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
+import { testMetaConversionApi } from '../utils/metaTest';
+import { testAllMetaEvents } from '../utils/metaEventTest';
 
 // Google Analytics events added:
 // 1. conversion_event_book_appointment - Triggered when user clicks "Book Now" (WhatsApp)
@@ -10,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 const Hero = () => {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
+  const { trackContact, trackLead } = useMetaAnalytics();
 
   // Check if the device is mobile
   useEffect(() => {
@@ -23,11 +27,24 @@ const Hero = () => {
     // Add event listener for window resize
     window.addEventListener('resize', checkIfMobile);
     
+    // Test Meta Conversion API on mount - debug mode
+    testMetaConversionApi().then(success => {
+      if (success) {
+        console.log('🎯 Meta API is connected - now running event tests');
+        console.log('ℹ️  Note: PageView events require customer data (phone/email/location)');
+        console.log('ℹ️  Use simulateUserWithPhone() in console to test PageView events');
+        // Run sequential event tests
+        setTimeout(() => {
+          testAllMetaEvents();
+        }, 3000);
+      }
+    });
+    
     // Cleanup
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
 
-  const handleBookService = () => {
+  const handleBookService = async () => {
     // Track conversion event for Book Now (WhatsApp)
     if (window.gtag) {
       window.gtag('event', 'conversion_event_book_appointment', {
@@ -36,11 +53,17 @@ const Hero = () => {
       });
     }
     
+    // Track with Meta Conversion API
+    await trackLead(undefined, {
+      content_name: 'Hero WhatsApp Booking',
+      content_type: 'booking_request'
+    });
+    
     const message = encodeURIComponent("Hi, I'd like to book an Express Car Service through GaadiMech.");
     window.open(`https://wa.me/917300042410?text=${message}`, '_blank');
   };
 
-  const handleContact = () => {
+  const handleContact = async () => {
     // Track conversion event for Call Us
     if (window.gtag) {
       window.gtag('event', 'conversion_event_phone_call_lead', {
@@ -48,6 +71,9 @@ const Hero = () => {
         'event_label': 'hero_phone_call'
       });
     }
+    
+    // Track with Meta Conversion API
+    await trackContact();
     
     window.location.href = `tel:+918448285289`;
   };

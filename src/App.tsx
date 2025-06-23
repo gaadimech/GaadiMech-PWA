@@ -21,6 +21,8 @@ import Footer from './components/Footer';
 import CustomerForm from './components/CustomerForm';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 import { useAnalytics } from './hooks/useAnalytics';
+import { useMetaAnalytics } from './hooks/useMetaAnalytics';
+import './utils/testPageView'; // Import PageView test utilities
 import { useLocation as useUserLocation } from './hooks/useLocation';
 
 // Service Pages
@@ -68,6 +70,7 @@ Modal.setAppElement('#root');
 // Create a new component to use the hook
 const AnalyticsWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   useGoogleAnalytics();
+  useMetaAnalytics();
   return <>{children}</>;
 };
 

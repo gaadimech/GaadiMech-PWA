@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ServiceCard as ServiceCardProps } from '../data/services-data';
 import { Vehicle } from '../types/services';
 import ReactDOM from 'react-dom';
+import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
 
 interface ServiceCardComponentProps {
   card: ServiceCardProps;
@@ -35,6 +36,7 @@ const ServiceCard: React.FC<ServiceCardComponentProps> = ({
   serviceType,
   periodicServicePrice
 }) => {
+  const { trackLead } = useMetaAnalytics();
   const [showDetails, setShowDetails] = useState(false);
   const [highlightDuration, setHighlightDuration] = useState(false);
   const isExpressService = card.duration.includes('90 Mins') || card.duration.includes('⏰');
@@ -130,11 +132,22 @@ const ServiceCard: React.FC<ServiceCardComponentProps> = ({
     setCurrentTotalPrice(calculateTotalPrice(updatedServices));
   };
   
-  const handleBookNow = () => {
+  const handleBookNow = async () => {
     if (!vehicleSelected) {
       onSelectCar();
       return;
     }
+
+    // Track Book Now button as Lead
+    await trackLead(
+      undefined, // No customer info available at this point
+      {
+        content_name: `Service Booking - ${card.title}`,
+        content_type: 'service_inquiry',
+        currency: 'INR',
+        value: actualPrice ? parseFloat(actualPrice.replace(/[^\d.]/g, '')) : 0
+      }
+    );
 
     let customMessage = '';
     

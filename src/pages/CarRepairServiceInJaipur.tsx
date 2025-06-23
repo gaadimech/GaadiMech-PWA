@@ -1,17 +1,18 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-import { PhoneIcon, MapPinIcon, ShieldCheckIcon, WrenchIcon } from '@heroicons/react/24/outline';
-import { StarIcon } from '@heroicons/react/20/solid';
-
-import ServiceCard from '../components/ServiceCard';
-import ReviewCarousel from '../components/ReviewCarousel';
+import { ArrowRight, Clock as ClockIcon, MapPin as MapPinIcon, Shield as ShieldCheckIcon, Phone as PhoneIcon, Star as StarIcon, Wrench as WrenchIcon, Sparkles as SparklesIcon, CheckCircle, Car as CarIcon, Award as AwardIcon, Users as UsersIcon } from 'lucide-react';
+import { Card } from '../components/ui/card';
+import { Button } from '../components/ui/button';
 import Breadcrumb from '../components/Breadcrumb';
+import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
+import ReviewCarousel from '../components/ReviewCarousel';
 import { getReviewsByService } from '../data/reviews';
 
 const CarRepairServiceInJaipur = () => {
   const navigate = useNavigate();
+  const { trackLead, trackContact } = useMetaAnalytics();
   const cityName = "Jaipur";
   const serviceName = "Car Repair Service";
   const serviceReviews = getReviewsByService('periodic');
@@ -36,17 +37,42 @@ const CarRepairServiceInJaipur = () => {
     }
   };
 
-  const handleBookService = () => {
+  const handleBookService = async () => {
+    // Track Book Now button as Lead
+    await trackLead(
+      undefined, // No customer info available at this point
+      {
+        content_name: `Car Repair Service Booking - ${cityName}`,
+        content_type: 'service_inquiry',
+        currency: 'INR'
+      }
+    );
+
     const message = encodeURIComponent(`Hi, I'd like to book a Car Repair Service in ${cityName} through GaadiMech.`);
     window.open(`https://wa.me/917300042410?text=${message}`, '_blank');
   };
 
-  const handleContact = () => {
+  const handleContact = async () => {
+    // Track Contact button
+    await trackContact();
     window.location.href = `tel:+918448285289`;
   };
 
   return (
     <>
+      <Helmet>
+        <title>{`Car Repair Service in ${cityName} | GaadiMech`}</title>
+        <meta name="description" content={`Professional car repair services in ${cityName} with expert mechanics and genuine parts for all makes and models.`} />
+        <meta name="keywords" content="Car Repair, GaadiMech, Jaipur, Expert Mechanics, Genuine Parts, Doorstep Service, Transparent Pricing" />
+        <meta property="og:title" content={`Car Repair Service in ${cityName} | GaadiMech`} />
+        <meta property="og:description" content={`Professional car repair services in ${cityName} with expert mechanics and genuine parts for all makes and models.`} />
+        <meta property="og:image" content="https://www.gaadi.me/images/og-image.jpg" />
+        <meta property="og:url" content="https://www.gaadi.me/car-repair-service-in-jaipur" />
+        <meta name="twitter:title" content={`Car Repair Service in ${cityName} | GaadiMech`} />
+        <meta name="twitter:description" content={`Professional car repair services in ${cityName} with expert mechanics and genuine parts for all makes and models.`} />
+        <meta name="twitter:image" content="https://www.gaadi.me/images/og-image.jpg" />
+      </Helmet>
+
       <Breadcrumb cityName={cityName} serviceName={serviceName} />
 
       {/* Hero Section */}

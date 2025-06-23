@@ -8,6 +8,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { PricingData } from '../types/services';
 import { useLocation as useUserLocation } from '../hooks/useLocation';
 import { LocationData } from '../utils/location';
+import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
 
 // Add new interface for time slots
 interface TimeSlot {
@@ -22,6 +23,7 @@ const ExpressBetaATCCart = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dateTimeRef = useRef<HTMLDivElement>(null);
+  const { trackLead, trackPurchase } = useMetaAnalytics();
   const [mobileNumber, setMobileNumber] = useState('');
   const [mobileError, setMobileError] = useState('');
   const [discountApplied, setDiscountApplied] = useState(false);
@@ -484,6 +486,17 @@ const ExpressBetaATCCart = () => {
     }
 
     try {
+      // Track Next: Select Your Slot Button as Lead
+      await trackLead(
+        { phone: mobileNumber },
+        {
+          content_name: 'Express Service Mobile Submission',
+          content_type: 'lead_form',
+          currency: 'INR',
+          value: finalPrice
+        }
+      );
+
       // Track mobile number with Zepic
       if (window.zepic) {
         window.zepic.identify('mobile_number', mobileNumber);
@@ -587,6 +600,17 @@ const ExpressBetaATCCart = () => {
     setIsSubmitting(true);
     
     try {
+      // Track Complete Booking Button as Purchase
+      await trackPurchase(
+        { phone: mobileNumber },
+        {
+          currency: 'INR',
+          value: finalPrice,
+          content_name: 'Express Service Booking Complete',
+          content_type: 'service_purchase'
+        }
+      );
+
       // Ensure we have a lead ID
       let currentLeadId = leadId;
       

@@ -8,9 +8,11 @@ import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Breadcrumb from '../components/Breadcrumb';
 import { Helmet } from 'react-helmet-async';
+import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
 
 const NinetyMinuteCarServiceInJaipur: React.FC = () => {
   const navigate = useNavigate();
+  const { trackLead, trackContact } = useMetaAnalytics();
   const cityName = "Jaipur";
   const serviceName = "90-Minute Car Service";
 
@@ -34,12 +36,24 @@ const NinetyMinuteCarServiceInJaipur: React.FC = () => {
     }
   };
 
-  const handleBookService = () => {
+  const handleBookService = async () => {
+    // Track Book Now button as Lead
+    await trackLead(
+      undefined, // No customer info available at this point
+      {
+        content_name: `90-Minute Car Service Booking - ${cityName}`,
+        content_type: 'service_inquiry',
+        currency: 'INR'
+      }
+    );
+
     const message = encodeURIComponent(`Hi, I'd like to book a 90-Minute Car Service in ${cityName} through GaadiMech.`);
     window.open(`https://wa.me/917300042410?text=${message}`, '_blank');
   };
 
-  const handleContact = () => {
+  const handleContact = async () => {
+    // Track Contact button
+    await trackContact();
     window.location.href = `tel:+918448285289`;
   };
 

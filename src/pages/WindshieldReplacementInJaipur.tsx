@@ -7,9 +7,11 @@ import { WrenchIcon, SparklesIcon, ShieldCheckIcon, ClockIcon, MapPinIcon, Phone
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Breadcrumb from '../components/Breadcrumb';
+import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
 
 const WindshieldReplacementInJaipur: React.FC = () => {
   const navigate = useNavigate();
+  const { trackLead, trackContact } = useMetaAnalytics();
   const cityName = "Jaipur";
   const serviceName = "Windshield Replacement";
 
@@ -33,12 +35,24 @@ const WindshieldReplacementInJaipur: React.FC = () => {
     }
   };
 
-  const handleBookService = () => {
+  const handleBookService = async () => {
+    // Track Book Service button as Lead
+    await trackLead(
+      undefined, // No customer info available at this point
+      {
+        content_name: `Windshield Replacement Booking - ${cityName}`,
+        content_type: 'service_inquiry',
+        currency: 'INR'
+      }
+    );
+
     const message = encodeURIComponent(`Hi, I'd like to book a Windshield Replacement service in ${cityName} through GaadiMech.`);
     window.open(`https://wa.me/917300042410?text=${message}`, '_blank');
   };
 
-  const handleContact = () => {
+  const handleContact = async () => {
+    // Track Contact button
+    await trackContact();
     window.location.href = `tel:+918448285289`;
   };
 

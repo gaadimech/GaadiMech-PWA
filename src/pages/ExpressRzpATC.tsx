@@ -13,6 +13,7 @@ import Modal from 'react-modal';
 import { useLocation } from 'react-router-dom';
 import { getVehicleFromSession } from '../utils/pricing-utils';
 import { Link } from 'react-router-dom';
+import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
 
 const steps = [
   {
@@ -94,6 +95,7 @@ const qualityFeatures = [
 
 const ExpressRzpATC = () => {
   const location = useLocation();
+  const { trackInitiateCheckout, trackLead, trackSchedule, trackPurchase } = useMetaAnalytics();
   const [mobile, setMobile] = useState(() => {
     // Initialize mobile number from session storage if available
     return sessionStorage.getItem('userMobileNumber') || '';
@@ -136,9 +138,16 @@ const ExpressRzpATC = () => {
     return mobileRegex.test(number);
   };
 
-  const handleScheduleClick = () => {
+  const handleScheduleClick = async () => {
     // Clear previous errors
     setError('');
+    
+    // Track Schedule Slot Button as InitiateCheckout
+    await trackInitiateCheckout(undefined, {
+      content_name: 'Express Service Schedule Slot',
+      content_type: 'service_booking',
+      currency: 'INR'
+    });
     
     // First check if we have vehicle details in session
     const savedVehicle = getVehicleFromSession();
@@ -172,9 +181,20 @@ const ExpressRzpATC = () => {
     window.location.href = '/express-rzp-atc/cart';
   };
 
-  // Handle "Book Slot Now" click from pricing modal
-  const handleBookSlotNowClick = (providedMobileNumber?: string) => {
+  // Handle "Book Slot Now" click from pricing modal (Get Price Button)
+  const handleBookSlotNowClick = async (providedMobileNumber?: string) => {
     setIsPricingModalOpen(false);
+    
+    // Track Get Price Button as InitiateCheckout
+    await trackInitiateCheckout(
+      { phone: providedMobileNumber },
+      {
+        currency: 'INR',
+        value: selectedServicePrice ? selectedServicePrice - 500 : 0,
+        content_name: 'Express Service Get Price',
+        content_type: 'service'
+      }
+    );
     
     // Since mobile validation now happens in PricingInfoModal, providedMobileNumber should always be valid
     // We can skip the validation and mobile input modal step

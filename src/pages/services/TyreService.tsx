@@ -15,6 +15,10 @@ import {
   Award,
   Truck
 } from 'lucide-react';
+import { Button } from '../../components/ui/button';
+import { Card } from '../../components/ui/card';
+import Breadcrumb from '../../components/Breadcrumb';
+import { useMetaAnalytics } from '../../hooks/useMetaAnalytics';
 
 import ReviewCarousel from '../../components/ReviewCarousel';
 import { getReviewsByService } from '../../data/reviews';
@@ -79,7 +83,9 @@ const servicePackages = [
 ];
 
 const TyreService = () => {
+  const { trackLead } = useMetaAnalytics();
   const [activeTab, setActiveTab] = useState('about');
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
   
   const handleGetPrices = (packageName?: string) => {
     let message = 'Hi%2C%20I%27d%20like%20to%20know%20the%20prices%20for%20Tyre%20Service';
@@ -89,7 +95,17 @@ const TyreService = () => {
     window.open(`https://wa.me/917300042410?text=${message}`, '_blank');
   };
 
-  const handleBookAppointment = () => {
+  const handleBookNow = async () => {
+    // Track Book Tyre Service Now button as Lead
+    await trackLead(
+      undefined, // No customer info available at this point
+      {
+        content_name: 'Tyre Service Booking',
+        content_type: 'service_inquiry',
+        currency: 'INR'
+      }
+    );
+
     window.open(`https://wa.me/917300042410?text=I%27d%20like%20to%20book%20a%20Tyre%20Service.`, '_blank');
   };
 
@@ -256,7 +272,7 @@ const TyreService = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={handleBookAppointment}
+                onClick={handleBookNow}
                 className="bg-[#FF7200] hover:bg-[#FF8800] text-white font-semibold px-8 py-4 rounded-lg shadow-lg flex items-center justify-center mx-auto"
               >
                 Book Tyre Service Now
@@ -553,7 +569,7 @@ const TyreService = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={handleBookAppointment}
+                onClick={handleBookNow}
                 className="bg-white text-[#FF7200] px-6 py-3 rounded-lg font-semibold shadow-lg hover:bg-gray-100 transition-colors"
               >
                 Book Your Appointment
