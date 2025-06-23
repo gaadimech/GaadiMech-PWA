@@ -81,7 +81,11 @@ const CouponAdmin = () => {
   const handleAuthenticate = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (username === 'admin-coupon' && password === 'admin@coupon') {
+          // SECURITY: Use environment variables for credentials
+      const expectedUser = import.meta.env.VITE_ADMIN_USER || 'admin-coupon';
+      const expectedPass = import.meta.env.VITE_ADMIN_PASS || 'admin@coupon';
+      
+      if (username === expectedUser && password === expectedPass) {
       setIsAuthenticated(true);
       setAuthError('');
       // Store authentication in session storage so it persists on page refresh
@@ -151,11 +155,20 @@ const CouponAdmin = () => {
   
   // Fetch all coupons
   const fetchAllCoupons = async () => {
+    setIsLoadingCoupons(true);
+    
     try {
-      setIsLoadingCoupons(true);
-      const basicAuthCredentials = btoa('admin-coupon:admin@coupon');
+      // SECURITY: Get credentials from environment variables
+      const adminUser = import.meta.env.VITE_ADMIN_USER;
+      const adminPass = import.meta.env.VITE_ADMIN_PASS;
       
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:1337'}/api/coupons`, {
+      if (!adminUser || !adminPass) {
+        throw new Error('Admin credentials not configured. Contact system administrator.');
+      }
+      
+      const basicAuthCredentials = btoa(`${adminUser}:${adminPass}`);
+      
+      const response = await fetch('/api/coupons', {
         method: 'GET',
         credentials: 'include',
         headers: {

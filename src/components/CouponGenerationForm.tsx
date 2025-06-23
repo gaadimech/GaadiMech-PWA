@@ -173,7 +173,15 @@ const CouponGenerationForm: React.FC<CouponGenerationFormProps> = ({ onCouponsGe
     setError('');
     
     try {
-      const basicAuthCredentials = btoa('admin-coupon:admin@coupon');
+      // SECURITY: Get credentials from environment variables
+      const adminUser = import.meta.env.VITE_ADMIN_USER;
+      const adminPass = import.meta.env.VITE_ADMIN_PASS;
+      
+      if (!adminUser || !adminPass) {
+        throw new Error('Admin credentials not configured. Contact system administrator.');
+      }
+      
+      const basicAuthCredentials = btoa(`${adminUser}:${adminPass}`);
       
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:1337'}/api/coupons/generate`, {
         method: 'POST',

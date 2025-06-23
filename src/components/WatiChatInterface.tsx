@@ -1,29 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, MessageCircle, Phone, Car, MapPin, Calendar, Clock, User, CheckCircle, AlertCircle } from 'lucide-react';
-import { apiClient } from '../services/api-client';
+import apiClient from '../services/api-client';
 
-// Use the same API configuration as the rest of the application
-const STRAPI_API_URL = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : 'http://localhost:1337/api';
+// SECURITY: Remove all token logging
+const STRAPI_API_URL = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : '';
 const STRAPI_API_TOKEN = import.meta.env.VITE_API_TOKEN || '';
 
-// Debug environment variables
-console.log('🔧 Environment Variables Debug:');
-console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
-console.log('VITE_API_TOKEN:', import.meta.env.VITE_API_TOKEN ? 'Token loaded ✅' : 'Token missing ❌');
-console.log('STRAPI_API_URL:', STRAPI_API_URL);
-console.log('STRAPI_API_TOKEN:', STRAPI_API_TOKEN ? 'Token available ✅' : 'Token missing ❌');
-console.log('🔑 Full token (first 50 chars):', STRAPI_API_TOKEN ? STRAPI_API_TOKEN.substring(0, 50) + '...' : 'No token');
-console.log('🔑 Token length:', STRAPI_API_TOKEN ? STRAPI_API_TOKEN.length : 0);
-console.log('🔑 Token matches expected:', STRAPI_API_TOKEN.length === 256 ? '✅' : '❌');
-
-// Production-specific debug
-console.log('🌍 PRODUCTION DEBUG:');
-console.log('🌍 NODE_ENV:', import.meta.env.NODE_ENV);
-console.log('🌍 MODE:', import.meta.env.MODE);
-console.log('🌍 PROD:', import.meta.env.PROD);
-console.log('🌍 Current URL:', window.location.href);
-console.log('🌍 Constructed API URL:', STRAPI_API_URL);
+// SECURITY: Only log basic status in development
+if (import.meta.env.DEV) {
+  console.log('🔗 Strapi connection status:', {
+    hasUrl: !!STRAPI_API_URL,
+    hasToken: !!STRAPI_API_TOKEN,
+    // REMOVED: All token details and sensitive logging
+  });
+}
 
 interface StrapiBooking {
   id?: number;
