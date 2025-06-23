@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, MessageCircle, Phone, Car, MapPin, Calendar, Clock, User, CheckCircle, AlertCircle } from 'lucide-react';
-import apiClient from '../services/api-client';
+import { apiClient } from '../services/api-client';
 
 // SECURITY: Remove all token logging
 const STRAPI_API_URL = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : '';
