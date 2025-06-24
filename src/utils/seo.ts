@@ -88,7 +88,46 @@ const seoConfigs: Record<string, SeoConfig> = {
         'https://www.facebook.com/gaadimech',
         'https://twitter.com/gaadimech',
         'https://www.instagram.com/gaadimech'
-      ]
+      ],
+      'serviceArea': {
+        '@type': 'GeoCircle',
+        'geoMidpoint': {
+          '@type': 'GeoCoordinates',
+          'latitude': 26.8984634,
+          'longitude': 75.7570971
+        },
+        'geoRadius': 50000
+      },
+      'hasOfferCatalog': {
+        '@type': 'OfferCatalog',
+        'name': 'Car Services',
+        'itemListElement': [
+          {
+            '@type': 'Offer',
+            'itemOffered': {
+              '@type': 'Service',
+              'name': '90-Minute Car Service',
+              'description': 'Quick doorstep car service completed in 90 minutes'
+            }
+          },
+          {
+            '@type': 'Offer',
+            'itemOffered': {
+              '@type': 'Service',
+              'name': 'Car AC Repair',
+              'description': 'Professional car air conditioning repair and service'
+            }
+          },
+          {
+            '@type': 'Offer',
+            'itemOffered': {
+              '@type': 'Service',
+              'name': 'Car Dent & Paint',
+              'description': 'Expert denting and painting services for cars'
+            }
+          }
+        ]
+      }
     },
     hiddenContent: {
       h1: 'Car Service & Repair in Jaipur',
@@ -113,6 +152,36 @@ const seoConfigs: Record<string, SeoConfig> = {
     image: 'https://www.gaadimech.com/services-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/services',
     robots: 'index, follow',
+    structuredData: {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'mainEntity': [
+        {
+          '@type': 'Question',
+          'name': 'What car services does GaadiMech offer?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'GaadiMech offers comprehensive car services including periodic maintenance, AC service & repair, denting & painting, battery replacement, windshield service, tyre service, and car detailing. All services come with free pickup and drop facility in Jaipur.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'How quickly can GaadiMech service my car?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'GaadiMech specializes in 90-minute car service for most routine maintenance and repairs. Express services are available for quick fixes, while complex repairs may take longer but are completed the same day whenever possible.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'Does GaadiMech provide doorstep car service?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Yes, GaadiMech provides free pickup and drop service in Jaipur. Our certified mechanics can also perform certain services at your doorstep for added convenience.'
+          }
+        }
+      ]
+    },
     hiddenContent: {
       h1: 'Professional Car Services in Jaipur',
       h2: 'Comprehensive Car Maintenance & Repair Services',

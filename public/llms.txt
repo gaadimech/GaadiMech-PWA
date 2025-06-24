@@ -1,0 +1,39 @@
+# GaadiMech - Professional Car Service & Repair in Jaipur
+Car service, repair, and maintenance with 90-minute doorstep service, certified mechanics, and genuine parts.
+
+## Main Services
+- [Car Service](https://www.gaadimech.com/services): Complete car service and maintenance solutions
+- [Periodic Service](https://www.gaadimech.com/services/periodic): Regular scheduled maintenance for optimal performance
+- [AC Service](https://www.gaadimech.com/services/ac): Car air conditioning repair and maintenance
+- [Dent & Paint](https://www.gaadimech.com/services/denting): Professional denting and painting services
+- [Battery Service](https://www.gaadimech.com/services/battery): Car battery replacement and maintenance
+- [Windshield Service](https://www.gaadimech.com/services/windshield): Windshield replacement and repair
+- [Tyre Service](https://www.gaadimech.com/services/tyre): Tyre replacement and wheel alignment
+- [Car Detailing](https://www.gaadimech.com/services/detailing): Premium car spa and detailing services
+
+## Express Services
+- [Express Service](https://www.gaadimech.com/express): Quick 90-minute car service solutions
+- [Express Beta](https://www.gaadimech.com/express-beta-atc): Beta testing platform for express services
+
+## Location-Based Services (Jaipur)
+- [Car Service in Jaipur](https://www.gaadimech.com/car-service-in-jaipur): Professional car service in Jaipur
+- [Car AC Service in Jaipur](https://www.gaadimech.com/car-ac-service-in-jaipur): AC repair and service in Jaipur
+- [Car Dent Paint in Jaipur](https://www.gaadimech.com/car-dent-paint-service-in-jaipur): Denting and painting in Jaipur
+- [Car Repair Service in Jaipur](https://www.gaadimech.com/car-repair-service-in-jaipur): General car repair services
+- [90 Minute Car Service](https://www.gaadimech.com/90-minute-car-service-in-jaipur): Fast doorstep car service
+- [Doorstep Car Service](https://www.gaadimech.com/doorstep-car-service-in-jaipur): Convenient doorstep service
+
+## Company Information
+- [About Us](https://www.gaadimech.com/about): Learn about GaadiMech's mission and values
+- [Contact](https://www.gaadimech.com/contact): Get in touch with our team
+- [Blog](https://www.gaadimech.com/blog): Latest articles on car maintenance and tips
+- [Careers](https://www.gaadimech.com/careers): Join our team of automotive experts
+
+## Business Solutions
+- [Franchise](https://www.gaadimech.com/franchise): Partnership opportunities with GaadiMech
+- [Workshop Partner](https://www.gaadimech.com/workshop-partner): Become a workshop partner
+
+## Legal & Support
+- [Terms of Service](https://www.gaadimech.com/terms): Terms and conditions
+- [Privacy Policy](https://www.gaadimech.com/privacy): Data protection and privacy policy
+- [Refund Policy](https://www.gaadimech.com/refund): Refund and cancellation policy 

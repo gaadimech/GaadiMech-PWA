@@ -9,5 +9,61 @@ Disallow: /reset-password/
 Disallow: /verify-email/
 Disallow: /*?
 
+# OpenAI Crawlers - Explicitly allow for AI training and indexing
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Other AI Crawlers
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: claude-web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Additional AI Crawlers (2025)
+User-agent: MistralAI-User
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+User-agent: DuckAssistBot
+Allow: /
+
+# Emerging AI Crawlers
+User-agent: AI2Bot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# Crawl delay for server protection (OpenAI bots ignore this, but good for others)
+User-agent: *
+Crawl-delay: 1
+
 # Allow crawlers to know about the sitemap
 Sitemap: https://www.gaadimech.com/sitemap.xml 
