@@ -171,6 +171,17 @@
 
     <div class="loading-spinner"></div>
     <div id="root"></div>
+    <!-- Lazy-load all non-critical images to improve LCP/FCP without altering JSX -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        if ('loading' in HTMLImageElement.prototype) {
+          document.querySelectorAll('img:not([loading]):not([data-lazy="false"])').forEach(function (img) {
+            img.setAttribute('loading', 'lazy');
+            img.setAttribute('decoding', 'async');
+          });
+        }
+      });
+    </script>
     <script type="module" src="/src/main.tsx"></script>
 
     <!-- Meta Pixel Code -->
