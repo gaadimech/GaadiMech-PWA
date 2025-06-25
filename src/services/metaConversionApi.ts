@@ -40,6 +40,13 @@ const getClientUserAgent = (): string => {
   return typeof window !== 'undefined' ? window.navigator.userAgent : '';
 };
 
+// Helper to read a cookie value by name
+const getCookie = (name: string): string | undefined => {
+  if (typeof document === 'undefined') return undefined;
+  const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'));
+  return match ? decodeURIComponent(match[1]) : undefined;
+};
+
 // Event data interface based on your CSV file
 interface CustomerInfo {
   email?: string;
@@ -93,6 +100,8 @@ interface ConversionApiPayload {
       ge?: string;  // gender (hashed)
       client_ip_address?: string;
       client_user_agent?: string;
+      fbp?: string;
+      fbc?: string;
     };
     custom_data?: {
       currency?: string;
@@ -119,7 +128,19 @@ class MetaConversionApi {
   constructor() {
     this.pixelId = env.META_PIXEL_ID;
     this.accessToken = env.META_ACCESS_TOKEN;
-    this.apiVersion = env.META_API_VERSION;
+    // Normalise API version – ensure it is of the form "vXX.Y" expected by Graph API
+    const rawVersion = env.META_API_VERSION?.toString().trim() || 'v17.0';
+    let normalisedVersion = rawVersion.startsWith('v') ? rawVersion : `v${rawVersion}`;
+    // If version looks like "v210" (no dot), convert to "v21.0"
+    if (/^v\d{3}$/.test(normalisedVersion)) {
+      normalisedVersion = `v${normalisedVersion.slice(1, 3)}.${normalisedVersion.slice(3)}`;
+    }
+    // If version looks like "v17" (no decimal), convert to "v17.0"
+    if (/^v\d+$/.test(normalisedVersion) && !normalisedVersion.includes('.')) {
+      normalisedVersion = `${normalisedVersion}.0`;
+    }
+    this.apiVersion = normalisedVersion;
+
     this.baseUrl = `https://graph.facebook.com/${this.apiVersion}`;
   }
 
@@ -143,6 +164,12 @@ class MetaConversionApi {
       if (customerInfo.gender) userData.ge = hashData(customerInfo.gender);
     }
     
+    // Add browser identifiers when available – improves match quality even without PII
+    const fbp = getCookie('_fbp');
+    if (fbp) userData.fbp = fbp;
+    const fbc = getCookie('_fbc');
+    if (fbc) userData.fbc = fbc;
+    
     const clientIP = getClientIP();
     if (clientIP) userData.client_ip_address = clientIP;
 
@@ -151,21 +178,23 @@ class MetaConversionApi {
 
   // Check if we have sufficient customer data for Meta's requirements
   private hasSufficientCustomerData(customerInfo?: CustomerInfo): boolean {
-    if (!customerInfo) return false;
-    
-    // Meta requires at least one of these combinations for effective matching:
-    // 1. Email address
-    // 2. Phone number
-    // 3. First name + Last name + (City OR State OR Country OR Postal Code)
-    
-    if (customerInfo.email) return true;
-    if (customerInfo.phone) return true;
-    
-    if (customerInfo.firstName && customerInfo.lastName) {
-      return !!(customerInfo.city || customerInfo.state || customerInfo.country || customerInfo.postalCode);
+    // Meta now allows events that contain only non-PII identifiers such as
+    // client_user_agent (required) and client_ip_address. To avoid losing
+    // early-funnel events where a user hasn't shared any personal details yet
+    // (for example, clicks on "Book Now" / "Call Us"), we no longer block
+    // events on the basis of missing PII.  We still hash and forward any data
+    // that *is* available, but when nothing is provided we proceed with the
+    // minimal payload.
+
+    if (!customerInfo || Object.keys(customerInfo).length === 0) {
+      // In development, let engineers know we're sending a minimal user_data
+      if (import.meta.env.DEV) {
+        console.warn('MetaConversionApi: proceeding with minimal customer data – only client_user_agent will be sent.');
+      }
     }
-    
-    return false;
+
+    // Always return true so that every event is sent to Meta.
+    return true;
   }
 
   // Get customer info from session storage or provide defaults
