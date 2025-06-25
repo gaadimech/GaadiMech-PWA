@@ -27,18 +27,16 @@ const Hero = () => {
     // Add event listener for window resize
     window.addEventListener('resize', checkIfMobile);
     
-    // Test Meta Conversion API on mount - debug mode
-    testMetaConversionApi().then(success => {
-      if (success) {
-        console.log('🎯 Meta API is connected - now running event tests');
-        console.log('ℹ️  Note: PageView events require customer data (phone/email/location)');
-        console.log('ℹ️  Use simulateUserWithPhone() in console to test PageView events');
-        // Run sequential event tests
-        setTimeout(() => {
-          testAllMetaEvents();
-        }, 3000);
-      }
-    });
+    // SECURITY: Only test Meta Conversion API in development
+    if (import.meta.env.DEV) {
+      testMetaConversionApi().then(success => {
+        if (success) {
+          console.log('🎯 Meta API is connected (DEV MODE)');
+          console.log('ℹ️  Use testAllMetaEvents() in console to run event tests');
+          // Note: Automatic event tests disabled for security
+        }
+      });
+    }
     
     // Cleanup
     return () => window.removeEventListener('resize', checkIfMobile);

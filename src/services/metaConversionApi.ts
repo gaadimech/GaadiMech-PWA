@@ -210,72 +210,57 @@ class MetaConversionApi {
     try {
       const url = `${this.baseUrl}/${this.pixelId}/events?access_token=${this.accessToken}`;
       
-      // Clean the payload to remove any undefined or empty values
+      // Clean payload for production logging (remove sensitive data)
       const cleanedPayload = {
-        data: payload.data.map(event => {
-          const cleanEvent: any = {
-            event_name: event.event_name,
-            event_time: event.event_time,
-            event_source_url: event.event_source_url,
-            action_source: event.action_source
-          };
-
-          // Only add user_data if it has actual data
-          if (event.user_data && Object.keys(event.user_data).length > 0) {
-            const userData: any = {};
-            Object.entries(event.user_data).forEach(([key, value]) => {
-              if (value && value !== '') {
-                userData[key] = value;
-              }
-            });
-            if (Object.keys(userData).length > 0) {
-              cleanEvent.user_data = userData;
-            }
-          }
-
-          // Only add custom_data if it has actual data
-          if (event.custom_data && Object.keys(event.custom_data).length > 0) {
-            const customData: any = {};
-            Object.entries(event.custom_data).forEach(([key, value]) => {
-              if (value !== undefined && value !== null && value !== '') {
-                customData[key] = value;
-              }
-            });
-            if (Object.keys(customData).length > 0) {
-              cleanEvent.custom_data = customData;
-            }
-          }
-
-          return cleanEvent;
-        })
+        ...payload,
+        data: payload.data.map(event => ({
+          ...event,
+          user_data: event.user_data ? {
+            // Only show that data exists, not the actual values
+            hasEmail: !!event.user_data.em,
+            hasPhone: !!event.user_data.ph,
+            hasLocation: !!(event.user_data.ct || event.user_data.st),
+          } : undefined
+        }))
       };
 
-      console.log('Sending Meta Conversion API payload:', JSON.stringify(cleanedPayload, null, 2));
+      // SECURITY: Only log detailed payload in development
+      if (import.meta.env.DEV) {
+        console.log('Sending Meta Conversion API event:', payload.data[0]?.event_name, 'with user data:', !!payload.data[0]?.user_data);
+      }
       
       const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(cleanedPayload),
+        body: JSON.stringify(payload),
       });
 
       const result = await response.json();
       
       if (!response.ok) {
-        console.error('Meta Conversion API Error:', {
-          status: response.status,
-          statusText: response.statusText,
-          error: result,
-          payload: cleanedPayload
-        });
+        // Only log errors in development
+        if (import.meta.env.DEV) {
+          console.error('Meta Conversion API Error:', {
+            status: response.status,
+            statusText: response.statusText,
+            error: result,
+          });
+        }
         return false;
       }
 
-      console.log('Meta Conversion API Success:', result);
+      // SECURITY: Only log success in development
+      if (import.meta.env.DEV) {
+        console.log('Meta Conversion API Success:', response.status);
+      }
       return true;
     } catch (error) {
-      console.error('Meta Conversion API Request Failed:', error);
+      // Only log errors in development
+      if (import.meta.env.DEV) {
+        console.error('Meta Conversion API Request Failed:', error instanceof Error ? error.message : 'Unknown error');
+      }
       return false;
     }
   }
@@ -287,8 +272,10 @@ class MetaConversionApi {
     
     // PageView events also require sufficient customer data - skip if insufficient
     if (!this.hasSufficientCustomerData(customerInfo)) {
-      console.log('⚠️ PageView: Insufficient customer data, skipping event to avoid 400 error');
-      console.log('💡 PageView will be tracked once user provides phone/email/location data');
+      // SECURITY: Only log in development
+      if (import.meta.env.DEV) {
+        console.log('⚠️ PageView: Insufficient customer data, skipping event to avoid 400 error');
+      }
       return false;
     }
 
@@ -314,7 +301,10 @@ class MetaConversionApi {
     
     // Lead events require customer data - skip if insufficient
     if (!this.hasSufficientCustomerData(customerInfo)) {
-      console.log('⚠️ Lead: Insufficient customer data, skipping event');
+      // SECURITY: Only log in development
+      if (import.meta.env.DEV) {
+        console.log('⚠️ Lead: Insufficient customer data, skipping event');
+      }
       return false;
     }
 
@@ -337,7 +327,10 @@ class MetaConversionApi {
     let customerInfo = eventData.customerInfo || this.getCustomerInfoFromSession();
     
     if (!this.hasSufficientCustomerData(customerInfo)) {
-      console.log('⚠️ Contact: Insufficient customer data, skipping event');
+      // SECURITY: Only log in development
+      if (import.meta.env.DEV) {
+        console.log('⚠️ Contact: Insufficient customer data, skipping event');
+      }
       return false;
     }
 
@@ -359,7 +352,10 @@ class MetaConversionApi {
     let customerInfo = eventData.customerInfo || this.getCustomerInfoFromSession();
     
     if (!this.hasSufficientCustomerData(customerInfo)) {
-      console.log('⚠️ CompleteRegistration: Insufficient customer data, skipping event');
+      // SECURITY: Only log in development
+      if (import.meta.env.DEV) {
+        console.log('⚠️ CompleteRegistration: Insufficient customer data, skipping event');
+      }
       return false;
     }
 
@@ -381,7 +377,10 @@ class MetaConversionApi {
     let customerInfo = eventData.customerInfo || this.getCustomerInfoFromSession();
     
     if (!this.hasSufficientCustomerData(customerInfo)) {
-      console.log('⚠️ SubmitApplication: Insufficient customer data, skipping event');
+      // SECURITY: Only log in development
+      if (import.meta.env.DEV) {
+        console.log('⚠️ SubmitApplication: Insufficient customer data, skipping event');
+      }
       return false;
     }
 
@@ -403,7 +402,10 @@ class MetaConversionApi {
     let customerInfo = eventData.customerInfo || this.getCustomerInfoFromSession();
     
     if (!this.hasSufficientCustomerData(customerInfo)) {
-      console.log('⚠️ Schedule: Insufficient customer data, skipping event');
+      // SECURITY: Only log in development
+      if (import.meta.env.DEV) {
+        console.log('⚠️ Schedule: Insufficient customer data, skipping event');
+      }
       return false;
     }
 
@@ -426,7 +428,10 @@ class MetaConversionApi {
     let customerInfo = eventData.customerInfo || this.getCustomerInfoFromSession();
     
     if (!this.hasSufficientCustomerData(customerInfo)) {
-      console.log('⚠️ AddToCart: Insufficient customer data, skipping event');
+      // SECURITY: Only log in development
+      if (import.meta.env.DEV) {
+        console.log('⚠️ AddToCart: Insufficient customer data, skipping event');
+      }
       return false;
     }
 
@@ -449,7 +454,10 @@ class MetaConversionApi {
     let customerInfo = eventData.customerInfo || this.getCustomerInfoFromSession();
     
     if (!this.hasSufficientCustomerData(customerInfo)) {
-      console.log('⚠️ InitiateCheckout: Insufficient customer data, skipping event');
+      // SECURITY: Only log in development
+      if (import.meta.env.DEV) {
+        console.log('⚠️ InitiateCheckout: Insufficient customer data, skipping event');
+      }
       return false;
     }
 
@@ -472,7 +480,10 @@ class MetaConversionApi {
     let customerInfo = eventData.customerInfo || this.getCustomerInfoFromSession();
     
     if (!this.hasSufficientCustomerData(customerInfo)) {
-      console.log('⚠️ Purchase: Insufficient customer data, skipping event');
+      // SECURITY: Only log in development
+      if (import.meta.env.DEV) {
+        console.log('⚠️ Purchase: Insufficient customer data, skipping event');
+      }
       return false;
     }
 
@@ -495,7 +506,10 @@ class MetaConversionApi {
     let customerInfo = eventData.customerInfo || this.getCustomerInfoFromSession();
     
     if (!this.hasSufficientCustomerData(customerInfo)) {
-      console.log('⚠️ Subscribe: Insufficient customer data, skipping event');
+      // SECURITY: Only log in development
+      if (import.meta.env.DEV) {
+        console.log('⚠️ Subscribe: Insufficient customer data, skipping event');
+      }
       return false;
     }
 
@@ -517,7 +531,10 @@ class MetaConversionApi {
     let customerInfo = eventData.customerInfo || this.getCustomerInfoFromSession();
     
     if (!this.hasSufficientCustomerData(customerInfo)) {
-      console.log('⚠️ FindLocation: Insufficient customer data, skipping event');
+      // SECURITY: Only log in development
+      if (import.meta.env.DEV) {
+        console.log('⚠️ FindLocation: Insufficient customer data, skipping event');
+      }
       return false;
     }
 
@@ -539,7 +556,10 @@ class MetaConversionApi {
     let customerInfo = eventData.customerInfo || this.getCustomerInfoFromSession();
     
     if (!this.hasSufficientCustomerData(customerInfo)) {
-      console.log('⚠️ CustomizeProduct: Insufficient customer data, skipping event');
+      // SECURITY: Only log in development
+      if (import.meta.env.DEV) {
+        console.log('⚠️ CustomizeProduct: Insufficient customer data, skipping event');
+      }
       return false;
     }
 

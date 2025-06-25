@@ -150,13 +150,12 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
         Object.entries(data).filter(([_, value]) => value !== undefined && value !== null && value !== '')
       );
 
-      console.log('Creating Strapi booking with data:', cleanData);
-      console.log('🔍 API Request Details:');
-      console.log('🔍 Endpoint: /chatbot-bookings');
-      console.log('🔍 Base URL:', import.meta.env.VITE_API_URL);
-      console.log('🔍 Full URL:', `${import.meta.env.VITE_API_URL}/api/chatbot-bookings`);
-      console.log('🔍 Token available:', !!import.meta.env.VITE_API_TOKEN);
-      console.log('🔍 Token length:', import.meta.env.VITE_API_TOKEN ? import.meta.env.VITE_API_TOKEN.length : 0);
+      // SECURITY: Only log in development, no sensitive data
+      if (import.meta.env.DEV) {
+        console.log('Creating Strapi booking...');
+        console.log('🔍 API endpoint: /chatbot-bookings');
+        console.log('🔍 Token available:', !!import.meta.env.VITE_API_TOKEN);
+      }
 
       // Check if environment variables are properly loaded
       if (!import.meta.env.VITE_API_URL) {
@@ -172,7 +171,10 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
         data: cleanData
       });
 
-      console.log('✅ Strapi booking created successfully:', response.data);
+      // SECURITY: Only log in development
+      if (import.meta.env.DEV) {
+        console.log('✅ Strapi booking created successfully');
+      }
       
       // Return both id and documentId for Strapi v5 compatibility
       const responseData = response.data as any;
@@ -185,12 +187,12 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
       console.error('❌ Error creating Strapi booking:', error);
       console.error('Full error details:', error);
       
-      // Enhanced error debugging for production
-      console.error('🔍 Environment Variables Status:');
-      console.error('🔍 VITE_API_URL:', import.meta.env.VITE_API_URL || 'MISSING');
-      console.error('🔍 VITE_API_TOKEN present:', !!import.meta.env.VITE_API_TOKEN);
-      console.error('🔍 Process env NODE_ENV:', import.meta.env.NODE_ENV);
-      console.error('🔍 Process env PROD:', import.meta.env.PROD);
+      // SECURITY: Only log in development, no sensitive data
+      if (import.meta.env.DEV) {
+        console.error('🔍 Environment Variables Status:');
+        console.error('🔍 API URL present:', !!import.meta.env.VITE_API_URL);
+        console.error('🔍 API token present:', !!import.meta.env.VITE_API_TOKEN);
+      }
       
       // Enhanced error debugging
       if (error.response) {
@@ -218,15 +220,21 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
         Object.entries(data).filter(([_, value]) => value !== undefined && value !== null && value !== '')
       );
 
-      console.log('Updating Strapi booking with data:', cleanData);
-      console.log(`🔄 Updating booking documentId ${documentId}`);
+      // SECURITY: Only log in development, no sensitive data
+      if (import.meta.env.DEV) {
+        console.log('Updating Strapi booking...');
+        console.log(`🔄 Updating booking documentId: ${documentId}`);
+      }
       
       // Use apiClient like the working express-service
       const response = await apiClient.put(`/chatbot-bookings/${documentId}`, {
         data: cleanData,
       });
 
-      console.log('✅ Strapi booking updated successfully:', response.data);
+      // SECURITY: Only log in development
+      if (import.meta.env.DEV) {
+        console.log('✅ Strapi booking updated successfully');
+      }
       return true;
 
     } catch (error) {
@@ -239,8 +247,10 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
   const saveToStrapi = async (newData: Partial<BookingData>, forceCreate: boolean = false) => {
     // Skip Strapi integration if API URL or token is missing
     if (!STRAPI_API_URL || !STRAPI_API_TOKEN) {
-      console.log('⚠️ Strapi integration disabled - missing API URL or token');
-      console.log('Chatbot will continue without database integration');
+      // SECURITY: Only log in development
+      if (import.meta.env.DEV) {
+        console.log('⚠️ Strapi integration disabled - missing API URL or token');
+      }
       return;
     }
 
@@ -276,21 +286,26 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
       strapiData.booking_status = 'in_progress';
       strapiData.submissionTimestamp = new Date().toISOString();
 
-      console.log('📝 Saving to Strapi - Data:', newData);
-      console.log('📝 Converted Strapi data:', strapiData);
-      console.log('📝 Current booking ID:', strapiBookingId);
-      console.log('📝 Force create:', forceCreate);
+      // SECURITY: Only log in development, no sensitive data
+      if (import.meta.env.DEV) {
+        console.log('📝 Saving to Strapi...');
+        console.log('📝 Current booking ID:', strapiBookingId);
+        console.log('📝 Force create:', forceCreate);
+      }
 
       if (strapiBookingId && !forceCreate) {
         // Update existing booking
-        console.log('🔄 Updating existing booking ID:', strapiBookingId);
-        console.log('🔄 Using documentId:', strapiDocumentId);
+        // SECURITY: Only log in development
+        if (import.meta.env.DEV) {
+          console.log('🔄 Updating existing booking ID:', strapiBookingId);
+          console.log('🔄 Using documentId:', strapiDocumentId);
+        }
         
         if (strapiDocumentId) {
           const success = await updateStrapiBooking(strapiDocumentId, strapiData);
-          if (success) {
+          if (success && import.meta.env.DEV) {
             console.log('✅ Strapi update successful');
-          } else {
+          } else if (!success && import.meta.env.DEV) {
             console.log('⚠️ Strapi update failed, but chatbot will continue');
           }
         } else {

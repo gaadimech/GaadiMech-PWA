@@ -27,10 +27,10 @@ export default defineConfig({
     minify: 'terser',
     terserOptions: {
       compress: {
-        // Temporarily disable console removal for debugging
-        // drop_console: true,
+        // SECURITY: Remove all console statements in production
+        drop_console: true,
         drop_debugger: true,
-        // pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn']
+        pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn', 'console.error']
       }
     },
     sourcemap: false,

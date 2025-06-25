@@ -32,7 +32,10 @@ const setTestCustomerData = () => {
     dateOfBirth: testCustomerData.dateOfBirth,
     postalCode: testCustomerData.postalCode
   }));
-  console.log('✅ Test customer data stored in session');
+  // SECURITY: Only log in development
+  if (import.meta.env.DEV) {
+    console.log('✅ Test customer data stored in session');
+  }
 };
 
 // Clear test customer data
@@ -40,10 +43,18 @@ const clearTestCustomerData = () => {
   sessionStorage.removeItem('userMobileNumber');
   sessionStorage.removeItem('userLocation');
   sessionStorage.removeItem('customerData');
-  console.log('🗑️ Test customer data cleared from session');
+  // SECURITY: Only log in development
+  if (import.meta.env.DEV) {
+    console.log('🗑️ Test customer data cleared from session');
+  }
 };
 
 export const testAllMetaEvents = async () => {
+  // SECURITY: Only run and log in development
+  if (!import.meta.env.DEV) {
+    return { successCount: 0, failureCount: 0, totalTests: 0 };
+  }
+
   console.log('🚀 Starting comprehensive Meta Conversion API event tests...');
   
   // Test customer data for better event attribution
@@ -70,27 +81,27 @@ export const testAllMetaEvents = async () => {
     },
     {
       name: 'Lead Event (All Book Now Buttons)',
-      test: () => metaConversionApi.trackLead(testCustomerData, testCustomData)
+      test: () => metaConversionApi.trackLead({ customerInfo: testCustomerData, customData: testCustomData })
     },
     {
       name: 'Contact Event (Call Us Buttons)',
-      test: () => metaConversionApi.trackContact(testCustomerData, testCustomData)
+      test: () => metaConversionApi.trackContact({ customerInfo: testCustomerData, customData: testCustomData })
     },
     {
       name: 'InitiateCheckout Event (Schedule Slot & Get Price Buttons)',
-      test: () => metaConversionApi.trackInitiateCheckout(testCustomerData, testCustomData)
+      test: () => metaConversionApi.trackInitiateCheckout({ customerInfo: testCustomerData, customData: testCustomData })
     },
     {
       name: 'Purchase Event (Complete Booking Button)',
-      test: () => metaConversionApi.trackPurchase(testCustomerData, { ...testCustomData, value: 2000 })
+      test: () => metaConversionApi.trackPurchase({ customerInfo: testCustomerData, customData: { ...testCustomData, value: 2000 } })
     },
     {
       name: 'AddToCart Event (Express Flow)',
-      test: () => metaConversionApi.trackAddToCart(testCustomerData, testCustomData)
+      test: () => metaConversionApi.trackAddToCart({ customerInfo: testCustomerData, customData: testCustomData })
     },
     {
       name: 'Schedule Event',
-      test: () => metaConversionApi.trackSchedule(testCustomerData, testCustomData)
+      test: () => metaConversionApi.trackSchedule({ customerInfo: testCustomerData, customData: testCustomData })
     }
   ];
 
@@ -170,11 +181,11 @@ export const testEventWithCustomerData = {
   }
 };
 
-// Auto-run test on page load for debugging
-if (typeof window !== 'undefined') {
-  // Only run in development
+// SECURITY: Only make testing functions available in development
+if (typeof window !== 'undefined' && import.meta.env.DEV) {
+  // Only run in development and localhost
   if (window.location.hostname === 'localhost') {
-    console.log('🔧 Meta Conversion API Event Testing Available');
+    console.log('🔧 Meta Conversion API Event Testing Available (DEV MODE)');
     console.log('Run testAllMetaEvents() in console to test all events');
     
     // Make functions available globally for console testing
