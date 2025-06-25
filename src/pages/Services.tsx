@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import ServicesComponent from '../components/Services';
 
-const Services = ({ skipSeo = false }) => {
+const Services = () => {
   return (
     <motion.div
       initial={{ opacity: 0 }}

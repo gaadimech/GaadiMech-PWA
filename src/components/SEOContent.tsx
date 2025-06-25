@@ -16,6 +16,40 @@ const SEOContent = () => {
   // Get SEO configuration based on current path
   const seoConfig = getSeoConfig(path);
 
+  // Utility to generate breadcrumb structured data for current path
+  const generateBreadcrumbSchema = (path: string) => {
+    const segments = path === '/' ? [] : path.split('/').filter(Boolean);
+    const baseUrl = 'https://www.gaadimech.com';
+    const itemListElement = [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: baseUrl,
+      },
+      ...segments.map((segment, idx) => {
+        const url = `${baseUrl}/${segments.slice(0, idx + 1).join('/')}`;
+        // Convert slug to Title Case label
+        const name = segment
+          .split('-')
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(' ');
+        return {
+          '@type': 'ListItem',
+          position: idx + 2,
+          name,
+          item: url,
+        };
+      }),
+    ];
+
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement,
+    };
+  };
+
   return (
     <>
       {/* Helmet manages all SEO meta tags */}
@@ -31,12 +65,26 @@ const SEOContent = () => {
         <meta property="og:description" content={seoConfig.description} />
         <meta property="og:image" content={seoConfig.image} />
 
+        {/* Additional Open Graph tags */}
+        {seoConfig.siteName && (
+          <meta property="og:site_name" content={seoConfig.siteName} />
+        )}
+        {seoConfig.locale && (
+          <meta property="og:locale" content={seoConfig.locale} />
+        )}
+
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content={seoConfig.canonicalUrl || `https://www.gaadimech.com${path}`} />
         <meta property="twitter:title" content={seoConfig.title} />
         <meta property="twitter:description" content={seoConfig.description} />
         <meta property="twitter:image" content={seoConfig.image} />
+        {seoConfig.twitterSite && (
+          <meta property="twitter:site" content={seoConfig.twitterSite} />
+        )}
+        {seoConfig.twitterCreator && (
+          <meta property="twitter:creator" content={seoConfig.twitterCreator} />
+        )}
 
         {/* Canonical URL */}
         <link rel="canonical" href={seoConfig.canonicalUrl || `https://www.gaadimech.com${path}`} />
@@ -70,6 +118,13 @@ const SEOContent = () => {
         {seoConfig.structuredData && (
           <script type="application/ld+json">
             {JSON.stringify(seoConfig.structuredData)}
+          </script>
+        )}
+
+        {/* Auto-generated breadcrumb structured data */}
+        {path !== '/admin-dashboard' && (
+          <script type="application/ld+json">
+            {JSON.stringify(generateBreadcrumbSchema(path))}
           </script>
         )}
       </Helmet>

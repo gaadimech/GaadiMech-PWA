@@ -75,3 +75,6 @@ tsconfig.tsbuildinfo
 .tmp
 .DS_Store
 Thumbs.db
+
+# Documentation (development guides, not needed for functional website)
+docs/

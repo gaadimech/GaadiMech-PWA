@@ -33,13 +33,41 @@ export interface SeoConfig {
   robots?: string;  // Controls indexing with values like 'noindex, nofollow'
   hreflang?: HreflangItem[];  // For multilingual support
   pagination?: PaginationLinks;  // For paginated content
+  /**
+   * OpenGraph site name used for `og:site_name` meta tag.
+   * Falls back to the company/brand name when not supplied.
+   */
+  siteName?: string;
+  /**
+   * Locale to be used in `og:locale` meta tag. e.g., `en_IN`.
+   */
+  locale?: string;
+  /**
+   * Twitter handle for the website account e.g., `@gaadimech` used for `twitter:site`.
+   */
+  twitterSite?: string;
+  /**
+   * Twitter handle of the content creator e.g., `@gaadimech` used for `twitter:creator`.
+   */
+  twitterCreator?: string;
 }
 
 // Default SEO configuration
 const defaultSeoConfig: SeoConfig = {
   title: 'GaadiMech - Professional Car Service & Repair in India',
   description: 'Book car services at GaadiMech - expert mechanics, genuine parts & free pickup-drop. AC repair, denting, tyres & batteries with transparent pricing.',
-  keywords: 'car service, car repair, car mechanic, 90 minute car service, car ac repair, denting painting, doorstep car service',
+  keywords: [
+    'car mechanic near me', 'near me car mechanic', 'automotive mechanics near me', 'car mechanic nearby me', 'car mechanic near to me', 'car mechanic close to me',
+    'car repair', 'garage near me', 'car repair automotive', 'repair automotive', 'car servicing', 'car service',
+    'car mechanic', 'auto mechanics', 'mechanic near me', 'mechanic shop near me', 'mechanic nearby me', 'near me mechanic', 'car auto mechanic',
+    'car repair near me', 'car repair shop near me', 'car repair jaipur',
+    'car ac repair near me', 'car ac service near me', 'car ac repair jaipur',
+    'car glass shop near me', 'car glass shop in jaipur',
+    'wheel alignment near me', 'transmission repair', 'exhaust repair',
+    'best car service centre in jaipur', 'best car service center near me', 'car service center near me', 'car service near me', 'car service jaipur', 'car service at home in jaipur',
+    'gadi mechanic', 'gaadi mechanic', 'gaadi',
+    '90 minute car service', 'express car service', 'doorstep car service', 'car dent paint', 'denting painting', 'battery replacement', 'tyre services'
+  ].join(', '),
   image: 'https://www.gaadimech.com/og-image.jpg',
   canonicalUrl: 'https://www.gaadimech.com',
   robots: 'index, follow',  // Default robots meta tag
@@ -57,7 +85,11 @@ const defaultSeoConfig: SeoConfig = {
       'Certified Car Mechanics',
       'Affordable Car Repair Solutions'
     ]
-  }
+  },
+  siteName: 'GaadiMech',
+  locale: 'en_IN',
+  twitterSite: '@GaadiMech',
+  twitterCreator: '@GaadiMech'
 };
 
 // Page-specific SEO configurations
@@ -836,6 +868,30 @@ const seoConfigs: Record<string, SeoConfig> = {
   },
   
   // Add more page-specific SEO configs as needed
+  '/workshop-partner': {
+    title: 'Partner Your Workshop With GaadiMech | Boost Revenue & Customer Base',
+    description: 'Join GaadiMech\'s network of authorised workshops. Get steady customer inflow, technology platform & genuine parts supply. Apply to become a workshop partner today.',
+    keywords: 'workshop partner, car workshop partnership, authorised workshop jaipur, gaadimech workshop partner',
+    image: 'https://www.gaadimech.com/og-image.jpg',
+    canonicalUrl: 'https://www.gaadimech.com/workshop-partner',
+    robots: 'index, follow'
+  },
+  '/franchise': {
+    title: 'GaadiMech Franchise | Start Your Own 90-Minute Car Service Business',
+    description: 'Invest in GaadiMech franchise and launch a premium car service outlet with low investment, 70% lower space requirement & 200% ROI in 18 months.',
+    keywords: 'car service franchise, automobile franchise, car repair franchise, gaadimech franchise, express car service franchise',
+    image: 'https://www.gaadimech.com/og-image.jpg',
+    canonicalUrl: 'https://www.gaadimech.com/franchise',
+    robots: 'index, follow'
+  },
+  '/coupon-admin': {
+    title: 'Coupon Admin – Internal',
+    description: 'Internal admin dashboard for managing coupons. Not intended for public indexing.',
+    keywords: 'admin, coupons, internal',
+    image: 'https://www.gaadimech.com/og-image.jpg',
+    robots: 'noindex, nofollow',
+    canonicalUrl: 'https://www.gaadimech.com/coupon-admin'
+  },
 };
 
 /**

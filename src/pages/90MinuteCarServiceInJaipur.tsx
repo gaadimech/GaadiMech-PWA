@@ -7,7 +7,6 @@ import { WrenchIcon, SparklesIcon, ShieldCheckIcon, ClockIcon, MapPinIcon, Phone
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Breadcrumb from '../components/Breadcrumb';
-import { Helmet } from 'react-helmet-async';
 import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
 
 const NinetyMinuteCarServiceInJaipur: React.FC = () => {
@@ -67,12 +66,7 @@ const NinetyMinuteCarServiceInJaipur: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>90-Minute Car Service in Jaipur | GaadiMech</title>
-        <meta name="description" content="Quick 90-minute car service in Jaipur. Efficient maintenance by certified mechanics. Book online for express service with GaadiMech." />
-        <meta name="keywords" content="90 minute car service jaipur, quick car service jaipur, express car service jaipur, fast car service jaipur, car maintenance jaipur" />
-        <link rel="canonical" href="https://www.gaadimech.com/90-minute-car-service-in-jaipur" />
-      </Helmet>
+      {/* SEO handled centrally via SEOContent */}
 
       <Breadcrumb cityName={cityName} serviceName={serviceName} />
 

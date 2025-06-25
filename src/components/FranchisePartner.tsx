@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, Star, Clock, Shield, Zap, Truck, Settings, Users, Award, DollarSign, TrendingUp, BarChart, Percent, ThumbsUp, ChevronDown, Rocket, PieChart, BarChart2, LineChart, TrendingDown, X, Car, Phone, Mail, Globe } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
 import SimpleFranchiseForm from './SimpleFranchiseForm';
 
 const FranchisePartner = () => {
@@ -110,10 +109,7 @@ const FranchisePartner = () => {
 
   return (
     <>
-      <Helmet>
-        <title>GaadiMech Express Franchise | Start Your Own Car Service Business</title>
-        <meta name="description" content="Invest in GaadiMech Express Franchise with just ₹7 lakhs. Enjoy 200%+ ROI in 18 months, break even in 8 months, and earn up to ₹4.4 lakhs monthly with our revolutionary car service franchise model." />
-      </Helmet>
+      {/* SEO handled centrally via SEOContent */}
       
       {/* Main Apply Button only */}
       {showApplyButton && (

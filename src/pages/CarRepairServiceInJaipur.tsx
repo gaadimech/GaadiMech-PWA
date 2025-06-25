@@ -1,5 +1,4 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Clock as ClockIcon, MapPin as MapPinIcon, Shield as ShieldCheckIcon, Phone as PhoneIcon, Star as StarIcon, Wrench as WrenchIcon, Sparkles as SparklesIcon, CheckCircle, Car as CarIcon, Award as AwardIcon, Users as UsersIcon } from 'lucide-react';
@@ -60,18 +59,7 @@ const CarRepairServiceInJaipur = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{`Car Repair Service in ${cityName} | GaadiMech`}</title>
-        <meta name="description" content={`Professional car repair services in ${cityName} with expert mechanics and genuine parts for all makes and models.`} />
-        <meta name="keywords" content="Car Repair, GaadiMech, Jaipur, Expert Mechanics, Genuine Parts, Doorstep Service, Transparent Pricing" />
-        <meta property="og:title" content={`Car Repair Service in ${cityName} | GaadiMech`} />
-        <meta property="og:description" content={`Professional car repair services in ${cityName} with expert mechanics and genuine parts for all makes and models.`} />
-        <meta property="og:image" content="https://www.gaadi.me/images/og-image.jpg" />
-        <meta property="og:url" content="https://www.gaadi.me/car-repair-service-in-jaipur" />
-        <meta name="twitter:title" content={`Car Repair Service in ${cityName} | GaadiMech`} />
-        <meta name="twitter:description" content={`Professional car repair services in ${cityName} with expert mechanics and genuine parts for all makes and models.`} />
-        <meta name="twitter:image" content="https://www.gaadi.me/images/og-image.jpg" />
-      </Helmet>
+      {/* SEO handled centrally via SEOContent */}
 
       <Breadcrumb cityName={cityName} serviceName={serviceName} />
 

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Helmet } from 'react-helmet-async';
 import { Car } from 'lucide-react';
 import ReviewCarousel from './ReviewCarousel';
 import VehicleSelectionModal from './VehicleSelectionModal';
@@ -19,10 +18,9 @@ import {
 
 interface ServicePageProps {
   serviceType: ServiceType;
-  skipSeo?: boolean;
 }
 
-const ServicePage: React.FC<ServicePageProps> = ({ serviceType, skipSeo = false }) => {
+const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [showVehicleModal, setShowVehicleModal] = useState(false);
   const [csvData, setCsvData] = useState<any[]>([]);
@@ -143,14 +141,7 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType, skipSeo = false 
       transition={{ duration: 0.5 }}
       className="pt-20"
     >
-      {!skipSeo && (
-        <Helmet>
-          <title>{seoConfig.title}</title>
-          <meta name="description" content={seoConfig.description} />
-          <meta name="keywords" content={seoConfig.keywords} />
-          <link rel="canonical" href={seoConfig.canonicalUrl || window.location.href} />
-        </Helmet>
-      )}
+      {/* SEO handled centrally via SEOContent */}
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">

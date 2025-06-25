@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
 import CouponGenerationForm from '../components/CouponGenerationForm';
 import CouponsList from '../components/CouponsList';
@@ -311,9 +310,7 @@ const CouponAdmin = () => {
   
   return (
     <div className="min-h-screen bg-gray-100">
-      <Helmet>
-        <title>Coupon Admin | GaadiMech</title>
-      </Helmet>
+      {/* Internal admin page – SEO handled centrally (noindex) */}
       
       {/* Main content */}
       <div className="container mx-auto px-4 py-8">

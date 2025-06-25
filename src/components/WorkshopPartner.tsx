@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, Star, Clock, Shield, Zap, Truck, Settings, Users, Award, DollarSign, TrendingUp, BarChart, Percent, ThumbsUp, ChevronDown } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
 import WorkshopPartnerForm from './WorkshopPartnerForm';
 
 const WorkshopPartner = () => {
@@ -46,11 +45,6 @@ const WorkshopPartner = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Grow Your Workshop Business | GaadiMech Partner Program</title>
-        <meta name="description" content="Transform your auto workshop with GaadiMech's partnership program. Boost revenue, increase customer base, and access cutting-edge technology with zero upfront costs." />
-      </Helmet>
-      
       <section className="py-16 md:py-24 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Hero section */}
