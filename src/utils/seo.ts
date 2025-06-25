@@ -95,140 +95,82 @@ const defaultSeoConfig: SeoConfig = {
 // Page-specific SEO configurations
 const seoConfigs: Record<string, SeoConfig> = {
   '/': {
-    title: 'GaadiMech® - Car Service & Repair in Jaipur | GaadiMech (90-Minute Service)',
-    description: 'Book 90-minute car service, AC repair, dent-paint, tyres & batteries at GaadiMech Jaipur. Certified mechanics, genuine parts & free pickup-drop.',
-    keywords: 'car service jaipur, car repair jaipur, car mechanic jaipur, 90 minute car service, car ac repair jaipur, denting painting jaipur, doorstep car service jaipur',
+    title: 'GaadiMech | 90 MINS Car Service | Best Car Service in Jaipur',
+    description: 'Book your car service online with GaadiMech and get 90-minute express car service at your doorstep. Best car repair and maintenance services in Jaipur with 100% genuine parts.',
+    keywords: 'car service, car repair, doorstep car service, 90 minute car service, car service jaipur, car maintenance, express car service',
     image: 'https://www.gaadimech.com/og-image.jpg',
+    canonicalUrl: 'https://www.gaadimech.com/',
     robots: 'index, follow',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'LocalBusiness',
       'name': 'GaadiMech',
-      'description': 'Professional car repair and service company',
+      'description': '90-minute express car service at your doorstep',
       'url': 'https://www.gaadimech.com',
-      'logo': 'https://www.gaadimech.com/logo.png',
-      'image': 'https://www.gaadimech.com/og-image.jpg',
-      'telephone': '+919876543210',
-      'priceRange': '₹₹',
+      'telephone': '+91-8448285289',
       'address': {
         '@type': 'PostalAddress',
         'addressLocality': 'Jaipur',
         'addressRegion': 'Rajasthan',
-        'addressCountry': 'India'
-      },
-      'sameAs': [
-        'https://www.facebook.com/gaadimech',
-        'https://twitter.com/gaadimech',
-        'https://www.instagram.com/gaadimech'
-      ],
-      'serviceArea': {
-        '@type': 'GeoCircle',
-        'geoMidpoint': {
-          '@type': 'GeoCoordinates',
-          'latitude': 26.8984634,
-          'longitude': 75.7570971
-        },
-        'geoRadius': 50000
-      },
-      'hasOfferCatalog': {
-        '@type': 'OfferCatalog',
-        'name': 'Car Services',
-        'itemListElement': [
-          {
-            '@type': 'Offer',
-            'itemOffered': {
-              '@type': 'Service',
-              'name': '90-Minute Car Service',
-              'description': 'Quick doorstep car service completed in 90 minutes'
-            }
-          },
-          {
-            '@type': 'Offer',
-            'itemOffered': {
-              '@type': 'Service',
-              'name': 'Car AC Repair',
-              'description': 'Professional car air conditioning repair and service'
-            }
-          },
-          {
-            '@type': 'Offer',
-            'itemOffered': {
-              '@type': 'Service',
-              'name': 'Car Dent & Paint',
-              'description': 'Expert denting and painting services for cars'
-            }
-          }
-        ]
+        'addressCountry': 'IN'
       }
-    },
-    hiddenContent: {
-      h1: 'Car Service & Repair in Jaipur',
-      h2: 'Certified Mechanics • Genuine Parts • Free Pickup',
-      paragraphs: [
-        'Looking for reliable car repair services in India? GaadiMech provides expert car mechanics, professional car service, and emergency car repair near you. Our services include car AC repair, denting & painting, towing service, and complete car maintenance solutions. Find the best car mechanic shop near you with our network of certified automotive experts.'
-      ],
-      listItems: [
-        '24/7 Emergency Car Repair Services',
-        'Professional Car AC Service & Repair',
-        'Expert Denting & Painting Solutions',
-        'Complete Car Maintenance Services',
-        'Certified Car Mechanics',
-        'Affordable Car Repair Solutions'
-      ]
     }
   },
   '/services': {
-    title: 'All Car Services in Jaipur | One-Stop Car Care – GaadiMech',
-    description: 'All car services under one roof – periodic, AC, dent-paint, tyres, battery, detailing. Book online & enjoy free pickup in Jaipur.',
-    keywords: 'car services jaipur, car maintenance jaipur, car ac service jaipur, car dent paint jaipur, tyre replacement jaipur, battery replacement jaipur, car detailing jaipur',
+    title: 'Car Services | Professional Car Repair & Maintenance - GaadiMech',
+    description: 'Professional car services including periodic maintenance, AC service, battery replacement, denting & painting, car spa, and more. Book now for doorstep service.',
+    keywords: 'car services, car repair, car maintenance, periodic service, AC service, battery replacement, denting painting',
     image: 'https://www.gaadimech.com/services-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/services',
-    robots: 'index, follow',
-    structuredData: {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      'mainEntity': [
-        {
-          '@type': 'Question',
-          'name': 'What car services does GaadiMech offer?',
-          'acceptedAnswer': {
-            '@type': 'Answer',
-            'text': 'GaadiMech offers comprehensive car services including periodic maintenance, AC service & repair, denting & painting, battery replacement, windshield service, tyre service, and car detailing. All services come with free pickup and drop facility in Jaipur.'
-          }
-        },
-        {
-          '@type': 'Question',
-          'name': 'How quickly can GaadiMech service my car?',
-          'acceptedAnswer': {
-            '@type': 'Answer',
-            'text': 'GaadiMech specializes in 90-minute car service for most routine maintenance and repairs. Express services are available for quick fixes, while complex repairs may take longer but are completed the same day whenever possible.'
-          }
-        },
-        {
-          '@type': 'Question',
-          'name': 'Does GaadiMech provide doorstep car service?',
-          'acceptedAnswer': {
-            '@type': 'Answer',
-            'text': 'Yes, GaadiMech provides free pickup and drop service in Jaipur. Our certified mechanics can also perform certain services at your doorstep for added convenience.'
-          }
-        }
-      ]
-    },
-    hiddenContent: {
-      h1: 'Professional Car Services in Jaipur',
-      h2: 'Comprehensive Car Maintenance & Repair Services',
-      paragraphs: [
-        'GaadiMech offers a wide range of professional car services to keep your vehicle in top condition. From routine maintenance to specialized repairs, our certified mechanics deliver quality service using genuine parts and modern techniques. Explore our service offerings including periodic maintenance, AC service & repair, denting & painting, car spa, battery replacement, and more.'
-      ],
-      listItems: [
-        'Comprehensive Car Inspection',
-        'Regular Maintenance Services',
-        'AC Service & Repair',
-        'Professional Denting & Painting',
-        'Battery Replacement & Charging',
-        'Car Spa & Detailing Services'
-      ]
-    }
+    robots: 'index, follow'
+  },
+  '/ad-services': {
+    title: 'Car Services Jaipur | Professional Car Repair & Maintenance - GaadiMech',
+    description: 'Professional car services in Jaipur including periodic maintenance, AC service, battery replacement, denting & painting, car spa, and more. Book now for doorstep service.',
+    keywords: 'car services jaipur, car repair jaipur, car maintenance jaipur, periodic service jaipur, AC service jaipur',
+    image: 'https://www.gaadimech.com/services-image.jpg',
+    canonicalUrl: 'https://www.gaadimech.com/ad-services',
+    robots: 'index, follow'
+  },
+  '/about': {
+    title: 'About GaadiMech | 90-Minute Car Service Revolution',
+    description: 'Learn about GaadiMech\'s mission to revolutionize car servicing with our 90-minute express service model. Professional car care with technology-driven solutions.',
+    keywords: 'about gaadimech, car service company, 90 minute car service, express car service, car repair company',
+    image: 'https://www.gaadimech.com/about-image.jpg',
+    canonicalUrl: 'https://www.gaadimech.com/about',
+    robots: 'index, follow'
+  },
+  '/contact': {
+    title: 'Contact GaadiMech | Book Car Service | Get Support',
+    description: 'Contact GaadiMech for car service bookings, support, or inquiries. Call +91-8448285289 or book online for doorstep car service in Jaipur.',
+    keywords: 'contact gaadimech, book car service, car service booking, gaadimech contact number, car service support',
+    image: 'https://www.gaadimech.com/contact-image.jpg',
+    canonicalUrl: 'https://www.gaadimech.com/contact',
+    robots: 'index, follow'
+  },
+  '/blog': {
+    title: 'Car Maintenance & Repair Blog | Expert Tips - GaadiMech',
+    description: 'Expert car maintenance tips, repair guides, and automotive insights from professional mechanics. Learn how to care for your car with our detailed blog posts.',
+    keywords: 'car maintenance blog, car repair tips, automotive blog, car care guides, vehicle maintenance tips',
+    image: 'https://www.gaadimech.com/blog-image.jpg',
+    canonicalUrl: 'https://www.gaadimech.com/blog',
+    robots: 'index, follow'
+  },
+  '/express': {
+    title: 'Express Car Service | 90-Minute Car Service - GaadiMech',
+    description: 'Get your car serviced in just 90 minutes with GaadiMech Express. Fast, professional car service at your doorstep with genuine parts and expert mechanics.',
+    keywords: 'express car service, 90 minute car service, quick car service, fast car repair, doorstep car service',
+    image: 'https://www.gaadimech.com/express-image.jpg',
+    canonicalUrl: 'https://www.gaadimech.com/express',
+    robots: 'index, follow'
+  },
+  '/express-beta-atc': {
+    title: 'Book Express Car Service | 90-Minute Service Booking - GaadiMech',
+    description: 'Book your 90-minute express car service online. Select your car, choose time slot, and get professional service at your doorstep with genuine parts.',
+    keywords: 'book express car service, 90 minute service booking, online car service booking, express car service booking',
+    image: 'https://www.gaadimech.com/express-booking-image.jpg',
+    canonicalUrl: 'https://www.gaadimech.com/express-beta-atc',
+    robots: 'index, follow'
   },
   '/services/periodic': {
     title: 'Periodic Car Service in Jaipur | Scheduled Maintenance – GaadiMech',
@@ -474,29 +416,6 @@ const seoConfigs: Record<string, SeoConfig> = {
         'Engine Bay Cleaning: Careful cleaning of engine compartment to remove oil and dirt buildup.',
         'Odor Elimination: Treatment to remove unpleasant odors and leave your car smelling fresh.'
       ]
-    }
-  },
-  '/express': {
-    title: '90-Minute Car Service Jaipur',
-    description: 'Experience Formula 1 style quick car service in Jaipur. Get your car serviced in just 90 minutes with expert mechanics & genuine parts.',
-    keywords: '90 minute car service jaipur, express car service jaipur, quick car repair jaipur, formula 1 style service',
-    image: 'https://www.gaadimech.com/og-image.jpg',
-    canonicalUrl: 'https://www.gaadimech.com/90-minute-car-service-in-jaipur',
-    structuredData: {
-      '@context': 'https://schema.org',
-      '@type': 'Service',
-      'name': '90-Minute Car Service & Repair in Jaipur',
-      'provider': {
-        '@type': 'LocalBusiness',
-        'name': 'GaadiMech'
-      },
-      'serviceType': 'Express Car Service',
-      'description': '90-Minute Professional Car Service',
-      'offers': {
-        '@type': 'Offer',
-        'price': '2499.00',
-        'priceCurrency': 'INR'
-      }
     }
   },
   '/car-service-in-jaipur': {
@@ -813,50 +732,7 @@ const seoConfigs: Record<string, SeoConfig> = {
     image: 'https://www.gaadimech.com/og-image.jpg',
     canonicalUrl: 'https://www.gaadimech.com/feedback'
   },
-  '/express-beta-atc': {
-    title: 'GaadiMech Express: 90-Minute Car Service | Fast & Professional Car Repair',
-    description: 'Experience the future of car servicing with GaadiMech Express. Get your car serviced in just 90 minutes with our expert mechanics and latest technology.',
-    keywords: 'express car service, 90 minute car service, quick car service, fast car repair',
-    image: 'https://www.gaadimech.com/og-image.jpg',
-    canonicalUrl: 'https://www.gaadimech.com/express-beta-atc'
-  },
-  '/blog': {
-    title: 'Car Maintenance Tips & Automotive Guides | GaadiMech Blog',
-    description: 'Get expert car maintenance tips, auto repair guides, and industry insights from GaadiMech\'s professional mechanics to keep your vehicle running at its best.',
-    keywords: 'car maintenance tips, automotive blog, car repair guide, vehicle maintenance blog, car care tips, car service guide',
-    image: 'https://www.gaadimech.com/blog-image.jpg',
-    canonicalUrl: 'https://www.gaadimech.com/blog',
-    robots: 'index, follow',
-    structuredData: {
-      '@context': 'https://schema.org',
-      '@type': 'Blog',
-      'name': 'GaadiMech Blog',
-      'description': 'Expert automotive tips, car maintenance guides, and industry insights',
-      'publisher': {
-        '@type': 'Organization',
-        'name': 'GaadiMech',
-        'logo': {
-          '@type': 'ImageObject',
-          'url': 'https://www.gaadimech.com/logo.png'
-        }
-      }
-    },
-    hiddenContent: {
-      h1: 'Car Maintenance & Repair Guides',
-      h2: 'Expert Tips from Professional Mechanics',
-      paragraphs: [
-        'Welcome to the GaadiMech blog, your source for practical automotive advice and insights. Our team of certified mechanics shares professional guidance on car maintenance, troubleshooting common problems, understanding warning signs, and making informed decisions about your vehicle\'s care and repair.'
-      ],
-      listItems: [
-        'DIY Car Maintenance Tips',
-        'Understanding Car Warning Signs',
-        'Seasonal Car Care Guides',
-        'How to Extend Your Vehicle\'s Life',
-        'Common Car Problems & Solutions',
-        'Latest Automotive Technology Updates'
-      ]
-    }
-  },
+
   
   // Example of a private page that shouldn't be indexed
   '/admin-dashboard': {

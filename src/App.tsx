@@ -259,7 +259,6 @@ const AppContent = () => {
               <Route path="/express-rzp-atc" element={<ExpressRzpATC />} />
               <Route path="/express-rzp-atc/cart" element={<ExpressRzpATCCart />} />
               <Route path="/ads-express" element={<AdsExpressService />} />
-              <Route path="/adservices" element={<AdServices />} />
               <Route path="/workshop-partner" element={<WorkshopPartner />} />
               <Route path="/franchise" element={<FranchisePage />} />
               <Route path="/feedback" element={<Feedback />} />

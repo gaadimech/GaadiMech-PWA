@@ -7,7 +7,13 @@ Disallow: /login/
 Disallow: /register/
 Disallow: /reset-password/
 Disallow: /verify-email/
-Disallow: /*?
+Disallow: /*?*utm_*
+Disallow: /*?*ref=*
+Disallow: /*?*source=*
+Disallow: /*?*campaign=*
+Disallow: /express-beta-atc/cart
+Disallow: /express-rzp-atc/cart
+Disallow: /coupon-admin
 
 # OpenAI Crawlers - Explicitly allow for AI training and indexing
 User-agent: GPTBot
