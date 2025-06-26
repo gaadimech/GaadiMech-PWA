@@ -15,7 +15,7 @@ const Terms = () => {
         <div className="text-center mb-8">
           <FileText className="w-16 h-16 text-[#FF7200] mx-auto mb-4" />
           <h1 className="text-4xl font-bold text-gray-900">Terms and Conditions</h1>
-          <p className="text-gray-600 mt-2">Last Updated: 1st April, 2025</p>
+          <p className="text-gray-600 mt-2">Last Updated: 1st June, 2025</p>
         </div>
 
         <div className="prose prose-sm max-w-none">
@@ -274,7 +274,7 @@ const Terms = () => {
             <p>Website: www.gaadimech.com</p>
             <p>Phone: 8448285289</p>
             <p>Address: 21,Purani Chungi,Ashok Nagar,Jaipur,Rajasthan</p>
-            <p className="mt-4">Last Updated: 1st April, 2025</p>
+            <p className="mt-4">Last Updated: 1st June, 2025</p>
             <p className="mt-2">These terms and conditions are effective from the date of publication on the website and supersede all previous versions.</p>
           </div>
         </div>
