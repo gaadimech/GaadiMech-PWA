@@ -933,43 +933,27 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
               </div>
             </div>
 
-            {/* Compare & Save Section - Order 2 on mobile - Optimized height */}
+            {/* Express Service Section - Order 2 on mobile */}
             <div className="bg-white rounded-lg shadow-sm p-3 lg:p-4 order-2 lg:order-none">
-              <h2 className="text-lg lg:text-xl font-bold text-gray-900 mb-2">Compare & Save</h2>
+              <h2 className="text-lg lg:text-xl font-bold text-gray-900 mb-2">Car Service Details</h2>
               
-              <div className="flex flex-col space-y-2">
-                {/* Regular Workshop Service */}
-                <div className="flex justify-between items-center bg-gray-100 p-2 rounded-lg border-l-4 border-[#FF8A3D]">
+              {/* Express Service */}
+              <div className="bg-[#FFF8F0] p-3 rounded-lg border border-[#FF8A3D]">
+                <div className="flex justify-between items-center">
                   <div>
-                    <h3 className="text-gray-700 font-medium text-sm">Regular Workshop Service</h3>
-                    <p className="text-gray-500 text-xs">Authorized Service Center</p>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-base font-bold text-gray-900">₹{workshopPrice}</span>
-                    <p className="text-gray-500 text-xs">4-8 hours service time</p>
-                  </div>
-                </div>
-                
-                {/* Express Service - Compact version with dynamic pricing */}
-                <div className="bg-[#FFF8F0] p-2 rounded-lg">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="flex items-center gap-1">
-                        <h3 className="text-base font-bold text-gray-900">Express Service</h3>
-                        <span className="bg-green-100 text-green-700 text-xs px-1.5 py-0.5 rounded-full">
-                          Save ₹{workshopPrice - finalPrice}
-                        </span>
-                      </div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-base font-bold text-gray-900">Express Service</h3>
                       
                     </div>
-                    <div className="text-right">
-                      <div className="text-gray-500 line-through text-xs">₹{originalPrice}</div>
-                      <div className="font-bold text-lg text-[#FF8A3D]">₹{finalPrice}</div>
-                      <div className="text-green-600 text-xs">Website discount: ₹{autoDiscountAmount} OFF</div>
-                      {appliedCoupon && (
-                        <div className="text-blue-600 text-xs">Coupon: ₹{additionalDiscount} OFF</div>
-                      )}
-                    </div>
+                    <p className="text-gray-600 text-xs mt-1">Complete Car Service in just 90 minutes</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-gray-500 line-through text-xs">₹{originalPrice}</div>
+                    <div className="font-bold text-lg text-[#FF8A3D]">₹{finalPrice}</div>
+                    <div className="text-green-600 text-xs">Website discount: ₹{autoDiscountAmount} OFF</div>
+                    {appliedCoupon && (
+                      <div className="text-blue-600 text-xs">Coupon: ₹{additionalDiscount} OFF</div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1529,7 +1513,7 @@ Booking Slot: ${formattedDate}, ${timeSlotDisplay}`;
               <div className="text-gray-600">Total Price</div>
               <div className="font-bold text-2xl text-[#FF7200]">₹{finalPrice}</div>
               <div className="text-green-600 text-xs">
-                Save ₹{workshopPrice - finalPrice} vs. Company Workshops
+                Website discount applied
               </div>
             </div>
             <button
