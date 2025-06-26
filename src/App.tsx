@@ -81,8 +81,10 @@ const AppContent = () => {
   const [showForm, setShowForm] = useState(false);
   const [isFormDataLoaded, setIsFormDataLoaded] = useState(false);
   
-  // Global location detection for analytics and service area validation
+  // Global location detection for analytics and backend data collection
+  // Enable auto-detect for all users across the entire website
   const { location: userLocation } = useUserLocation(true);
+  
   const [hasFilledForm, setHasFilledForm] = useState(() => {
     return sessionStorage.getItem('hasFilledForm') === 'true';
   });
@@ -101,6 +103,21 @@ const AppContent = () => {
   const location = useLocation();
 
   useAnalytics();
+
+  // Log location data for debugging (only in development)
+  useEffect(() => {
+    if (import.meta.env.DEV && userLocation) {
+      console.log('🌍 Global location detected:', {
+        city: userLocation.city,
+        state: userLocation.state,
+        country: userLocation.country,
+        source: userLocation.source,
+        coordinates: userLocation.latitude && userLocation.longitude 
+          ? `${userLocation.latitude}, ${userLocation.longitude}` 
+          : 'Not available'
+      });
+    }
+  }, [userLocation]);
 
   // Function to check if we should show exit popup
   const shouldShowExitPopup = () => {

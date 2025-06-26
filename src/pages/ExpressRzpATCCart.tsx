@@ -87,10 +87,7 @@ const ExpressRzpATCCart = () => {
   const [showCouponSection, setShowCouponSection] = useState(false);
 
   // Location detection - basic implementation for RZP version
-  // const { location: userLocation, isServiceable, locationDisplay } = useUserLocation(true);
-
-  // State to track if user has been warned about non-serviceable area
-  const [hasShownLocationWarning, setHasShownLocationWarning] = useState(false);
+  const { location: userLocation } = useUserLocation(true);
 
   // NEW PAYMENT STATES
   const [showPaymentSection, setShowPaymentSection] = useState(false);
@@ -1031,10 +1028,6 @@ Please confirm my booking. Thank you!`;
               </div>
             </div>
           )}
-
-
-
-
 
           {/* PAYMENT SECTION */}
           {showPaymentSection && selectedDate && selectedTimeSlot && !showBookingConfirmation && (

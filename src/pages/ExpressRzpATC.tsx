@@ -14,6 +14,7 @@ import { useLocation } from 'react-router-dom';
 import { getVehicleFromSession } from '../utils/pricing-utils';
 import { Link } from 'react-router-dom';
 import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
+import { useLocation as useUserLocation } from '../hooks/useLocation';
 
 const steps = [
   {
@@ -96,6 +97,10 @@ const qualityFeatures = [
 const ExpressRzpATC = () => {
   const location = useLocation();
   const { trackInitiateCheckout, trackLead, trackSchedule, trackPurchase } = useMetaAnalytics();
+  
+  // Global location detection for backend data collection
+  const { location: userLocation } = useUserLocation(true);
+  
   const [mobile, setMobile] = useState(() => {
     // Initialize mobile number from session storage if available
     return sessionStorage.getItem('userMobileNumber') || '';
@@ -229,17 +234,26 @@ const ExpressRzpATC = () => {
     let serviceTypeName = "Express Service";
     
     try {
-      // Create the lead with all info
-      console.log('Creating lead with:', { mobileNumber, carBrand, carModel, fuelType, price });
+      // Create the lead with all info including location data
+      console.log('Creating lead with location data:', { mobileNumber, carBrand, carModel, fuelType, price, location: userLocation });
       
-      const response = await expressService.submitLead({
+      const leadData = {
         mobileNumber: mobileNumber,
         serviceType: serviceTypeName,
         carBrand: carBrand,
         carModel: carModel,
         fuel_type: fuelType,
-        servicePrice: price
-      } as any);
+        servicePrice: price,
+        // Include location data if available
+        userCity: userLocation?.city || null,
+        userState: userLocation?.state || null,
+        userCountry: userLocation?.country || null,
+        userLatitude: userLocation?.latitude ? String(userLocation.latitude) : null,
+        userLongitude: userLocation?.longitude ? String(userLocation.longitude) : null,
+        locationSource: userLocation?.source || null
+      };
+      
+      const response = await expressService.submitLead(leadData as any);
       
       if (!response || !response.data || !response.data.id) {
         throw new Error('Invalid response from server');
