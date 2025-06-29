@@ -13,11 +13,14 @@ import {
   Star,
   Clock,
   Award,
-  Truck
+  Truck,
+  Phone
 } from 'lucide-react';
 
 import ReviewCarousel from '../../components/ReviewCarousel';
 import { getReviewsByService } from '../../data/reviews';
+import MobileNumberModal from '../../components/MobileNumberModal';
+import { ConversionTracker } from '../../utils/conversionTracking';
 
 // Service features with icons
 const features = [
@@ -80,6 +83,7 @@ const servicePackages = [
 
 const CarSpaService = () => {
   const [activeTab, setActiveTab] = useState('about');
+  const [showMobileModal, setShowMobileModal] = useState(false);
   
   const handleGetPrices = (packageName?: string) => {
     let message = 'Hi%2C%20I%27d%20like%20to%20know%20the%20prices%20for%20Car%20Cleaning%20Service';
@@ -91,6 +95,25 @@ const CarSpaService = () => {
 
   const handleBookAppointment = () => {
     window.open(`https://wa.me/917300042410?text=I%27d%20like%20to%20book%20a%20Car%20Cleaning%20Service.`, '_blank');
+  };
+
+  const handleGetCallback = () => {
+    setShowMobileModal(true);
+  };
+
+  const handleMobileNumberSubmit = async (mobileNumber: string) => {
+    try {
+      // Track service interest before capturing mobile number
+      ConversionTracker.updateLeadTrackingData({
+        serviceInterest: 'Car Spa & Cleaning Service'
+      });
+      
+      await ConversionTracker.captureMobileNumberAndCreateLead(mobileNumber);
+      setShowMobileModal(false);
+      // Optional: Show success message or redirect
+    } catch (error) {
+      console.error('Error capturing lead:', error);
+    }
   };
 
   const serviceReviews = getReviewsByService('car_spa');
@@ -253,15 +276,27 @@ const CarSpaService = () => {
               transition={{ duration: 0.7, delay: 0.3 }}
               className="mt-8"
             >
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleBookAppointment}
-                className="bg-[#FF7200] hover:bg-[#FF8800] text-white font-semibold px-8 py-4 rounded-lg shadow-lg flex items-center justify-center mx-auto"
-              >
-                Book Your Car Spa Now
-                <ArrowRight className="ml-2" size={20} />
-              </motion.button>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleBookAppointment}
+                  className="bg-[#FF7200] hover:bg-[#FF8800] text-white font-semibold px-8 py-4 rounded-lg shadow-lg flex items-center justify-center"
+                >
+                  Book Your Car Spa Now
+                  <ArrowRight className="ml-2" size={20} />
+                </motion.button>
+                
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleGetCallback}
+                  className="bg-white/10 backdrop-blur-sm border-2 border-white/30 hover:bg-white/20 text-white font-semibold px-8 py-4 rounded-lg shadow-lg flex items-center justify-center"
+                >
+                  <Phone className="mr-2" size={20} />
+                  Get Callback
+                </motion.button>
+              </div>
               
               {/* Scroll down indicator */}
               <motion.div 
@@ -607,6 +642,14 @@ const CarSpaService = () => {
           </div>
         </div>
       </div>
+
+      {/* Mobile Number Modal */}
+      <MobileNumberModal
+        isOpen={showMobileModal}
+        onClose={() => setShowMobileModal(false)}
+        onSubmit={handleMobileNumberSubmit}
+        serviceName="Car Spa & Cleaning Service"
+      />
     </motion.div>
   );
 };

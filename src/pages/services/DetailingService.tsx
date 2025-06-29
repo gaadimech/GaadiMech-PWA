@@ -13,7 +13,8 @@ import {
   Star,
   Clock,
   Award,
-  Truck
+  Truck,
+  Phone
 } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { Card } from '../../components/ui/card';
@@ -22,6 +23,8 @@ import { useMetaAnalytics } from '../../hooks/useMetaAnalytics';
 
 import ReviewCarousel from '../../components/ReviewCarousel';
 import { getReviewsByService } from '../../data/reviews';
+import MobileNumberModal from '../../components/MobileNumberModal';
+import { ConversionTracker } from '../../utils/conversionTracking';
 
 // Service features with icons
 const features = [
@@ -89,6 +92,7 @@ const DetailingService = () => {
   const { trackLead } = useMetaAnalytics();
   const [activeTab, setActiveTab] = useState('about');
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const [showMobileModal, setShowMobileModal] = useState(false);
   
   const handleGetPrices = (packageName?: string) => {
     let message = 'Hi%2C%20I%27d%20like%20to%20know%20the%20prices%20for%20Car%20Detailing%20Service';
@@ -99,7 +103,7 @@ const DetailingService = () => {
   };
 
   const handleBookNow = async () => {
-    // Track Book Detailing Service Now button as Lead
+    // Track Book Car Detailing Service Now button as Lead
     await trackLead(
       undefined, // No customer info available at this point
       {
@@ -110,6 +114,25 @@ const DetailingService = () => {
     );
 
     window.open(`https://wa.me/917300042410?text=I%27d%20like%20to%20book%20a%20Car%20Detailing%20Service.`, '_blank');
+  };
+
+  const handleGetCallback = () => {
+    setShowMobileModal(true);
+  };
+
+  const handleMobileNumberSubmit = async (mobileNumber: string) => {
+    try {
+      // Track service interest before capturing mobile number
+      ConversionTracker.updateLeadTrackingData({
+        serviceInterest: 'Car Detailing Service'
+      });
+      
+      await ConversionTracker.captureMobileNumberAndCreateLead(mobileNumber);
+      setShowMobileModal(false);
+      // Optional: Show success message or redirect
+    } catch (error) {
+      console.error('Error capturing lead:', error);
+    }
   };
 
   const serviceReviews = getReviewsByService('car_detailing');
@@ -274,15 +297,27 @@ const DetailingService = () => {
               transition={{ duration: 0.7, delay: 0.3 }}
               className="mt-8"
             >
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleBookNow}
-                className="bg-[#FF7200] hover:bg-[#FF8800] text-white font-semibold px-8 py-4 rounded-lg shadow-lg flex items-center justify-center mx-auto"
-              >
-                Book Detailing Service Now
-                <ArrowRight className="ml-2" size={20} />
-              </motion.button>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleBookNow}
+                  className="bg-[#FF7200] hover:bg-[#FF8800] text-white font-semibold px-8 py-4 rounded-lg shadow-lg flex items-center justify-center"
+                >
+                  Book Detailing Service Now
+                  <ArrowRight className="ml-2" size={20} />
+                </motion.button>
+                
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleGetCallback}
+                  className="bg-white/10 backdrop-blur-sm border-2 border-white/30 hover:bg-white/20 text-white font-semibold px-8 py-4 rounded-lg shadow-lg flex items-center justify-center"
+                >
+                  <Phone className="mr-2" size={20} />
+                  Get Callback
+                </motion.button>
+              </div>
               
               {/* Scroll down indicator */}
               <motion.div 
@@ -628,6 +663,14 @@ const DetailingService = () => {
           </div>
         </div>
       </div>
+
+      {/* Mobile Number Modal */}
+      <MobileNumberModal
+        isOpen={showMobileModal}
+        onClose={() => setShowMobileModal(false)}
+        onSubmit={handleMobileNumberSubmit}
+        serviceName="Car Detailing Service"
+      />
     </motion.div>
   );
 };
