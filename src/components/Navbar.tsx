@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import MobileNumberModal from './MobileNumberModal';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showMobileModal, setShowMobileModal] = useState(false);
   const location = useLocation();
 
   // Scroll to top on route change
@@ -14,6 +16,13 @@ const Navbar = () => {
 
   const handleBookNow = () => {
     setIsOpen(false); // Close menu when Book Now is clicked
+    setShowMobileModal(true); // Show mobile number modal first
+  };
+
+  const handleMobileNumberSubmit = (mobileNumber: string) => {
+    // Close the modal
+    setShowMobileModal(false);
+    
     // Prefilled message added to match Hero.tsx
     const message = encodeURIComponent("Hi, I'd like to book an Express Car Service through GaadiMech.");
     // Open WhatsApp link in a new window with noopener and nofollow attributes
@@ -142,6 +151,14 @@ const Navbar = () => {
           </div>
         </motion.div>
       )}
+      
+      {/* Mobile Number Modal */}
+      <MobileNumberModal
+        isOpen={showMobileModal}
+        onClose={() => setShowMobileModal(false)}
+        onSubmit={handleMobileNumberSubmit}
+        serviceName="Express Car Service"
+      />
     </nav>
   );
 };

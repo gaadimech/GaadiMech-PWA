@@ -3,8 +3,10 @@ import { ArrowRight, Phone, Clock, Home, IndianRupee, Check, Star } from 'lucide
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
+import { ConversionTracker } from '../utils/conversionTracking';
 import { testMetaConversionApi } from '../utils/metaTest';
 import { testAllMetaEvents } from '../utils/metaEventTest';
+import MobileNumberModal from './MobileNumberModal';
 
 // Google Analytics events added:
 // 1. conversion_event_book_appointment - Triggered when user clicks "Book Now" (WhatsApp)
@@ -13,6 +15,7 @@ import { testAllMetaEvents } from '../utils/metaEventTest';
 const Hero = () => {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
+  const [showMobileModal, setShowMobileModal] = useState(false);
   const { trackContact, trackLead } = useMetaAnalytics();
 
   // Check if the device is mobile
@@ -43,9 +46,9 @@ const Hero = () => {
   }, []);
 
   const handleBookService = async () => {
-    // Track conversion event for Book Now (WhatsApp)
+    // Track conversion event for Book Service
     if (window.gtag) {
-      window.gtag('event', 'conversion_event_book_appointment', {
+      window.gtag('event', 'conversion_event_book_service', {
         'event_category': 'engagement',
         'event_label': 'hero_whatsapp_booking'
       });
@@ -56,7 +59,22 @@ const Hero = () => {
       content_name: 'Hero WhatsApp Booking',
       content_type: 'booking_request'
     });
+
+    // Show mobile number modal first
+    setShowMobileModal(true);
+  };
+
+  const handleMobileNumberSubmit = (mobileNumber: string) => {
+    // Close the modal
+    setShowMobileModal(false);
     
+    // Track WhatsApp redirect with ConversionTracker
+    ConversionTracker.trackWhatsAppRedirect({
+      service: 'Express Service',
+      source: 'hero_section'
+    });
+    
+    // Proceed with WhatsApp redirect
     const message = encodeURIComponent("Hi, I'd like to book an Express Car Service through GaadiMech.");
     window.open(`https://wa.me/917300042410?text=${message}`, '_blank');
   };
@@ -390,6 +408,14 @@ const Hero = () => {
           )}
         </div>
       </div>
+      
+      {/* Mobile Number Modal */}
+      <MobileNumberModal
+        isOpen={showMobileModal}
+        onClose={() => setShowMobileModal(false)}
+        onSubmit={handleMobileNumberSubmit}
+        serviceName="Express Car Service"
+      />
     </section>
   );
 };

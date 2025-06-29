@@ -5,6 +5,8 @@ import { ServiceCard as ServiceCardProps } from '../data/services-data';
 import { Vehicle } from '../types/services';
 import ReactDOM from 'react-dom';
 import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
+import { ConversionTracker } from '../utils/conversionTracking';
+import MobileNumberModal from './MobileNumberModal';
 
 interface ServiceCardComponentProps {
   card: ServiceCardProps;
@@ -39,6 +41,7 @@ const ServiceCard: React.FC<ServiceCardComponentProps> = ({
   const { trackLead } = useMetaAnalytics();
   const [showDetails, setShowDetails] = useState(false);
   const [highlightDuration, setHighlightDuration] = useState(false);
+  const [showMobileModal, setShowMobileModal] = useState(false);
   const isExpressService = card.duration.includes('90 Mins') || card.duration.includes('⏰');
   const isExpressDentService = card.id === 'denting-door' || card.title.includes('Express Dent');
   
@@ -149,6 +152,22 @@ const ServiceCard: React.FC<ServiceCardComponentProps> = ({
       }
     );
 
+    // Show mobile number modal first
+    setShowMobileModal(true);
+  };
+
+  const handleMobileNumberSubmit = (mobileNumber: string) => {
+    // Close the modal
+    setShowMobileModal(false);
+    
+    // Track WhatsApp redirect with ConversionTracker
+    ConversionTracker.trackWhatsAppRedirect({
+      service: card.title,
+      source: 'service_card',
+      car: selectedVehicle ? `${selectedVehicle.manufacturer} ${selectedVehicle.model}` : null,
+      price: actualPrice || card.price
+    });
+
     let customMessage = '';
     
     // If this is a customized service and the modal has been used
@@ -195,6 +214,7 @@ ${servicesList}
     
     // Open WhatsApp with the detailed message
     window.open(`https://wa.me/917300042410?text=${encodeURIComponent(customMessage)}`, '_blank');
+    
   };
   
   const toggleDetails = (e: React.MouseEvent) => {
@@ -765,6 +785,14 @@ ${servicesList}
       
       {/* Render the modal using a portal */}
       {renderCustomizationModal()}
+      
+      {/* Mobile Number Modal */}
+      <MobileNumberModal
+        isOpen={showMobileModal}
+        onClose={() => setShowMobileModal(false)}
+        onSubmit={handleMobileNumberSubmit}
+        serviceName={card.title}
+      />
     </motion.div>
   );
 };
