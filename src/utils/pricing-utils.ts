@@ -29,7 +29,8 @@ export const formatPrice = (price: number | string): string => {
 // Parse CSV data
 export const parseCSVData = async (): Promise<CSVRow[]> => {
   try {
-    const response = await fetch('/GM Pricing March Website Usage -Final.csv');
+    // Fetch the latest pricing file (July Wiper Blades pricing)
+    const response = await fetch('/GaadiMech%20PRICING%20WIPER%20BLADES%20(July).csv');
     const csvText = await response.text();
     
     return new Promise((resolve, reject) => {
@@ -119,11 +120,11 @@ export const getPricingData = (data: CSVRow[], vehicle: Vehicle): PricingData | 
   if (!row) return null;
   
   return {
-    // Periodic Service price from column 4
-    periodicServicePrice: parseFloat(row['Periodic Service Price GaadiMech']) || 0,
+    // Periodic Service price (use discounted price)
+    periodicServicePrice: parseFloat(row['Discounted Price']) || 0,
     
-    // Express Service price from column 5
-    expressServicePrice: parseFloat(row['Express Service Price GaadiMech']) || 0,
+    // Express Service list price (discounted price + ₹500) so that website discount remains ₹500
+    expressServicePrice: (parseFloat(row['Discounted Price']) || 0) + 500,
     
     // Discounted Express Service price from column 6
     discountedExpressPrice: parseFloat(row['Discounted Price']) || 0,
