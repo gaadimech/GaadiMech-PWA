@@ -78,3 +78,7 @@ Thumbs.db
 
 # Documentation (development guides, not needed for functional website)
 docs/
+
+# Backup files
+*.bak
+public/sitemap.xml.bak

@@ -1,5 +1,11 @@
-User-agent: *
-Allow: /
+# GaadiMech Website - Robots.txt
+# Updated with advanced SEO and security best practices
+
+# Sitemap locations
+Sitemap: https://www.gaadimech.com/sitemap.xml
+
+# Google Bots - Full access with specific optimizations
+User-agent: Googlebot
 Disallow: /admin/
 Disallow: /dashboard/
 Disallow: /api/
@@ -7,15 +13,164 @@ Disallow: /login/
 Disallow: /register/
 Disallow: /reset-password/
 Disallow: /verify-email/
+Disallow: /coupon-admin/
+Disallow: /express-beta-atc/cart
+Disallow: /express-rzp-atc/cart
 Disallow: /*?*utm_*
 Disallow: /*?*ref=*
 Disallow: /*?*source=*
 Disallow: /*?*campaign=*
+Disallow: /*?*fbclid=*
+Disallow: /*?*gclid=*
+Disallow: /*?*q=*
+Disallow: /*?*search=*
+Disallow: /*?*%25*
+Allow: /
+
+User-agent: Googlebot-Mobile
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /login/
+Disallow: /register/
+Disallow: /reset-password/
+Disallow: /verify-email/
+Disallow: /coupon-admin/
 Disallow: /express-beta-atc/cart
 Disallow: /express-rzp-atc/cart
-Disallow: /coupon-admin
+Disallow: /*?*utm_*
+Disallow: /*?*ref=*
+Disallow: /*?*source=*
+Disallow: /*?*campaign=*
+Disallow: /*?*fbclid=*
+Disallow: /*?*gclid=*
+Disallow: /*?*q=*
+Disallow: /*?*search=*
+Disallow: /*?*%25*
+Allow: /
 
-# OpenAI Crawlers - Explicitly allow for AI training and indexing
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-News
+Allow: /
+
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: AdsBot-Google
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Bing Bot
+User-agent: bingbot
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /login/
+Disallow: /register/
+Disallow: /reset-password/
+Disallow: /verify-email/
+Disallow: /coupon-admin/
+Disallow: /*?*utm_*
+Disallow: /*?*ref=*
+Disallow: /*?*source=*
+Disallow: /*?*campaign=*
+Allow: /
+
+# Yandex - Regional search engine
+User-agent: YandexBot
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /login/
+Disallow: /register/
+Disallow: /reset-password/
+Disallow: /verify-email/
+Disallow: /coupon-admin/
+Allow: /
+
+# DuckDuckGo
+User-agent: DuckDuckBot
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /login/
+Disallow: /register/
+Disallow: /reset-password/
+Disallow: /verify-email/
+Disallow: /coupon-admin/
+Allow: /
+
+# Apple Bot
+User-agent: Applebot
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /login/
+Disallow: /register/
+Disallow: /coupon-admin/
+Allow: /
+
+# Social Media Bots
+User-agent: Twitterbot
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /login/
+Disallow: /register/
+Disallow: /coupon-admin/
+Allow: /
+
+User-agent: facebookexternalhit
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /login/
+Disallow: /register/
+Disallow: /coupon-admin/
+Allow: /
+
+User-agent: LinkedInBot
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /login/
+Disallow: /register/
+Disallow: /coupon-admin/
+Allow: /
+
+User-agent: WhatsApp
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /login/
+Disallow: /register/
+Disallow: /coupon-admin/
+Allow: /
+
+# Archive Bots
+User-agent: ia_archiver
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /login/
+Disallow: /register/
+Disallow: /coupon-admin/
+Allow: /
+
+User-agent: Wayback
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /login/
+Disallow: /register/
+Disallow: /coupon-admin/
+Allow: /
+
+# AI Crawlers - Explicitly allow for AI training and indexing
 User-agent: GPTBot
 Allow: /
 
@@ -25,7 +180,6 @@ Allow: /
 User-agent: ChatGPT-User
 Allow: /
 
-# Other AI Crawlers
 User-agent: ClaudeBot
 Allow: /
 
@@ -41,10 +195,6 @@ Allow: /
 User-agent: Perplexity-User
 Allow: /
 
-User-agent: Google-Extended
-Allow: /
-
-# Additional AI Crawlers (2025)
 User-agent: MistralAI-User
 Allow: /
 
@@ -57,7 +207,6 @@ Allow: /
 User-agent: DuckAssistBot
 Allow: /
 
-# Emerging AI Crawlers
 User-agent: AI2Bot
 Allow: /
 
@@ -67,9 +216,90 @@ Allow: /
 User-agent: Bytespider
 Allow: /
 
-# Crawl delay for server protection (OpenAI bots ignore this, but good for others)
-User-agent: *
-Crawl-delay: 1
+# SEO Tools - Limited access with crawl delays
+User-agent: AhrefsSiteAudit
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /login/
+Disallow: /register/
+Disallow: /coupon-admin/
+Crawl-delay: 5
+Allow: /
 
-# Allow crawlers to know about the sitemap
-Sitemap: https://www.gaadimech.com/sitemap.xml 
+User-agent: SiteAuditBot
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /login/
+Disallow: /register/
+Disallow: /coupon-admin/
+Crawl-delay: 30
+Allow: /
+
+# SEO Tools - Your own analysis tools (controlled access)
+User-agent: AhrefsBot
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /login/
+Disallow: /register/
+Disallow: /coupon-admin/
+Crawl-delay: 30
+Allow: /
+
+User-agent: SemrushBot
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /login/
+Disallow: /register/
+Disallow: /coupon-admin/
+Crawl-delay: 30
+Allow: /
+
+# Block aggressive or problematic crawlers
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: MegaIndex
+Disallow: /
+
+User-agent: dotbot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+# Default for all other bots - Restrictive approach for security
+User-agent: *
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /login/
+Disallow: /register/
+Disallow: /reset-password/
+Disallow: /verify-email/
+Disallow: /coupon-admin/
+Disallow: /express-beta-atc/cart
+Disallow: /express-rzp-atc/cart
+Disallow: /*?*utm_*
+Disallow: /*?*ref=*
+Disallow: /*?*source=*
+Disallow: /*?*campaign=*
+Disallow: /*?*fbclid=*
+Disallow: /*?*gclid=*
+Disallow: /*?*q=*
+Disallow: /*?*search=*
+Disallow: /*?*sid=*
+Disallow: /*?*sessionid=*
+Disallow: /*?*%25*
+Disallow: /*/print/
+Disallow: /*/download/
+Disallow: /temp/
+Disallow: /tmp/
+Crawl-delay: 1
+Allow: / 
