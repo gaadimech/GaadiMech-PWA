@@ -53,7 +53,7 @@ const services: ServiceCard[] = [
   },
   {
     title: 'Insurance Claim',
-    image: '/images/insurance claim.png',
+    image: '/images/insurance%20claim.png',
     link: '/services/windshield'
   }
 ];
@@ -66,7 +66,7 @@ const exclusives: ServiceCard[] = [
   },
   {
     title: 'SOS',
-    image: '/images/SOS.png',
+    image: '/images/Sos.png',
     link: 'tel:+918448285289'
   }
 ];
@@ -144,7 +144,7 @@ const HomepageAppV0: React.FC = () => {
       {/* Carousel */}
       <div className="mt-4">
         <div className="relative w-full overflow-x-auto flex snap-x snap-mandatory gap-4 px-4">
-          {['/images/Carousal 1.jpg', '/images/Carousal 2.jpg', '/images/Carousal 3.jpg', '/images/Carousal 4.jpg'].map((src, idx) => (
+          {['/images/Carousal%201.jpg', '/images/Carousal%202.jpg', '/images/Carousal%203.jpg', '/images/Carousal%204.jpg'].map((src, idx) => (
             <img
               key={idx}
               src={src}
