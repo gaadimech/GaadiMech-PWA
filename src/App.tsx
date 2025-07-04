@@ -65,6 +65,8 @@ import CarBatteryReplacementInJaipur from './pages/CarBatteryReplacementInJaipur
 import DoorstepCarServiceInJaipur from './pages/DoorstepCarServiceInJaipur'; 
 import NinetyMinuteCarServiceInJaipur from './pages/90MinuteCarServiceInJaipur';
 
+import HomepageAppV0 from './pages/HomepageAppV0';
+
 Modal.setAppElement('#root');
 
 // Create a new component to use the hook
@@ -316,6 +318,8 @@ const AppContent = () => {
 
               {/* New Routes */}
               <Route path="/coupon-admin" element={<CouponAdmin />} />
+              {/* New App-style Homepage */}
+              <Route path="/homepage-app-v0" element={<HomepageAppV0 />} />
             </Routes>
           </AnimatePresence>
           <Footer />
