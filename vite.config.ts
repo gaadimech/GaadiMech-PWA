@@ -5,6 +5,8 @@ export default defineConfig({
   plugins: [
     react(),
   ],
+  publicDir: 'public',
+  base: '/',
   optimizeDeps: {
     exclude: ['lucide-react'],
     include: ['react-icons']

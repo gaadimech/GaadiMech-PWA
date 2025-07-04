@@ -8,7 +8,7 @@ const Feedback: React.FC = () => {
       
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <img src="/src/assets/logo.png" alt="GaadiMech Logo" className="h-16 mx-auto mb-4" />
+          <img src="/images/logo1.png" alt="GaadiMech Logo" className="h-16 mx-auto mb-4" />
           <h1 className="text-4xl font-bold text-gray-900 mb-2">We Value Your Feedback</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Your opinion helps us deliver better automotive services. Tell us about your experience!

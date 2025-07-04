@@ -291,7 +291,7 @@ const Hero = () => {
                 onClick={handleBookService}
                 className="w-1/2 bg-gradient-to-r from-[#FF7200] to-[#FF9500] text-white px-2 sm:px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base font-medium hover:from-[#25D366] hover:to-[#128C7E]"
               >
-                <img src="https://i.ibb.co/gM65tZy7/whatsapp-icon.png" alt="WhatsApp" className="mr-2" style={{ width: '24px', height: '24px' }} />
+                <img src="/images/whatsapp-icon.png" alt="WhatsApp" className="mr-2" style={{ width: '24px', height: '24px' }} />
                 Book Now
                 <ArrowRight className="ml-1 sm:ml-2" size={16} />
               </motion.button>
