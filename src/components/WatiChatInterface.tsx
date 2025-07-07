@@ -369,7 +369,7 @@ const WatiChatInterface: React.FC<WatiChatInterfaceProps> = ({ isOpen, onClose }
   useEffect(() => {
     const loadCarData = async () => {
       try {
-        const response = await fetch('/GM Pricing March Website Usage -Final.csv');
+        const response = await fetch('/GaadiMech PRICING WIPER BLADES (July).csv');
         const csvText = await response.text();
         const lines = csvText.split('\n');
         const headers = lines[0].split(',');
