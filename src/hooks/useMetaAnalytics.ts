@@ -5,21 +5,18 @@ import type { CustomerInfo } from '../services/metaConversionApi';
 
 declare global {
   interface Window {
-    gtag: (
+    gtag?: (
       type: string,
       action: string,
       params: { page_path?: string; [key: string]: any }
     ) => void;
-    fbq: (
+    fbq?: (
       type: string,
       event: string,
       params?: { [key: string]: any }
     ) => void;
-    amplitude: {
+    amplitude?: {
       track: (event: string, params?: any) => void;
-    };
-    zepic: {
-      identify: (key: string, value: string) => void;
     };
   }
 }

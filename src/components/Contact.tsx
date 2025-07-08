@@ -80,10 +80,7 @@ const Contact: React.FC<ContactProps> = ({ isHomePage = false }) => {
       await submitContactForm(formData);
       setStatus('success');
       
-      // Track mobile number with Zepic
-      if (window.zepic) {
-        window.zepic.identify('mobile_number', formData.phone);
-      }
+      
       
       setFormData({ name: '', email: '', phone: '', message: '' });
       setTouchedFields({});

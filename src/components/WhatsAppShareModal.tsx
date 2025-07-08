@@ -74,10 +74,7 @@ const WhatsAppShareModal: React.FC<WhatsAppShareModalProps> = ({ isOpen, onClose
       return;
     }
     
-    // Track mobile number with Zepic
-    if (window.zepic) {
-      window.zepic.identify('mobile_number', mobileNumber);
-    }
+    
     
     // Get the selected template
     const selectedTemplate = MESSAGE_TEMPLATES.find(t => t.id === selectedTemplateId);

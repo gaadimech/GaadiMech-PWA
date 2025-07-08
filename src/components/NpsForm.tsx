@@ -109,10 +109,7 @@ const NpsForm: React.FC = () => {
       await npsService.submit(formData);
       setStatus('success');
       
-      // Track mobile number with Zepic
-      if (window.zepic) {
-        window.zepic.identify('mobile_number', formData.mobileNumber);
-      }
+      
       
       setShowCouponPopup(true);
       

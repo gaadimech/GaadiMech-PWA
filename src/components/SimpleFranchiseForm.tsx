@@ -290,10 +290,7 @@ const SimpleFranchiseForm: React.FC<SimpleFranchiseFormProps> = ({ isOpen, onClo
       if (response.ok) {
         setIsSubmitted(true);
         
-        // Track mobile number with Zepic
-        if (window.zepic) {
-          window.zepic.identify('mobile_number', formData.mobileNumber);
-        }
+        
         
         // Close modal after 3 seconds
         setTimeout(() => {
