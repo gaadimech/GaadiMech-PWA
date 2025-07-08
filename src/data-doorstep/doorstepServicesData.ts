@@ -96,9 +96,9 @@ export const SERVICES: DoorstepService[] = [
     image: '/images/doorstep-services/Jump Start.jpg',
     features: [
       'Immediate response',
-      'Portable battery boosters',
+      'Portable battery',
       'Battery health check',
-      'Charging system diagnosis'
+      'Charging diagnosis'
     ]
   },
   {
@@ -129,10 +129,10 @@ export const SERVICES: DoorstepService[] = [
     isEmergency: true,
     image: '/images/doorstep-services/Fuel Delivery.jpg',
     features: [
-      'Up to 5L fuel delivery',
-      'Any location within city limits',
-      'Fuel quality assurance',
-      'Quick response time'
+      'Up to 5L fuel',
+      'Location within city',
+      'quality assurance',
+      'Quick response'
     ]
   },
   {
@@ -149,7 +149,7 @@ export const SERVICES: DoorstepService[] = [
       'Coolant level check',
       'Basic diagnostic',
       'Temperature monitoring',
-      'Cooling system inspection'
+      'Cooling inspection'
     ]
   },
 

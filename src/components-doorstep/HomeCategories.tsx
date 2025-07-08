@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { SERVICE_CATEGORIES, DoorstepServiceCategory } from '../data-doorstep/doorstepServicesData';
-import { getServicesByCategory } from '../data-doorstep/doorstepServicesData';
 
 const HomeCategories = () => {
   const navigate = useNavigate();
@@ -47,58 +46,47 @@ const HomeCategories = () => {
 
         {/* Categories Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
-          {Object.values(SERVICE_CATEGORIES).map((category: DoorstepServiceCategory, index: number) => {
-            const servicesCount = getServicesByCategory(category.id).length;
-            
-            return (
-              <motion.div
-                key={category.id}
-                className="bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center group cursor-pointer relative overflow-hidden border border-transparent hover:border-orange-200"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 * index }}
-              >
-                {/* Emergency Badge */}
-                {category.availability === '24/7' && (
-                  <div className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
-                    24/7
-                  </div>
-                )}
-
-                {/* Category Icon */}
-                <div className="w-1/2 aspect-square mb-3 flex items-center justify-center">
-                  <img 
-                    src={category.icon} 
-                    alt={category.name}
-                    className="w-full h-full object-contain"
-                    title={category.name}
-                  />
+          {Object.values(SERVICE_CATEGORIES).map((category: DoorstepServiceCategory, index: number) => (
+            <motion.div
+              key={category.id}
+              onClick={() => handleCategoryClick(category.id)}
+              className="bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center group cursor-pointer relative overflow-hidden border border-transparent hover:border-orange-200"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 * index }}
+            >
+              {/* Emergency Badge */}
+              {category.availability === '24/7' && (
+                <div className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+                  24/7
                 </div>
+              )}
 
-                {/* Category Content */}
-                <div className="flex-grow flex flex-col items-center">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-[#FF7200] transition-colors">
-                    {category.name}
-                  </h3>
-                  
-                  <div className="text-[#FF7200] font-semibold mb-3">
-                    {servicesCount} Services
-                  </div>
+              {/* Category Icon */}
+              <div className="w-1/2 aspect-square mb-3 flex items-center justify-center">
+                <img 
+                  src={category.icon} 
+                  alt={category.name}
+                  className="w-full h-full object-contain"
+                  title={category.name}
+                />
+              </div>
 
-                  {/* View Services Button */}
-                  <button
-                    onClick={() => handleCategoryClick(category.id)}
-                    className="mt-auto bg-white border-2 border-[#FF7200] text-[#FF7200] hover:bg-[#FF7200] hover:text-white px-4 py-1.5 rounded-full transition-all duration-300 font-medium flex items-center gap-1 group-hover:scale-105 text-sm"
-                  >
-                    View Services
-                    <ArrowRight className="w-3 h-3 transform group-hover:translate-x-1 transition-transform" />
-                  </button>
+              {/* Category Content */}
+              <div className="flex-grow flex flex-col items-center">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-[#FF7200] transition-colors">
+                  {category.name}
+                </h3>
+                
+                <div className="mt-auto flex items-center gap-1 text-[#FF7200] font-medium text-sm group-hover:translate-x-1 transition-transform">
+                  View Services
+                  <ArrowRight className="w-4 h-4" />
                 </div>
-              </motion.div>
-            );
-          })}
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </div>
