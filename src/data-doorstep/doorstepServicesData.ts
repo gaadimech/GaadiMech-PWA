@@ -163,6 +163,7 @@ export const SERVICES: DoorstepService[] = [
     duration: '45-60 mins',
     rating: 4.8,
     isEmergency: false,
+    image: '/images/doorstep-services/Oil Change.jpg',
     features: [
       'Premium engine oil',
       'New oil filter',
@@ -179,6 +180,7 @@ export const SERVICES: DoorstepService[] = [
     duration: '30-45 mins',
     rating: 4.9,
     isEmergency: false,
+    image: '/images/doorstep-services/Battery Replacement.jpg',
     features: [
       '24-month warranty',
       'Old battery disposal',
@@ -195,6 +197,7 @@ export const SERVICES: DoorstepService[] = [
     duration: '20-30 mins',
     rating: 4.7,
     isEmergency: false,
+    image: '/images/doorstep-services/Coolant Topup.jpg',
     features: [
       'Coolant level check',
       'Recommended fluid',
@@ -213,6 +216,7 @@ export const SERVICES: DoorstepService[] = [
     duration: '30-40 mins',
     rating: 4.8,
     isEmergency: false,
+    image: '/images/doorstep-services/Engine OBD Scanning.jpg',
     features: [
       'Live scan report',
       'Error code reading',
@@ -229,6 +233,7 @@ export const SERVICES: DoorstepService[] = [
     duration: '60-90 mins',
     rating: 4.9,
     isEmergency: false,
+    image: '/images/doorstep-services/Used Car Inspection.jpg',
     features: [
       'Comprehensive report',
       '30-point checklist',
@@ -247,6 +252,7 @@ export const SERVICES: DoorstepService[] = [
     duration: '20-30 mins',
     rating: 4.6,
     isEmergency: false,
+    image: '/images/doorstep-services/Interior Vacuuming.jpg',
     features: [
       'Seat cleaning',
       'Floor cleaning',
@@ -263,6 +269,7 @@ export const SERVICES: DoorstepService[] = [
     duration: '90-120 mins',
     rating: 4.8,
     isEmergency: false,
+    image: '/images/doorstep-services/Interior Drycleaning.jpg',
     features: [
       'Seat shampooing',
       'Dashboard cleaning',
@@ -281,6 +288,7 @@ export const SERVICES: DoorstepService[] = [
     duration: '60-90 mins',
     rating: 4.8,
     isEmergency: false,
+    image: '/images/doorstep-services/AC Gas Refill.jpg',
     features: [
       'Gas refill',
       'Cooling check',
@@ -297,6 +305,7 @@ export const SERVICES: DoorstepService[] = [
     duration: '30-45 mins',
     rating: 4.7,
     isEmergency: false,
+    image: '/images/doorstep-services/AC Filter.jpg',
     features: [
       'Filter inspection',
       'Deep cleaning',
@@ -315,6 +324,7 @@ export const SERVICES: DoorstepService[] = [
     duration: '20-30 mins',
     rating: 4.6,
     isEmergency: false,
+    image: '/images/doorstep-services/Horn Replacement.jpg',
     features: [
       'Horn unit replacement',
       'Wiring check',
@@ -331,6 +341,7 @@ export const SERVICES: DoorstepService[] = [
     duration: '20 mins',
     rating: 4.7,
     isEmergency: false,
+    image: '/images/doorstep-services/Number Plate Fitting.jpg',
     features: [
       'Secure mounting',
       'Standard plates',
