@@ -67,6 +67,11 @@ import NinetyMinuteCarServiceInJaipur from './pages/90MinuteCarServiceInJaipur';
 
 import HomepageAppV0 from './pages/HomepageAppV0';
 
+// Doorstep Services Components
+import DoorstepServicesIndex from './pages-doorstep/index';
+import CategoryPage from './pages-doorstep/CategoryPage';
+import CartPage from './components-doorstep/CartPage';
+
 Modal.setAppElement('#root');
 
 // Create a new component to use the hook
@@ -256,12 +261,20 @@ const AppContent = () => {
     }
   }, [location.pathname]);
 
+  // Add check for doorstep service pages
+  const isDoorstepServicePage = location.pathname.startsWith('/doorstep-services');
+
+  // Only hide navbar on category and cart pages
+  const shouldHideNavbar = location.pathname.startsWith('/doorstep-services/category') || 
+                          location.pathname.startsWith('/doorstep-services/cart');
+
   return (
     <>
       <SEOContent />
       <AnalyticsWrapper>
         <div className="min-h-screen bg-white">
-          <Navbar />
+          {/* Show Navbar except on category and cart pages */}
+          {!shouldHideNavbar && <Navbar />}
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<Home />} />
@@ -315,6 +328,11 @@ const AppContent = () => {
               <Route path="/car-battery-replacement-in-jaipur" element={<CarBatteryReplacementInJaipur />} />
               <Route path="/doorstep-car-service-in-jaipur" element={<DoorstepCarServiceInJaipur />} />
               <Route path="/90-minute-car-service-in-jaipur" element={<NinetyMinuteCarServiceInJaipur />} />
+
+              {/* Doorstep Services Routes */}
+              <Route path="/doorstep-services" element={<DoorstepServicesIndex />} />
+              <Route path="/doorstep-services/category/:categoryId" element={<CategoryPage />} />
+              <Route path="/doorstep-services/cart" element={<CartPage />} />
 
               {/* New Routes */}
               <Route path="/coupon-admin" element={<CouponAdmin />} />
