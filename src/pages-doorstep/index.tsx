@@ -1,7 +1,7 @@
 import React from 'react';
-import HomeCategories from '../components-doorstep/HomeCategories.jsx';
+import HomeCategories from '../components-doorstep/HomeCategories';
 
-const DoorstepServicesIndex = () => {
+const DoorstepServicesIndex: React.FC = () => {
   return <HomeCategories />;
 };
 
