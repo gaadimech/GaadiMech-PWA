@@ -82,3 +82,10 @@ docs/
 # Backup files
 *.bak
 public/sitemap.xml.bak
+
+# PWA/APK Generation
+android-app/
+Generated Apk/
+*.apk
+*.keystore
+android.keystore

@@ -1,0 +1,90 @@
+{
+  "name": "GaadiMech - Car Service & Repair",
+  "short_name": "GaadiMech",
+  "description": "Professional car service, repair, and maintenance in Jaipur. Book doorstep car service, periodic maintenance, AC service, battery replacement, and more.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#FF7200",
+  "background_color": "#FFFFFF",
+  "categories": ["business", "automotive", "utilities"],
+  "lang": "en",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/images/Logo-OLD.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/Logo-OLD.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/Logo-OLD.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/Logo-OLD.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/Logo-OLD.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/Logo-OLD.png",
+      "sizes": "48x48",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/Logo-OLD.png",
+      "sizes": "36x36",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Book Service",
+      "short_name": "Book",
+      "description": "Book a car service appointment",
+      "url": "/?action=book",
+      "icons": [
+        {
+          "src": "/images/Logo-OLD.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Emergency Service",
+      "short_name": "Emergency",
+      "description": "Emergency car service",
+      "url": "/?action=emergency",
+      "icons": [
+        {
+          "src": "/images/Logo-OLD.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false,
+  "protocol_handlers": [
+    {
+      "protocol": "tel",
+      "url": "tel:+91-8448-285289"
+    }
+  ]
+} 
