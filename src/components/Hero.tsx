@@ -142,35 +142,15 @@ const Hero = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-20 relative z-10">
-        <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'} gap-8 md:gap-12 items-center`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12 relative z-10">
+        <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'} gap-6 md:gap-8 items-center`}>
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
             className="text-center md:text-left"
           >
-            {/* Enhanced badge with pulse effect */}
-            <div className="inline-block mb-4 relative">
-              <motion.div 
-                className="absolute inset-0 bg-[#FF7200] rounded-lg blur-sm opacity-30"
-                animate={{ 
-                  scale: [1, 1.05, 1],
-                }}
-                transition={{ 
-                  repeat: Infinity, 
-                  duration: 2.5 
-                }}
-              ></motion.div>
-              <div className="relative bg-gradient-to-r from-[#FF7200] to-[#FF9500] px-4 py-1 rounded-lg shadow-md">
-                <div className="flex items-center gap-1">
-                  <Star size={14} className="text-white fill-white" />
-                  <span className="text-white font-bold text-sm uppercase tracking-wider">Premium Service</span>
-                </div>
-              </div>
-            </div>
-
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight">
+            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-3 md:mb-4 leading-tight">
               Get Your Car Serviced in Just{" "}
               <div className="inline-block relative">
                 <span className="relative z-10 text-[#FF7200]">90 Minutes!</span>
@@ -178,14 +158,14 @@ const Hero = () => {
               </div>
             </h2>
 
-            <p className="text-base md:text-lg text-gray-600 mb-6">
+            <p className="text-base md:text-lg text-gray-600 mb-4">
               Experience lightning-fast car service with GaadiMech. Trusted mechanics, transparent pricing, and expert care—all at your convenience.
             </p>
             
             {/* Enhanced timer visualization with subtle animation */}
             <motion.div 
               whileHover={{ scale: 1.03 }}
-              className="mb-6 p-4 bg-white rounded-xl border border-gray-200 shadow-sm mx-auto md:mx-0 max-w-xs cursor-pointer hover:shadow-md hover:border-orange-200 transition-all"
+              className="mb-4 p-3 bg-white rounded-xl border border-gray-200 shadow-sm mx-auto md:mx-0 max-w-xs cursor-pointer hover:shadow-md hover:border-orange-200 transition-all"
               onClick={handleExpressServiceClick}
             >
               <div className="flex items-center justify-center gap-4">
@@ -212,7 +192,7 @@ const Hero = () => {
             </motion.div>
             
             <motion.div 
-              className="mb-8 space-y-3"
+              className="mb-5 space-y-2"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
@@ -220,7 +200,7 @@ const Hero = () => {
               <motion.div 
                 variants={itemVariants} 
                 whileHover={{ scale: 1.02, y: -3 }}
-                className="bg-white py-3 px-5 rounded-xl shadow-sm hover:shadow-md transition-all flex items-start cursor-pointer border border-transparent hover:border-orange-100"
+                className="bg-white py-2 px-4 rounded-xl shadow-sm hover:shadow-md transition-all flex items-start cursor-pointer border border-transparent hover:border-orange-100"
               >
                 <div className="bg-[#FF7200] rounded-full p-3 flex-shrink-0">
                   <Clock className="text-white" size={20} />
@@ -236,7 +216,7 @@ const Hero = () => {
               <motion.div 
                 variants={itemVariants}
                 whileHover={{ scale: 1.02, y: -3 }}
-                className="bg-white py-3 px-5 rounded-xl shadow-sm hover:shadow-md transition-all flex items-start cursor-pointer border border-transparent hover:border-orange-100"
+                className="bg-white py-2 px-4 rounded-xl shadow-sm hover:shadow-md transition-all flex items-start cursor-pointer border border-transparent hover:border-orange-100"
               >
                 <div className="bg-[#FF7200] rounded-full p-3 flex-shrink-0">
                   <Home className="text-white" size={20} />
@@ -252,7 +232,7 @@ const Hero = () => {
               <motion.div 
                 variants={itemVariants}
                 whileHover={{ scale: 1.02, y: -3 }}
-                className="bg-white py-3 px-5 rounded-xl shadow-sm hover:shadow-md transition-all flex items-start cursor-pointer border border-transparent hover:border-orange-100"
+                className="bg-white py-2 px-4 rounded-xl shadow-sm hover:shadow-md transition-all flex items-start cursor-pointer border border-transparent hover:border-orange-100"
               >
                 <div className="bg-[#FF7200] rounded-full p-3 flex-shrink-0">
                   <IndianRupee className="text-white" size={20} />
@@ -267,7 +247,7 @@ const Hero = () => {
             </motion.div>
 
             {/* Trust indicators */}
-            <div className="flex items-center justify-center md:justify-start mb-6 space-x-6">
+            <div className="flex items-center justify-center md:justify-start mb-4 space-x-6">
               <div className="flex flex-col items-center">
                 <p className="font-bold text-xl text-[#FF7200]">2K+</p>
                 <p className="text-xs text-gray-600">Happy Customers</p>
@@ -308,7 +288,7 @@ const Hero = () => {
 
             {/* Scroll down indicator */}
             <motion.div 
-              className="mt-8 flex justify-center md:justify-start"
+              className="mt-6 flex justify-center md:justify-start"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.2, duration: 0.5 }}

@@ -36,7 +36,6 @@ const services = [
     ),
     title: 'Why Wait All Day?',
     description: 'Car Service in 90 MINS, Nahi to FREEEE',
-    tagline: 'Fast, Affordable, Done Right!',
     highlight: true,
     link: '/express-beta-atc',
     featured: true
@@ -178,9 +177,9 @@ const Services = ({ showSeoContent = false }) => {
                       onClick={handleScheduleClick}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="bg-[#FF7200] text-white px-4 py-1 rounded-md hover:bg-[#0e5aa8] transition-colors flex items-center gap-1 shadow-md text-sm"
+                      className="bg-[#FF7200] text-white px-6 py-2 rounded-md hover:bg-[#0e5aa8] transition-colors flex items-center gap-2 shadow-md text-base font-medium"
                     >
-                      <Calendar className="w-4 h-4" />
+                      <Calendar className="w-5 h-5" />
                       Schedule Slot Now
                     </motion.button>
                   </div>
