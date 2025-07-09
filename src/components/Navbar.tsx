@@ -9,10 +9,7 @@ const Navbar = () => {
   const [showMobileModal, setShowMobileModal] = useState(false);
   const location = useLocation();
 
-  // Scroll to top on route change
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
+
 
   const handleBookNow = () => {
     setIsOpen(false); // Close menu when Book Now is clicked
@@ -31,7 +28,6 @@ const Navbar = () => {
 
   const handleLinkClick = () => {
     setIsOpen(false); // Close menu when any link is clicked
-    window.scrollTo(0, 0); // Scroll to top when link is clicked
   };
 
   return (

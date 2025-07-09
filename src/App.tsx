@@ -35,6 +35,7 @@ import WindshieldService from './pages/services/WindshieldService';
 import DetailingService from './pages/services/DetailingService';
 import TyreService from './pages/services/TyreService';
 import SEOContent from './components/SEOContent';
+import ScrollToTop from './components/ScrollToTop';
 import { enquiryService } from './services/enquiry';
 
 // Legal Pages
@@ -264,9 +265,14 @@ const AppContent = () => {
   // Add check for doorstep service pages
   const isDoorstepServicePage = location.pathname.startsWith('/doorstep-services');
 
-  // Only hide navbar on category and cart pages
+  // Define which service pages should have app-like design (no navbar)
+  const appLikeServicePages = ['/services/periodic', '/services/ac', '/services/denting'];
+  const isAppLikeServicePage = appLikeServicePages.includes(location.pathname);
+
+  // Only hide navbar on category, cart pages, and specific app-like service pages
   const shouldHideNavbar = location.pathname.startsWith('/doorstep-services/category') || 
-                          location.pathname.startsWith('/doorstep-services/cart');
+                          location.pathname.startsWith('/doorstep-services/cart') ||
+                          isAppLikeServicePage;
 
   return (
     <>
@@ -361,6 +367,7 @@ const App = () => {
   return (
     <HelmetProvider>
       <Router>
+        <ScrollToTop />
         <AnimatePresence mode="wait">
           <AnalyticsWrapper>
             <AppContent />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Car } from 'lucide-react';
+import { Car, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import ReviewCarousel from './ReviewCarousel';
 import VehicleSelectionModal from './VehicleSelectionModal';
 import ServiceCard from './ServiceCard';
@@ -21,6 +21,7 @@ interface ServicePageProps {
 }
 
 const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
+  const navigate = useNavigate();
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [showVehicleModal, setShowVehicleModal] = useState(false);
   const [csvData, setCsvData] = useState<any[]>([]);
@@ -29,6 +30,10 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
   
   const serviceData = servicesData[serviceType];
   const serviceReviews = getReviewsByService(serviceType);
+  
+  // Define which service types should have app-like design
+  const appLikeServiceTypes: ServiceType[] = ['periodic', 'ac', 'denting'];
+  const isAppLikeDesign = appLikeServiceTypes.includes(serviceType);
   
   // Get SEO content from seo.ts
   const seoPath = `/services/${serviceType}`;
@@ -132,55 +137,100 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
+
+  // Handle back navigation
+  const handleBack = () => {
+    navigate('/services');
+  };
   
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-      className="pt-20"
-    >
+    <div className={isAppLikeDesign ? "min-h-screen bg-gray-50" : "pt-20"}>
       {/* SEO handled centrally via SEOContent */}
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">{seoContent?.h1 || serviceData.title}</h1>
-          <p className="text-xl text-gray-600">{seoConfig.description}</p>
-        </div>
-        
-        {/* Vehicle selection banner */}
-        <div className="bg-blue-50 rounded-lg p-4 mb-8 flex items-center justify-between">
-          <div className="flex items-center">
-            <Car className="text-blue-500 mr-3" size={24} />
-            <div>
-              {selectedVehicle ? (
-                <>
-                  <p className="text-blue-800">
-                    Selected Vehicle: <span className="font-semibold">{selectedVehicle.manufacturer} {selectedVehicle.model} ({selectedVehicle.fuelType})</span>
-                  </p>
-                  {pricingData && 
-                   pricingData.periodicServicePrice <= 0 && 
-                   pricingData.expressServicePrice <= 0 && 
-                   pricingData.dentingPaintPrice <= 0 && (
-                    <p className="text-amber-600 text-sm mt-1">
-                      Note: Limited pricing data available for this vehicle.
-                    </p>
-                  )}
-                </>
-              ) : (
-                <p className="text-blue-800">Select your car to view personalized service prices</p>
-              )}
+      {/* Conditional Header Design */}
+      {isAppLikeDesign ? (
+        // App-like Header Design (for periodic, ac, denting)
+        <div className="bg-white shadow-sm">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center justify-between px-4 py-4">
+              <button
+                onClick={handleBack}
+                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+              >
+                <ArrowLeft className="w-6 h-6 text-gray-700" />
+              </button>
+
+              <h1 className="text-xl font-semibold text-center flex-1">
+                {serviceData.title.replace('Expert Car ', '').replace(' in Jaipur', '')}
+              </h1>
+
+              <button 
+                onClick={() => setShowVehicleModal(true)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+                  selectedVehicle 
+                    ? 'bg-gray-100 hover:bg-gray-200' 
+                    : 'bg-[#FF7200] text-white hover:bg-[#e66600]'
+                }`}
+              >
+                {selectedVehicle ? (
+                  <>
+                    <Car className="w-5 h-5" />
+                    <span className="font-medium">{selectedVehicle.manufacturer} {selectedVehicle.model}</span>
+                  </>
+                ) : (
+                  <>
+                    <Car className="w-5 h-5" />
+                    <span>Select Car</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
-          <button
-            onClick={() => setShowVehicleModal(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
-          >
-            {selectedVehicle ? 'Change Car' : 'Select Car'}
-          </button>
         </div>
-        
+      ) : (
+        // Traditional Header Design (for car-spa, windshield, battery, tyre, detailing)
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">{seoContent?.h1 || serviceData.title}</h1>
+            <p className="text-xl text-gray-600">{seoConfig.description}</p>
+          </div>
+          
+          {/* Vehicle selection banner for traditional design */}
+          <div className="bg-blue-50 rounded-lg p-4 mb-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <Car className="text-blue-500 mr-3" size={24} />
+              <div>
+                {selectedVehicle ? (
+                  <>
+                    <p className="text-blue-800">
+                      Selected Vehicle: <span className="font-semibold">{selectedVehicle.manufacturer} {selectedVehicle.model} ({selectedVehicle.fuelType})</span>
+                    </p>
+                    {pricingData && 
+                     pricingData.periodicServicePrice <= 0 && 
+                     pricingData.expressServicePrice <= 0 && 
+                     pricingData.dentingPaintPrice <= 0 && (
+                      <p className="text-amber-600 text-sm mt-1">
+                        Note: Limited pricing data available for this vehicle.
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-blue-800">Select your car to view personalized service prices</p>
+                )}
+              </div>
+            </div>
+            <button
+              onClick={() => setShowVehicleModal(true)}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+            >
+              {selectedVehicle ? 'Change Car' : 'Select Car'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Service Cards Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Service type tabs */}
         <div className="flex overflow-x-auto space-x-2 mb-8 pb-2">
           <button
@@ -251,7 +301,7 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
         ) : (
           <div className="mb-12 flex justify-center">
             <button
-              onClick={() => window.open(`https://wa.me/917300042410?text=I'd%20like%20to%20inquire%20about%20your%20${seoContent?.h1 || serviceData.title}%20in%20Jaipur.`, '_blank')}
+              onClick={() => window.open(`https://wa.me/917300042410?text=I'd%20like%20to%20inquire%20about%20your%20${serviceData.title}%20in%20Jaipur.`, '_blank')}
               className="bg-[#FF7200] hover:bg-[#e56700] text-white font-bold py-3 px-6 rounded-lg shadow-md transition-colors flex items-center space-x-2"
             >
               <span>Get a Quote</span>
@@ -297,7 +347,7 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
         onClose={() => setShowVehicleModal(false)}
         onVehicleSelect={handleVehicleSelect}
       />
-    </motion.div>
+    </div>
   );
 };
 

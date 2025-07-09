@@ -95,19 +95,13 @@ const Services = ({ showSeoContent = false }) => {
 
   const handleServiceClick = (service: typeof services[0]) => {
     if (service.link) {
-      if (service.link === '/express-beta-atc') {
-        window.scrollTo(0, 0);
-        navigate('/express-beta-atc');
-      } else {
-        navigate(service.link);
-      }
+      navigate(service.link);
     }
   };
 
   const handleScheduleClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent the card click event from firing
     navigate('/express-beta-atc');
-    window.scrollTo(0, 0);
   };
 
   const featuredService = services.find(service => service.featured);
@@ -163,9 +157,9 @@ const Services = ({ showSeoContent = false }) => {
                   <p className="text-base md:text-lg text-gray-800 mb-1 font-semibold">
                     Car Service in <span className="text-[#FF7200]">90 MINS</span>, Nahi to <span className="text-[#FF7200] font-extrabold text-lg md:text-xl animate-pulse">FREEEE</span>
                   </p>
-                  {featuredService.tagline && (
+                  {(featuredService as any).tagline && (
                     <p className="text-xs md:text-sm text-[#FF7200] font-medium mb-2 italic">
-                      {featuredService.tagline}
+                      {(featuredService as any).tagline}
                     </p>
                   )}
                   <div className="flex flex-wrap gap-3 justify-center md:justify-start mt-3">
