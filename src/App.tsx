@@ -3,12 +3,16 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AnimatePresence } from 'framer-motion';
 import Modal from 'react-modal';
 import { HelmetProvider } from 'react-helmet-async';
+import AppLayout from './layouts/AppLayout';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Services from './pages/Services';
+import ServicesApp from './pages/ServicesApp';
 import AdServices from './pages/AdServices';
 import About from './pages/About';
+import AboutApp from './pages/AboutApp';
 import Contact from './pages/Contact';
+import ContactApp from './pages/ContactApp';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Careers from './pages/Careers';
@@ -67,6 +71,7 @@ import DoorstepCarServiceInJaipur from './pages/DoorstepCarServiceInJaipur';
 import NinetyMinuteCarServiceInJaipur from './pages/90MinuteCarServiceInJaipur';
 
 import HomepageAppV0 from './pages/HomepageAppV0';
+import ExpressApp from './pages/ExpressApp';
 
 // Doorstep Services Components
 import DoorstepServicesIndex from './pages-doorstep/index';
@@ -81,8 +86,6 @@ const AnalyticsWrapper: React.FC<{ children: React.ReactNode }> = ({ children })
   useMetaAnalytics();
   return <>{children}</>;
 };
-
-const WatiWidget = lazy(() => import('./components/WatiWidget'));
 
 // Create a wrapper component to handle location-based logic
 const AppContent = () => {
@@ -266,7 +269,7 @@ const AppContent = () => {
   const isDoorstepServicePage = location.pathname.startsWith('/doorstep-services');
 
   // Define which service pages should have app-like design (no navbar)
-  const appLikeServicePages = ['/services/periodic', '/services/ac', '/services/denting'];
+  const appLikeServicePages = ['/services/periodic', '/services/ac', '/services/denting', '/services/car-spa', '/services/detailing', '/services/tyre', '/services/battery', '/services/windshield'];
   const isAppLikeServicePage = appLikeServicePages.includes(location.pathname);
 
   // Only hide navbar on category, cart pages, and specific app-like service pages
@@ -278,86 +281,116 @@ const AppContent = () => {
     <>
       <SEOContent />
       <AnalyticsWrapper>
-        <div className="min-h-screen bg-white">
-          {/* Show Navbar except on category and cart pages */}
-          {!shouldHideNavbar && <Navbar />}
-          <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
-              <Route path="/" element={<Home />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/ad-services" element={<AdServices />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:slug" element={<BlogPost />} />
-              <Route path="/careers" element={<Careers />} />
-              <Route path="/express" element={<ExpressService />} />
-              <Route path="/express-beta-atc" element={<ExpressBetaATC />} />
-              <Route path="/express-beta-atc/cart" element={<ExpressBetaATCCart />} />
-              <Route path="/express-rzp-atc" element={<ExpressRzpATC />} />
-              <Route path="/express-rzp-atc/cart" element={<ExpressRzpATCCart />} />
-              <Route path="/ads-express" element={<AdsExpressService />} />
-              <Route path="/workshop-partner" element={<WorkshopPartner />} />
-              <Route path="/franchise" element={<FranchisePage />} />
-              <Route path="/feedback" element={<Feedback />} />
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            {/* Routes that need the full app shell */}
+            <Route path="/" element={<AppLayout />}>
+              <Route index element={<HomepageAppV0 />} />
+              <Route path="services" element={<ServicesApp />} />
+              <Route path="ad-services" element={<AdServices />} />
+              <Route path="about" element={<AboutApp />} />
+              <Route path="contact" element={<ContactApp />} />
+              <Route path="blog" element={<Blog />} />
+              <Route path="blog/:slug" element={<BlogPost />} />
+              <Route path="careers" element={<Careers />} />
+              <Route path="express" element={<ExpressService />} />
+              <Route path="express-app" element={<ExpressApp />} />
+              <Route path="workshop-partner" element={<WorkshopPartner />} />
+              <Route path="franchise" element={<FranchisePage />} />
+              <Route path="feedback" element={<Feedback />} />
               
               {/* Service Routes */}
-              <Route path="/services/periodic" element={<PeriodicService />} />
-              <Route path="/services/ac" element={<ACService />} />
-              <Route path="/services/car-spa" element={<CarSpaService />} />
-              <Route path="/services/denting" element={<DentingService />} />
-              <Route path="/services/battery" element={<BatteryService />} />
-              <Route path="/services/windshield" element={<WindshieldService />} />
-              <Route path="/services/detailing" element={<DetailingService />} />
-              <Route path="/services/tyre" element={<TyreService />} />
+              <Route path="services/periodic" element={<PeriodicService />} />
+              <Route path="services/ac" element={<ACService />} />
+              <Route path="services/car-spa" element={<CarSpaService />} />
+              <Route path="services/denting" element={<DentingService />} />
+              <Route path="services/battery" element={<BatteryService />} />
+              <Route path="services/windshield" element={<WindshieldService />} />
+              <Route path="services/detailing" element={<DetailingService />} />
+              <Route path="services/tyre" element={<TyreService />} />
               
               {/* Legal Routes */}
-              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/refund-policy" element={<RefundPolicy />} />
-              <Route path="/express-Service-TnCs" element={<ExpressServiceTnC />} />
-              <Route path="/legal/express-service-terms" element={<ExpressServiceTerms />} />
-
-              {/* City Routes */}
-              <Route path="/city/:cityName" element={<CityPage />} />
-
-              {/* SEO Routes */}
-              <Route path="/car-service-in-jaipur" element={<CarServiceInJaipur />} />
-              <Route path="/car-ac-service-in-jaipur" element={<CarACServiceInJaipur />} />
-              <Route path="/car-dent-paint-service-in-jaipur" element={<CarDentPaintServiceInJaipur />} />
-              <Route path="/car-repair-service-in-jaipur" element={<CarRepairServiceInJaipur />} />
-              <Route path="/car-mechanic-shop-in-jaipur" element={<CarMechanicShopInJaipur />} />
+              <Route path="privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="terms" element={<Terms />} />
+              <Route path="refund-policy" element={<RefundPolicy />} />
+              <Route path="express-service-tnc" element={<ExpressServiceTnC />} />
+              <Route path="express-service-terms" element={<ExpressServiceTerms />} />
               
-              {/* New SEO Landing Pages */}
-              <Route path="/windshield-replacement-in-jaipur" element={<WindshieldReplacementInJaipur />} />
-              <Route path="/tyre-wheel-alignment-in-jaipur" element={<TyreWheelAlignmentInJaipur />} />
-              <Route path="/car-battery-replacement-in-jaipur" element={<CarBatteryReplacementInJaipur />} />
-              <Route path="/doorstep-car-service-in-jaipur" element={<DoorstepCarServiceInJaipur />} />
-              <Route path="/90-minute-car-service-in-jaipur" element={<NinetyMinuteCarServiceInJaipur />} />
+              {/* City Routes */}
+              <Route path="city/:cityName" element={<CityPage />} />
+              
+              {/* Service Landing Pages */}
+              <Route path="car-service-in-jaipur" element={<CarServiceInJaipur />} />
+              <Route path="car-ac-service-in-jaipur" element={<CarACServiceInJaipur />} />
+              <Route path="car-dent-paint-service-in-jaipur" element={<CarDentPaintServiceInJaipur />} />
+              <Route path="car-repair-service-in-jaipur" element={<CarRepairServiceInJaipur />} />
+              <Route path="car-mechanic-shop-in-jaipur" element={<CarMechanicShopInJaipur />} />
+              <Route path="windshield-replacement-in-jaipur" element={<WindshieldReplacementInJaipur />} />
+              <Route path="tyre-wheel-alignment-in-jaipur" element={<TyreWheelAlignmentInJaipur />} />
+              <Route path="car-battery-replacement-in-jaipur" element={<CarBatteryReplacementInJaipur />} />
+              <Route path="doorstep-car-service-in-jaipur" element={<DoorstepCarServiceInJaipur />} />
+              <Route path="90-minute-car-service-in-jaipur" element={<NinetyMinuteCarServiceInJaipur />} />
+            </Route>
 
-              {/* Doorstep Services Routes */}
-              <Route path="/doorstep-services" element={<DoorstepServicesIndex />} />
-              <Route path="/doorstep-services/category/:categoryId" element={<CategoryPage />} />
-              <Route path="/doorstep-services/cart" element={<CartPage />} />
+            {/* Routes that need a minimal shell */}
+            <Route path="/express-beta-atc" element={
+              <div className="min-h-screen bg-white">
+                <Navbar />
+                <ExpressBetaATC />
+                <Footer />
+              </div>
+            } />
+            <Route path="/express-beta-atc/cart" element={
+              <div className="min-h-screen bg-white">
+                <Navbar />
+                <ExpressBetaATCCart />
+                <Footer />
+              </div>
+            } />
+            <Route path="/express-rzp-atc" element={
+              <div className="min-h-screen bg-white">
+                <Navbar />
+                <ExpressRzpATC />
+                <Footer />
+              </div>
+            } />
+            <Route path="/express-rzp-atc/cart" element={
+              <div className="min-h-screen bg-white">
+                <Navbar />
+                <ExpressRzpATCCart />
+                <Footer />
+              </div>
+            } />
+            <Route path="/ads-express" element={
+              <div className="min-h-screen bg-white">
+                <Navbar />
+                <AdsExpressService />
+                <Footer />
+              </div>
+            } />
 
-              {/* New Routes */}
-              <Route path="/coupon-admin" element={<CouponAdmin />} />
-              {/* New App-style Homepage */}
-              <Route path="/homepage-app-v0" element={<HomepageAppV0 />} />
-            </Routes>
-          </AnimatePresence>
-          <Footer />
-          {isFormDataLoaded && (
-            <CustomerForm 
-              isOpen={showForm} 
-              onClose={() => setShowForm(false)}
-              onSubmitSuccess={handleFormSubmission}
-            />
-          )}
-          <Suspense fallback={<div>Loading...</div>}>
-            {location.pathname !== '/franchise' && <WatiWidget />}
-          </Suspense>
-        </div>
+            {/* Doorstep Services Routes - Full screen app-like experience */}
+            <Route path="/doorstep-services" element={<DoorstepServicesIndex />} />
+            <Route path="/doorstep-services/category/:categoryId" element={<CategoryPage />} />
+            <Route path="/doorstep-services/cart" element={<CartPage />} />
+
+            {/* Admin Routes */}
+            <Route path="/coupon-admin" element={
+              <div className="min-h-screen bg-white">
+                <Navbar />
+                <CouponAdmin />
+                <Footer />
+              </div>
+            } />
+          </Routes>
+        </AnimatePresence>
+        {isFormDataLoaded && (
+          <CustomerForm 
+            isOpen={showForm} 
+            onClose={() => setShowForm(false)}
+            onSubmitSuccess={handleFormSubmission}
+          />
+        )}
       </AnalyticsWrapper>
     </>
   );

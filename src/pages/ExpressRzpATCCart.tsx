@@ -580,10 +580,10 @@ Please confirm my booking. Thank you!`;
     <div className="bg-gray-50 min-h-screen pb-24 hide-whatsapp-button hide-enquiry-form">
       {/* Header content */}
       <div className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-3">
+        <div className="container mx-auto px-4 py-2">
           <div className="flex flex-col">
             {/* Breadcrumb */}
-            <div className="text-sm text-gray-500 mb-2">
+            <div className="text-xs text-gray-500">
               <span>1. Car Details</span>
               <span className="mx-2">›</span>
               <span className="font-medium text-[#FF7200]">2. Service Selection</span>

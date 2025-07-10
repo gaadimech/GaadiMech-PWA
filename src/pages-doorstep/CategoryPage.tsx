@@ -6,6 +6,7 @@ import { SERVICE_CATEGORIES, getServicesByCategory } from '../data-doorstep/door
 import DoorstepServiceCard from '../components-doorstep/DoorstepServiceCard';
 import StickyCartBanner from '../components-doorstep/StickyCartBanner';
 import VehicleSelectionModal from '../components/VehicleSelectionModal';
+import CompactCarSelector from '../components/CompactCarSelector';
 import { getVehicleFromSession } from '../utils/pricing-utils';
 import { Vehicle } from '../types/services';
 
@@ -50,38 +51,23 @@ const CategoryPage = () => {
       {/* New Header Design */}
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between px-4 py-4">
+          <div className="flex items-center justify-between px-4 py-2">
             <button
               onClick={handleBack}
-              className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+              className="p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
             >
-              <ArrowLeft className="w-6 h-6 text-gray-700" />
+              <ArrowLeft className="w-5 h-5 text-gray-700" />
             </button>
 
-            <h1 className="text-xl font-semibold text-center flex-1">
+            <h1 className="text-lg font-semibold text-center flex-1">
               {category.name}
             </h1>
 
-            <button 
-              onClick={() => setShowVehicleModal(true)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
-                selectedVehicle 
-                  ? 'bg-gray-100 hover:bg-gray-200' 
-                  : 'bg-[#FF7200] text-white hover:bg-[#e66600]'
-              }`}
-            >
-              {selectedVehicle ? (
-                <>
-                  <Car className="w-5 h-5" />
-                  <span className="font-medium">{selectedVehicle.model}</span>
-                </>
-              ) : (
-                <>
-                  <Car className="w-5 h-5" />
-                  <span>Select Car</span>
-                </>
-              )}
-            </button>
+            <CompactCarSelector
+              selectedVehicle={selectedVehicle}
+              onSelectCar={() => setShowVehicleModal(true)}
+              className="w-16"
+            />
           </div>
         </div>
       </div>

@@ -72,7 +72,7 @@ const ServicePageTemplate: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
                 {serviceTypeData.title}
               </h1>
               <p className="text-xl text-gray-600 mb-8">

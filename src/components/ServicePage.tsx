@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Car, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import ReviewCarousel from './ReviewCarousel';
 import VehicleSelectionModal from './VehicleSelectionModal';
-import ServiceCard from './ServiceCard';
-import { getReviewsByService } from '../data/reviews';
+import ServiceCardModern from './ServiceCardModern';
+import CompactCarSelector from './CompactCarSelector';
 import servicesData from '../data/services-data';
 import { ServiceType, Vehicle, PricingData } from '../types/services';
 import { getSeoConfig } from '../utils/seo';
@@ -29,10 +28,9 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
   const [activeTab, setActiveTab] = useState<string>('all');
   
   const serviceData = servicesData[serviceType];
-  const serviceReviews = getReviewsByService(serviceType);
   
   // Define which service types should have app-like design
-  const appLikeServiceTypes: ServiceType[] = ['periodic', 'ac', 'denting'];
+  const appLikeServiceTypes: ServiceType[] = ['periodic', 'ac', 'denting', 'carspa', 'detailing', 'tyre', 'battery', 'windshield'];
   const isAppLikeDesign = appLikeServiceTypes.includes(serviceType);
   
   // Get SEO content from seo.ts
@@ -152,79 +150,64 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
         // App-like Header Design (for periodic, ac, denting)
         <div className="bg-white shadow-sm">
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center justify-between px-4 py-4">
+            <div className="flex items-center justify-between px-4 py-2">
               <button
                 onClick={handleBack}
-                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                className="p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
               >
-                <ArrowLeft className="w-6 h-6 text-gray-700" />
+                <ArrowLeft className="w-5 h-5 text-gray-700" />
               </button>
 
-              <h1 className="text-xl font-semibold text-center flex-1">
+              <h1 className="text-lg font-semibold text-center flex-1">
                 {serviceData.title.replace('Expert Car ', '').replace(' in Jaipur', '')}
               </h1>
 
-              <button 
-                onClick={() => setShowVehicleModal(true)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
-                  selectedVehicle 
-                    ? 'bg-gray-100 hover:bg-gray-200' 
-                    : 'bg-[#FF7200] text-white hover:bg-[#e66600]'
-                }`}
-              >
-                {selectedVehicle ? (
-                  <>
-                    <Car className="w-5 h-5" />
-                    <span className="font-medium">{selectedVehicle.manufacturer} {selectedVehicle.model}</span>
-                  </>
-                ) : (
-                  <>
-                    <Car className="w-5 h-5" />
-                    <span>Select Car</span>
-                  </>
-                )}
-              </button>
+              <CompactCarSelector
+                selectedVehicle={selectedVehicle}
+                onSelectCar={() => setShowVehicleModal(true)}
+                className="w-16"
+              />
             </div>
           </div>
         </div>
       ) : (
         // Traditional Header Design (for car-spa, windshield, battery, tyre, detailing)
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">{seoContent?.h1 || serviceData.title}</h1>
-            <p className="text-xl text-gray-600">{seoConfig.description}</p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="text-center mb-6">
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">{seoContent?.h1 || serviceData.title}</h1>
+            <p className="text-base text-gray-600">{seoConfig.description}</p>
           </div>
           
-          {/* Vehicle selection banner for traditional design */}
-          <div className="bg-blue-50 rounded-lg p-4 mb-8 flex items-center justify-between">
-            <div className="flex items-center">
-              <Car className="text-blue-500 mr-3" size={24} />
-              <div>
-                {selectedVehicle ? (
-                  <>
-                    <p className="text-blue-800">
-                      Selected Vehicle: <span className="font-semibold">{selectedVehicle.manufacturer} {selectedVehicle.model} ({selectedVehicle.fuelType})</span>
+          {/* Compact vehicle selector for traditional design */}
+          <div className="flex items-center justify-center mb-6">
+            <div className="flex items-center gap-3">
+              <CompactCarSelector
+                selectedVehicle={selectedVehicle}
+                onSelectCar={() => setShowVehicleModal(true)}
+                className="w-16"
+              />
+              {selectedVehicle && (
+                <div className="text-left">
+                  <p className="text-gray-700 text-xs">
+                    Selected: <span className="font-semibold">{selectedVehicle.manufacturer} {selectedVehicle.model}</span>
+                  </p>
+                  <p className="text-gray-500 text-xs">{selectedVehicle.fuelType}</p>
+                  {pricingData && 
+                   pricingData.periodicServicePrice <= 0 && 
+                   pricingData.expressServicePrice <= 0 && 
+                   pricingData.dentingPaintPrice <= 0 && (
+                    <p className="text-amber-600 text-xs mt-1">
+                      Note: Limited pricing data available.
                     </p>
-                    {pricingData && 
-                     pricingData.periodicServicePrice <= 0 && 
-                     pricingData.expressServicePrice <= 0 && 
-                     pricingData.dentingPaintPrice <= 0 && (
-                      <p className="text-amber-600 text-sm mt-1">
-                        Note: Limited pricing data available for this vehicle.
-                      </p>
-                    )}
-                  </>
-                ) : (
-                  <p className="text-blue-800">Select your car to view personalized service prices</p>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
+              {!selectedVehicle && (
+                <div className="text-gray-600 text-xs">
+                  Select your car to view personalized service prices
+                </div>
+              )}
             </div>
-            <button
-              onClick={() => setShowVehicleModal(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
-            >
-              {selectedVehicle ? 'Change Car' : 'Select Car'}
-            </button>
           </div>
         </div>
       )}
@@ -285,7 +268,7 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
               const periodicServicePrice = periodicServiceCard ? getServiceTypePrice('periodic-basic') : undefined;
               
               return (
-                <ServiceCard
+                <ServiceCardModern
                   key={`${card.id}-${index}`}
                   card={card}
                   vehicleSelected={!!selectedVehicle}
@@ -309,36 +292,6 @@ const ServicePage: React.FC<ServicePageProps> = ({ serviceType }) => {
           </div>
         )}
         
-        {/* Customer reviews */}
-        <ReviewCarousel reviews={serviceReviews} />
-
-        {/* SEO Content Section - Small and nearly invisible */}
-        {seoContent && (
-          <div className="mt-16 opacity-30 hover:opacity-80 transition-opacity text-xs overflow-hidden max-h-40 text-gray-600">
-            <div className="text-center mb-2">
-              <h2 className="text-sm font-semibold text-gray-700">{seoContent.h2}</h2>
-            </div>
-            <div className="space-y-2">
-              {seoContent.paragraphs && seoContent.paragraphs.map((paragraph, idx) => (
-                <p key={idx} className="text-xs">{paragraph}</p>
-              ))}
-              {seoContent.listItems && seoContent.listItems.length > 0 && (
-                <ul className="list-disc list-inside pl-2 space-y-1">
-                  {seoContent.listItems.map((item, idx) => (
-                    <li key={idx} className="text-xs">{item}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Minimal Version of Rich Service Description Content */}
-        {serviceData.description && (
-          <div className="mt-6 opacity-30 hover:opacity-80 transition-opacity overflow-hidden max-h-32 text-xs">
-            <div className="prose prose-xs max-w-none" dangerouslySetInnerHTML={{ __html: serviceData.description }} />
-          </div>
-        )}
       </div>
       
       {/* Vehicle selection modal */}

@@ -4,54 +4,64 @@
   "description": "Professional car service, repair, and maintenance in Jaipur. Book doorstep car service, periodic maintenance, AC service, battery replacement, and more.",
   "start_url": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "fullscreen", "minimal-ui"],
   "orientation": "portrait-primary",
   "theme_color": "#FF7200",
   "background_color": "#FFFFFF",
   "categories": ["business", "automotive", "utilities"],
   "lang": "en",
   "scope": "/",
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
   "icons": [
     {
-      "src": "/images/Logo-OLD.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/images/Logo-OLD.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/images/Logo-OLD.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/images/Logo-OLD.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/images/Logo-OLD.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/images/Logo-OLD.png",
+      "src": "/images/logo.png",
       "sizes": "48x48",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/images/Logo-OLD.png",
-      "sizes": "36x36",
+      "src": "/images/logo.png",
+      "sizes": "72x72",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "/images/logo.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/logo.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "shortcuts": [
@@ -59,10 +69,10 @@
       "name": "Book Service",
       "short_name": "Book",
       "description": "Book a car service appointment",
-      "url": "/?action=book",
+      "url": "/express",
       "icons": [
         {
-          "src": "/images/Logo-OLD.png",
+          "src": "/images/logo.png",
           "sizes": "96x96"
         }
       ]
@@ -71,10 +81,34 @@
       "name": "Emergency Service",
       "short_name": "Emergency",
       "description": "Emergency car service",
-      "url": "/?action=emergency",
+      "url": "/contact",
       "icons": [
         {
-          "src": "/images/Logo-OLD.png",
+          "src": "/images/logo.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Services",
+      "short_name": "Services",
+      "description": "View all car services",
+      "url": "/services",
+      "icons": [
+        {
+          "src": "/images/logo.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Doorstep Services",
+      "short_name": "Doorstep",
+      "description": "Book doorstep car services",
+      "url": "/doorstep-services",
+      "icons": [
+        {
+          "src": "/images/logo.png",
           "sizes": "96x96"
         }
       ]

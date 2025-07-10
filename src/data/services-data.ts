@@ -466,7 +466,50 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
         <p>Vehicles with Advanced Driver Assistance Systems require proper recalibration after windshield replacement. Our technicians in Jaipur are equipped to handle this specialized service.</p>
       </div>
     `,
-    serviceCards: []
+    serviceCards: [
+      {
+        id: 'windshield-repair',
+        title: 'Windshield Chip Repair',
+        description: 'Professional repair for small chips and cracks to prevent spreading',
+        image: 'https://i.ibb.co/3zcSYzf/Frame.png',
+        rating: 4.7,
+        reviewCount: 180,
+        duration: '45-60 Mins',
+        price: '₹X,XXX',
+        details: [
+          'Damage Assessment',
+          'Advanced Resin Filling',
+          'UV Light Curing',
+          'Surface Polishing',
+          'Safety Inspection',
+          'Prevent Crack Spreading',
+          'Cost-Effective Solution',
+        ],
+        whatsappMessage: 'Hi, I\'d like to book a Windshield Chip Repair service for my car.'
+      },
+      {
+        id: 'windshield-replacement',
+        title: 'Complete Windshield Replacement',
+        description: 'Full windshield replacement with OEM quality glass',
+        image: 'https://i.ibb.co/3zcSYzf/Frame.png',
+        rating: 4.8,
+        reviewCount: 220,
+        duration: '2-3 Hours',
+        price: '₹X,XXX',
+        isBestseller: true,
+        details: [
+          'OEM Quality Glass',
+          'Professional Removal',
+          'Perfect Installation',
+          'Leak Testing',
+          'Proper Sealing',
+          'ADAS Calibration (if needed)',
+          '1-Year Warranty',
+          'Insurance Assistance',
+        ],
+        whatsappMessage: 'Hi, I\'d like to book a Complete Windshield Replacement service for my car.'
+      }
+    ]
   },
   'detailing': {
     title: 'Professional Car Detailing Services in Jaipur',
@@ -513,7 +556,51 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
         <p>Ceramic coating creates a permanent bond with your car's paint, providing superior protection against UV rays, chemical stains, and oxidation. It's particularly beneficial in Jaipur's harsh sun and dusty environment, maintaining your car's appearance for years.</p>
       </div>
     `,
-    serviceCards: []
+    serviceCards: [
+      {
+        id: 'detailing-basic',
+        title: 'Premium Car Detailing',
+        description: 'Comprehensive exterior and interior detailing for a showroom finish',
+        image: 'https://i.ibb.co/4K1YZ6S/detailing.png',
+        rating: 4.9,
+        reviewCount: 280,
+        duration: '4-6 Hours',
+        price: '₹X,XXX',
+        isBestseller: true,
+        details: [
+          'Exterior Clay Bar Treatment',
+          'Paint Correction & Polish',
+          'Interior Deep Cleaning',
+          'Leather Conditioning',
+          'Wheel & Tire Detailing',
+          'Engine Bay Cleaning',
+          'Glass Treatment',
+          'Protective Wax Application',
+        ],
+        whatsappMessage: 'Hi, I\'d like to book a Premium Car Detailing service for my car.'
+      },
+      {
+        id: 'detailing-ceramic',
+        title: 'Ceramic Coating Package',
+        description: 'Professional ceramic coating for ultimate paint protection',
+        image: 'https://i.ibb.co/4K1YZ6S/detailing.png',
+        rating: 4.8,
+        reviewCount: 150,
+        duration: '6-8 Hours',
+        price: '₹X,XXX',
+        details: [
+          'Paint Decontamination',
+          'Multi-Stage Paint Correction',
+          '2-Year Ceramic Coating',
+          'Interior Protection',
+          'Wheel Coating',
+          'UV Protection',
+          'Hydrophobic Effect',
+          'Extended Warranty',
+        ],
+        whatsappMessage: 'Hi, I\'d like to book a Ceramic Coating Package for my car.'
+      }
+    ]
   },
   'tyre': {
     title: 'Professional Tyre Services & Wheel Alignment in Jaipur',
@@ -560,7 +647,51 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
         <p>Yes, our mobile tyre service can repair punctures at your location in Jaipur, provided the damage is within repairable limits. For safety reasons, some types of damage require tyre replacement.</p>
       </div>
     `,
-    serviceCards: []
+    serviceCards: [
+      {
+        id: 'tyre-replacement',
+        title: 'Tyre Replacement',
+        description: 'Professional tyre replacement with premium brands',
+        image: 'https://i.ibb.co/BCGXS2Q/tyre.png',
+        rating: 4.7,
+        reviewCount: 190,
+        duration: '1-2 Hours',
+        price: '₹X,XXX/Tyre',
+        isBestseller: true,
+        details: [
+          'Premium Brand Tyres',
+          'Expert Installation',
+          'Wheel Balancing',
+          'Pressure Check',
+          'Old Tyre Disposal',
+          'Mobile Service Available',
+          'Wide Brand Selection',
+          'Professional Advice',
+        ],
+        whatsappMessage: 'Hi, I\'d like to book a Tyre Replacement service for my car.'
+      },
+      {
+        id: 'wheel-alignment',
+        title: 'Wheel Alignment & Balancing',
+        description: 'Computer-assisted wheel alignment and precision balancing',
+        image: 'https://i.ibb.co/BCGXS2Q/tyre.png',
+        rating: 4.8,
+        reviewCount: 250,
+        duration: '45-90 Mins',
+        price: '₹X,XXX',
+        details: [
+          'Computer-Assisted Alignment',
+          'Precision Wheel Balancing',
+          'Tyre Rotation',
+          'Pressure Adjustment',
+          'Suspension Check',
+          'Extended Tyre Life',
+          'Improved Fuel Efficiency',
+          'Better Vehicle Handling',
+        ],
+        whatsappMessage: 'Hi, I\'d like to book a Wheel Alignment & Balancing service for my car.'
+      }
+    ]
   },
   'carspa': {
     title: 'Premium Car Spa & Cleaning Services in Jaipur',
@@ -609,7 +740,51 @@ const servicesData: Record<ServiceType, ServiceTypeData> = {
         <p>Unlike standard car washes that focus only on exterior cleaning, our car spa service provides comprehensive care for both exterior and interior, including specialized treatments, protective coating application, and attention to details that normal car washes miss.</p>
       </div>
     `,
-    serviceCards: []
+    serviceCards: [
+      {
+        id: 'carspa-basic',
+        title: 'Premium Car Spa',
+        description: 'Complete exterior and interior spa treatment for your vehicle',
+        image: 'https://i.ibb.co/6Rz8LTk/car-spa.png',
+        rating: 4.8,
+        reviewCount: 320,
+        duration: '2-3 Hours',
+        price: '₹X,XXX',
+        isBestseller: true,
+        details: [
+          'Exterior Foam Wash',
+          'Interior Deep Cleaning',
+          'Dashboard Treatment',
+          'Seat Conditioning',
+          'Glass Treatment',
+          'Tyre & Rim Cleaning',
+          'Engine Bay Cleaning',
+          'Odor Elimination',
+        ],
+        whatsappMessage: 'Hi, I\'d like to book a Premium Car Spa service for my car.'
+      },
+      {
+        id: 'carspa-express',
+        title: 'Express Car Wash',
+        description: 'Quick and efficient cleaning for busy schedules',
+        image: 'https://i.ibb.co/6Rz8LTk/car-spa.png',
+        rating: 4.6,
+        reviewCount: 180,
+        duration: '45-60 Mins',
+        price: '₹X,XXX',
+        details: [
+          'Exterior Wash & Dry',
+          'Interior Vacuuming',
+          'Dashboard Wipe',
+          'Glass Cleaning',
+          'Tyre Cleaning',
+          'Quick Service',
+          'Water-Conserving',
+          'Eco-Friendly Products',
+        ],
+        whatsappMessage: 'Hi, I\'d like to book an Express Car Wash service for my car.'
+      }
+    ]
   }
 };
 

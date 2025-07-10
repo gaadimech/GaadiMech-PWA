@@ -94,7 +94,7 @@ const NinetyMinuteCarServiceInJaipur: React.FC = () => {
                 </div>
               </div>
 
-              <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 leading-tight">
                 90-Minute Express Car Service in{" "}
                 <div className="inline-block relative">
                   <span className="relative z-10 text-[#FF7200]">{cityName}</span>

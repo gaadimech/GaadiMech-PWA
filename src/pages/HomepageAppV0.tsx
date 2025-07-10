@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, MapPin, Bell, HelpCircle, User, AlertTriangle, Home as HomeIcon, Car } from 'lucide-react';
+import { Search, MapPin, Car } from 'lucide-react';
 import { useLocation as useUserLocation } from '../hooks/useLocation';
 import { getVehicleFromSession } from '../utils/pricing-utils';
+import CompactCarSelector from '../components/CompactCarSelector';
+import VehicleSelectionModal from '../components/VehicleSelectionModal';
 
 interface ServiceCard {
   title: string;
@@ -42,14 +44,14 @@ const services: ServiceCard[] = [
     link: '/services/tyre'
   },
   {
-    title: 'Batteries',
-    image: '/images/Battery.png',
-    link: '/services/battery'
-  },
-  {
     title: 'Windshield',
     image: '/images/windshield.png',
     link: '/services/windshield'
+  },
+  {
+    title: 'Battery',
+    image: '/images/Battery.png',
+    link: '/services/battery'
   },
   {
     title: 'Insurance Claim',
@@ -57,6 +59,46 @@ const services: ServiceCard[] = [
     link: '/services/windshield'
   }
 ];
+
+// Fuzzy search function
+const fuzzySearch = (query: string, text: string): boolean => {
+  if (!query) return true;
+  
+  const queryLower = query.toLowerCase();
+  const textLower = text.toLowerCase();
+  
+  // Exact match
+  if (textLower.includes(queryLower)) return true;
+  
+  // Partial word matches
+  const queryWords = queryLower.split(' ');
+  const textWords = textLower.split(' ');
+  
+  return queryWords.every(queryWord => 
+    textWords.some(textWord => 
+      textWord.includes(queryWord) || queryWord.includes(textWord)
+    )
+  );
+};
+
+// Get search score for sorting
+const getSearchScore = (query: string, service: ServiceCard): number => {
+  if (!query) return 0;
+  
+  const queryLower = query.toLowerCase();
+  let score = 0;
+  
+  // Title exact match gets highest score
+  if (service.title.toLowerCase().includes(queryLower)) score += 10;
+  
+  // Word-by-word partial matches
+  const queryWords = queryLower.split(' ');
+  queryWords.forEach(word => {
+    if (service.title.toLowerCase().includes(word)) score += 3;
+  });
+  
+  return score;
+};
 
 const exclusives: ServiceCard[] = [
   {
@@ -71,14 +113,32 @@ const exclusives: ServiceCard[] = [
   }
 ];
 
-const HomepageAppV0: React.FC = () => {
-  const { locationDisplay } = useUserLocation(true);
+  const HomepageAppV0: React.FC = () => {
+  const { locationDisplay, requestLocation, isLoading } = useUserLocation(true);
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
-  const filtered = search
-    ? services.filter(s => s.title.toLowerCase().includes(search.toLowerCase()))
-    : [];
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [vehicleName, setVehicleName] = useState<string>('');
+  const [showVehicleModal, setShowVehicleModal] = useState(false);
+  const [selectedVehicle, setSelectedVehicle] = useState(getVehicleFromSession());
+
+  // Filter and search logic with fuzzy matching
+  const filteredServices = useMemo(() => {
+    if (!search.trim()) return [];
+    
+    const filtered = services.filter(service => 
+      fuzzySearch(search, service.title)
+    );
+    
+    // Sort by search relevance
+    filtered.sort((a, b) => {
+      const scoreA = getSearchScore(search, a);
+      const scoreB = getSearchScore(search, b);
+      return scoreB - scoreA;
+    });
+    
+    return filtered.slice(0, 5); // Limit to 5 suggestions
+  }, [search]);
 
   useEffect(() => {
     const selectedVehicle = getVehicleFromSession();
@@ -87,24 +147,67 @@ const HomepageAppV0: React.FC = () => {
     }
   }, []);
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearch(value);
+    setShowSuggestions(value.trim().length > 0);
+  };
+
+  const handleSuggestionClick = (service: ServiceCard) => {
+    navigate(service.link);
+    setSearch('');
+    setShowSuggestions(false);
+  };
+
+  const handleSearchFocus = () => {
+    if (search.trim()) {
+      setShowSuggestions(true);
+    }
+  };
+
+  const handleSearchBlur = () => {
+    // Delay hiding suggestions to allow clicking
+    setTimeout(() => setShowSuggestions(false), 200);
+  };
+
+  const handleLocationClick = async () => {
+    try {
+      await requestLocation();
+    } catch (error) {
+      console.error('Failed to refresh location:', error);
+    }
+  };
+
+  const handleVehicleSelect = (vehicle: any) => {
+    setSelectedVehicle(vehicle);
+    setShowVehicleModal(false);
+  };
+
   return (
-    <div className="bg-gray-50 min-h-screen flex flex-col pb-20">
+    <div className="bg-gray-50 min-h-screen flex flex-col">
       {/* Top Bar */}
-      <div className="pt-20 px-4 pb-4 bg-white shadow-md sticky top-0 z-10">
+      <div className="px-4 py-4 bg-white shadow-md">
         <div className="flex items-center justify-between gap-2">
-          <div className="flex items-start gap-2 flex-1 overflow-hidden">
-            <MapPin className="text-[#FF7200] flex-shrink-0" />
-            <div className="text-sm leading-tight truncate">
-              <p className="font-semibold truncate max-w-[180px]">{locationDisplay}</p>
-              <p className="text-gray-500 text-xs truncate">Your current location</p>
+          <button
+            onClick={handleLocationClick}
+            className="flex items-start gap-2 flex-1 overflow-hidden hover:bg-gray-50 rounded-lg p-2 -m-2 transition-colors"
+            disabled={isLoading}
+          >
+            <MapPin className={`text-[#FF7200] flex-shrink-0 ${isLoading ? 'animate-pulse' : ''}`} />
+            <div className="text-sm leading-tight truncate text-left">
+              <p className="font-semibold truncate max-w-[180px]">
+                {isLoading ? 'Refreshing location...' : locationDisplay}
+              </p>
+              <p className="text-gray-500 text-xs truncate">
+                {isLoading ? 'Please wait...' : 'Tap to refresh location'}
+              </p>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Car className="w-7 h-7 text-[#FF7200]" />
-            {vehicleName && (
-              <span className="text-xs font-semibold text-gray-700 whitespace-nowrap">{vehicleName}</span>
-            )}
-          </div>
+          </button>
+          <CompactCarSelector
+            selectedVehicle={selectedVehicle}
+            onSelectCar={() => setShowVehicleModal(true)}
+            className="w-16"
+          />
         </div>
         {/* Search Bar */}
         <div className="mt-4 relative">
@@ -112,28 +215,35 @@ const HomepageAppV0: React.FC = () => {
           <input
             type="text"
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={handleSearchChange}
+            onFocus={handleSearchFocus}
+            onBlur={handleSearchBlur}
             onKeyDown={e => {
-              if (e.key === 'Enter' && filtered.length) {
-                navigate(filtered[0].link);
+              if (e.key === 'Enter' && filteredServices.length) {
+                navigate(filteredServices[0].link);
                 setSearch('');
+                setShowSuggestions(false);
               }
             }}
             placeholder="Search Services"
             className="w-full rounded-md bg-gray-100 pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF7200]"
           />
-          {filtered.length > 0 && (
-            <div className="absolute left-0 right-0 top-full bg-white border shadow-md rounded-b-md z-10 max-h-60 overflow-y-auto">
-              {filtered.map(s => (
+          {showSuggestions && filteredServices.length > 0 && (
+            <div className="absolute left-0 right-0 top-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 z-10 max-h-60 overflow-y-auto">
+              {filteredServices.map((service, index) => (
                 <button
-                  key={s.title}
-                  onClick={() => {
-                    navigate(s.link);
-                    setSearch('');
-                  }}
-                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                  key={service.title}
+                  onClick={() => handleSuggestionClick(service)}
+                  className="w-full text-left px-4 py-3 hover:bg-orange-50 hover:text-[#FF7200] border-b border-gray-100 last:border-b-0 flex items-center gap-3"
                 >
-                  {s.title}
+                  <img 
+                    src={service.image} 
+                    alt={service.title} 
+                    className="w-8 h-8 object-contain flex-shrink-0" 
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium text-gray-900">{service.title}</div>
+                  </div>
                 </button>
               ))}
             </div>
@@ -167,31 +277,60 @@ const HomepageAppV0: React.FC = () => {
       {/* Schedule Services */}
       <section className="mt-6 px-4">
         <h2 className="text-xl font-bold text-gray-900 mb-3">Schedule Services</h2>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           {services.map((service) => (
             <Link
               to={service.link}
               key={service.title}
-              className="bg-white rounded-lg p-3 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md"
+              className="bg-white rounded-lg p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow"
             >
-              <img src={service.image} alt={service.title} className="w-10 h-10 object-contain mb-2" />
-              <span className="text-xs font-medium text-gray-700 leading-tight">
-                {service.title}
-              </span>
+              <img src={service.image} alt={service.title} className="w-12 h-12 object-contain flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-semibold text-gray-900 leading-tight">{service.title}</h3>
+              </div>
             </Link>
           ))}
         </div>
       </section>
 
+      {/* Express Service Highlight */}
+      <section className="mt-6 px-4">
+        <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl p-4 text-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-8 -mt-8"></div>
+          <div className="relative">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <h3 className="text-lg font-bold">Express Service</h3>
+                <p className="text-sm text-orange-100 mt-1">90 minutes • ₹500 off</p>
+                <Link
+                  to="/express-app"
+                  className="inline-flex items-center gap-2 bg-white text-orange-600 px-4 py-2 rounded-lg font-semibold text-sm mt-3 hover:bg-orange-50 transition-colors"
+                >
+                  Book Now
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
+              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* GaadiMech Exclusives */}
-      <section className="mt-8 px-4">
+      <section className="mt-6 px-4 mb-6">
         <h2 className="text-xl font-bold text-gray-900 mb-3">GaadiMech Exclusives</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           {exclusives.map(item => (
             <a
               key={item.title}
               href={item.link}
-              className="flex items-center gap-3 bg-white rounded-lg p-4 shadow-sm hover:shadow-md"
+              className="flex items-center gap-3 bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
             >
               <img src={item.image} alt={item.title} className="w-10 h-10 object-contain" />
               <span className="font-medium text-gray-800 text-sm">{item.title}</span>
@@ -200,29 +339,12 @@ const HomepageAppV0: React.FC = () => {
         </div>
       </section>
 
-      {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md px-4 py-2 flex justify-between text-xs text-gray-700 z-20">
-        <Link to="/homepage-app-v0" className="flex flex-col items-center gap-1 text-[#FF7200]">
-          <HomeIcon size={20} />
-          Home
-        </Link>
-        <button className="flex flex-col items-center gap-1">
-          <Bell size={20} />
-          Notifications
-        </button>
-        <a href="tel:+918448285289" className="flex flex-col items-center gap-1">
-          <AlertTriangle size={20} />
-          SOS
-        </a>
-        <button className="flex flex-col items-center gap-1">
-          <HelpCircle size={20} />
-          Help
-        </button>
-        <button className="flex flex-col items-center gap-1">
-          <User size={20} />
-          Account
-        </button>
-      </nav>
+      {/* Vehicle Selection Modal */}
+      <VehicleSelectionModal
+        isOpen={showVehicleModal}
+        onClose={() => setShowVehicleModal(false)}
+        onVehicleSelect={handleVehicleSelect}
+      />
     </div>
   );
 };

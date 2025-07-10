@@ -486,20 +486,20 @@ const CartPage = () => {
     <div className="min-h-screen bg-gray-50 pb-24 hide-whatsapp-button">
       {/* Header */}
       <div className="bg-white shadow-sm sticky top-0 z-40">
-        <div className="max-w-md mx-auto px-4 py-4">
+        <div className="max-w-md mx-auto px-4 py-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <button
                 onClick={() => navigate(-1)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors mr-3"
+                className="p-1.5 hover:bg-gray-100 rounded-full transition-colors mr-3"
               >
                 <ArrowLeft className="w-5 h-5 text-gray-700" />
               </button>
-              <h1 className="text-xl font-bold text-gray-900">My Cart</h1>
+              <h1 className="text-lg font-bold text-gray-900">My Cart</h1>
             </div>
             {vehicleInfo && (
-              <div className="bg-gray-100 px-3 py-1 rounded-full">
-                <span className="text-sm font-medium text-gray-700">
+              <div className="bg-gray-100 px-2 py-1 rounded-full">
+                <span className="text-xs font-medium text-gray-700">
                   {vehicleInfo.model}
                 </span>
               </div>
