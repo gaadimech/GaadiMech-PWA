@@ -37,7 +37,7 @@ const services = [
     title: 'Why Wait All Day?',
     description: 'Car Service in 90 MINS, Nahi to FREEEE',
     highlight: true,
-    link: '/express-beta-atc',
+    link: '/express-app',
     featured: true
   },
   {
@@ -65,255 +65,129 @@ const services = [
     link: '/services/denting'
   },
   {
-    image: 'https://i.ibb.co/ZXCWCRC/Group-4.png',
+    image: 'https://i.ibb.co/xJtZLcV/Group-6.png',
     title: 'Battery Service',
-    description: 'Battery Check, Repair and Replacement',
+    description: 'Battery Replacement and Testing',
     link: '/services/battery'
   },
   {
-    image: 'https://i.ibb.co/3zcSYzf/Frame.png',
+    image: 'https://i.ibb.co/fYY8fLt/Group-5.png',
     title: 'Windshield Service',
     description: 'Windshield Repair and Replacement',
     link: '/services/windshield'
   },
   {
-    image: 'https://i.ibb.co/MpG0nBb/Layer-1.png',
-    title: 'Car Detailing',
-    description: 'Professional Car Detailing Services',
-    link: '/services/detailing'
-  },
-  {
-    image: 'https://i.ibb.co/hMSWCJB/Layer-x0020-1-1.png',
+    image: 'https://i.ibb.co/vhLrWtk/Group-4.png',
     title: 'Tyre Service',
-    description: 'Tyre Maintenance and Replacement',
+    description: 'Tyre Replacement and Alignment',
     link: '/services/tyre'
   }
 ];
 
-const Services = ({ showSeoContent = false }) => {
+const Services = () => {
   const navigate = useNavigate();
 
-  const handleServiceClick = (service: typeof services[0]) => {
-    if (service.link) {
-      navigate(service.link);
-    }
+  const handleServiceClick = (link: string) => {
+    navigate(link);
   };
-
-  const handleScheduleClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent the card click event from firing
-    navigate('/express-beta-atc');
-  };
-
-  const featuredService = services.find(service => service.featured);
-  const regularServices = services.filter(service => !service.featured);
 
   return (
-    <section id="services" className="py-8 md:py-12 bg-gray-50 border-b-8 border-white">
+    <section id="services" className="py-12 md:py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-6 md:mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Our Services</h2>
-          <p className="text-sm md:text-base text-gray-600">Aapki Gaadi, Hamari Zimmedari</p>
-        </div>
-
-        {/* Featured Express Service */}
-        {featuredService && (
-          <motion.div
-            onClick={() => handleServiceClick(featuredService)}
-            className="mb-8 mx-auto max-w-3xl"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+        <div className="text-center mb-8 md:mb-16">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-3xl md:text-4xl font-bold text-gray-900 mb-4"
           >
-            <div className="relative bg-gradient-to-r from-orange-50 via-white to-orange-50 p-5 rounded-xl shadow-lg border-2 border-[#FF7200] cursor-pointer overflow-hidden">
-              {/* Recommended Tag */}
-              <div className="absolute top-0 right-0">
-                <div className="bg-[#FF7200] text-white px-3 py-1 rounded-bl-lg font-medium flex items-center gap-1">
-                  <Zap className="w-3 h-3" />
-                  Super Fast
-                </div>
-              </div>
-
-              <div className="flex flex-col md:flex-row items-center gap-4">
-                <div className="w-20 h-20 md:w-24 md:h-24 flex-shrink-0 bg-orange-100 rounded-full p-5 flex items-center justify-center relative">
-                  {featuredService.icon}
-                  <motion.div 
-                    className="absolute inset-0 rounded-full border-2 border-[#FF7200]"
-                    animate={{ 
-                      scale: [1, 1.1, 1],
-                      opacity: [1, 0.8, 1]
-                    }}
-                    transition={{ 
-                      repeat: Infinity, 
-                      duration: 2 
-                    }}
-                  ></motion.div>
-                </div>
-                <div className="flex-grow text-center md:text-left">
-                  <div className="mb-1">
-                    <span className="text-lg md:text-xl text-gray-800 font-bold">Express Car Service</span>
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-bold text-[#FF7200] mb-1">
-                    {featuredService.title}
-                  </h3>
-                  <p className="text-base md:text-lg text-gray-800 mb-1 font-semibold">
-                    Car Service in <span className="text-[#FF7200]">90 MINS</span>, Nahi to <span className="text-[#FF7200] font-extrabold text-lg md:text-xl animate-pulse">FREEEE</span>
-                  </p>
-                  {(featuredService as any).tagline && (
-                    <p className="text-xs md:text-sm text-[#FF7200] font-medium mb-2 italic">
-                      {(featuredService as any).tagline}
-                    </p>
-                  )}
-                  <div className="flex flex-wrap gap-3 justify-center md:justify-start mt-3">
-                    <div className="flex items-center text-gray-700 bg-orange-50 px-2 py-1 rounded-full">
-                      <Clock className="w-4 h-4 mr-1 text-[#FF7200]" />
-                      <span className="font-bold text-sm">90-MIN Guarantee</span>
-                    </div>
-                    <motion.button
-                      onClick={handleScheduleClick}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="bg-[#FF7200] text-white px-6 py-2 rounded-md hover:bg-[#0e5aa8] transition-colors flex items-center gap-2 shadow-md text-base font-medium"
-                    >
-                      <Calendar className="w-5 h-5" />
-                      Schedule Slot Now
-                    </motion.button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Regular Services Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {regularServices.map((service, index) => (
+            Our Services
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-lg md:text-xl text-gray-600"
+          >
+            Professional car care services at your doorstep
+          </motion.p>
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+          {services.map((service, index) => (
             <motion.div
               key={index}
-              onClick={() => handleServiceClick(service)}
-              className={`bg-white p-4 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center group cursor-pointer relative overflow-hidden border border-transparent hover:border-orange-200 md:hover:border-orange-200 border-gray-100`}
-              whileHover={{ 
-                scale: service.link ? 1.02 : 1,
-                y: -3
-              }}
-              whileTap={{ scale: service.link ? 0.98 : 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className={`
+                group cursor-pointer rounded-lg shadow-lg transition-all duration-300 
+                hover:shadow-xl hover:-translate-y-2 overflow-hidden
+                ${service.featured ? 'bg-gradient-to-br from-orange-500 to-red-600 text-white col-span-1 sm:col-span-2 lg:col-span-2' : 'bg-white'}
+              `}
+              onClick={() => handleServiceClick(service.link)}
             >
-              {/* Highlight corner accent */}
-              <div className="absolute top-0 right-0 w-0 h-0 
-                border-t-[30px] border-t-[#FF7200] opacity-30 md:opacity-0
-                border-l-[30px] border-l-transparent
-                md:group-hover:opacity-100 transition-opacity duration-300"></div>
-              
-              <motion.div 
-                className="mb-2 w-12 h-12 md:w-16 md:h-16 flex items-center justify-center relative"
-                whileHover={{ rotate: [0, -5, 5, -5, 0] }}
-                transition={{ duration: 0.5 }}
-              >
-                {/* Subtle pulse animation for mobile */}
-                <div className="absolute inset-0 bg-orange-100 rounded-full opacity-20 animate-pulse hidden xs:flex"></div>
-                {service.icon ? (
-                  service.icon
-                ) : (
-                  <img
-                    src={service.image}
-                    alt={service.title}
-                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
-                  />
-                )}
-              </motion.div>
-              <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-1 group-hover:text-[#FF7200] transition-colors">
-                {service.title}
-              </h3>
-              <p className="hidden md:block text-xs text-gray-600 mb-2">
-                {service.description}
-              </p>
-              
-              {/* View Service Button - visible on mobile, hover effect on desktop */}
-              <div className="mt-auto pt-1 w-full">
-                <div className="flex items-center justify-center text-[#FF7200] md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 transform md:translate-y-2 md:group-hover:translate-y-0">
-                  <span className="font-medium mr-1 text-sm">Add to Cart</span>
-                  <motion.div
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{ duration: 1, repeat: Infinity }}
-                  >
-                    <ChevronRight size={14} />
-                  </motion.div>
+              <div className={`p-4 md:p-6 ${service.featured ? 'text-center' : ''}`}>
+                <div className={`flex ${service.featured ? 'flex-col items-center' : 'items-center mb-4'}`}>
+                  <div className={`${service.featured ? 'w-20 h-20 mb-4' : 'w-16 h-16 mr-4 flex-shrink-0'} overflow-hidden rounded-lg`}>
+                    {service.icon ? (
+                      service.icon
+                    ) : (
+                      <img 
+                        src={service.image} 
+                        alt={service.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      />
+                    )}
+                  </div>
+                  <div className={service.featured ? 'text-center' : 'flex-1'}>
+                    <h3 className={`font-bold mb-2 ${service.featured ? 'text-2xl md:text-3xl' : 'text-lg md:text-xl text-gray-900'}`}>
+                      {service.title}
+                    </h3>
+                    <p className={`${service.featured ? 'text-white/90 text-base md:text-lg' : 'text-gray-600'}`}>
+                      {service.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              
-              {/* Mobile-only indicator */}
-              <div className="absolute bottom-1 right-1 md:hidden">
-                <ChevronRight size={12} className="text-gray-400" />
+                
+                {service.featured && (
+                  <div className="mt-6">
+                    <div className="flex items-center justify-center text-white/90 mb-4">
+                      <Clock className="w-5 h-5 mr-2" />
+                      <span className="text-sm">Express Service Available</span>
+                    </div>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className="inline-flex items-center px-6 py-3 bg-white text-orange-600 font-bold rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                      Book Now <ArrowRight className="w-5 h-5 ml-2" />
+                    </motion.div>
+                  </div>
+                )}
+                
+                {!service.featured && (
+                  <div className="flex items-center text-[#FF7200] font-medium">
+                    Learn More <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                )}
               </div>
             </motion.div>
           ))}
         </div>
         
-        {/* SEO Content Section - Only show when showSeoContent is true */}
-        {showSeoContent && (
-          <div className="mt-12 pt-6 border-t border-gray-200">
-            <div className="text-sm text-gray-600 space-y-4">
-              <p className="mb-4">
-                GaadiMech offers comprehensive <strong>car services in Jaipur</strong> to keep your vehicle in optimal condition. 
-                Our skilled technicians provide quality maintenance and repair solutions using genuine parts and modern equipment.
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3 text-xs">
-                <div>
-                  <h3 className="font-medium text-gray-800 mb-1">
-                    <a href="/services/periodic" className="hover:text-[#FF7200] transition-colors">
-                      Periodic Service in Jaipur
-                    </a>
-                  </h3>
-                  <p>Regular maintenance packages including oil change, filter replacement, and multi-point inspections in Jaipur.</p>
-                </div>
-                
-                <div>
-                  <h3 className="font-medium text-gray-800 mb-1">
-                    <a href="/services/ac" className="hover:text-[#FF7200] transition-colors">
-                      AC Repair in Jaipur
-                    </a>
-                  </h3>
-                  <p>Complete car AC service from gas refills to compressor fixes to keep you cool in Jaipur's heat.</p>
-                </div>
-                
-                <div>
-                  <h3 className="font-medium text-gray-800 mb-1">
-                    <a href="/services/denting" className="hover:text-[#FF7200] transition-colors">
-                      Dent & Paint Services in Jaipur
-                    </a>
-                  </h3>
-                  <p>Body repairs, scratch removal, and painting services to fix dents and restore your car's look.</p>
-                </div>
-                
-                <div>
-                  <h3 className="font-medium text-gray-800 mb-1">
-                    <a href="/services/battery" className="hover:text-[#FF7200] transition-colors">
-                      Battery Replacement in Jaipur
-                    </a>
-                  </h3>
-                  <p>On-site battery testing and replacement, including jumpstart assistance for dead batteries.</p>
-                </div>
-                
-                <div>
-                  <h3 className="font-medium text-gray-800 mb-1">
-                    <a href="/services/tyre" className="hover:text-[#FF7200] transition-colors">
-                      Tyres & Alignment in Jaipur
-                    </a>
-                  </h3>
-                  <p>Tyre replacement, wheel alignment, and balancing for smooth and safe driving.</p>
-                </div>
-                
-                <div>
-                  <h3 className="font-medium text-gray-800 mb-1">
-                    <a href="/services/windshield" className="hover:text-[#FF7200] transition-colors">
-                      Windshield Repair in Jaipur
-                    </a>
-                  </h3>
-                  <p>Windshield crack repair and full replacement with insurance claim support available.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="text-center mt-8 md:mt-12"
+        >
+          <button
+            onClick={() => navigate('/services')}
+            className="bg-[#FF7200] text-white px-6 md:px-8 py-3 md:py-4 rounded-lg hover:bg-[#0e5aa8] transition-colors text-base md:text-lg font-semibold"
+          >
+            View All Services
+          </button>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,9 +1,6 @@
 const env = {
-  STRAPI_URL: import.meta.env.VITE_STRAPI_URL || '',
-  getImageUrl: (path: string) => {
-    const baseUrl = import.meta.env.VITE_STRAPI_URL || '';
-    return `${baseUrl}${path}`;
-  }
+  // Placeholder for future environment configurations
+  IS_PROD: import.meta.env.PROD,
 };
 
 export default env; 

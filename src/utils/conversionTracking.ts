@@ -1,6 +1,29 @@
-import { leadsService } from '../services/leads';
-import { LeadTrackingData } from '../types/leads';
+// TODO: Reconnect to new Strapi V5 backend
+// import { leadsService } from '../services/leads';
+// import { LeadTrackingData } from '../types/leads';
 import { getVehicleFromSession, getPricingData, parseCSVData } from './pricing-utils';
+
+// Placeholder interface for lead tracking data - TODO: Update with new Strapi V5 types
+interface LeadTrackingData {
+  mobileNumber?: string;
+  location?: string;
+  area?: string;
+  serviceInterest?: string;
+  source: string;
+  carBrand?: string;
+  carModel?: string;
+  priceRange?: string;
+  utmParams?: {
+    source?: string;
+    medium?: string;
+    campaign?: string;
+  };
+  deviceInfo?: {
+    type?: string;
+    browser?: string;
+    referrer?: string;
+  };
+}
 
 interface WhatsAppRedirectData {
   timestamp: string;
@@ -262,59 +285,29 @@ export class ConversionTracker {
         }
       }
       
-      // Check if lead already exists
-      const existingLead = await leadsService.findLeadByMobile(mobileNumber);
-      
-      if (existingLead) {
-        // Update existing lead
-        const updates: any = {
-          lastActivityTimestamp: String(new Date().toISOString()),
-          whatsappRedirectCount: String(leadData.whatsappRedirectCount || 0),
-        };
-
-        // Only add fields that have values
-        if (leadData.serviceInterest) updates.serviceInterest = String(leadData.serviceInterest);
-        if (leadData.carBrand) updates.carBrand = String(leadData.carBrand);
-        if (leadData.carModel) updates.carModel = String(leadData.carModel);
-        if (leadData.priceRange) updates.priceRange = String(leadData.priceRange);
-        if (leadData.location) updates.location = String(leadData.location);
-        if (leadData.area) updates.area = String(leadData.area);
-        
-        await leadsService.updateLead(existingLead.data.documentId, updates);
-        console.log('✅ Lead updated in Strapi');
-      } else {
-        // Create new lead - only include fields that have values
-        const newLeadData: any = {
-          mobileNumber: String(mobileNumber),
-          serviceInterest: String(leadData.serviceInterest || 'General Interest'),
-          source: String(leadData.source || 'website'),
-          sessionId: String(this.getSessionId()),
-          userId: String(this.getUserId()),
-          whatsappRedirectCount: String(leadData.whatsappRedirectCount || 0),
-          firstVisitTimestamp: String(leadData.firstVisitTimestamp || new Date().toISOString()),
-          lastActivityTimestamp: String(new Date().toISOString()),
-          referrer: String(deviceInfo.referrer || 'direct'),
-          deviceType: String(deviceInfo.deviceType || 'unknown'),
-          browserInfo: String(deviceInfo.browser || 'unknown'),
-        };
-
-        // Only add optional fields if they have values
-        if (leadData.location) newLeadData.location = String(leadData.location);
-        if (leadData.area) newLeadData.area = String(leadData.area);
-        if (leadData.carBrand) newLeadData.carBrand = String(leadData.carBrand);
-        if (leadData.carModel) newLeadData.carModel = String(leadData.carModel);
-        if (leadData.priceRange) newLeadData.priceRange = String(leadData.priceRange);
-        if (utmParams.utm_source) newLeadData.utmSource = String(utmParams.utm_source);
-        if (utmParams.utm_medium) newLeadData.utmMedium = String(utmParams.utm_medium);
-        if (utmParams.utm_campaign) newLeadData.utmCampaign = String(utmParams.utm_campaign);
-
-        console.log('📋 Attempting to create lead with data:', newLeadData);
-        
-        const result = await leadsService.createLead(newLeadData);
-        if (result) {
-          console.log('✅ Lead created in Strapi:', result.data.id);
-        }
-      }
+      // TODO: Replace with new Strapi V5 API calls
+      console.log('TODO: Create/update lead in new Strapi V5 backend');
+      console.log('Lead data to be saved:', {
+        mobileNumber: String(mobileNumber),
+        serviceInterest: String(leadData.serviceInterest || 'General Interest'),
+        source: String(leadData.source || 'website'),
+        sessionId: String(this.getSessionId()),
+        userId: String(this.getUserId()),
+        whatsappRedirectCount: String(leadData.whatsappRedirectCount || 0),
+        firstVisitTimestamp: String(leadData.firstVisitTimestamp || new Date().toISOString()),
+        lastActivityTimestamp: String(new Date().toISOString()),
+        referrer: String(deviceInfo.referrer || 'direct'),
+        deviceType: String(deviceInfo.deviceType || 'unknown'),
+        browserInfo: String(deviceInfo.browser || 'unknown'),
+        location: leadData.location ? String(leadData.location) : undefined,
+        area: leadData.area ? String(leadData.area) : undefined,
+        carBrand: leadData.carBrand ? String(leadData.carBrand) : undefined,
+        carModel: leadData.carModel ? String(leadData.carModel) : undefined,
+        priceRange: leadData.priceRange ? String(leadData.priceRange) : undefined,
+        utmSource: utmParams.utm_source ? String(utmParams.utm_source) : undefined,
+        utmMedium: utmParams.utm_medium ? String(utmParams.utm_medium) : undefined,
+        utmCampaign: utmParams.utm_campaign ? String(utmParams.utm_campaign) : undefined
+      });
     } catch (error) {
       console.error('❌ Error creating/updating lead:', error);
     }

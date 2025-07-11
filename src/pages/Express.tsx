@@ -1,19 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Car, PenTool as Tool, Phone, CheckCircle, ArrowRight, Share2, Gift, Wrench, Sparkles, Timer, Calendar, Image, MessageSquare, User, Shield, X } from 'lucide-react';
-import { expressService } from '../services/expressService';
+// TODO: Reconnect to new Strapi V5 backend
+// import { expressService } from '../services/expressService';
 import TimeSlotModal from '../components/TimeSlotModal';
 import CarSelectionModal from '../components/CarSelectionModal';
 import PricingInfoModal from '../components/PricingInfoModal';
 import ReviewCarousel from '../components/ReviewCarousel';
 import { getReviewsByService } from '../data/reviews';
-import { enquiryService } from '../services/enquiry';
+// TODO: Reconnect to new Strapi V5 backend
+// import { enquiryService } from '../services/enquiry';
 import Modal from 'react-modal';
 import { useLocation } from 'react-router-dom';
 import { getVehicleFromSession } from '../utils/pricing-utils';
 import { Link } from 'react-router-dom';
 import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
 import { useLocation as useUserLocation } from '../hooks/useLocation';
+
+// TODO: Remove these placeholders when reconnecting to new Strapi V5 backend
+const expressService = {
+  submitLead: async (leadData: any) => {
+    console.log('TODO: Submit lead to new Strapi V5 backend:', leadData);
+    return { data: { id: Date.now() } }; // Mock response
+  },
+  updateLead: async (leadId: number, updateData: any) => {
+    console.log('TODO: Update lead in new Strapi V5 backend:', leadId, updateData);
+    return { data: { id: leadId } }; // Mock response
+  }
+};
+
+const enquiryService = {
+  getServiceTypes: async () => {
+    console.log('TODO: Get service types from new Strapi V5 backend');
+    return { data: [{ id: 1, name: 'Express Service' }] }; // Mock response
+  }
+};
 
 // Google Analytics events added:
 // 1. conversion_event_add_to_cart - Triggered when user clicks "Schedule Slot Now"

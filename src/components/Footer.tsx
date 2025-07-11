@@ -18,38 +18,33 @@ interface ServiceCategory {
 
 const categories: CategorySection[] = [
   {
-    title: "Popular Searches",
+    title: "App Services",
     links: [
-      { text: "Car Mechanic Near Me", url: "/services" },
-      { text: "Car Service Center Near Me", url: "/services" },
-      { text: "Car AC Service Near Me", url: "/services#car-ac-service" },
-      { text: "Car Repair Near Me", url: "/services" },
-      { text: "Auto Repair Shop Near Me", url: "/services" }
+      { text: "Express Service", url: "/express" },
+      { text: "Periodic Service", url: "/services/periodic" },
+      { text: "AC Service", url: "/services/ac" },
+      { text: "Car Spa Service", url: "/services/car-spa" },
+      { text: "Denting Service", url: "/services/denting" }
     ]
   },
   {
     title: "Our Services",
     links: [
-      { text: "Periodic Car Service", url: "/services/periodic" },
-      { text: "Car AC Repair", url: "/services/ac" },
-      { text: "Denting & Painting", url: "/services/denting" },
-      { text: "Car Detailing", url: "/services/detailing" },
-      { text: "Car Inspection", url: "/services" }
+      { text: "Battery Service", url: "/services/battery" },
+      { text: "Windshield Service", url: "/services/windshield" },
+      { text: "Detailing Service", url: "/services/detailing" },
+      { text: "Tyre Service", url: "/services/tyre" },
+      { text: "Doorstep Services", url: "/doorstep-services" }
     ]
   },
   {
-    title: "Service Locations",
+    title: "Support",
     links: [
-      { text: "Car Service in Delhi", url: "/delhi" },
-      { text: "Car Service in Mumbai", url: "/mumbai" },
-      { text: "Car Service in Bangalore", url: "/bangalore" },
-      { text: "Car Service in Hyderabad", url: "/hyderabad" },
-      { text: "Car Service in Chennai", url: "/chennai" },
-      { text: "Car Service in Jaipur", url: "/car-service-in-jaipur" },
-      { text: "Car Repair Service in Jaipur", url: "/car-repair-service-in-jaipur" },
-      { text: "Car Mechanic Shop in Jaipur", url: "/car-mechanic-shop-in-jaipur" },
-      { text: "Car AC Service in Jaipur", url: "/car-ac-service-in-jaipur" },
-      { text: "Car Dent Paint Service in Jaipur", url: "/car-dent-paint-service-in-jaipur" }
+      { text: "Help & Support", url: "/support" },
+      { text: "Feedback", url: "/feedback" },
+      { text: "Profile", url: "/profile" },
+      { text: "My Orders", url: "/profile/orders" },
+      { text: "My Cars", url: "/profile/cars" }
     ]
   }
 ];
@@ -119,12 +114,12 @@ const CategoryAccordion: React.FC<{
           <ul className="space-y-2">
             {section.links.map((link, index) => (
               <li key={index}>
-                <a
-                  href={link.url}
+                <Link
+                  to={link.url}
                   className="text-xs text-gray-600 hover:text-gray-900"
                 >
                   {link.text}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -156,13 +151,12 @@ const Footer = () => {
           <div className="md:col-span-2">
             <h3 className="text-2xl font-bold text-[#FF7200] mb-4">GaadiMech</h3>
             <p className="text-gray-400 mb-4">
-              Looking for a reliable car mechanic near you? GaadiMech is your trusted car repair partner, 
-              bringing professional auto mechanics right to your doorstep. We offer comprehensive car repair 
-              and maintenance services across major cities in India, making quality car care accessible and convenient.
+              Professional car repair and maintenance services at your fingertips. 
+              Book express service, periodic maintenance, and specialized car care through our app.
             </p>
             <p className="text-gray-400">
-              From routine maintenance to complex repairs, our certified car mechanics ensure your vehicle 
-              gets the expert care it deserves, wherever you are. Find a car mechanic near you today!
+              From routine maintenance to complex repairs, our certified mechanics ensure your vehicle 
+              gets the expert care it deserves, right from the comfort of your mobile app.
             </p>
           </div>
           <div>
@@ -170,21 +164,21 @@ const Footer = () => {
             <ul className="space-y-2">
               <li><Link to="/" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Home</Link></li>
               <li><Link to="/services" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Services</Link></li>
-              <li><Link to="/contact" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Contact</Link></li>
-              <li><Link to="/about" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">About</Link></li>
-              <li><Link to="/blog" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Blog</Link></li>
-              <li><Link to="/workshop-partner" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Partner With Us</Link></li>
+              <li><Link to="/express" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Express Service</Link></li>
+              <li><Link to="/support" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Support</Link></li>
+              <li><Link to="/feedback" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Feedback</Link></li>
+              <li><Link to="/profile" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Profile</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="text-lg font-semibold mb-4">Our Services</h4>
             <ul className="space-y-2">
-              <li><Link to="/services#periodic-maintenance" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Periodic Maintenance</Link></li>
-              <li><Link to="/services#car-ac-service" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Car AC Service</Link></li>
-              <li><Link to="/services#car-denting-painting" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Denting & Painting</Link></li>
-              <li><Link to="/services#car-detailing" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Car Detailing</Link></li>
-              <li><Link to="/services#car-inspection" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Car Inspection</Link></li>
-              <li><Link to="/services#wheel-care" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Wheel Care</Link></li>
+              <li><Link to="/services/periodic" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Periodic Maintenance</Link></li>
+              <li><Link to="/services/ac" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Car AC Service</Link></li>
+              <li><Link to="/services/denting" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Denting & Painting</Link></li>
+              <li><Link to="/services/car-spa" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Car Detailing</Link></li>
+              <li><Link to="/services/battery" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Battery Service</Link></li>
+              <li><Link to="/doorstep-services" onClick={handleLinkClick} className="text-gray-400 hover:text-[#FF7200]">Doorstep Services</Link></li>
             </ul>
           </div>
           <div>
@@ -250,8 +244,8 @@ const Footer = () => {
             ))}
           </div>
           <p className="text-xs text-gray-600 mt-8 text-center">
-            Find the best car mechanic near me, auto repair shop near me, car service center near me, and car AC service near me. 
-            GaadiMech provides professional automotive mechanics and car repair services across India.
+            Professional car repair and maintenance services through our mobile app. 
+            GaadiMech provides expert automotive care with convenient booking and reliable service.
           </p>
         </div>
 
@@ -286,12 +280,12 @@ const Footer = () => {
                 <ul className="space-y-2">
                   {section.links.map((link, index) => (
                     <li key={index}>
-                      <a
-                        href={link.url}
+                      <Link
+                        to={link.url}
                         className="text-xs text-gray-600 hover:text-gray-900"
                       >
                         {link.text}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>

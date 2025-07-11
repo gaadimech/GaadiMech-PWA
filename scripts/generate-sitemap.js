@@ -3,8 +3,7 @@
 /**
  * Dynamic Sitemap Generator for GaadiMech
  * 
- * This script fetches live blog posts from the API and generates 
- * an updated sitemap.xml with current content.
+ * This script generates a sitemap.xml with static pages and predefined blog posts.
  * 
  * Run with: node scripts/generate-sitemap.js
  */
@@ -19,41 +18,16 @@ const __dirname = path.dirname(__filename);
 
 // Configuration
 const SITE_URL = 'https://www.gaadimech.com';
-const API_URL = process.env.VITE_API_URL || 'https://strapi-cms-8wqv.onrender.com';
 const OUTPUT_FILE = path.join(__dirname, '../public/sitemap.xml');
 
 // Current date for lastmod
 const currentDate = new Date().toISOString().split('T')[0] + 'T00:00:00+00:00';
 
 /**
- * Fetch blog posts from API
+ * Get predefined blog posts
  */
-async function fetchBlogPosts() {
-  try {
-    console.log('📡 Fetching blog posts from API...');
-    
-    const fetch = (await import('node-fetch')).default;
-    const response = await fetch(`${API_URL}/api/articles?populate=*&sort=publishedAt:desc`);
-    
-    if (!response.ok) {
-      throw new Error(`API request failed: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    console.log(`✅ Found ${data.data?.length || 0} blog posts`);
-    
-    return data.data || [];
-  } catch (error) {
-    console.warn('⚠️ Could not fetch blog posts from API:', error.message);
-    console.log('🔄 Using fallback blog posts...');
-    return getFallbackBlogPosts();
-  }
-}
-
-/**
- * Fallback blog posts if API is unavailable
- */
-function getFallbackBlogPosts() {
+function getBlogPosts() {
+  console.log('📝 Using predefined blog posts...');
   return [
     {
       slug: 'comprehensive-guide-to-car-maintenance-in-2025',
@@ -441,8 +415,8 @@ function generateUrlEntry(page) {
 async function generateSitemap() {
   console.log('🚀 Starting sitemap generation...');
   
-  // Fetch dynamic blog posts
-  const blogPosts = await fetchBlogPosts();
+  // Get predefined blog posts
+  const blogPosts = getBlogPosts();
   
   // Start XML
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
@@ -525,5 +499,5 @@ if (import.meta.url === `file://${process.argv[1]}` || process.argv[1].endsWith(
 export {
   generateSitemap,
   writeSitemap,
-  fetchBlogPosts
+  getBlogPosts
 }; 

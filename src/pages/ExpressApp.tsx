@@ -6,9 +6,22 @@ import CarSelectionModal from '../components/CarSelectionModal';
 import PricingInfoModal from '../components/PricingInfoModal';
 import TimeSlotModal from '../components/TimeSlotModal';
 import { getVehicleFromSession } from '../utils/pricing-utils';
-import { expressService } from '../services/expressService';
+// TODO: Reconnect to new Strapi V5 backend
+// import { expressService } from '../services/expressService';
 import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
 import { useLocation as useUserLocation } from '../hooks/useLocation';
+
+// TODO: Remove these placeholders when reconnecting to new Strapi V5 backend
+const expressService = {
+  submitLead: async (leadData: any) => {
+    console.log('TODO: Submit lead to new Strapi V5 backend:', leadData);
+    return { data: { id: Date.now() } }; // Mock response
+  },
+  updateLead: async (leadId: number, updateData: any) => {
+    console.log('TODO: Update lead in new Strapi V5 backend:', leadId, updateData);
+    return { data: { id: leadId } }; // Mock response
+  }
+};
 
 const ExpressApp: React.FC = () => {
   const navigate = useNavigate();

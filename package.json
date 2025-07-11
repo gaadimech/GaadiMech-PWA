@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "generate-sitemap": "VITE_API_URL=https://strapi-cms-8wqv.onrender.com node scripts/generate-sitemap.js",
+    "generate-sitemap": "node scripts/generate-sitemap.js",
     "build-with-sitemap": "npm run generate-sitemap && npm run build",
     "generate-apk": "node scripts/generate-apk.js",
     "check-apk": "node scripts/check-apk.js",

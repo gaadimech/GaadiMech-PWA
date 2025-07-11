@@ -133,35 +133,97 @@ export const getIPLocation = async (): Promise<LocationData | null> => {
 };
 
 /**
- * Reverse geocode coordinates to get city/state information
+ * Reverse geocode coordinates using BigDataCloud API (fallback)
  */
-const reverseGeocode = async (lat: number, lng: number): Promise<{city?: string, state?: string, country?: string} | null> => {
+const reverseGeocodeWithBigDataCloud = async (lat: number, lng: number): Promise<{city?: string, state?: string, country?: string} | null> => {
   try {
-    // Using OpenStreetMap Nominatim for reverse geocoding (free)
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10&addressdetails=1`,
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`,
       {
         headers: {
-          'User-Agent': 'GaadiMech-Website/1.0'
+          'User-Agent': 'GaadiMech-PWA/1.0'
         }
       }
     );
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const data = await response.json();
-    
+
     return {
-      city: data.address?.city || data.address?.town || data.address?.village,
-      state: data.address?.state,
-      country: data.address?.country
+      city: data.city || data.locality,
+      state: data.principalSubdivision,
+      country: data.countryName
     };
   } catch (error) {
-    console.error('Error in reverse geocoding:', error);
+    console.error('Error in BigDataCloud reverse geocoding:', error);
     return null;
   }
+};
+
+/**
+ * Reverse geocode coordinates to get city/state information
+ */
+const reverseGeocode = async (lat: number, lng: number): Promise<{city?: string, state?: string, country?: string} | null> => {
+  // First try with OpenStreetMap
+  const MAX_RETRIES = 2;
+  const TIMEOUT_MS = 5000;
+  
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      // Add delay between retries to respect rate limits
+      if (attempt > 0) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+      // Using OpenStreetMap Nominatim for reverse geocoding (free)
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10&addressdetails=1`,
+        {
+          headers: {
+            'User-Agent': 'GaadiMech-PWA/1.0 (https://gaadimech.com; contact@gaadimech.com)',
+            'Accept-Language': 'en-US,en;q=0.9'
+          },
+          signal: controller.signal
+        }
+      );
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Validate the response data
+      if (!data || !data.address) {
+        throw new Error('Invalid response data');
+      }
+      
+      return {
+        city: data.address?.city || data.address?.town || data.address?.village,
+        state: data.address?.state,
+        country: data.address?.country
+      };
+    } catch (error) {
+      console.error(`Reverse geocoding attempt ${attempt + 1}/${MAX_RETRIES + 1} failed:`, error);
+      
+      // If this was our last attempt, try the fallback service
+      if (attempt === MAX_RETRIES) {
+        console.log('OpenStreetMap reverse geocoding failed, trying BigDataCloud...');
+        return await reverseGeocodeWithBigDataCloud(lat, lng);
+      }
+      // Otherwise, continue to next retry
+    }
+  }
+  
+  return null;
 };
 
 /**

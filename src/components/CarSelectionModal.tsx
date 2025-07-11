@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Car, Tag, Droplet, CheckCircle, Clock } from 'lucide-react';
+import { X, Car, Tag, Droplet, CheckCircle } from 'lucide-react';
+// TODO: Reconnect to new Strapi V5 backend
+// import { expressService } from '../services/expressService';
+import { useLocation } from '../hooks/useLocation';
 import { saveVehicleToSession, getVehicleFromSession } from '../utils/pricing-utils';
-import { expressService } from '../services/expressService';
 
 interface CarSelectionModalProps {
   isOpen: boolean;
@@ -221,10 +223,13 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
     }
   }, [selectedBrand, selectedModel, selectedFuelType, pricingData]);
 
-  // Add function to update lead data in Strapi
+  // TODO: Reconnect to new Strapi V5 backend - placeholder function
   const updateLeadWithSelection = async (field: string, value: string, price?: number) => {
     if (!leadId) return;
     
+    console.log(`TODO: Update ${field} with value ${value} in new Strapi V5 backend`);
+    // TODO: Implement with new Strapi V5 API
+    /*
     const data: Record<string, any> = {
       [field]: value
     };
@@ -239,6 +244,7 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
     } catch (error) {
       console.error(`Error updating ${field} in Strapi:`, error);
     }
+    */
   };
 
   // Update brand effect - add Strapi update
