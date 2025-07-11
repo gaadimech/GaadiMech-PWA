@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import InstallPrompt from '../components/InstallPrompt';
 import PageTransition from '../components/PageTransition';
 import OfflineIndicator from '../components/OfflineIndicator';
+import StickyCartBanner from '../components/StickyCartBanner';
 
 const AppLayout: React.FC = () => {
   return (
@@ -37,6 +38,9 @@ const AppLayout: React.FC = () => {
       
       {/* Offline Indicator */}
       <OfflineIndicator />
+      
+      {/* Sticky Cart Banner */}
+      <StickyCartBanner />
     </div>
   );
 };

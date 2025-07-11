@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AnimatePresence } from 'framer-motion';
 import Modal from 'react-modal';
 import { HelmetProvider } from 'react-helmet-async';
+import { UserProvider } from './contexts/UserContext';
+import { CartProvider } from './contexts/CartContext';
 import AppLayout from './layouts/AppLayout';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -23,10 +25,10 @@ import FranchisePage from './pages/FranchisePage';
 import Feedback from './pages/Feedback';
 import Footer from './components/Footer';
 import CustomerForm from './components/CustomerForm';
-import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
-import { useAnalytics } from './hooks/useAnalytics';
-import { useMetaAnalytics } from './hooks/useMetaAnalytics';
-import './utils/testPageView'; // Import PageView test utilities
+// import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
+// import { useAnalytics } from './hooks/useAnalytics';
+// import { useMetaAnalytics } from './hooks/useMetaAnalytics';
+// import './utils/testPageView'; // Import PageView test utilities
 import { useLocation as useUserLocation } from './hooks/useLocation';
 
 // Service Pages
@@ -78,12 +80,48 @@ import DoorstepServicesIndex from './pages-doorstep/index';
 import CategoryPage from './pages-doorstep/CategoryPage';
 import CartPage from './components-doorstep/CartPage';
 
+// Auth Pages
+import Login from './pages/auth/Login';
+import VerifyOTP from './pages/auth/VerifyOTP';
+import CarSelection from './pages/auth/CarSelection';
+
+// Profile Pages
+import ProfileMain from './pages/profile/ProfileMain';
+import MyCars from './pages/profile/MyCars';
+import ProfileEdit from './pages/profile/ProfileEdit';
+import MyOrders from './pages/profile/MyOrders';
+import MyAddresses from './pages/profile/MyAddresses';
+
+// Support Page
+import Support from './pages/Support';
+
+// Cart Page
+import Cart from './pages/Cart';
+
+// Booking Details Page
+import BookingDetails from './pages/BookingDetails';
+
+// Payment Options Page
+import PaymentOptions from './pages/PaymentOptions';
+
+// Payment Processing Page
+import PaymentProcessing from './pages/PaymentProcessing';
+
+// Order Success Page
+import OrderSuccess from './pages/OrderSuccess';
+
+// Order Failed Page
+import OrderFailed from './pages/OrderFailed';
+
+// Order Details Page
+import OrderDetails from './pages/OrderDetails';
+
 Modal.setAppElement('#root');
 
 // Create a new component to use the hook
 const AnalyticsWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  useGoogleAnalytics();
-  useMetaAnalytics();
+  // useGoogleAnalytics();
+  // useMetaAnalytics();
   return <>{children}</>;
 };
 
@@ -113,7 +151,7 @@ const AppContent = () => {
   });
   const location = useLocation();
 
-  useAnalytics();
+  // useAnalytics();
 
   // Log location data for debugging (only in development)
   useEffect(() => {
@@ -283,6 +321,14 @@ const AppContent = () => {
       <AnalyticsWrapper>
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
+            {/* Auth Routes */}
+            <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/verify-otp" element={<VerifyOTP />} />
+            <Route path="/auth/car-selection" element={<CarSelection />} />
+
+            {/* Support Route */}
+            <Route path="/support" element={<Support />} />
+
             {/* Routes that need the full app shell */}
             <Route path="/" element={<AppLayout />}>
               <Route index element={<HomepageAppV0 />} />
@@ -298,6 +344,22 @@ const AppContent = () => {
               <Route path="workshop-partner" element={<WorkshopPartner />} />
               <Route path="franchise" element={<FranchisePage />} />
               <Route path="feedback" element={<Feedback />} />
+              
+              {/* Cart Flow Routes */}
+              <Route path="cart" element={<Cart />} />
+              <Route path="booking-details" element={<BookingDetails />} />
+              <Route path="payment-options" element={<PaymentOptions />} />
+              <Route path="payment-processing" element={<PaymentProcessing />} />
+              <Route path="order-success" element={<OrderSuccess />} />
+              <Route path="order-failed" element={<OrderFailed />} />
+              <Route path="order-details" element={<OrderDetails />} />
+              
+              {/* Profile Routes */}
+              <Route path="profile" element={<ProfileMain />} />
+              <Route path="profile/edit" element={<ProfileEdit />} />
+              <Route path="profile/cars" element={<MyCars />} />
+              <Route path="profile/orders" element={<MyOrders />} />
+              <Route path="profile/addresses" element={<MyAddresses />} />
               
               {/* Service Routes */}
               <Route path="services/periodic" element={<PeriodicService />} />
@@ -399,14 +461,18 @@ const AppContent = () => {
 const App = () => {
   return (
     <HelmetProvider>
-      <Router>
-        <ScrollToTop />
-        <AnimatePresence mode="wait">
-          <AnalyticsWrapper>
-            <AppContent />
-          </AnalyticsWrapper>
-        </AnimatePresence>
-      </Router>
+      <UserProvider>
+        <CartProvider>
+          <Router>
+            <ScrollToTop />
+            <AnimatePresence mode="wait">
+              <AnalyticsWrapper>
+                <AppContent />
+              </AnalyticsWrapper>
+            </AnimatePresence>
+          </Router>
+        </CartProvider>
+      </UserProvider>
     </HelmetProvider>
   );
 };

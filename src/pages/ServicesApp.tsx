@@ -354,7 +354,7 @@ const ServicesApp: React.FC = () => {
                       {/* Action Button */}
                       <div className="mt-3">
                         <button className="w-full bg-orange-50 text-[#FF7200] py-2 rounded-lg text-sm font-medium hover:bg-orange-100 transition-colors">
-                          Book Now
+                          Add to Cart
                         </button>
                       </div>
                     </div>

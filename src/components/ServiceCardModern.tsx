@@ -5,6 +5,7 @@ import { ServiceCard as ServiceCardProps } from '../data/services-data';
 import { Vehicle } from '../types/services';
 import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
 import MobileNumberModal from './MobileNumberModal';
+import { useCart } from '../contexts/CartContext';
 
 interface ServiceCardModernProps {
   card: ServiceCardProps;
@@ -26,6 +27,7 @@ const ServiceCardModern: React.FC<ServiceCardModernProps> = ({
   periodicServicePrice
 }) => {
   const { trackLead } = useMetaAnalytics();
+  const { addRegularService, isInCart, getItemQuantity, updateQuantity } = useCart();
   const [showDetails, setShowDetails] = useState(false);
   const [showMobileModal, setShowMobileModal] = useState(false);
   const isExpressService = card.duration.includes('90 Mins') || card.duration.includes('⏰');
@@ -42,8 +44,62 @@ const ServiceCardModern: React.FC<ServiceCardModernProps> = ({
     return getDisplayPrice();
   };
 
-  const handleBookNow = () => {
-    setShowMobileModal(true);
+  const handleAddToCart = async () => {
+    console.log('🛒 Add to Cart clicked:', { 
+      vehicleSelected, 
+      cardId: card.id, 
+      serviceType: serviceType || 'periodic' 
+    });
+
+    if (!vehicleSelected) {
+      console.log('❌ No vehicle selected, triggering car selection');
+      onSelectCar();
+      return;
+    }
+
+    // Calculate the price to use
+    let unitPrice: number;
+    if (isExpressService && actualPrice) {
+      // Apply express service discount
+      unitPrice = Math.max(0, parseFloat(actualPrice.replace(/[^\d.]/g, '')) - 500);
+    } else if (actualPrice) {
+      unitPrice = parseFloat(actualPrice.replace(/[^\d.]/g, ''));
+    } else {
+      unitPrice = parseFloat(card.price.replace(/[^\d.]/g, ''));
+    }
+
+    console.log('💰 Calculated unit price:', unitPrice);
+    console.log('🚗 Selected vehicle:', selectedVehicle);
+
+    // Add to cart
+    try {
+      addRegularService(
+        card.id,
+        serviceType || 'periodic',
+        card,
+        unitPrice,
+        selectedVehicle
+      );
+      console.log('✅ Successfully added to cart');
+    } catch (error) {
+      console.error('❌ Error adding to cart:', error);
+    }
+
+    // Track add to cart as Lead
+    try {
+      await trackLead(
+        undefined,
+        {
+          content_name: `Add to Cart - ${card.title}`,
+          content_type: 'add_to_cart',
+          currency: 'INR',
+          value: unitPrice
+        }
+      );
+      console.log('📊 Analytics tracked successfully');
+    } catch (error) {
+      console.error('📊 Analytics tracking failed:', error);
+    }
   };
 
   const handleMobileNumberSubmit = async (mobileNumber: string) => {
@@ -127,15 +183,39 @@ const ServiceCardModern: React.FC<ServiceCardModernProps> = ({
           </div>
           
           {vehicleSelected ? (
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleBookNow}
-              className="bg-[#FF7200] hover:bg-orange-700 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-colors flex items-center gap-2"
-            >
-              Book Now
-              <ArrowRight className="w-4 h-4" />
-            </motion.button>
+            <motion.div className="flex items-center gap-2">
+              {isInCart(card.id, 'regular') ? (
+                <div className="flex items-center gap-2">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => updateQuantity(card.id, 'regular', getItemQuantity(card.id, 'regular') - 1)}
+                    className="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-lg font-semibold text-lg w-8 h-8 flex items-center justify-center"
+                  >
+                    -
+                  </motion.button>
+                  <span className="font-semibold text-lg w-8 text-center">{getItemQuantity(card.id, 'regular')}</span>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => updateQuantity(card.id, 'regular', getItemQuantity(card.id, 'regular') + 1)}
+                    className="bg-[#FF7200] hover:bg-orange-700 text-white p-2 rounded-lg font-semibold text-lg w-8 h-8 flex items-center justify-center"
+                  >
+                    +
+                  </motion.button>
+                </div>
+              ) : (
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleAddToCart}
+                  className="bg-[#FF7200] hover:bg-orange-700 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-colors flex items-center gap-2"
+                >
+                  Add to Cart
+                  <ArrowRight className="w-4 h-4" />
+                </motion.button>
+              )}
+            </motion.div>
           ) : (
             <motion.button
               whileHover={{ scale: 1.02 }}

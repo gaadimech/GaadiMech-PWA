@@ -7,6 +7,7 @@ import ReactDOM from 'react-dom';
 import { useMetaAnalytics } from '../hooks/useMetaAnalytics';
 import { ConversionTracker } from '../utils/conversionTracking';
 import MobileNumberModal from './MobileNumberModal';
+import { useCart } from '../contexts/CartContext';
 
 interface ServiceCardComponentProps {
   card: ServiceCardProps;
@@ -39,6 +40,7 @@ const ServiceCard: React.FC<ServiceCardComponentProps> = ({
   periodicServicePrice
 }) => {
   const { trackLead } = useMetaAnalytics();
+  const { addRegularService, isInCart, getItemQuantity } = useCart();
   const [showDetails, setShowDetails] = useState(false);
   const [highlightDuration, setHighlightDuration] = useState(false);
   const [showMobileModal, setShowMobileModal] = useState(false);
@@ -135,25 +137,42 @@ const ServiceCard: React.FC<ServiceCardComponentProps> = ({
     setCurrentTotalPrice(calculateTotalPrice(updatedServices));
   };
   
-  const handleBookNow = async () => {
+  const handleAddToCart = async () => {
     if (!vehicleSelected) {
       onSelectCar();
       return;
     }
 
-    // Track Book Now button as Lead
-    await trackLead(
-      undefined, // No customer info available at this point
-      {
-        content_name: `Service Booking - ${card.title}`,
-        content_type: 'service_inquiry',
-        currency: 'INR',
-        value: actualPrice ? parseFloat(actualPrice.replace(/[^\d.]/g, '')) : 0
-      }
+    // Calculate the price to use
+    let unitPrice: number;
+    if ((isExpressService || isExpressDentService) && actualPrice) {
+      // Apply express service discount
+      unitPrice = Math.max(0, parseFloat(actualPrice.replace(/[^\d.]/g, '')) - 500);
+    } else if (actualPrice) {
+      unitPrice = parseFloat(actualPrice.replace(/[^\d.]/g, ''));
+    } else {
+      unitPrice = parseFloat(card.price.replace(/[^\d.]/g, ''));
+    }
+
+    // Add to cart
+    addRegularService(
+      card.id,
+      serviceType || 'periodic',
+      card,
+      unitPrice,
+      selectedVehicle
     );
 
-    // Show mobile number modal first
-    setShowMobileModal(true);
+    // Track add to cart as Lead
+    await trackLead(
+      undefined,
+      {
+        content_name: `Add to Cart - ${card.title}`,
+        content_type: 'add_to_cart',
+        currency: 'INR',
+        value: unitPrice
+      }
+    );
   };
 
   const handleMobileNumberSubmit = (mobileNumber: string) => {
@@ -574,7 +593,7 @@ ${servicesList}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => {
                   closeCustomizationModal();
-                  handleBookNow();
+                  handleAddToCart();
                 }}
                 className={buttonClass}
               >
@@ -708,13 +727,13 @@ ${servicesList}
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={handleBookNow}
+                onClick={handleAddToCart}
                 className={`${isExpressService || isExpressDentService ? 
                   'bg-[#FF7200] hover:bg-[#FF7200]/90 text-white' : 
                   'bg-[#FF7200] hover:bg-[#FF7200]/90 text-white'} 
                   px-6 py-3 rounded-md transition-colors flex items-center justify-center w-full sm:w-[170px] text-sm whitespace-nowrap font-bold shadow-md`}
               >
-                BOOK NOW
+                {isInCart(card.id, 'regular') ? `ADDED (${getItemQuantity(card.id, 'regular')})` : 'ADD TO CART'}
                 <ArrowRight className="ml-1" size={16} />
               </motion.button>
             )

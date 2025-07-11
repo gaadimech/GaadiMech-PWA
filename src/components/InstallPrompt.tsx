@@ -82,27 +82,34 @@ const InstallPrompt: React.FC = () => {
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) {
+      console.log('No deferred prompt available');
       return;
     }
 
-    // Show the install prompt
-    deferredPrompt.prompt();
+    try {
+      // Show the install prompt
+      await deferredPrompt.prompt();
 
-    // Wait for the user to respond to the prompt
-    const { outcome } = await deferredPrompt.userChoice;
-    
-    if (outcome === 'accepted') {
-      console.log('User accepted the install prompt');
-    } else {
-      console.log('User dismissed the install prompt');
+      // Wait for the user to respond to the prompt
+      const { outcome } = await deferredPrompt.userChoice;
+      
+      console.log(`Install prompt outcome: ${outcome}`);
+      
+      if (outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+    } catch (error) {
+      console.error('Error showing install prompt:', error);
+    } finally {
+      // Clear the deferredPrompt
+      setDeferredPrompt(null);
+      setShowPrompt(false);
+      
+      // Mark that we've shown the prompt
+      sessionStorage.setItem('pwa-install-prompt-shown', 'true');
     }
-
-    // Clear the deferredPrompt
-    setDeferredPrompt(null);
-    setShowPrompt(false);
-    
-    // Mark that we've shown the prompt
-    sessionStorage.setItem('pwa-install-prompt-shown', 'true');
   };
 
   const handleDismiss = () => {

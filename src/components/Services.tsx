@@ -229,7 +229,7 @@ const Services = ({ showSeoContent = false }) => {
               {/* View Service Button - visible on mobile, hover effect on desktop */}
               <div className="mt-auto pt-1 w-full">
                 <div className="flex items-center justify-center text-[#FF7200] md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 transform md:translate-y-2 md:group-hover:translate-y-0">
-                  <span className="font-medium mr-1 text-sm">Book Now</span>
+                  <span className="font-medium mr-1 text-sm">Add to Cart</span>
                   <motion.div
                     animate={{ x: [0, 5, 0] }}
                     transition={{ duration: 1, repeat: Infinity }}
