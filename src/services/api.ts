@@ -277,7 +277,7 @@ export const carService = {
   async addCar(carData: any) {
     // Ensure all required fields are present
     const formattedCarData = {
-      registrationNumber: carData.registrationNumber || `TEMP_${Date.now()}`, // Temporary if not provided
+      registrationNumber: carData.registrationNumber || '', // Empty if not provided, backend will handle
       make: carData.make || carData.brand, // Handle both 'make' and 'brand'
       model: carData.model,
       year: carData.year || new Date().getFullYear(),
@@ -287,7 +287,7 @@ export const carService = {
       engineCapacity: carData.engineCapacity,
       transmission: carData.transmission,
       owner: carData.owner,
-      isActive: true,
+      isActive: carData.isActive !== undefined ? carData.isActive : true,
     };
 
     console.log('🚗 Formatted car data for Strapi:', formattedCarData);

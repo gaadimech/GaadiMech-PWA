@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useUser } from '../../contexts/UserContext';
@@ -8,7 +8,15 @@ const Login: React.FC = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { sendOtp } = useUser();
+  const { sendOtp, isAuthenticated, isLoading: userLoading } = useUser();
+
+  // Redirect authenticated users to home
+  useEffect(() => {
+    if (!userLoading && isAuthenticated) {
+      console.log('👤 User already authenticated, redirecting to home');
+      navigate('/', { replace: true });
+    }
+  }, [isAuthenticated, userLoading, navigate]);
 
   const validatePhone = (phoneNumber: string) => {
     const phoneRegex = /^[6-9]\d{9}$/;
@@ -52,6 +60,18 @@ const Login: React.FC = () => {
     // TODO: Implement social login
     console.log(`Login with ${platform}`);
   };
+
+  // Show loading while checking authentication status
+  if (userLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">

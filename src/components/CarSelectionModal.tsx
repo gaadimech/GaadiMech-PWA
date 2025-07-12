@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Car, Tag, Droplet, CheckCircle } from 'lucide-react';
-// TODO: Reconnect to new Strapi V5 backend
-// import { expressService } from '../services/expressService';
 import { useLocation } from '../hooks/useLocation';
 import { saveVehicleToSession, getVehicleFromSession } from '../utils/pricing-utils';
+import { useUser } from '../contexts/UserContext';
 
 interface CarSelectionModalProps {
   isOpen: boolean;
@@ -23,6 +22,7 @@ interface CarPricing {
 }
 
 const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, onSubmit, mobileNumber, leadId }) => {
+  const { user, addCar, isAuthenticated } = useUser();
   const [selectedBrand, setSelectedBrand] = useState<string>('');
   const [selectedModel, setSelectedModel] = useState<string>('');
   const [selectedFuelType, setSelectedFuelType] = useState<string>('');
@@ -268,7 +268,7 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
     }
   }, [selectedFuelType, currentPrice, selectedBrand, selectedModel, leadId]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (selectedBrand && selectedModel && selectedFuelType) {
       // Find the price for this selection
       const selectedVehiclePricing = pricingData.find(
@@ -286,6 +286,43 @@ const CarSelectionModal: React.FC<CarSelectionModalProps> = ({ isOpen, onClose, 
         model: selectedModel,
         fuelType: selectedFuelType
       });
+      
+      // If user is authenticated, add the car to their profile
+      if (isAuthenticated && user) {
+        try {
+          console.log('🚗 CarSelectionModal: Adding car to user profile', {
+            make: selectedBrand,
+            model: selectedModel,
+            fuelType: selectedFuelType,
+            userId: user.id
+          });
+          
+          // Check if this exact car already exists for the user
+          const existingCar = user.cars.find(car => 
+            car.make.toLowerCase() === selectedBrand.toLowerCase() && 
+            car.model.toLowerCase() === selectedModel.toLowerCase() && 
+            car.fuelType.toLowerCase() === selectedFuelType.toLowerCase()
+          );
+          
+          if (!existingCar) {
+            await addCar({
+              make: selectedBrand,
+              model: selectedModel,
+              year: new Date().getFullYear(),
+              fuelType: selectedFuelType,
+              isPrimary: user.cars.length === 0, // Make first car primary
+              registrationNumber: '', // Will be empty initially, user can add later
+            });
+            
+            console.log('✅ CarSelectionModal: Car added successfully');
+          } else {
+            console.log('ℹ️ CarSelectionModal: Car already exists, skipping add');
+          }
+        } catch (error) {
+          console.error('❌ CarSelectionModal: Error adding car:', error);
+          // Don't block the flow, just log the error
+        }
+      }
       
       // Proceed with form submission (passing values to parent component)
       onSubmit(selectedBrand, selectedModel, selectedFuelType, price);

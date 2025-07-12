@@ -18,15 +18,22 @@ const VerifyOTP: React.FC = () => {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const phone = sessionStorage.getItem('pendingPhone') || '';
 
-  // Redirect to login if no pending phone number
+  // Redirect to login if no pending phone number, or to home if already authenticated
   useEffect(() => {
     if (!phone) {
-      navigate('/auth/login');
+      navigate('/auth/login', { replace: true });
       return;
     }
-  }, [phone, navigate]);
+    
+    // Redirect if user is already authenticated
+    if (isAuthenticated && user) {
+      console.log('👤 User already authenticated, redirecting to home');
+      navigate('/', { replace: true });
+      return;
+    }
+  }, [phone, navigate, isAuthenticated, user]);
 
-  // Handle navigation after successful verification and user state update
+  // Handle navigation after successful verification - simplified approach
   useEffect(() => {
     if (isVerificationSuccess && verificationResponse && !hasNavigated) {
       console.log('🔍 Navigation effect triggered:', {
@@ -37,21 +44,24 @@ const VerifyOTP: React.FC = () => {
         userExists: !!user
       });
 
-      const isNewUser = verificationResponse.data?.isNewUser || verificationResponse.isNewUser;
-      
-      // Set navigation flag to prevent multiple navigations
+      // Set navigation flag immediately to prevent multiple navigations
       setHasNavigated(true);
       
-      // Navigate based on user type
-      if (isNewUser) {
-        console.log('🆕 New user - navigating to car selection');
-        navigate('/auth/car-selection', { replace: true });
-      } else {
-        console.log('👤 Existing user - navigating to home');
-        navigate('/', { replace: true });
-      }
+      // Use a timeout to allow user state to be set
+      setTimeout(() => {
+        const isNewUser = verificationResponse.data?.isNewUser || verificationResponse.isNewUser;
+        
+        // Navigate based on user type
+        if (isNewUser) {
+          console.log('🆕 New user - navigating to car selection');
+          navigate('/auth/car-selection', { replace: true });
+        } else {
+          console.log('👤 Existing user - navigating to home');
+          navigate('/', { replace: true });
+        }
+      }, 500); // Give time for user context to update
     }
-  }, [isVerificationSuccess, verificationResponse, hasNavigated, navigate, isAuthenticated, user]);
+  }, [isVerificationSuccess, verificationResponse, hasNavigated, navigate]);
 
   // Countdown timer
   useEffect(() => {

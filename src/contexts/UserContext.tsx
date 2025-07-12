@@ -111,17 +111,37 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         });
         
         if (token) {
-          // Set token in API client before making request
-          apiClient.setToken(token);
-          
-          const response = await authService.getCurrentUser();
-          console.log('🔍 UserContext: getCurrentUser response:', response);
-          
-          if (response.data) {
-            await transformAndSetUser(response.data);
-            console.log('✅ UserContext: User data loaded successfully from token');
-          } else {
-            console.warn('⚠️ UserContext: No user data in response, clearing token');
+          try {
+            // Validate token format before making request
+            const tokenParts = token.split('.');
+            if (tokenParts.length !== 3) {
+              throw new Error('Invalid JWT token format');
+            }
+
+            // Check if token is expired
+            const payload = JSON.parse(atob(tokenParts[1]));
+            const currentTime = Date.now() / 1000;
+            
+            if (payload.exp && payload.exp < currentTime) {
+              throw new Error('JWT token has expired');
+            }
+
+            // Set token in API client before making request
+            apiClient.setToken(token);
+            
+            const response = await authService.getCurrentUser();
+            console.log('🔍 UserContext: getCurrentUser response:', response);
+            
+            if (response.data) {
+              await transformAndSetUser(response.data);
+              console.log('✅ UserContext: User data loaded successfully from token');
+            } else {
+              console.warn('⚠️ UserContext: No user data in response, clearing token');
+              localStorage.removeItem('strapi_jwt');
+              apiClient.clearToken();
+            }
+          } catch (tokenError) {
+            console.error('❌ UserContext: Invalid or expired token:', tokenError);
             localStorage.removeItem('strapi_jwt');
             apiClient.clearToken();
           }
@@ -144,12 +164,46 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   // Transform Strapi user data to match our User interface
   const transformAndSetUser = async (strapiUser: any) => {
     try {
+      console.log('🔄 UserContext: Fetching user data for user:', strapiUser.id);
+      
       // Fetch user's cars, addresses, and orders
       const [carsResponse, addressesResponse, ordersResponse] = await Promise.all([
-        carService.getUserCars(strapiUser.id).catch(() => ({ data: [] as Car[] })),
-        addressService.getUserAddresses(strapiUser.id).catch(() => ({ data: [] as Address[] })),
-        orderService.getUserOrders(strapiUser.id).catch(() => ({ data: [] as Order[] }))
+        carService.getUserCars(strapiUser.id).catch((error) => {
+          console.error('❌ Error fetching cars:', error);
+          return { data: [] as Car[] };
+        }),
+        addressService.getUserAddresses(strapiUser.id).catch((error) => {
+          console.error('❌ Error fetching addresses:', error);
+          return { data: [] as Address[] };
+        }),
+        orderService.getUserOrders(strapiUser.id).catch((error) => {
+          console.error('❌ Error fetching orders:', error);
+          return { data: [] as Order[] };
+        })
       ]);
+
+      console.log('📊 UserContext: Fetched data:', {
+        carsResponse,
+        carsCount: Array.isArray(carsResponse.data) ? carsResponse.data.length : 'Not array',
+        carsData: carsResponse.data
+      });
+
+      // Transform Strapi car data to match our interface
+      const transformedCars = Array.isArray(carsResponse.data) 
+        ? carsResponse.data.map((car: any) => ({
+            id: car.id?.toString() || car.documentId?.toString(),
+            registrationNumber: car.registrationNumber || '',
+            make: car.make,
+            model: car.model,
+            year: car.year,
+            fuelType: car.fuelType,
+            isPrimary: car.isPrimary || false,
+            createdAt: car.createdAt,
+            isActive: car.isActive
+          }))
+        : [];
+
+      console.log('🔄 UserContext: Transformed cars:', transformedCars);
 
       const transformedUser: User = {
         id: strapiUser.id.toString(),
@@ -158,7 +212,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         phone: strapiUser.mobileNumber || '',
         birthday: strapiUser.dateOfBirth || '',
         gender: strapiUser.gender || '',
-        cars: Array.isArray(carsResponse.data) ? carsResponse.data : [],
+        cars: transformedCars,
         addresses: Array.isArray(addressesResponse.data) ? addressesResponse.data : [],
         orders: Array.isArray(ordersResponse.data) ? ordersResponse.data : [],
         username: strapiUser.username,
@@ -175,6 +229,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         profilePicture: strapiUser.profilePicture,
       };
 
+      console.log('✅ UserContext: Setting transformed user with cars:', transformedUser.cars);
       setUser(transformedUser);
 
       // Track user login analytics
@@ -219,6 +274,13 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         hasJwt: !!responseData.jwt,
         isNewUser: responseData.isNewUser
       });
+      
+      // Clear any previous session data for new user
+      if (responseData.isNewUser || responseData.user) {
+        console.log('🧹 UserContext: Clearing previous session data');
+        sessionStorage.clear(); // Clear cart and other session data
+        localStorage.removeItem('gaadimech_user'); // Clear any old user data
+      }
       
       // Store JWT token if present
       if (responseData.jwt) {
@@ -279,11 +341,19 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       }
 
       await authService.logout();
-      setUser(null);
     } catch (error) {
-      console.error('Error during logout:', error);
-      // Still clear user data even if API call fails
+      console.error('Error during logout API call:', error);
+      // Continue with logout even if API call fails
+    } finally {
+      // Always clear user data and tokens
+      console.log('🚪 Logout: Clearing user data and tokens');
       setUser(null);
+      localStorage.removeItem('strapi_jwt');
+      apiClient.clearToken();
+      sessionStorage.clear(); // Clear all session data
+      
+      // Force page reload to reset all contexts
+      window.location.href = '/auth/login';
     }
   };
 
@@ -336,10 +406,16 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         currentToken: localStorage.getItem('strapi_jwt') ? 'Present' : 'Missing'
       });
       
-      const response = await carService.addCar({
+      // Clean up the car data to ensure proper format
+      const cleanedCarData = {
         ...carData,
         owner: user.id, // Use 'owner' instead of 'user' to match schema
-      });
+        registrationNumber: carData.registrationNumber || '', // Handle empty registration number
+        year: carData.year || new Date().getFullYear(),
+        isActive: true,
+      };
+      
+      const response = await carService.addCar(cleanedCarData);
       
       console.log('✅ UserContext: Car added successfully', response);
 

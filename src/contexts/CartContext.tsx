@@ -128,7 +128,16 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       });
       
       if (isAuthenticated && user?.id) {
-        console.log('👤 CartProvider: User authenticated, loading from backend');
+        console.log('👤 CartProvider: User authenticated, clearing session and loading from backend');
+        
+        // Clear session storage when a new user logs in to prevent cart conflicts
+        try {
+          sessionStorage.removeItem(CART_STORAGE_KEY);
+          console.log('🧹 CartProvider: Cleared session storage cart');
+        } catch (error) {
+          console.error('❌ Error clearing cart from session:', error);
+        }
+        
         try {
           const response = await apiClient.get<{ data: any }>(`/carts?filters[user][id][$eq]=${user.id}&filters[isActive][$eq]=true&sort=lastModifiedAt:desc&limit=1&populate=*`);
           // Our custom Strapi controller for /carts returns a *single* cart object (or null)
@@ -141,8 +150,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             ? backendCartRaw[0] ?? null
             : backendCartRaw;
 
-          if (backendCart) {
-            const transformedItems = (backendCart.items || []).map((item: BackendCartItem) => {
+          if (backendCart && backendCart.items && Array.isArray(backendCart.items)) {
+            const transformedItems = backendCart.items.map((item: BackendCartItem) => {
               const numericUnit = typeof item.unitPrice === 'string' ? parseFloat(item.unitPrice) : item.unitPrice;
               return {
                 ...item,
@@ -153,14 +162,14 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             setCartItems(transformedItems);
             console.log('✅ CartProvider: Loaded cart from backend:', transformedItems);
           } else {
-            console.log('📭 CartProvider: No active cart found in backend, loading from session');
-            loadCartFromSession();
+            console.log('📭 CartProvider: No active cart found in backend, starting with empty cart');
+            setCartItems([]);
           }
         } catch (error) {
-          console.error('❌ CartProvider: Error loading cart from backend, falling back to session:', error);
-          loadCartFromSession();
+          console.error('❌ CartProvider: Error loading cart from backend, starting with empty cart:', error);
+          setCartItems([]);
         }
-      } else {
+      } else if (!isAuthenticated) {
         console.log('🔄 CartProvider: User not authenticated, loading from session');
         loadCartFromSession();
       }

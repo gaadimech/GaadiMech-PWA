@@ -16,10 +16,15 @@ const CarSelection: React.FC = () => {
 
   // Don't redirect while user data is loading
   useEffect(() => {
-    if (!isLoading && !user) {
-      console.log('⚠️ CarSelection: No user found after loading, redirecting to login');
-      navigate('/auth/login');
-    }
+    // Wait for both user loading and a reasonable time for user state to be set
+    const timeoutId = setTimeout(() => {
+      if (!isLoading && !user) {
+        console.log('⚠️ CarSelection: No user found after loading, redirecting to login');
+        navigate('/auth/login', { replace: true });
+      }
+    }, 1000); // Give 1 second for user state to load
+
+    return () => clearTimeout(timeoutId);
   }, [user, isLoading, navigate]);
 
   // Show loading while user data is being loaded
@@ -45,7 +50,7 @@ const CarSelection: React.FC = () => {
       
       // Add the car to user's profile in Strapi
       await addCar({
-        registrationNumber: `${brand}-${model}-${Date.now()}`, // Generate a temporary registration number
+        registrationNumber: '', // Empty initially, user can add later
         make: brand,
         model: model,
         year: new Date().getFullYear(), // Default to current year
