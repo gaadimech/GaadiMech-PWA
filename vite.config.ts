@@ -6,7 +6,11 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
+      devOptions: {
+        enabled: true,
+        type: 'module'
+      },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
         name: 'GaadiMech - Car Service & Repair',
@@ -34,7 +38,7 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/api\./,
-            handler: 'CacheFirst',
+            handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',
               expiration: {
@@ -55,9 +59,6 @@ export default defineConfig({
             }
           }
         ]
-      },
-      devOptions: {
-        enabled: true
       }
     })
   ],

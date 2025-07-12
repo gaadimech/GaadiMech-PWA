@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useUser } from './UserContext';
+import { apiClient } from '../services/api';
 
 // Define interfaces
 export interface ServiceCard {
@@ -55,6 +57,40 @@ export interface CartContextType {
   getItemQuantity: (serviceId: string, type: 'regular' | 'doorstep') => number;
 }
 
+interface BackendCartItem {
+  serviceId: string;
+  type: 'regular' | 'doorstep';
+  service: ServiceCard | DoorstepService;
+  quantity: number;
+  unitPrice: number;
+  selectedVehicle?: any;
+}
+
+interface BackendCart {
+  id: number;
+  user: number;
+  items: BackendCartItem[];
+  status: 'active' | 'cleared' | 'completed';
+  lastModifiedAt: string;
+}
+
+interface StrapiDataItem<T> {
+  id: number;
+  attributes: T;
+}
+
+interface BackendResponse<T> {
+  data: StrapiDataItem<T>[];
+  meta: {
+    pagination: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
+    };
+  };
+}
+
 const CART_STORAGE_KEY = 'gaaditech_cart_v2'; // New key to avoid conflicts
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -62,39 +98,141 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const { user, isAuthenticated } = useUser();
 
-  // Load cart from localStorage on mount
-  useEffect(() => {
-    console.log('🔄 CartProvider: Loading cart from localStorage...');
+  // Function to load cart from session storage
+  const loadCartFromSession = () => {
     try {
-      const savedCart = localStorage.getItem(CART_STORAGE_KEY);
-      if (savedCart && savedCart !== 'undefined' && savedCart !== 'null') {
+      const savedCart = sessionStorage.getItem(CART_STORAGE_KEY);
+      if (savedCart) {
         const parsedCart = JSON.parse(savedCart);
-        console.log('✅ Loaded cart from storage:', parsedCart);
-        setCartItems(Array.isArray(parsedCart) ? parsedCart : []);
+        console.log('📦 CartProvider: Loaded cart from session storage:', parsedCart);
+        setCartItems(parsedCart);
       } else {
-        console.log('📭 No saved cart found, starting with empty cart');
+        console.log('📪 CartProvider: No cart found in session storage');
         setCartItems([]);
       }
     } catch (error) {
-      console.error('❌ Error loading cart from storage:', error);
+      console.error('❌ CartProvider: Error loading cart from session storage:', error);
       setCartItems([]);
     }
-    setIsLoaded(true);
-  }, []);
+  };
 
-  // Save cart to localStorage whenever items change
+  // Load cart from backend or session on mount and when user changes
+  useEffect(() => {
+    const loadCart = async () => {
+      console.log('🔄 CartProvider: Loading cart...', {
+        isAuthenticated,
+        userId: user?.id,
+        isLoaded
+      });
+      
+      if (isAuthenticated && user?.id) {
+        console.log('👤 CartProvider: User authenticated, loading from backend');
+        try {
+          const response = await apiClient.get<{ data: any }>(`/carts?filters[user][id][$eq]=${user.id}&filters[isActive][$eq]=true&sort=lastModifiedAt:desc&limit=1&populate=*`);
+          // Our custom Strapi controller for /carts returns a *single* cart object (or null)
+          // whereas Strapi's default controller returns an array wrapped in data[].
+          // To stay future-proof we gracefully handle both possibilities here.
+
+          const backendCartRaw = (response as any).data;
+
+          const backendCart = Array.isArray(backendCartRaw)
+            ? backendCartRaw[0] ?? null
+            : backendCartRaw;
+
+          if (backendCart) {
+            const transformedItems = (backendCart.items || []).map((item: BackendCartItem) => {
+              const numericUnit = typeof item.unitPrice === 'string' ? parseFloat(item.unitPrice) : item.unitPrice;
+              return {
+                ...item,
+                unitPrice: numericUnit,
+                totalPrice: numericUnit * item.quantity,
+              } as CartItem;
+            });
+            setCartItems(transformedItems);
+            console.log('✅ CartProvider: Loaded cart from backend:', transformedItems);
+          } else {
+            console.log('📭 CartProvider: No active cart found in backend, loading from session');
+            loadCartFromSession();
+          }
+        } catch (error) {
+          console.error('❌ CartProvider: Error loading cart from backend, falling back to session:', error);
+          loadCartFromSession();
+        }
+      } else {
+        console.log('🔄 CartProvider: User not authenticated, loading from session');
+        loadCartFromSession();
+      }
+      
+      setIsLoaded(true);
+    };
+
+    if (!isLoaded) {
+      loadCart();
+    }
+  }, [isAuthenticated, user?.id, isLoaded]);
+
+  // Save cart to both session storage and backend whenever items change
   useEffect(() => {
     if (isLoaded) {
-      console.log('💾 Saving cart to localStorage:', cartItems);
+      console.log('💾 Saving cart to session storage and backend:', cartItems);
+      
+      // Always save to session storage for offline access
       try {
-        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
-        console.log('✅ Cart saved successfully');
+        sessionStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+        console.log('✅ Cart saved successfully to session storage');
       } catch (error) {
-        console.error('❌ Error saving cart:', error);
+        console.error('❌ Error saving cart to session storage:', error);
+      }
+
+      // Save to backend if user is authenticated
+      if (isAuthenticated && user?.id && cartItems.length > 0) {
+        saveCartToBackend().catch(error => {
+          console.error('❌ Error saving cart to backend:', error);
+        });
       }
     }
-  }, [cartItems, isLoaded]);
+  }, [cartItems, isLoaded, isAuthenticated, user?.id]);
+
+  // Function to save cart to backend
+  const saveCartToBackend = async () => {
+    if (!user?.id || cartItems.length === 0) return;
+
+    try {
+      console.log('🔄 Saving cart to backend...');
+      
+      const cartData = {
+        sessionId: `cart_${user.id}_${Date.now()}`,
+        items: cartItems,
+        totalItems: cartItems.length,
+        totalQuantity: cartItems.reduce((total, item) => total + item.quantity, 0),
+        subtotal: cartItems.reduce((total, item) => total + item.totalPrice, 0),
+        totalAmount: cartItems.reduce((total, item) => total + item.totalPrice, 0),
+        user: user.id,
+        isActive: true,
+        lastModifiedAt: new Date(),
+      };
+
+      // Check if cart exists
+      const existingCartResponse = await apiClient.get(`/carts?filters[user][id][$eq]=${user.id}&filters[isActive][$eq]=true&limit=1`);
+
+      const existingCartRaw = (existingCartResponse as any).data;
+      const existingCart = Array.isArray(existingCartRaw) ? existingCartRaw[0] : existingCartRaw;
+
+      if (existingCart) {
+        // Update existing cart
+        await apiClient.put(`/carts/${existingCart.id}`, { data: cartData });
+        console.log('✅ Cart updated in backend');
+      } else {
+        // Create new cart
+        await apiClient.post('/carts', { data: cartData });
+        console.log('✅ Cart created in backend');
+      }
+    } catch (error) {
+      console.error('❌ Error saving cart to backend:', error);
+    }
+  };
 
   // Calculate cart summary
   const cartSummary: CartSummary = React.useMemo(() => {
@@ -240,26 +378,67 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     );
   };
 
-  const clearCart = () => {
+  const clearCart = async () => {
     console.log('🧹 Clearing cart');
     setCartItems([]);
+    
+    // Also clear cart in backend if authenticated
+    if (isAuthenticated && user?.id) {
+      try {
+        const response = await apiClient.get(`/carts?filters[user][id][$eq]=${user.id}&filters[isActive][$eq]=true&limit=1`);
+
+        const backendCartRaw = (response as any).data;
+        const backendCart = Array.isArray(backendCartRaw) ? backendCartRaw[0] : backendCartRaw;
+
+        if (backendCart) {
+          await apiClient.put(`/carts/${backendCart.id}`, {
+            data: {
+              isActive: false,
+              status: 'cleared' as const,
+              lastModifiedAt: new Date()
+            }
+          });
+        }
+      } catch (error) {
+        console.error('❌ Error clearing cart in backend:', error);
+      }
+    }
   };
 
-  const refreshCartFromStorage = () => {
-    console.log('🔄 Manually refreshing cart from storage...');
-    try {
-      const savedCart = localStorage.getItem(CART_STORAGE_KEY);
-      if (savedCart && savedCart !== 'undefined' && savedCart !== 'null') {
-        const parsedCart = JSON.parse(savedCart);
-        console.log('🔄 Refreshed cart data:', parsedCart);
-        setCartItems(Array.isArray(parsedCart) ? parsedCart : []);
-      } else {
-        console.log('📭 No cart data to refresh');
-        setCartItems([]);
+  const refreshCartFromStorage = async () => {
+    console.log('🔄 Manually refreshing cart...');
+    if (isAuthenticated && user?.id) {
+      try {
+        const response = await apiClient.get(`/carts?filters[user][id][$eq]=${user.id}&filters[isActive][$eq]=true&limit=1&populate=*`);
+
+        const backendCartRaw = (response as any).data;
+        const backendCart = Array.isArray(backendCartRaw) ? backendCartRaw[0] : backendCartRaw;
+
+        if (backendCart && backendCart.items) {
+          const transformedItems = backendCart.items.map((item: BackendCartItem) => {
+            const numericUnit = typeof item.unitPrice === 'string' ? parseFloat(item.unitPrice) : item.unitPrice;
+            return {
+              serviceId: item.serviceId,
+              type: item.type,
+              service: item.service,
+              quantity: item.quantity,
+              unitPrice: numericUnit,
+              totalPrice: numericUnit * item.quantity,
+              selectedVehicle: item.selectedVehicle,
+            } as CartItem;
+          });
+          setCartItems(transformedItems);
+          console.log('✅ Cart refreshed from backend');
+        } else {
+          setCartItems([]);
+          console.log('📭 No active cart found during refresh');
+        }
+      } catch (error) {
+        console.error('❌ Error refreshing cart:', error);
       }
-    } catch (error) {
-      console.error('❌ Error refreshing cart:', error);
+    } else {
       setCartItems([]);
+      console.log('👤 User not authenticated, cleared cart');
     }
   };
 

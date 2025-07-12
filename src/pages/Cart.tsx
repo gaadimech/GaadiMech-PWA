@@ -244,7 +244,7 @@ const Cart = () => {
         </div>
 
         {/* Price Summary */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-top">
+        <div className="fixed bottom-16 left-0 right-0 bg-white border-t border-gray-200 shadow-top z-40">
           <div className="max-w-md mx-auto px-4 py-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-600">Total</span>

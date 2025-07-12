@@ -10,7 +10,11 @@ const MyAddresses: React.FC = () => {
   const [editingAddress, setEditingAddress] = useState<string | null>(null);
 
   const [newAddress, setNewAddress] = useState({
-    address: ''
+    address: '',
+    city: '',
+    state: '',
+    pincode: '',
+    type: 'home' as 'home' | 'work' | 'other',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -21,14 +25,20 @@ const MyAddresses: React.FC = () => {
     } else {
       addAddress(newAddress);
     }
-    setNewAddress({ address: '' });
+    setNewAddress({ address: '', city: '', state: '', pincode: '', type: 'home' });
     setShowAddForm(false);
   };
 
   const handleEdit = (addressId: string) => {
     const address = user?.addresses.find(a => a.id === addressId);
     if (address) {
-      setNewAddress({ address: address.address });
+      setNewAddress({
+        address: address.address,
+        city: (address as any).city || '',
+        state: (address as any).state || '',
+        pincode: (address as any).pincode || '',
+        type: address.type || 'home',
+      });
       setEditingAddress(addressId);
       setShowAddForm(true);
     }
@@ -84,10 +94,45 @@ const MyAddresses: React.FC = () => {
                 </label>
                 <textarea
                   value={newAddress.address}
-                  onChange={(e) => setNewAddress({ address: e.target.value })}
-                  placeholder="Enter your complete address"
+                  onChange={(e) => setNewAddress({ ...newAddress, address: e.target.value })}
+                  placeholder="House No, Building, Street, Area"
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  rows={4}
+                  rows={3}
+                  required
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                  <input
+                    type="text"
+                    value={newAddress.city}
+                    onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
+                    placeholder="e.g. Jaipur"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
+                  <input
+                    type="text"
+                    value={newAddress.state}
+                    onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })}
+                    placeholder="e.g. Rajasthan"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Pincode</label>
+                <input
+                  type="text"
+                  value={newAddress.pincode}
+                  onChange={(e) => setNewAddress({ ...newAddress, pincode: e.target.value })}
+                  placeholder="e.g. 302020"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   required
                 />
               </div>
@@ -103,7 +148,7 @@ const MyAddresses: React.FC = () => {
                   onClick={() => {
                     setShowAddForm(false);
                     setEditingAddress(null);
-                    setNewAddress({ address: '' });
+                    setNewAddress({ address: '', city: '', state: '', pincode: '', type: 'home' });
                   }}
                   className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-300 transition-colors"
                 >
@@ -133,6 +178,9 @@ const MyAddresses: React.FC = () => {
                       </div>
                       <p className="text-gray-600 text-sm leading-relaxed">
                         {address.address}
+                      </p>
+                      <p className="text-gray-500 text-sm mt-1">
+                        {(address as any).city}, {(address as any).state} - {(address as any).pincode}
                       </p>
                     </div>
                   </div>

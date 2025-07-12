@@ -1,19 +1,57 @@
 // Cart functionality for GaadiMech Doorstep Services
 import React from 'react';
-import { getServiceById, formatPrice } from '../data-doorstep/doorstepServicesData';
+import { getServiceById, formatPrice, DoorstepService } from '../data-doorstep/doorstepServicesData';
 
 // Storage key for cart persistence
 const CART_STORAGE_KEY = 'gaaditech_doorstep_cart';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:1337';
+
+interface CartItem {
+  serviceId: string;
+  quantity: number;
+  addedAt: string;
+}
+
+interface CartSummaryItem {
+  serviceId: string;
+  service: DoorstepService;
+  quantity: number;
+  totalPrice: number;
+  addedAt: string;
+}
+
+interface CartSummary {
+  items: CartSummaryItem[];
+  itemCount: number;
+  serviceCount: number;
+  subtotal: number;
+  discount: number;
+  total: number;
+  isEmpty: boolean;
+}
+
+type CartListener = (items: CartItem[]) => void;
 
 // Cart state management
 export class DoorstepCart {
+  private items: CartItem[];
+  private listeners: CartListener[];
+  private sessionId: string;
+
   constructor() {
     this.items = this.loadCartFromStorage();
     this.listeners = [];
+    this.sessionId = this.generateSessionId();
+    this.syncWithBackend(); // Initial sync
+  }
+
+  // Generate a unique session ID
+  private generateSessionId(): string {
+    return 'cart_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
   }
 
   // Load cart from localStorage
-  loadCartFromStorage() {
+  public loadCartFromStorage(): CartItem[] {
     try {
       const cartData = localStorage.getItem(CART_STORAGE_KEY);
       return cartData ? JSON.parse(cartData) : [];
@@ -23,33 +61,105 @@ export class DoorstepCart {
     }
   }
 
-  // Save cart to localStorage
-  saveCartToStorage() {
+  // Save cart to localStorage and sync with backend
+  private async saveCartToStorage(): Promise<void> {
     try {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(this.items));
+      await this.syncWithBackend();
       this.notifyListeners();
     } catch (error) {
-      console.error('Error saving cart to storage:', error);
+      console.error('Error saving cart:', error);
+    }
+  }
+
+  // Sync cart with backend
+  public async syncWithBackend(): Promise<void> {
+    try {
+      const token = localStorage.getItem('strapi_jwt');
+      if (!token) return; // Don't sync if not authenticated
+
+      const cartSummary = this.getCartSummary();
+      
+      const response = await fetch(`${API_URL}/api/carts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          data: {
+            sessionId: this.sessionId,
+            cartType: 'doorstep_services',
+            items: this.items,
+            totalItems: cartSummary.itemCount,
+            totalQuantity: cartSummary.serviceCount,
+            subtotal: cartSummary.subtotal,
+            discountAmount: cartSummary.discount,
+            totalAmount: cartSummary.total,
+            status: 'active',
+            isActive: true,
+            lastModifiedAt: new Date(),
+            source: 'website'
+          }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to sync cart with backend');
+      }
+    } catch (error) {
+      console.error('Error syncing cart with backend:', error);
+    }
+  }
+
+  // Load cart from backend
+  public async loadFromBackend(): Promise<any> {
+    try {
+      const token = localStorage.getItem('strapi_jwt');
+      if (!token) return null;
+
+      const response = await fetch(`${API_URL}/api/carts?filters[isActive][$eq]=true`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to load cart from backend');
+      }
+
+      const data = await response.json();
+      if (data.data && data.data.length > 0) {
+        const backendCart = data.data[0];
+        this.items = backendCart.attributes.items || [];
+        this.sessionId = backendCart.attributes.sessionId;
+        this.saveCartToStorage(); // Update local storage
+        return backendCart;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error loading cart from backend:', error);
+      return null;
     }
   }
 
   // Add listener for cart changes
-  addListener(callback) {
+  public addListener(callback: CartListener): void {
     this.listeners.push(callback);
   }
 
   // Remove listener
-  removeListener(callback) {
+  public removeListener(callback: CartListener): void {
     this.listeners = this.listeners.filter(listener => listener !== callback);
   }
 
   // Notify all listeners of cart changes
-  notifyListeners() {
+  private notifyListeners(): void {
     this.listeners.forEach(callback => callback(this.items));
   }
 
   // Add item to cart
-  addItem(serviceId, quantity = 1) {
+  public addItem(serviceId: string, quantity = 1): CartSummaryItem | null {
     const service = getServiceById(serviceId);
     if (!service) {
       throw new Error(`Service with ID ${serviceId} not found`);
@@ -74,13 +184,13 @@ export class DoorstepCart {
   }
 
   // Remove item from cart
-  removeItem(serviceId) {
+  public removeItem(serviceId: string): void {
     this.items = this.items.filter(item => item.serviceId !== serviceId);
     this.saveCartToStorage();
   }
 
   // Update item quantity
-  updateQuantity(serviceId, quantity) {
+  public updateQuantity(serviceId: string, quantity: number): void {
     if (quantity <= 0) {
       this.removeItem(serviceId);
       return;
@@ -94,7 +204,7 @@ export class DoorstepCart {
   }
 
   // Get item details with service information
-  getItemDetails(serviceId) {
+  public getItemDetails(serviceId: string): CartSummaryItem | null {
     const cartItem = this.items.find(item => item.serviceId === serviceId);
     if (!cartItem) return null;
 
@@ -104,29 +214,30 @@ export class DoorstepCart {
     return {
       ...cartItem,
       service,
-      unitPrice: service.discountPrice || service.price,
-      totalPrice: (service.discountPrice || service.price) * cartItem.quantity
+      totalPrice: service.price * cartItem.quantity
     };
   }
 
   // Get all cart items with details
-  getCartDetails() {
-    return this.items.map(item => this.getItemDetails(item.serviceId)).filter(Boolean);
+  public getCartDetails(): CartSummaryItem[] {
+    return this.items
+      .map(item => this.getItemDetails(item.serviceId))
+      .filter((item): item is CartSummaryItem => item !== null);
   }
 
   // Check if item is in cart
-  isInCart(serviceId) {
+  public isInCart(serviceId: string): boolean {
     return this.items.some(item => item.serviceId === serviceId);
   }
 
   // Get item quantity
-  getItemQuantity(serviceId) {
+  public getItemQuantity(serviceId: string): number {
     const item = this.items.find(item => item.serviceId === serviceId);
     return item ? item.quantity : 0;
   }
 
   // Get cart summary
-  getCartSummary() {
+  public getCartSummary(): CartSummary {
     const cartDetails = this.getCartDetails();
     
     const subtotal = cartDetails.reduce((total, item) => total + item.totalPrice, 0);
@@ -155,23 +266,23 @@ export class DoorstepCart {
   }
 
   // Clear entire cart
-  clearCart() {
+  public clearCart(): void {
     this.items = [];
     this.saveCartToStorage();
   }
 
   // Get cart items for checkout (Razorpay format)
-  getCheckoutData() {
+  public getCheckoutData(): any {
     const summary = this.getCartSummary();
     
     return {
       amount: summary.total,
       currency: 'INR',
       items: summary.items.map(item => ({
-        name: item.service.title,
+        name: item.service.name,
         description: item.service.description,
         quantity: item.quantity,
-        price: item.unitPrice
+        price: item.service.price
       })),
       notes: {
         service_type: 'doorstep_services',
@@ -186,29 +297,24 @@ export class DoorstepCart {
 export const doorstepCart = new DoorstepCart();
 
 // Helper functions for components
-export const addToCart = (serviceId, quantity = 1) => {
+export const addToCart = (serviceId: string, quantity = 1) => {
   return doorstepCart.addItem(serviceId, quantity);
 };
 
-export const removeFromCart = (serviceId) => {
+export const removeFromCart = (serviceId: string) => {
   doorstepCart.removeItem(serviceId);
 };
 
-export const updateCartQuantity = (serviceId, quantity) => {
+export const updateCartQuantity = (serviceId: string, quantity: number) => {
   doorstepCart.updateQuantity(serviceId, quantity);
 };
 
-export const getCartSummary = () => {
-  return doorstepCart.getCartSummary();
-};
-
-export const isInCart = (serviceId) => {
+export const isInCart = (serviceId: string) => {
   return doorstepCart.isInCart(serviceId);
 };
 
 export const getCartItemCount = () => {
-  const summary = doorstepCart.getCartSummary();
-  return summary.itemCount;
+  return doorstepCart.getCartSummary().itemCount;
 };
 
 export const clearCart = () => {
@@ -247,7 +353,7 @@ export default {
   addToCart,
   removeFromCart,
   updateCartQuantity,
-  getCartSummary,
+  getCartSummary: doorstepCart.getCartSummary,
   isInCart,
   getCartItemCount,
   clearCart,

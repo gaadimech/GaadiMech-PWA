@@ -9,18 +9,52 @@ const VerifyOTP: React.FC = () => {
   const [canResend, setCanResend] = useState(false);
   const [error, setError] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
+  const [hasNavigated, setHasNavigated] = useState(false);
+  const [isVerificationSuccess, setIsVerificationSuccess] = useState(false);
+  const [verificationResponse, setVerificationResponse] = useState<any>(null);
   const navigate = useNavigate();
-  const { login } = useUser();
+  const { verifyOtp, sendOtp, isAuthenticated, user } = useUser();
   
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const phone = sessionStorage.getItem('pendingPhone') || '';
 
+  // Redirect to login if no pending phone number
   useEffect(() => {
     if (!phone) {
       navigate('/auth/login');
       return;
     }
+  }, [phone, navigate]);
 
+  // Handle navigation after successful verification and user state update
+  useEffect(() => {
+    if (isVerificationSuccess && verificationResponse && !hasNavigated) {
+      console.log('🔍 Navigation effect triggered:', {
+        isVerificationSuccess,
+        hasVerificationResponse: !!verificationResponse,
+        hasNavigated,
+        isAuthenticated,
+        userExists: !!user
+      });
+
+      const isNewUser = verificationResponse.data?.isNewUser || verificationResponse.isNewUser;
+      
+      // Set navigation flag to prevent multiple navigations
+      setHasNavigated(true);
+      
+      // Navigate based on user type
+      if (isNewUser) {
+        console.log('🆕 New user - navigating to car selection');
+        navigate('/auth/car-selection', { replace: true });
+      } else {
+        console.log('👤 Existing user - navigating to home');
+        navigate('/', { replace: true });
+      }
+    }
+  }, [isVerificationSuccess, verificationResponse, hasNavigated, navigate, isAuthenticated, user]);
+
+  // Countdown timer
+  useEffect(() => {
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
@@ -33,7 +67,7 @@ const VerifyOTP: React.FC = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [phone, navigate]);
+  }, []);
 
   const handleOTPChange = (index: number, value: string) => {
     if (value.length > 1) return;
@@ -61,63 +95,101 @@ const VerifyOTP: React.FC = () => {
   };
 
   const handleVerifyOTP = async (otpCode: string) => {
+    if (isVerifying || hasNavigated) return; // Prevent multiple submissions and double navigation
     setIsVerifying(true);
     setError('');
 
     try {
-      // Simulate OTP verification
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // For demo purposes, accept any 4-digit OTP
-      if (otpCode.length === 4) {
-        // Check if user exists (simulate with phone number)
-        const isExistingUser = sessionStorage.getItem(`user_${phone}`);
-        
-        if (isExistingUser) {
-          // Existing user - load their data and go to home
-          const userData = JSON.parse(isExistingUser);
-          login(userData);
-          sessionStorage.removeItem('pendingPhone');
-          navigate('/');
-        } else {
-          // New user - create basic profile and go to car selection
-          const newUser = {
-            id: Date.now().toString(),
-            name: '',
-            phone: phone,
-            email: '',
-            birthday: '',
-            gender: '',
-            cars: [],
-            addresses: [],
-            orders: []
-          };
-          
-          // Save user to storage
-          sessionStorage.setItem(`user_${phone}`, JSON.stringify(newUser));
-          login(newUser);
-          sessionStorage.removeItem('pendingPhone');
-          navigate('/auth/car-selection');
-        }
-      } else {
-        setError('Invalid OTP. Please try again.');
+      const sessionId = sessionStorage.getItem('otp_session_id');
+      if (!sessionId) {
+        throw new Error('Session expired. Please request a new OTP.');
       }
-    } catch (err) {
-      setError('Verification failed. Please try again.');
+
+      console.log('🔍 Starting OTP verification with:', { sessionId, otpCode });
+
+      // Verify OTP with Strapi backend
+      const response = await verifyOtp(sessionId, otpCode);
+      
+      console.log('✅ OTP Verification Response:', response);
+      console.log('✅ Response Data Structure:', {
+        success: response.success,
+        jwt: response.jwt,
+        user: response.user,
+        isNewUser: response.isNewUser,
+        sessionId: response.sessionId
+      });
+
+      // Check if JWT token was stored
+      const storedToken = localStorage.getItem('strapi_jwt');
+      console.log('🔍 JWT Token Check:', {
+        responseHasJwt: !!response.jwt,
+        storedToken: storedToken ? 'Present' : 'Missing',
+        tokenLength: storedToken?.length || 0
+      });
+      
+      // Clear session storage
+      sessionStorage.removeItem('pendingPhone');
+      sessionStorage.removeItem('otp_session_id');
+      
+      // Clear vehicle selection for new users to force car selection
+      const isNewUser = response.isNewUser;
+      if (isNewUser) {
+        console.log('🆕 New user detected, clearing vehicle selection');
+        sessionStorage.removeItem('selectedVehicle');
+      }
+      
+      // Set success state - the useEffect will handle navigation
+      setVerificationResponse(response);
+      setIsVerificationSuccess(true);
+      
+    } catch (err: any) {
+      console.error('❌ OTP verification error:', err);
+      
+      // Reset navigation flag on error
+      setHasNavigated(false);
+      
+      // Reset countdown to 30 seconds for failed verification
+      setCountdown(30);
+      setCanResend(false);
+      
+      // Only show error if the backend actually returned an error
+      if (err.response?.status === 400) {
+        setError('OTP verification failed. Please try again.');
+      } else if (err.response?.status >= 500) {
+        setError('Server error. Please try again.');
+      } else {
+        setError('OTP verification failed. Please try again.');
+      }
+      
+      setOTP(['', '', '', '']);
+      inputRefs.current[0]?.focus();
     } finally {
       setIsVerifying(false);
     }
   };
 
-  const handleResendOTP = () => {
-    // Reset countdown and resend OTP
-    setCountdown(60);
-    setCanResend(false);
-    setOTP(['', '', '', '']);
-    inputRefs.current[0]?.focus();
-    
-    // TODO: Implement actual OTP resend logic
-    console.log('Resending OTP to:', phone);
+  const handleResendOTP = async () => {
+    try {
+      // Reset countdown and resend OTP
+      setCountdown(60);
+      setCanResend(false);
+      setOTP(['', '', '', '']);
+      setError('');
+      inputRefs.current[0]?.focus();
+      
+      // Send new OTP using Strapi backend
+      const response = await sendOtp(phone);
+      
+      if (response.success) {
+        // Update session ID
+        sessionStorage.setItem('otp_session_id', response.sessionId);
+      } else {
+        setError('Failed to resend OTP. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error resending OTP:', error);
+      setError('Failed to resend OTP. Please try again.');
+    }
   };
 
   const formatTime = (seconds: number) => {
@@ -168,13 +240,13 @@ const VerifyOTP: React.FC = () => {
                 value={digit}
                 onChange={(e) => handleOTPChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className="w-14 h-14 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
+                className={`w-14 h-14 text-center text-xl font-bold border-2 ${error ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:border-orange-500 focus:outline-none transition-colors`}
                 disabled={isVerifying}
               />
             ))}
           </div>
           {error && (
-            <p className="text-red-500 text-center text-sm">{error}</p>
+            <p className="text-red-500 text-center text-sm mb-4">{error}</p>
           )}
         </div>
 

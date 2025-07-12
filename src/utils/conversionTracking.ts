@@ -285,8 +285,50 @@ export class ConversionTracker {
         }
       }
       
-      // TODO: Replace with new Strapi V5 API calls
-      console.log('TODO: Create/update lead in new Strapi V5 backend');
+      // Create/update lead in Strapi backend
+      const { leadService, analyticsService } = await import('../services/api');
+      
+      try {
+        const leadResponse = await leadService.createLead({
+          name: `User ${mobileNumber.slice(-4)}`,
+          mobileNumber: mobileNumber,
+          status: 'new',
+          source: utmParams.utm_source || leadData.source || 'website',
+          medium: utmParams.utm_medium || 'organic',
+          campaign: utmParams.utm_campaign || 'direct',
+          carBrand: leadData.carBrand,
+          carModel: leadData.carModel,
+          location: leadData.location,
+          area: leadData.area,
+          notes: `Auto-generated lead from website`,
+          metadata: {
+            ...leadData,
+            deviceInfo,
+            utmParams
+          }
+        });
+
+        const leadId = leadResponse.data ? (leadResponse.data as any).id : null;
+        console.log('✅ Lead created in Strapi:', leadId);
+
+        // Track analytics event
+        await analyticsService.trackEvent({
+          eventType: 'lead_created',
+          eventName: 'mobile_number_captured',
+          properties: {
+            leadId,
+            mobileNumber: mobileNumber,
+            source: utmParams.utm_source || leadData.source || 'website',
+            carBrand: leadData.carBrand,
+            carModel: leadData.carModel,
+            location: leadData.location
+          },
+          timestamp: new Date().toISOString()
+        });
+
+      } catch (error) {
+        console.error('❌ Error creating lead in Strapi:', error);
+      }
       console.log('Lead data to be saved:', {
         mobileNumber: String(mobileNumber),
         serviceInterest: String(leadData.serviceInterest || 'General Interest'),

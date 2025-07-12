@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Plus, Minus, X, Edit3, Tag, ChevronDown, AlertTriangle, CheckCircle } from 'lucide-react';
-import { getCartSummary, removeFromCart, updateCartQuantity, clearCart, doorstepCart } from '../utils-doorstep/cartFunctions.ts';
-import { formatPrice } from '../data-doorstep/doorstepServicesData.ts';
+import { doorstepCart } from '../utils-doorstep/cartFunctions';
+import { formatPrice } from '../data-doorstep/doorstepServicesData';
 import { DoorstepService } from '../data-doorstep/doorstepServicesData';
 import { getVehicleFromSession } from '../utils/pricing-utils';
 import { scrollToTop } from '../utils/location';
@@ -13,25 +13,42 @@ interface CartItem {
   service: DoorstepService;
   quantity: number;
   totalPrice: number;
+  addedAt: string;
 }
 
 interface CartSummary {
   items: CartItem[];
-  subtotal: number;
-  total: number;
   itemCount: number;
+  serviceCount: number;
+  subtotal: number;
+  discount: number;
+  total: number;
+  isEmpty: boolean;
+}
+
+interface VehicleInfo {
+  manufacturer: string;
+  model: string;
 }
 
 const CartPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [cartSummary, setCartSummary] = useState<CartSummary>(getCartSummary());
-  const [isLoading, setIsLoading] = useState(false);
+  const [cartSummary, setCartSummary] = useState<CartSummary>({
+    items: [],
+    itemCount: 0,
+    serviceCount: 0,
+    subtotal: 0,
+    discount: 0,
+    total: 0,
+    isEmpty: true
+  });
+  const [isLoading, setIsLoading] = useState(true);
   const [showRequirementsModal, setShowRequirementsModal] = useState(false);
   const [requirements, setRequirements] = useState('');
   
   // Vehicle information state
-  const [vehicleInfo, setVehicleInfo] = useState<{manufacturer: string; model: string} | null>(null);
+  const [vehicleInfo, setVehicleInfo] = useState<VehicleInfo | null>(null);
   
   // Coupon related states
   const [couponCode, setCouponCode] = useState('');
@@ -47,10 +64,92 @@ const CartPage = () => {
   const [paymentError, setPaymentError] = useState('');
   const [whatsappRedirectCountdown, setWhatsappRedirectCountdown] = useState(3);
 
+  // Load cart data on mount
+  useEffect(() => {
+    const loadCart = async () => {
+      setIsLoading(true);
+      try {
+        // First try to load from backend
+        const backendCart = await doorstepCart.loadFromBackend();
+        
+        if (backendCart) {
+          // Backend cart exists, update local storage
+          const summary = doorstepCart.getCartSummary();
+          setCartSummary({
+            items: summary.items,
+            itemCount: summary.itemCount,
+            serviceCount: summary.serviceCount,
+            subtotal: summary.subtotal,
+            discount: summary.discount,
+            total: summary.total,
+            isEmpty: summary.isEmpty
+          });
+        } else {
+          // No backend cart, check local storage
+          const localCart = doorstepCart.loadCartFromStorage();
+          if (localCart && localCart.length > 0) {
+            // Local cart exists, sync to backend
+            await doorstepCart.syncWithBackend();
+            const summary = doorstepCart.getCartSummary();
+            setCartSummary({
+              items: summary.items,
+              itemCount: summary.itemCount,
+              serviceCount: summary.serviceCount,
+              subtotal: summary.subtotal,
+              discount: summary.discount,
+              total: summary.total,
+              isEmpty: summary.isEmpty
+            });
+          } else {
+            // No cart data anywhere
+            setCartSummary({
+              items: [],
+              itemCount: 0,
+              serviceCount: 0,
+              subtotal: 0,
+              discount: 0,
+              total: 0,
+              isEmpty: true
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error loading cart:', error);
+        // Fallback to local storage
+        const localCart = doorstepCart.loadCartFromStorage();
+        const summary = doorstepCart.getCartSummary();
+        setCartSummary({
+          items: summary.items,
+          itemCount: summary.itemCount,
+          serviceCount: summary.serviceCount,
+          subtotal: summary.subtotal,
+          discount: summary.discount,
+          total: summary.total,
+          isEmpty: !localCart || localCart.length === 0
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadCart();
+  }, []);
+
   // Listen to cart changes
-  React.useEffect(() => {
-    const updateCart = () => {
-      setCartSummary(getCartSummary());
+  useEffect(() => {
+    const updateCart = async () => {
+      const summary = doorstepCart.getCartSummary();
+      setCartSummary({
+        items: summary.items,
+        itemCount: summary.itemCount,
+        serviceCount: summary.serviceCount,
+        subtotal: summary.subtotal,
+        discount: summary.discount,
+        total: summary.total,
+        isEmpty: summary.isEmpty
+      });
+      // Sync changes to backend
+      await doorstepCart.syncWithBackend();
     };
 
     doorstepCart.addListener(updateCart);
@@ -99,11 +198,15 @@ const CartPage = () => {
   }, []);
 
   const handleQuantityChange = (serviceId: string, newQuantity: number) => {
-    updateCartQuantity(serviceId, newQuantity);
+    doorstepCart.updateQuantity(serviceId, newQuantity);
+    const summary = doorstepCart.getCartSummary();
+    setCartSummary(summary);
   };
 
   const handleRemoveItem = (serviceId: string) => {
-    removeFromCart(serviceId);
+    doorstepCart.removeItem(serviceId);
+    const summary = doorstepCart.getCartSummary();
+    setCartSummary(summary);
   };
 
   const handleRazorpayPayment = () => {
@@ -159,7 +262,7 @@ const CartPage = () => {
           setPaymentError('');
           // Clear cart after a small delay to avoid flash of empty cart
           setTimeout(() => {
-            clearCart();
+            doorstepCart.clearCart();
           }, 100);
         },
         prefill: {
@@ -396,7 +499,18 @@ const CartPage = () => {
     }));
   };
 
-  // Update empty cart button
+  // Update empty cart view to show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4">
+        <div className="max-w-md mx-auto bg-white rounded-lg shadow-sm p-6 mt-8 text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF7200] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your cart...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (cartSummary.items.length === 0 && !paymentSuccess && !paymentFailed) {
     return (
       <div className="min-h-screen bg-gray-50 p-4">

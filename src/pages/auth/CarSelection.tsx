@@ -4,30 +4,68 @@ import { useUser } from '../../contexts/UserContext';
 import CarSelectionModal from '../../components/CarSelectionModal';
 
 const CarSelection: React.FC = () => {
-  const { user, addCar } = useUser();
+  const { user, addCar, isLoading } = useUser();
   const navigate = useNavigate();
   const [isCarSelectionModalOpen, setIsCarSelectionModalOpen] = useState(true);
 
+  console.log('🔍 CarSelection: Component state', {
+    user: !!user,
+    isLoading,
+    userPhone: user?.phone
+  });
+
+  // Don't redirect while user data is loading
+  useEffect(() => {
+    if (!isLoading && !user) {
+      console.log('⚠️ CarSelection: No user found after loading, redirecting to login');
+      navigate('/auth/login');
+    }
+  }, [user, isLoading, navigate]);
+
+  // Show loading while user data is being loaded
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render if no user (will be redirected)
   if (!user) {
-    navigate('/auth/login');
     return null;
   }
 
-  const handleCarSelectionSubmit = (brand: string, model: string, fuelType: string, price: number) => {
-    // Add the car to user's profile
-    addCar({
-      registrationNumber: `${brand}-${model}-${Date.now()}`, // Generate a temporary registration number
-      make: brand,
-      model: model,
-      year: new Date().getFullYear(), // Default to current year
-      fuelType: fuelType
-    });
-    
-    setIsCarSelectionModalOpen(false);
-    navigate('/');
+  const handleCarSelectionSubmit = async (brand: string, model: string, fuelType: string, price: number) => {
+    try {
+      console.log('🚗 CarSelection: Adding car', { brand, model, fuelType });
+      
+      // Add the car to user's profile in Strapi
+      await addCar({
+        registrationNumber: `${brand}-${model}-${Date.now()}`, // Generate a temporary registration number
+        make: brand,
+        model: model,
+        year: new Date().getFullYear(), // Default to current year
+        fuelType: fuelType,
+        isPrimary: true // First car is always primary
+      });
+      
+      console.log('✅ CarSelection: Car added successfully, navigating to home');
+      setIsCarSelectionModalOpen(false);
+      navigate('/');
+    } catch (error) {
+      console.error('❌ CarSelection: Error adding car:', error);
+      // Still navigate even if car addition fails
+      setIsCarSelectionModalOpen(false);
+      navigate('/');
+    }
   };
 
   const handleSkip = () => {
+    console.log('⏭️ CarSelection: Skipping car selection, navigating to home');
     setIsCarSelectionModalOpen(false);
     navigate('/');
   };

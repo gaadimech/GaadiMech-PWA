@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useUser } from '../../contexts/UserContext';
 
 const Login: React.FC = () => {
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { sendOtp } = useUser();
 
   const validatePhone = (phoneNumber: string) => {
     const phoneRegex = /^[6-9]\d{9}$/;
     return phoneRegex.test(phoneNumber);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -21,9 +24,28 @@ const Login: React.FC = () => {
       return;
     }
 
-    // Store phone for OTP verification
-    sessionStorage.setItem('pendingPhone', phone);
-    navigate('/auth/verify-otp');
+    setIsLoading(true);
+
+    try {
+      // Send OTP using Strapi backend
+      const response = await sendOtp(phone);
+      
+      if (response.success) {
+        // Store session ID and phone for OTP verification
+        sessionStorage.setItem('otp_session_id', response.sessionId);
+        sessionStorage.setItem('pendingPhone', phone);
+        
+        // Navigate to OTP verification
+        navigate('/auth/verify-otp');
+      } else {
+        setError('Failed to send OTP. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      setError('Failed to send OTP. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSocialLogin = (platform: string) => {
@@ -84,9 +106,10 @@ const Login: React.FC = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="submit"
-            className="w-full bg-orange-500 text-white py-4 rounded-lg font-semibold text-lg hover:bg-orange-600 transition-colors"
+            disabled={isLoading}
+            className="w-full bg-orange-500 text-white py-4 rounded-lg font-semibold text-lg hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Continue
+            {isLoading ? 'Sending OTP...' : 'Continue'}
           </motion.button>
         </form>
 
