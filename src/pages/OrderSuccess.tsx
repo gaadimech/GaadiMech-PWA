@@ -5,17 +5,17 @@ import { CheckCircle, Download, MessageCircle, ChevronRight } from 'lucide-react
 
 const OrderSuccess = () => {
   const navigate = useNavigate();
-  const [bookingDetails, setBookingDetails] = useState<any>(null);
+  const [orderData, setOrderData] = useState<any>(null);
   const [whatsappRedirectCountdown, setWhatsappRedirectCountdown] = useState(3);
   const WHATSAPP_PHONE_NUMBER = '917300042410';
 
-  // Load booking details from session
+  // Load order data from session
   useEffect(() => {
-    const details = sessionStorage.getItem('bookingDetails');
-    if (details) {
-      setBookingDetails(JSON.parse(details));
+    const data = sessionStorage.getItem('orderData');
+    if (data) {
+      setOrderData(JSON.parse(data));
     } else {
-      // Redirect if no booking details
+      // Redirect if no order data
       navigate('/services');
     }
   }, [navigate]);
@@ -33,15 +33,21 @@ const OrderSuccess = () => {
   }, [whatsappRedirectCountdown]);
 
   const handleWhatsAppRedirect = () => {
-    if (!bookingDetails) return;
+    if (!orderData) return;
+
+    const paymentTypeText = orderData.paymentType === 'cash_payment' ? 'Cash on Service' : 
+                           orderData.paymentType === 'full_payment' ? 'Full Payment' : 
+                           'Partial Payment (25%)';
 
     const message = `Hi! I've successfully booked a car service. Here are my booking details:
 
-🚗 Vehicle: ${bookingDetails.vehicle?.manufacturer} ${bookingDetails.vehicle?.model}
-📅 Date: ${formatDate(bookingDetails.selectedDate)}
-⏰ Time: ${formatTimeSlot(bookingDetails.selectedTimeSlot)}
-💰 Amount Paid: ₹${bookingDetails.payment?.amount}
-🆔 Payment ID: ${bookingDetails.payment?.id}
+🚗 Vehicle: ${orderData.selectedVehicle?.manufacturer} ${orderData.selectedVehicle?.model}
+📅 Date: ${formatDate(orderData.selectedDate)}
+⏰ Time: ${formatTimeSlot(orderData.selectedTimeSlot)}
+💰 Payment Type: ${paymentTypeText}
+💵 Amount Paid: ₹${orderData.paymentAmount}
+🆔 Order ID: ${orderData.orderId}
+${orderData.paymentId ? `💳 Payment ID: ${orderData.paymentId}` : ''}
 
 Please confirm my booking. Thank you!`;
 
@@ -71,7 +77,20 @@ Please confirm my booking. Thank you!`;
     return slots[timeSlotId] || timeSlotId;
   };
 
-  if (!bookingDetails) {
+  const getPaymentTypeDisplay = (paymentType: string) => {
+    switch (paymentType) {
+      case 'full_payment':
+        return 'Full Payment';
+      case 'partial_payment':
+        return 'Partial Payment (25%)';
+      case 'cash_payment':
+        return 'Cash on Service';
+      default:
+        return paymentType;
+    }
+  };
+
+  if (!orderData) {
     return null;
   }
 
@@ -88,7 +107,9 @@ Please confirm my booking. Thank you!`;
           <div className="bg-green-100 rounded-full p-4 inline-block mb-4">
             <CheckCircle className="w-16 h-16 text-green-500" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Payment Successful!</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            {orderData.paymentType === 'cash_payment' ? 'Booking Confirmed!' : 'Payment Successful!'}
+          </h1>
           <p className="text-gray-600">Your booking has been confirmed.</p>
         </motion.div>
 
@@ -98,29 +119,41 @@ Please confirm my booking. Thank you!`;
           
           <div className="space-y-4">
             <div>
+              <p className="text-sm text-gray-600">Order ID</p>
+              <p className="font-medium">{orderData.orderId}</p>
+            </div>
+            
+            <div>
               <p className="text-sm text-gray-600">Vehicle</p>
-              <p className="font-medium">{bookingDetails.vehicle?.manufacturer} {bookingDetails.vehicle?.model}</p>
+              <p className="font-medium">{orderData.selectedVehicle?.manufacturer} {orderData.selectedVehicle?.model}</p>
             </div>
             
             <div>
               <p className="text-sm text-gray-600">Service Date</p>
-              <p className="font-medium">{formatDate(bookingDetails.selectedDate)}</p>
+              <p className="font-medium">{formatDate(orderData.selectedDate)}</p>
             </div>
             
             <div>
               <p className="text-sm text-gray-600">Time Slot</p>
-              <p className="font-medium">{formatTimeSlot(bookingDetails.selectedTimeSlot)}</p>
+              <p className="font-medium">{formatTimeSlot(orderData.selectedTimeSlot)}</p>
+            </div>
+            
+            <div>
+              <p className="text-sm text-gray-600">Payment Type</p>
+              <p className="font-medium">{getPaymentTypeDisplay(orderData.paymentType)}</p>
             </div>
             
             <div>
               <p className="text-sm text-gray-600">Amount Paid</p>
-              <p className="font-medium">₹{bookingDetails.payment?.amount}</p>
+              <p className="font-medium">₹{orderData.paymentAmount}</p>
             </div>
             
-            <div>
-              <p className="text-sm text-gray-600">Payment ID</p>
-              <p className="font-medium text-gray-500">{bookingDetails.payment?.id}</p>
-            </div>
+            {orderData.paymentId && (
+              <div>
+                <p className="text-sm text-gray-600">Payment ID</p>
+                <p className="font-medium text-gray-500">{orderData.paymentId}</p>
+              </div>
+            )}
           </div>
         </div>
 

@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, CreditCard, Smartphone, Wallet, QrCode, ChevronRight } from 'lucide-react';
+import { ArrowLeft, CreditCard, Clock, ChevronRight } from 'lucide-react';
 
-interface PaymentMethod {
+// Declare Razorpay global variable
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
+interface PaymentOption {
   id: string;
-  name: string;
+  title: string;
   description: string;
-  icon: React.ReactNode;
-  recommended?: boolean;
-  available: boolean;
+  amount: number;
+  originalAmount?: number;
+  isSelected?: boolean;
 }
 
 const PaymentOptions = () => {
   const navigate = useNavigate();
-  const [selectedMethod, setSelectedMethod] = useState('');
+  const [selectedOption, setSelectedOption] = useState<string>('');
   const [bookingDetails, setBookingDetails] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
@@ -29,58 +36,143 @@ const PaymentOptions = () => {
     }
   }, [navigate]);
 
-  const paymentMethods: PaymentMethod[] = [
-    {
-      id: 'upi',
-      name: 'UPI (Google Pay, PhonePe, Paytm)',
-      description: 'Quick and secure payment',
-      icon: <QrCode className="h-6 w-6" />,
-      recommended: true,
-      available: true
-    },
-    {
-      id: 'cards',
-      name: 'Credit/Debit Cards',
-      description: 'Visa, Mastercard, RuPay accepted',
-      icon: <CreditCard className="h-6 w-6" />,
-      available: true
-    },
-    {
-      id: 'wallets',
-      name: 'Digital Wallets',
-      description: 'Paytm, MobiKwik, Freecharge',
-      icon: <Wallet className="h-6 w-6" />,
-      available: true
-    },
-    {
-      id: 'netbanking',
-      name: 'Net Banking',
-      description: 'All major banks supported',
-      icon: <Smartphone className="h-6 w-6" />,
-      available: true
+  // Load Razorpay script
+  useEffect(() => {
+    const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+    if (!existingScript) {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.async = true;
+      document.head.appendChild(script);
     }
-  ];
-
-  const handleProceedToPayment = () => {
-    if (!selectedMethod) return;
-    
-    setLoading(true);
-    
-    // Store selected payment method
-    const updatedBookingDetails = {
-      ...bookingDetails,
-      paymentMethod: selectedMethod
-    };
-    sessionStorage.setItem('bookingDetails', JSON.stringify(updatedBookingDetails));
-    
-    setTimeout(() => {
-      navigate('/payment-processing');
-    }, 1000);
-  };
+  }, []);
 
   if (!bookingDetails) {
     return null;
   }
+
+  const totalAmount = bookingDetails.cartSummary.total;
+  const partialAmount = Math.round(totalAmount * 0.25); // 25% of total
+  
+  const paymentOptions: PaymentOption[] = [
+    {
+      id: 'full_payment',
+      title: 'Pay Full Amount Now',
+      description: 'Settle your payment immediately and enjoy a hassle-free service experience.',
+      amount: totalAmount,
+      originalAmount: totalAmount
+    },
+    {
+      id: 'partial_payment',
+      title: 'Pay 25% & Book Priority',
+      description: 'Secure a priority slot by paying only 25% upfront. Balance due after service completion.',
+      amount: partialAmount,
+      originalAmount: totalAmount
+    },
+    {
+      id: 'cash_payment',
+      title: 'Pay in Cash',
+      description: 'Prefer to pay after the service? Opt for cash payment upon completion.',
+      amount: 0,
+      originalAmount: totalAmount
+    }
+  ];
+
+  const handleRazorpayPayment = (paymentAmount: number) => {
+    if (!window.Razorpay) {
+      console.error('Razorpay SDK not loaded');
+      alert('Payment system is not ready. Please try again.');
+      return;
+    }
+
+    setLoading(true);
+
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_719oj4MDAGClqw',
+      amount: paymentAmount * 100, // Convert to paise
+      currency: 'INR',
+      name: 'GaadiMech',
+      description: `Car Service Booking - ${selectedOption === 'full_payment' ? 'Full Payment' : 'Partial Payment'}`,
+      image: '/images/logo.png',
+      order_id: '', // You can generate order_id from backend
+      handler: function (response: any) {
+        console.log('Payment successful:', response);
+        
+        // Store payment details
+        const paymentData = {
+          ...bookingDetails,
+          paymentId: response.razorpay_payment_id,
+          orderId: response.razorpay_order_id,
+          signature: response.razorpay_signature,
+          paymentAmount: paymentAmount,
+          paymentType: selectedOption,
+          paymentStatus: 'completed',
+          orderDate: new Date().toISOString()
+        };
+        
+        sessionStorage.setItem('orderData', JSON.stringify(paymentData));
+        sessionStorage.removeItem('bookingDetails');
+        setLoading(false);
+        navigate('/order-success');
+      },
+      prefill: {
+        name: bookingDetails.customerInfo.name || '',
+        email: bookingDetails.customerInfo.email || '',
+        contact: bookingDetails.customerInfo.mobile || ''
+      },
+      notes: {
+        service_type: bookingDetails.serviceMode || 'pickup',
+        selected_date: bookingDetails.selectedDate,
+        selected_time: bookingDetails.selectedTimeSlot
+      },
+      theme: {
+        color: '#FF7200'
+      }
+    };
+
+    const rzp = new window.Razorpay(options);
+    
+    rzp.on('payment.failed', function (response: any) {
+      console.error('Payment failed:', response);
+      setLoading(false);
+      navigate('/order-failed');
+    });
+
+    rzp.open();
+  };
+
+  const handlePayNow = () => {
+    if (!selectedOption) {
+      alert('Please select a payment option');
+      return;
+    }
+
+    const selectedPaymentOption = paymentOptions.find(option => option.id === selectedOption);
+    
+    if (!selectedPaymentOption) {
+      alert('Invalid payment option selected');
+      return;
+    }
+
+    if (selectedOption === 'cash_payment') {
+      // Handle cash payment - direct booking without payment
+      const orderData = {
+        ...bookingDetails,
+        paymentType: 'cash',
+        paymentStatus: 'pending',
+        paymentAmount: 0,
+        orderDate: new Date().toISOString(),
+        orderId: `GM${Date.now()}${Math.floor(Math.random() * 1000)}`
+      };
+      
+      sessionStorage.setItem('orderData', JSON.stringify(orderData));
+      sessionStorage.removeItem('bookingDetails');
+      navigate('/order-success');
+    } else {
+      // Handle online payment via Razorpay
+      handleRazorpayPayment(selectedPaymentOption.amount);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -103,172 +195,94 @@ const PaymentOptions = () => {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="space-y-6">
-          {/* Progress indicator */}
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center">
-              <div className="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-semibold">✓</div>
-              <span className="ml-2 text-green-600 font-medium">Cart</span>
-            </div>
-            <div className="flex-1 h-px bg-green-300 mx-4"></div>
-            <div className="flex items-center">
-              <div className="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-semibold">✓</div>
-              <span className="ml-2 text-green-600 font-medium">Booking Details</span>
-            </div>
-            <div className="flex-1 h-px bg-gray-300 mx-4"></div>
-            <div className="flex items-center">
-              <div className="bg-[#FF7200] text-white rounded-full w-8 h-8 flex items-center justify-center font-semibold">3</div>
-              <span className="ml-2 text-[#FF7200] font-medium">Payment</span>
-            </div>
+          {/* Header Text */}
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Select the option that best suits your needs</h2>
           </div>
 
-          {/* Bill Total */}
-          <div className="bg-white rounded-lg shadow-sm p-6 border">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Bill Total</h2>
-              <div className="text-4xl font-bold text-[#FF7200] mb-4">
-                ₹{bookingDetails.cartSummary.total.toLocaleString()}
-              </div>
-              <p className="text-gray-600">
-                {bookingDetails.cartSummary.itemCount} service{bookingDetails.cartSummary.itemCount !== 1 ? 's' : ''} • 
-                {bookingDetails.customerInfo.name} • 
-                {new Date(bookingDetails.selectedDate).toLocaleDateString('en-IN', { 
-                  weekday: 'short', 
-                  month: 'short', 
-                  day: 'numeric' 
-                })}
-              </p>
-            </div>
-          </div>
-
-          {/* Payment Methods */}
-          <div className="bg-white rounded-lg shadow-sm p-6 border">
-            <h2 className="text-lg font-semibold text-gray-900 mb-6">Choose Payment Method</h2>
-            
-            <div className="space-y-3">
-              {paymentMethods.map((method) => (
-                <motion.div
-                  key={method.id}
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                  onClick={() => method.available && setSelectedMethod(method.id)}
-                  className={`relative p-4 rounded-lg border cursor-pointer transition-all ${
-                    selectedMethod === method.id
-                      ? 'border-[#FF7200] bg-orange-50'
-                      : method.available
-                      ? 'border-gray-200 hover:border-[#FF7200] hover:bg-gray-50'
-                      : 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      {/* Radio button */}
-                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                        selectedMethod === method.id
-                          ? 'border-[#FF7200] bg-[#FF7200]'
-                          : 'border-gray-300'
-                      }`}>
-                        {selectedMethod === method.id && (
-                          <div className="w-2 h-2 bg-white rounded-full"></div>
-                        )}
-                      </div>
-
-                      {/* Icon */}
-                      <div className={`p-2 rounded-lg ${
-                        selectedMethod === method.id
-                          ? 'bg-[#FF7200] text-white'
-                          : 'bg-gray-100 text-gray-600'
-                      }`}>
-                        {method.icon}
-                      </div>
-
-                      {/* Method details */}
-                      <div>
-                        <div className="flex items-center space-x-2">
-                          <h3 className="font-semibold text-gray-900">{method.name}</h3>
-                          {method.recommended && (
-                            <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">
-                              Recommended
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-sm text-gray-600">{method.description}</p>
-                      </div>
+          {/* Payment Options */}
+          <div className="space-y-4">
+            {paymentOptions.map((option) => (
+              <motion.div
+                key={option.id}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                onClick={() => setSelectedOption(option.id)}
+                className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all ${
+                  selectedOption === option.id
+                    ? 'border-green-500 bg-green-50'
+                    : 'border-gray-200 hover:border-gray-300 bg-white'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    {/* Radio button */}
+                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                      selectedOption === option.id
+                        ? 'border-green-500 bg-green-500'
+                        : 'border-gray-300'
+                    }`}>
+                      {selectedOption === option.id && (
+                        <div className="w-3 h-3 bg-white rounded-full"></div>
+                      )}
                     </div>
 
-                    {/* Arrow */}
-                    <ChevronRight className={`h-5 w-5 ${
-                      selectedMethod === method.id
-                        ? 'text-[#FF7200]'
-                        : 'text-gray-400'
-                    }`} />
+                    {/* Option details */}
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-1">{option.title}</h3>
+                      <p className="text-sm text-gray-600 max-w-md">{option.description}</p>
+                    </div>
                   </div>
 
-                  {/* Additional info for UPI */}
-                  {method.id === 'upi' && selectedMethod === method.id && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      className="mt-4 pt-4 border-t border-orange-200"
-                    >
-                      <div className="grid grid-cols-4 gap-4">
-                        <div className="flex items-center justify-center p-2 bg-white rounded border">
-                          <img src="/images/gpay-logo.svg" alt="Google Pay" className="h-6" />
-                        </div>
-                        <div className="flex items-center justify-center p-2 bg-white rounded border">
-                          <img src="/images/phonepe-logo.svg" alt="PhonePe" className="h-6" />
-                        </div>
-                        <div className="flex items-center justify-center p-2 bg-white rounded border">
-                          <img src="/images/paytm-logo.svg" alt="Paytm" className="h-6" />
-                        </div>
-                        <div className="flex items-center justify-center p-2 bg-white rounded border">
-                          <span className="text-xs font-medium text-gray-600">& more</span>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </motion.div>
-              ))}
-            </div>
+                  {/* Amount */}
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-[#FF7200]">
+                      ₹ {option.amount.toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
 
-          {/* Security Notice */}
-          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-            <div className="flex items-start space-x-3">
-              <div className="bg-blue-500 rounded-full p-1">
-                <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                </svg>
+          {/* Payment Method Info */}
+          <div className="bg-white rounded-lg p-6 border">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <img src="/images/phonepe-logo.png" alt="PhonePe" className="h-8 w-8" />
+                <span className="text-sm font-medium text-gray-900">PAY USING</span>
               </div>
-              <div>
-                <h3 className="text-sm font-semibold text-blue-900">100% Secure Payment</h3>
-                <p className="text-xs text-blue-700 mt-1">
-                  Your payment information is encrypted and secure. We never store your card details.
-                </p>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-[#FF7200]">
+                  ₹ {selectedOption ? paymentOptions.find(opt => opt.id === selectedOption)?.amount.toLocaleString() : '0'}
+                </div>
+                <div className="text-sm text-gray-600">Total</div>
               </div>
             </div>
+            <p className="text-sm text-gray-600">Phone Pe UPI</p>
           </div>
 
-          {/* Proceed Button */}
+          {/* Pay Now Button */}
           <div className="sticky bottom-0 bg-white border-t p-4 -mx-4">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={handleProceedToPayment}
-              disabled={!selectedMethod || loading}
-              className={`w-full py-3 rounded-lg font-semibold transition-colors flex items-center justify-center ${
-                selectedMethod && !loading
+              onClick={handlePayNow}
+              disabled={!selectedOption || loading}
+              className={`w-full py-4 rounded-lg font-semibold text-lg transition-colors flex items-center justify-center ${
+                selectedOption && !loading
                   ? 'bg-[#FF7200] text-white hover:bg-[#e56700]'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
               {loading ? (
                 <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-2"></div>
                   Processing...
                 </>
               ) : (
                 <>
-                  Pay ₹{bookingDetails.cartSummary.total.toLocaleString()}
+                  PAY NOW
                   <ChevronRight className="h-5 w-5 ml-2" />
                 </>
               )}

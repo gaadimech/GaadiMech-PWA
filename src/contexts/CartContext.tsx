@@ -128,15 +128,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       });
       
       if (isAuthenticated && user?.id) {
-        console.log('👤 CartProvider: User authenticated, clearing session and loading from backend');
+        console.log('👤 CartProvider: User authenticated, loading from backend');
         
-        // Clear session storage when a new user logs in to prevent cart conflicts
-        try {
-          sessionStorage.removeItem(CART_STORAGE_KEY);
-          console.log('🧹 CartProvider: Cleared session storage cart');
-        } catch (error) {
-          console.error('❌ Error clearing cart from session:', error);
-        }
+        let backendCartLoaded = false;
         
         try {
           const response = await apiClient.get<{ data: any }>(`/carts?filters[user][id][$eq]=${user.id}&filters[isActive][$eq]=true&sort=lastModifiedAt:desc&limit=1&populate=*`);
@@ -150,7 +144,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             ? backendCartRaw[0] ?? null
             : backendCartRaw;
 
-          if (backendCart && backendCart.items && Array.isArray(backendCart.items)) {
+          if (backendCart && backendCart.items && Array.isArray(backendCart.items) && backendCart.items.length > 0) {
             const transformedItems = backendCart.items.map((item: BackendCartItem) => {
               const numericUnit = typeof item.unitPrice === 'string' ? parseFloat(item.unitPrice) : item.unitPrice;
               return {
@@ -161,13 +155,26 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             });
             setCartItems(transformedItems);
             console.log('✅ CartProvider: Loaded cart from backend:', transformedItems);
+            backendCartLoaded = true;
+            
+            // Clear session storage only after successfully loading from backend
+            try {
+              sessionStorage.removeItem(CART_STORAGE_KEY);
+              console.log('🧹 CartProvider: Cleared session storage cart after backend load');
+            } catch (error) {
+              console.error('❌ Error clearing cart from session:', error);
+            }
           } else {
-            console.log('📭 CartProvider: No active cart found in backend, starting with empty cart');
-            setCartItems([]);
+            console.log('📭 CartProvider: No active cart found in backend, trying session storage');
           }
         } catch (error) {
-          console.error('❌ CartProvider: Error loading cart from backend, starting with empty cart:', error);
-          setCartItems([]);
+          console.error('❌ CartProvider: Error loading cart from backend, trying session storage:', error);
+        }
+        
+        // If backend didn't load cart, fall back to session storage
+        if (!backendCartLoaded) {
+          console.log('🔄 CartProvider: Falling back to session storage');
+          loadCartFromSession();
         }
       } else if (!isAuthenticated) {
         console.log('🔄 CartProvider: User not authenticated, loading from session');
@@ -196,10 +203,17 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
 
       // Save to backend if user is authenticated
-      if (isAuthenticated && user?.id && cartItems.length > 0) {
-        saveCartToBackend().catch(error => {
-          console.error('❌ Error saving cart to backend:', error);
-        });
+      if (isAuthenticated && user?.id) {
+        if (cartItems.length > 0) {
+          saveCartToBackend().catch(error => {
+            console.error('❌ Error saving cart to backend:', error);
+          });
+        } else {
+          // Clear cart in backend when local cart is empty
+          clearCartInBackend().catch(error => {
+            console.error('❌ Error clearing cart in backend:', error);
+          });
+        }
       }
     }
   }, [cartItems, isLoaded, isAuthenticated, user?.id]);
@@ -243,9 +257,41 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const clearCartInBackend = async () => {
+    if (!user?.id) return;
+
+    try {
+      console.log('🔄 Clearing cart in backend...');
+      
+      // Check if cart exists
+      const existingCartResponse = await apiClient.get(`/carts?filters[user][id][$eq]=${user.id}&filters[isActive][$eq]=true&limit=1`);
+
+      const existingCartRaw = (existingCartResponse as any).data;
+      const existingCart = Array.isArray(existingCartRaw) ? existingCartRaw[0] : existingCartRaw;
+
+      if (existingCart) {
+        // Mark cart as inactive instead of deleting
+        const cartData = {
+          isActive: false,
+          items: [],
+          totalItems: 0,
+          totalQuantity: 0,
+          subtotal: 0,
+          totalAmount: 0,
+          lastModifiedAt: new Date(),
+        };
+        await apiClient.put(`/carts/${existingCart.id}`, { data: cartData });
+        console.log('✅ Cart cleared in backend');
+      }
+    } catch (error) {
+      console.error('❌ Error clearing cart in backend:', error);
+    }
+  };
+
   // Calculate cart summary
   const cartSummary: CartSummary = React.useMemo(() => {
     console.log('🧮 Calculating cart summary for items:', cartItems);
+    console.log('🧮 isLoaded:', isLoaded);
     
     const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
     const serviceCount = cartItems.length;
@@ -416,6 +462,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const refreshCartFromStorage = async () => {
     console.log('🔄 Manually refreshing cart...');
+    let backendCartLoaded = false;
+    
     if (isAuthenticated && user?.id) {
       try {
         const response = await apiClient.get(`/carts?filters[user][id][$eq]=${user.id}&filters[isActive][$eq]=true&limit=1&populate=*`);
@@ -423,7 +471,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const backendCartRaw = (response as any).data;
         const backendCart = Array.isArray(backendCartRaw) ? backendCartRaw[0] : backendCartRaw;
 
-        if (backendCart && backendCart.items) {
+        if (backendCart && backendCart.items && Array.isArray(backendCart.items) && backendCart.items.length > 0) {
           const transformedItems = backendCart.items.map((item: BackendCartItem) => {
             const numericUnit = typeof item.unitPrice === 'string' ? parseFloat(item.unitPrice) : item.unitPrice;
             return {
@@ -438,16 +486,38 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           });
           setCartItems(transformedItems);
           console.log('✅ Cart refreshed from backend');
+          backendCartLoaded = true;
         } else {
-          setCartItems([]);
-          console.log('📭 No active cart found during refresh');
+          console.log('📭 No active cart found in backend during refresh');
         }
       } catch (error) {
-        console.error('❌ Error refreshing cart:', error);
+        console.error('❌ Error refreshing cart from backend:', error);
       }
-    } else {
-      setCartItems([]);
-      console.log('👤 User not authenticated, cleared cart');
+    }
+    
+    // If backend didn't load cart (either due to error, empty response, or user not authenticated),
+    // fall back to session storage
+    if (!backendCartLoaded) {
+      console.log('🔄 Falling back to session storage...');
+      try {
+        const savedCart = sessionStorage.getItem(CART_STORAGE_KEY);
+        if (savedCart) {
+          const parsedCart = JSON.parse(savedCart);
+          if (Array.isArray(parsedCart) && parsedCart.length > 0) {
+            console.log('✅ Cart refreshed from session storage:', parsedCart);
+            setCartItems(parsedCart);
+          } else {
+            console.log('📭 Session storage cart is empty');
+            setCartItems([]);
+          }
+        } else {
+          console.log('📭 No cart found in session storage');
+          setCartItems([]);
+        }
+      } catch (error) {
+        console.error('❌ Error loading cart from session storage:', error);
+        setCartItems([]);
+      }
     }
   };
 

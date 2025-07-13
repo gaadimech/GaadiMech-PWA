@@ -56,14 +56,26 @@ const BookingDetails = () => {
 
   // Load booking details from session
   useEffect(() => {
+    console.log('🔍 BookingDetails: Checking for booking details in session...');
     const details = sessionStorage.getItem('bookingDetails');
     if (details) {
-      setBookingDetails(JSON.parse(details));
+      console.log('✅ BookingDetails: Found booking details in session');
+      try {
+        const parsedDetails = JSON.parse(details);
+        setBookingDetails(parsedDetails);
+        console.log('✅ BookingDetails: Successfully loaded booking details:', parsedDetails);
+      } catch (error) {
+        console.error('❌ BookingDetails: Error parsing booking details:', error);
+        navigate('/cart');
+      }
     } else {
+      console.log('❌ BookingDetails: No booking details found, redirecting to cart');
       // Redirect back if no booking details
       navigate('/cart');
     }
   }, [navigate]);
+
+
 
   // Load Razorpay script
   useEffect(() => {
@@ -246,6 +258,8 @@ const BookingDetails = () => {
   };
 
   if (cartSummary.isEmpty) {
+    console.log('⚠️ BookingDetails: Cart is empty, redirecting back to cart');
+    console.log('⚠️ Cart Summary:', cartSummary);
     navigate('/cart');
     return null;
   }

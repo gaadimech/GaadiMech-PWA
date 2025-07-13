@@ -43,12 +43,39 @@ const Cart = () => {
   };
 
   const handleProceedToBooking = () => {
+    console.log('🚀 Proceed to Booking clicked - Cart Summary:', cartSummary);
+    console.log('🚀 Items in cart:', cartSummary.items);
+    
+    // Validate cart is not empty
+    if (cartSummary.isEmpty || cartSummary.items.length === 0) {
+      alert('Your cart is empty. Please add some services before proceeding.');
+      return;
+    }
+    
     // Store service mode and coupon code in session for booking
     sessionStorage.setItem('serviceMode', modeOfService);
     if (appliedCouponCode) {
       sessionStorage.setItem('appliedCoupon', appliedCouponCode);
       sessionStorage.setItem('couponDiscount', couponDiscount.toString());
     }
+    
+    // Create and store booking details that BookingDetails component expects
+    const bookingDetails = {
+      cartSummary,
+      selectedVehicle,
+      serviceMode: modeOfService,
+      appliedCouponCode,
+      couponDiscount,
+      customerInfo: {
+        mobile: sessionStorage.getItem('userMobileNumber') || '',
+        city: 'Jaipur' // Default city
+      }
+    };
+    
+    console.log('🚀 Setting booking details:', bookingDetails);
+    sessionStorage.setItem('bookingDetails', JSON.stringify(bookingDetails));
+    
+    console.log('🚀 Navigating to booking-details...');
     navigate('/booking-details');
   };
 

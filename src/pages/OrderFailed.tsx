@@ -10,9 +10,15 @@ const OrderFailed = () => {
 
   // Load booking details from session
   useEffect(() => {
+    // Check for both bookingDetails and orderData
     const details = sessionStorage.getItem('bookingDetails');
+    const orderData = sessionStorage.getItem('orderData');
+    
     if (details) {
       setBookingDetails(JSON.parse(details));
+    } else if (orderData) {
+      // If orderData exists, use it as booking details
+      setBookingDetails(JSON.parse(orderData));
     } else {
       // Redirect if no booking details
       navigate('/services');
@@ -28,12 +34,15 @@ const OrderFailed = () => {
   };
 
   const handleContactSupport = () => {
+    const vehicleInfo = bookingDetails?.selectedVehicle || bookingDetails?.vehicle;
+    const totalAmount = bookingDetails?.cartSummary?.total || bookingDetails?.paymentAmount;
+    
     const message = `Hi! I faced an issue with my payment. My booking details are:
 
-🚗 Vehicle: ${bookingDetails?.vehicle?.manufacturer} ${bookingDetails?.vehicle?.model}
+🚗 Vehicle: ${vehicleInfo?.manufacturer} ${vehicleInfo?.model}
 📅 Date: ${formatDate(bookingDetails?.selectedDate)}
 ⏰ Time: ${formatTimeSlot(bookingDetails?.selectedTimeSlot)}
-💰 Amount: ₹${bookingDetails?.cartSummary?.total}
+💰 Amount: ₹${totalAmount}
 
 Please help me complete my booking. Thank you!`;
     
@@ -69,6 +78,9 @@ Please help me complete my booking. Thank you!`;
     return null;
   }
 
+  const vehicleInfo = bookingDetails.selectedVehicle || bookingDetails.vehicle;
+  const totalAmount = bookingDetails.cartSummary?.total || bookingDetails.paymentAmount;
+
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-md mx-auto">
@@ -93,7 +105,7 @@ Please help me complete my booking. Thank you!`;
           <div className="space-y-4">
             <div>
               <p className="text-sm text-gray-600">Vehicle</p>
-              <p className="font-medium">{bookingDetails.vehicle?.manufacturer} {bookingDetails.vehicle?.model}</p>
+              <p className="font-medium">{vehicleInfo?.manufacturer} {vehicleInfo?.model}</p>
             </div>
             
             <div>
@@ -108,7 +120,7 @@ Please help me complete my booking. Thank you!`;
             
             <div>
               <p className="text-sm text-gray-600">Amount</p>
-              <p className="font-medium">₹{bookingDetails.cartSummary?.total}</p>
+              <p className="font-medium">₹{totalAmount}</p>
             </div>
           </div>
         </div>
